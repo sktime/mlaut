@@ -1,0 +1,5 @@
+data/**
+Delgado_data/**
+py36/
+__pycache__/
+.vscode/
