@@ -16,7 +16,7 @@ class DownloadAndConvertDelgadoDatasets(object):
         filename = DELGADO_DATASET_DOWNLOAD_URL.split('/')[-1]
         if not os.path.isfile(DELGADO_DIR + filename):
             print('Downloading Delgado dataset...')
-            if USE_PROXY == True:
+            if USE_PROXY is True:
                 proxy  = urllib.request.ProxyHandler({'https': '127.0.0.1:3128'} )
                 opener = urllib.request.build_opener(proxy)
                 urllib.request.install_opener(opener)
