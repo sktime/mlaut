@@ -1,23 +1,30 @@
 import pandas as pd
 from sklearn.utils import shuffle
-from src.static_variables import REFORMATTED_DATASETS_DIR, TRAIN_DIR, TEST_DIR, TEST_TRAIN_SPLIT, DATA_DIR, HDF5_DATA_FILENAME, SPLIT_DATASETS_DIR
+from src.static_variables import REFORMATTED_DATASETS_DIR, TRAIN_DIR
+from src.static_variables import TEST_DIR, TEST_TRAIN_SPLIT
+from src.static_variables import DATA_DIR, HDF5_DATA_FILENAME, SPLIT_DATASETS_DIR
 import h5py
 
+'''
+TODO This will probably have to go
+Test/train split will be performed before each experiment is run
 
+'''
 
 
 class CreateTestTrainDatasets:
 
     datasets = []
     def _load_datasets(self):
-        f = h5py.File(DATA_DIR + HDF5_DATA_FILENAME)
-        for i in f[REFORMATTED_DATASETS_DIR].items():
-            self.datasets.append(REFORMATTED_DATASETS_DIR + i[0])
-        f.close()
+         f = h5py.File(DATA_DIR + HDF5_DATA_FILENAME)
+         for i in f[REFORMATTED_DATASETS_DIR].items():
+             self.datasets.append( REFORMATTED_DATASETS_DIR + i[0])
+         f.close()
          
-    def _split_dataset(self, store, dataset_name):
+    def _split_dataset(self,store, dataset_name):
         datasetDf = store[dataset_name]
-        num_samples = datasetDf.shape[0]        
+        num_samples = datasetDf.shape[0]
+        
         #split the data in train and test
         split = TEST_TRAIN_SPLIT
         
@@ -43,4 +50,4 @@ class CreateTestTrainDatasets:
             store[SPLIT_DATASETS_DIR + TRAIN_DIR  + dataset_name] = train
 
         store.close()
-        
+

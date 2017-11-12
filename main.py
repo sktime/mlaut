@@ -12,18 +12,17 @@ if __name__ == '__main__':
     analyze = AnalyseResults()
     testOrchestrator = TestOrchestrator(data)
     map_datasets = MapDatasets()
-   
+    
     files_io = FilesIO()
     testOrchestrator.setFilesIO(files_io)
     testOrchestrator.setAnalyzeResults(analyze)
     experiments.setTestOrchestrator(testOrchestrator)
-
-    testOrchestrator.prepare_data()
+    
+    # testOrchestrator.prepare_data()
     testOrchestrator.set_mapped_datasets(map_datasets)
     testOrchestrator.setExperiments(experiments)
     testOrchestrator.run_experiments()
     testOrchestrator.perform_statistical_tests()
-    
     
     
     

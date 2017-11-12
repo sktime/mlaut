@@ -5,7 +5,7 @@ TRAIN_DIR = 'train/'
 TEST_DIR = 'test/'
 DATA_DIR = 'data/'
 PREDICTIONS_DIR = 'predictions/'
-HDF5_DATA_FILENAME = 'data.hdf5'
+HDF5_DATA_FILENAME = 'data/data.hdf5'
 RESULTS_DIR = 'results_summary/'
 DELGADO_DIR = 'Delgado_data/'
 T_TEST_DATASET = 't_test'
@@ -20,9 +20,9 @@ EXPERIMENTS_PREDICTIONS_DIR = 'experiments/predictions/'
 EXPERIMENTS_MODEL_ACCURACY_DIR = 'experiments/trained_models_accuracies/'
 
 RUNTIMES_GROUP = '/run_times'
-USE_PROXY = False
+USE_PROXY = True
 
-DELGADO_DATASET_DOWNLOAD_URL='http://persoal.citius.usc.es/manuel.fernandez.delgado/papers/jmlr/data.tar.gz'
+DELGADO_DATASET_DOWNLOAD_URL='https://persoal.citius.usc.es/manuel.fernandez.delgado/papers/jmlr/data.tar.gz'
 DELGADO_NUM_DATASETS = 120
 
 COLUMN_LABEL_NAME = 'clase'
