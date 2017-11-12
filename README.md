@@ -4,7 +4,7 @@ Package that automates running machine learning experiments.
 
 ### Installing
 
-Requires Python 3.5 or higher.
+Requires Python 3.6.
 
 
 Create virtual environment:

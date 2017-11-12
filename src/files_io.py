@@ -97,7 +97,7 @@ class FilesIO:
         store['/' + RESULTS_DIR + stat_test_dataset] = values
         store.close()
     
-    def load_datasets(self):
+    def list_datasets(self):
         '''
         TODO this needs to be linked. Currently copied from 
         create_dataset_split
@@ -108,3 +108,23 @@ class FilesIO:
             datasets.append(REFORMATTED_DATASETS_DIR + i[0])
         f.close()
         return datasets
+    
+    def load_dataset(self, dataset_name):
+        store = pd.HDFStore(self.hdf5_filename)
+        dataset = store[dataset_name]
+        metadata = store.get_storer(dataset_name).attrs.metadata
+        store.close()
+        return dataset, metadata
+    
+    def save_datasets(self, datasets, dataset_names, dts_metadata, verbose = None):
+        '''
+        saves datasets in HDF5 database. 
+        dataset_names must contain full path
+        '''
+        store = pd.HDFStore(self.hdf5_filename)
+        for dts in zip(datasets, dataset_names, dts_metadata):
+            if verbose is True:
+                print(f'Saving: {dts[1]} to HDF5 database')
+            store[dts[1]] = dts[0]
+            store.get_storer(dts[1]).attrs.metadata = dts[2]
+        store.close()

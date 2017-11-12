@@ -1,14 +1,19 @@
 from src.delgado_datasets import DownloadAndConvertDelgadoDatasets
-from src.create_test_train_dataset_split import CreateTestTrainDatasets
 import os
 from src.static_variables import DELGADO_DIR, DATA_DIR, EXPERIMENTS_TRAINED_MODELS_DIR
+from sklearn.model_selection import train_test_split
 
 class Data:
+    '''
+    Create the necessary directories.
+    Download the data for the delgado datasets.
+    Split dataset in test and train.
+    Create HDF5 database and put all the datasets in it.
+    '''
     def __init__(self):
         self._delgado = DownloadAndConvertDelgadoDatasets()
-        self._create_test_train_datasets = CreateTestTrainDatasets()
     
-    def _create_directories(self):
+    def create_directories(self):
         if not os.path.exists(DATA_DIR):
             print('Creating directory:{0}'.format(DATA_DIR))
             os.makedirs(DATA_DIR)
@@ -21,11 +26,16 @@ class Data:
             print('Creating directory:{0}'.format(EXPERIMENTS_TRAINED_MODELS_DIR))
             os.makedirs(EXPERIMENTS_TRAINED_MODELS_DIR)
 
-    
-    
-    def prepare_data(self): 
-            self._create_directories()
-            self._delgado.download_and_extract_datasets()
-            self._create_test_train_datasets.create_test_train()
-   
+    def prepare_delgado_datasets(self): 
+        datasets, dataset_names, metadata = self._delgado.download_and_extract_datasets()
+        return datasets, dataset_names, metadata
+        
+    def create_train_test_split(self, dataset, metadata):
+        class_name = metadata['class_name']
+        y = dataset[class_name]
+        X = dataset.loc[:, dataset.columns != class_name]
+        X_train, X_test, y_train, y_test = train_test_split(
+                X, y, test_size=0.33, random_state=42)
+        return X_train, X_test, y_train, y_test
+
 

@@ -1,4 +1,4 @@
-from src.static_variables import  TEST_DIR, SPLIT_DATASETS_DIR
+from src.static_variables import  SPLIT_DATASETS_DIR
 from src.static_variables import MIN_EXAMPLES_PER_CLASS, COLUMN_LABEL_NAME
 from src.static_variables import  DATA_DIR,HDF5_DATA_FILENAME, GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 from src.functions import SharedFunctions
@@ -6,10 +6,9 @@ import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
 from datetime import datetime
-
+from sklearn.model_selection import train_test_split
 class RunExperiments(object):
-    #list with available skll models:
-    #https://skll.readthedocs.io/en/latest/run_experiment.html
+
     trained_models = []
     trained_models_fold_result_list = []
     def __init__(self):
@@ -18,7 +17,19 @@ class RunExperiments(object):
     def setTestOrchestrator(self, test_orchestrator):
         self._test_orchestrator = test_orchestrator
     
-    def run_experiments(self, dataset_container):
+    def _create_test_train_split(self, dataset, metadata):
+        class_name = metadata['class_name']
+        y = dataset[class_name]
+        X = dataset.loc[:, dataset.columns != class_name]
+        X_train, X_test, y_train, y_test = train_test_split(
+                X, y, test_size=0.33, random_state=42)
+        return X_train, X_test, y_train, y_test
+
+    def run_experiments(datasets, metadatas, models):
+        for dts in zip(datasets,metadatas):
+            X_train, X_test, y_train, y_test = self._create_test_train_split(dts[0], dts[1])
+
+    def run_experiments22(self, dataset_container):
         train_df_path = dataset_container.train_dataset_path           
         store = pd.HDFStore(DATA_DIR + HDF5_DATA_FILENAME)
         train_df = store[train_df_path]

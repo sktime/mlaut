@@ -28,12 +28,16 @@ class DownloadAndConvertDelgadoDatasets(object):
             tar = tarfile.open(DELGADO_DIR + filename, "r:gz")
             tar.extractall(DELGADO_DIR)
             tar.close()
-        #reformat datasets and store in hdf5 database
-        store = pd.HDFStore(DATA_DIR + HDF5_DATA_FILENAME)
+
+        #reformat datasets
         print('Reformatting datasets...')
         dataset_dirs = glob(DELGADO_DIR+'*')
+        
+        datasets = []
+        dataset_names = []
+        metadata = []
         for i in range(len(dataset_dirs)):
-            if os.path.isdir(dataset_dirs[i]) == True:
+            if os.path.isdir(dataset_dirs[i]) is True:
                 ds_dir = dataset_dirs[i]
                 arff_files_in_dir = glob(ds_dir + os.sep +'*.arff')
                 if len(arff_files_in_dir) == 2:
@@ -48,7 +52,6 @@ class DownloadAndConvertDelgadoDatasets(object):
                     df2 = pd.DataFrame(data2[0])
                     result = df1.append(df2, ignore_index=True)
                     result['clase'] = pd.to_numeric(result['clase'])
-                    store[REFORMATTED_DATASETS_DIR + dts_name] = result
 
                 elif len(arff_files_in_dir) == 1:
                     filename = arff_files_in_dir[0].split(os.sep)[-1]
@@ -58,8 +61,17 @@ class DownloadAndConvertDelgadoDatasets(object):
                     data = arff.loadarff(arff_files_in_dir[0])
                     result = pd.DataFrame(data[0])
                     result['clase'] = pd.to_numeric(result['clase'])
-                    store[REFORMATTED_DATASETS_DIR + dts_name] = result
 
                 else:
                     print('Error: Dataset {0} has a different number of arff files'.format(dataset_dirs[i]))
-        store.close()
+                
+                print(f'Loading: {dts_name}...')
+                #return three arrays with data, name and metadata
+                dataset_names.append(dts_name)
+                datasets.append(result)
+                metadata.append({'class_name':'clase', 
+                                'source':'Delgado',
+                                'dataset_name': dts_name
+                })
+        return datasets, dataset_names, metadata
+        

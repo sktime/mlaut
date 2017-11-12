@@ -1,5 +1,8 @@
-from src.static_variables import FLAG_ML_MODEL
-from src.static_variables import T_TEST_DATASET, SIGN_TEST_DATASET, BONFERRONI_CORRECTION_DATASET, WILCOXON_DATASET, FRIEDMAN_DATASET
+from src.static_variables import (FLAG_ML_MODEL, REFORMATTED_DATASETS_DIR, 
+    T_TEST_DATASET, SIGN_TEST_DATASET, 
+    BONFERRONI_CORRECTION_DATASET, WILCOXON_DATASET, 
+    FRIEDMAN_DATASET, SPLIT_DATASETS_DIR, 
+    X_TRAIN_DIR, X_TEST_DIR, Y_TRAIN_DIR, Y_TEST_DIR)
 import sys
 
 class TestOrchestrator:
@@ -10,19 +13,47 @@ class TestOrchestrator:
         self._analyzeResults = None
      
     def prepare_data(self):
-        self._data.prepare_data()
+        '''
+        creates directories
+        get datesets and seves them in HDF5 database
+        Creates train / test split
+        '''
+        #create directories
+        self._data.create_directories()
+        #delgado datasets
+        datasets, dataset_names, metadata = self._data.prepare_delgado_datasets()
+        #add full path to dataset name
+        reformatted_dataset_names = [ REFORMATTED_DATASETS_DIR + dts_name for dts_name in dataset_names]
+        self._files_io.save_datasets(datasets, reformatted_dataset_names, 
+            metadata, verbose=True)
+        
+        #create train /test split
+        for dts in zip(datasets, dataset_names, metadata):
+            dts_name = dts[1]
+            X_train, X_test, y_train, y_test = self._data.create_train_test_split(dts[0], dts[2])
+            #create save path
+            data = [X_train, X_test, y_train, y_test]
+            names = [
+                SPLIT_DATASETS_DIR + dts_name + X_TRAIN_DIR,
+                SPLIT_DATASETS_DIR + dts_name + X_TEST_DIR,
+                SPLIT_DATASETS_DIR + dts_name + Y_TRAIN_DIR,
+                SPLIT_DATASETS_DIR + dts_name + Y_TEST_DIR
+            ]
+            #add same metadata for all datasets
+            metadata = [dts[2]['source']] *4
+            self._files_io.save_datasets(data, names, metadata, verbose=True)        
     
     def setExperiments(self, experiments):
         self._experiments = experiments
+    
+    def set_ml_models_container(self, models_container):
+        self.ml_models_container = models_container
     
     def setFilesIO(self, filesIO):
         self._files_io = filesIO
         
     def setAnalyzeResults(self, analyze):
         self._analyzeResults = analyze
-        
-    def set_mapped_datasets(self,map_datasets):
-        self.map_datasets = map_datasets
         
     def run_experiments(self):
         try:
@@ -66,6 +97,7 @@ class TestOrchestrator:
                 self._files_io.save_prediction_accuracies_to_db(model_accuracies)
             else:
                 print('Ignoring dataset: {0}'.format(dataset_name))
+        
         except KeyboardInterrupt:
             # quit
             print('***************************')

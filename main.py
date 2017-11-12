@@ -1,9 +1,10 @@
 from src.test_orchestrator import TestOrchestrator
-from src.map_datasets_to_ml_strategies import MapDatasets
+from src.models_container import ModelsContainer
 from src.data import Data
 from src.run_experiments import RunExperiments
 from src.analyze_results import AnalyseResults
 from src.files_io import FilesIO
+from src.static_variables import HDF5_DATA_FILENAME
 
 
 if __name__ == '__main__': 
@@ -11,18 +12,18 @@ if __name__ == '__main__':
     experiments = RunExperiments()
     analyze = AnalyseResults()
     testOrchestrator = TestOrchestrator(data)
-    map_datasets = MapDatasets()
+    models_container = ModelsContainer()
     
-    files_io = FilesIO()
+    files_io = FilesIO(HDF5_DATA_FILENAME)
     testOrchestrator.setFilesIO(files_io)
     testOrchestrator.setAnalyzeResults(analyze)
     experiments.setTestOrchestrator(testOrchestrator)
-    
-    # testOrchestrator.prepare_data()
-    testOrchestrator.set_mapped_datasets(map_datasets)
+   
+    testOrchestrator.prepare_data()
+    testOrchestrator.set_ml_models_container(models_container)
     testOrchestrator.setExperiments(experiments)
-    testOrchestrator.run_experiments()
-    testOrchestrator.perform_statistical_tests()
+    # testOrchestrator.run_experiments()
+    # testOrchestrator.perform_statistical_tests()
     
     
     
