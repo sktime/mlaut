@@ -97,15 +97,15 @@ class FilesIO:
         store['/' + RESULTS_DIR + stat_test_dataset] = values
         store.close()
     
-    def list_datasets(self):
+    def list_datasets(self, hdf5_group):
         '''
         TODO this needs to be linked. Currently copied from 
         create_dataset_split
         '''
         datasets = []
         f = h5py.File(self.hdf5_filename)
-        for i in f[REFORMATTED_DATASETS_DIR].items():
-            datasets.append(REFORMATTED_DATASETS_DIR + i[0])
+        for i in f[hdf5_group].items():
+            datasets.append(i[0])
         f.close()
         return datasets
     

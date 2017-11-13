@@ -1,6 +1,6 @@
 ORIGINAL_DATASETS_DIR = 'original_datasets/'
 REFORMATTED_DATASETS_DIR = 'reformatted_datasets/'
-SPLIT_DATASETS_DIR = 'split_datasets/'
+SPLIT_DATASETS_DIR = '/split_datasets'
 X_TRAIN_DIR = '/X_train'
 X_TEST_DIR = '/X_test'
 Y_TRAIN_DIR = '/y_train'
@@ -22,7 +22,7 @@ EXPERIMENTS_PREDICTIONS_DIR = 'experiments/predictions/'
 EXPERIMENTS_MODEL_ACCURACY_DIR = 'experiments/trained_models_accuracies/'
 
 RUNTIMES_GROUP = '/run_times'
-USE_PROXY = False
+USE_PROXY = True
 
 DELGADO_DATASET_DOWNLOAD_URL='https://persoal.citius.usc.es/manuel.fernandez.delgado/papers/jmlr/data.tar.gz'
 DELGADO_NUM_DATASETS = 120

@@ -18,7 +18,7 @@ class ModelsContainer(object):
         }
         gs_random_Forest = GridSearchCV(clf_rfc, rfc_params, verbose=1, 
             refit=True, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS)
-        models.append(gs_random_Forest)
+        models.append(['RandomForestClassifier', gs_random_Forest])
 
         clf_svm = SVC()
         svm_params = {
@@ -28,7 +28,7 @@ class ModelsContainer(object):
         gs_svm = GridSearchCV(clf_svm, svm_params)
         gs_svm = GridSearchCV(clf_svm, svm_params, verbose=1, 
             refit=True, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS)      
-        models.append(gs_svm)
+        models.append(['SVM', gs_svm])
 
         clf_logisticReg = linear_model.LogisticRegression()
         logisticReg_params = {
@@ -36,6 +36,6 @@ class ModelsContainer(object):
         }
         gs_logistic_reg = GridSearchCV(clf_logisticReg, logisticReg_params, 
             verbose=1, refit=True, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS)
-        models.append(gs_logistic_reg)
+        models.append(['LogisticRegression', gs_logistic_reg])
 
         return models
