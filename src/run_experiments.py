@@ -1,7 +1,6 @@
 from src.static_variables import  SPLIT_DATASETS_DIR
 from src.static_variables import MIN_EXAMPLES_PER_CLASS, COLUMN_LABEL_NAME
 from src.static_variables import  DATA_DIR,HDF5_DATA_FILENAME, GRIDSEARCH_CV_NUM_PARALLEL_JOBS
-from src.functions import SharedFunctions
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
@@ -17,13 +16,13 @@ class RunExperiments(object):
     def setTestOrchestrator(self, test_orchestrator):
         self._test_orchestrator = test_orchestrator
     
-    def _create_test_train_split(self, dataset, metadata):
-        class_name = metadata['class_name']
-        y = dataset[class_name]
-        X = dataset.loc[:, dataset.columns != class_name]
-        X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.33, random_state=42)
-        return X_train, X_test, y_train, y_test
+    # def _create_test_train_split(self, dataset, metadata):
+    #     class_name = metadata['class_name']
+    #     y = dataset[class_name]
+    #     X = dataset.loc[:, dataset.columns != class_name]
+    #     X_train, X_test, y_train, y_test = train_test_split(
+    #             X, y, test_size=0.33, random_state=42)
+    #     return X_train, X_test, y_train, y_test
 
     def run_experiments(self, X_train, y_train, model_container):
         trained_models = []

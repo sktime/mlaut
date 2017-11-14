@@ -10,6 +10,8 @@ import h5py
 import tables
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split
+
 
 class FilesIO:
 
@@ -128,3 +130,40 @@ class FilesIO:
             store[dts[1]] = dts[0]
             store.get_storer(dts[1]).attrs.metadata = dts[2]
         store.close()
+    
+    def split_dataset(self, dataset_path, test_size = None):
+        if test_size is None:
+            test_size = 0.33
+        #load
+        dataset, metadata = self.load_dataset(dataset_path)
+        class_name = metadata['class_name']
+        dataset_name = metadata['dataset_name']
+        #split
+        y = dataset[class_name]
+        X = dataset.loc[:, dataset.columns != class_name]
+        X_train, X_test, y_train, y_test = train_test_split(
+                X, y, test_size=test_size, random_state=42)
+        return X_train, X_test, y_train, y_test
+        
+    def split_and_save(self, dataset_paths, save_loc, test_size = None):
+        for dts in dataset_paths:
+            if test_size is None:
+                test_size = 0.33
+            X_train, X_test, y_train, y_test = self.split_dataset(
+                    dataset_path=dts, test_size=0.33)
+            #load metadata
+            _, metadata = self.load_dataset(dts)
+            class_name = metadata['class_name']
+            dataset_name = metadata['dataset_name']
+            #save
+            save_dataset_paths = [
+                save_loc + '/' + dataset_name + '/X_train',
+                save_loc + '/' + dataset_name + '/X_test',
+                save_loc + '/' + dataset_name + '/y_train',
+                save_loc + '/' + dataset_name + '/y_test'
+            ]
+            meta = [{'dataset_name': dataset_name}]*4
+            self.save_datasets(datasets=[X_train, X_test, y_train, y_test], 
+                            dataset_names = save_dataset_paths, 
+                            dts_metadata = meta, 
+                            verbose = None)
