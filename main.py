@@ -19,7 +19,7 @@ if __name__ == '__main__':
     testOrchestrator.setAnalyzeResults(analyze)
     experiments.setTestOrchestrator(testOrchestrator)
    
-    testOrchestrator.prepare_data()
+    #testOrchestrator.prepare_data()
     testOrchestrator.set_ml_models_container(models_container)
     testOrchestrator.setExperiments(experiments)
     datasets = files_io.list_datasets(SPLIT_DATASETS_DIR)

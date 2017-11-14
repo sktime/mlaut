@@ -143,7 +143,9 @@ class FilesIO:
         X = dataset.loc[:, dataset.columns != class_name]
         X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=test_size, random_state=42)
-        return X_train, X_test, y_train, y_test
+        #reformat y_train and y_test
+        return (X_train, X_test, y_train,  
+                y_test)
         
     def split_and_save(self, dataset_paths, save_loc, test_size = None):
         for dts in dataset_paths:
