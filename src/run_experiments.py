@@ -11,7 +11,6 @@ class RunExperiments(object):
     trained_models = []
     trained_models_fold_result_list = []
    
-    
     def run_experiments(self, X_train, y_train, model_container):
         trained_models = []
         timestamps_df = pd.DataFrame()

@@ -26,9 +26,9 @@ class ModelsContainer(object):
                     'max_features': ['auto', 'sqrt','log2', None],
                     'max_depth': [5, 15, None]
                     }
-            gs_random_Forest = GridSearchCV(clf_rfc, rfc_params, verbose=verbose, 
-                refit=True, n_jobs=num_parallel_jobs)
-            models.append(['RandomForestClassifier', gs_random_Forest])    
+                gs_random_Forest = GridSearchCV(clf_rfc, rfc_params, verbose=verbose, 
+                    refit=True, n_jobs=num_parallel_jobs)
+                models.append([strategy, gs_random_Forest])
             
             if strategy == 'SVM':
                 clf_svm = SVC()
@@ -42,7 +42,7 @@ class ModelsContainer(object):
                 gs_svm = GridSearchCV(clf_svm, svm_params, 
                     verbose=verbose, 
                     refit=True, n_jobs=num_parallel_jobs)      
-                models.append(['SVM', gs_svm])
+                models.append([strategy, gs_svm])
             
             if strategy == 'LogisticRegression':
                 clf_logisticReg = linear_model.LogisticRegression()
@@ -56,7 +56,7 @@ class ModelsContainer(object):
                         logisticReg_params, 
                         verbose=verbose, 
                             refit=True, n_jobs=num_parallel_jobs)
-                models.append(['LogisticRegression', gs_logistic_reg])
+                models.append([strategy, gs_logistic_reg])
         return models
 
     def create_models(self, **kwargs):

@@ -86,8 +86,7 @@ class TestOrchestrator:
                                                                 true_labels=y_test)
                 self._prediction_accuracies.append(model_accuracies)
                 self._files_io.save_prediction_accuracies_to_db(model_accuracies)
-            else:
-                print(f'Ignoring dataset: {dts}')
+                
         
         except KeyboardInterrupt:
             # quit
