@@ -6,44 +6,12 @@ from src.static_variables import (FLAG_ML_MODEL, REFORMATTED_DATASETS_DIR,
 import sys
 from src.files_io import FilesIO
 class TestOrchestrator:
-    def __init__(self, SPLIT_DATASETS_DIR, files_io, data, experiments, analyze):
-        self._data = data
+    def __init__(self, SPLIT_DATASETS_DIR, files_io, experiments, analyze):
         self._experiments = experiments
         self._files_io = files_io
         self._analyzeResults = analyze
         self.SPLIT_DATASETS_DIR = SPLIT_DATASETS_DIR
      
-    def prepare_data(self):
-        '''
-        creates directories
-        get datesets and seves them in HDF5 database
-        Creates train / test split
-        '''
-        #create directories
-        self._data.create_directories()
-        #delgado datasets
-        datasets, dataset_names, metadata = self._data.prepare_delgado_datasets()
-        #add full path to dataset name
-        reformatted_dataset_names = [ REFORMATTED_DATASETS_DIR + dts_name for dts_name in dataset_names]
-        self._files_io.save_datasets(datasets, reformatted_dataset_names, 
-            metadata, verbose=True)
-        
-        #create train /test split
-        for dts in zip(datasets, dataset_names, metadata):
-            dts_name = dts[1]
-            X_train, X_test, y_train, y_test = self._data.create_train_test_split(dts[0], dts[2])
-            #create save path
-            data = [X_train, X_test, y_train, y_test]
-            names = [
-                self.SPLIT_DATASETS_DIR + '/' + dts_name + X_TRAIN_DIR,
-                self.SPLIT_DATASETS_DIR + '/' + dts_name + X_TEST_DIR,
-                self.SPLIT_DATASETS_DIR + '/' + dts_name + Y_TRAIN_DIR,
-                self.SPLIT_DATASETS_DIR + '/' + dts_name + Y_TEST_DIR
-            ]
-            #add same metadata for all datasets
-            metadata = [dts[2]['source']] *4
-            self._files_io.save_datasets(data, names, metadata, verbose=True)        
-          
     def run_experiments(self, datasets, modelling_strategies):
         try:
             #loop through all datasets

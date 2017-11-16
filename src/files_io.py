@@ -60,7 +60,10 @@ class FilesIO:
             strategy_name = prediction[0]
             strategy_predictions = np.array(prediction[1])
             save_path = EXPERIMENTS_PREDICTIONS_DIR + dataset_name  + '/' + strategy_name
-            f[save_path] = strategy_predictions
+            try:
+                f[save_path] = strategy_predictions
+            except:
+                raise ValueError('Save path already exists')
         f.close()
 
     def save_prediction_accuracies_to_db(self, model_accuracies):

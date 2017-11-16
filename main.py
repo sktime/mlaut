@@ -8,17 +8,17 @@ from src.static_variables import HDF5_DATA_FILENAME, SPLIT_DATASETS_DIR
 
 
 if __name__ == '__main__': 
-    data = Data()
+    
     experiments = RunExperiments()
     analyze = AnalyseResults()
     models_container = ModelsContainer()
     
     files_io = FilesIO(HDF5_DATA_FILENAME)
-
-   
-    #testOrchestrator.prepare_data()
+    data = Data(files_io)
+    data.prepare_data()
+    
     instantiated_models = models_container.instantiate_models(RandomForestClassifier=None, SVM=None, LogisticRegression=None)
-    testOrchestrator = TestOrchestrator(SPLIT_DATASETS_DIR, files_io, data, experiments, analyze) 
+    testOrchestrator = TestOrchestrator(SPLIT_DATASETS_DIR, files_io, experiments, analyze) 
     datasets = files_io.list_datasets(SPLIT_DATASETS_DIR)
     testOrchestrator.run_experiments(datasets[0:5], instantiated_models)
     testOrchestrator.perform_statistical_tests()
