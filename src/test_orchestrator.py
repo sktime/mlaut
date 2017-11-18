@@ -6,10 +6,9 @@ from src.static_variables import (FLAG_ML_MODEL, REFORMATTED_DATASETS_DIR,
 import sys
 from src.files_io import FilesIO
 class TestOrchestrator:
-    def __init__(self, SPLIT_DATASETS_DIR, files_io, experiments, analyze):
+    def __init__(self, SPLIT_DATASETS_DIR, files_io, experiments):
         self._experiments = experiments
         self._files_io = files_io
-        self._analyzeResults = analyze
         self.SPLIT_DATASETS_DIR = SPLIT_DATASETS_DIR
      
     def run_experiments(self, datasets, modelling_strategies):
@@ -64,32 +63,32 @@ class TestOrchestrator:
 
             sys.exit()
 
-    def perform_statistical_tests(self):
-        pred_acc_dict = {}
-        try:
-            pred_acc_dict = self._analyzeResults.convert_prediction_acc_from_array_to_dict(self._prediction_accuracies)
-        except:
-            pred_acc_dict = self._files_io.get_prediction_accuracies_per_strategy()
+    # def perform_statistical_tests(self):
+    #     pred_acc_dict = {}
+    #     try:
+    #         pred_acc_dict = self._analyzeResults.convert_prediction_acc_from_array_to_dict(self._prediction_accuracies)
+    #     except:
+    #         pred_acc_dict = self._files_io.get_prediction_accuracies_per_strategy()
         
-        #t-test
-        _, values_df = self._analyzeResults.perform_t_test(pred_acc_dict)
-        self._files_io.save_stat_test_result(T_TEST_DATASET, values_df)
+    #     #t-test
+    #     _, values_df = self._analyzeResults.perform_t_test(pred_acc_dict)
+    #     self._files_io.save_stat_test_result(T_TEST_DATASET, values_df)
         
-        #sign test
-        _, values_df = self._analyzeResults.perform_sign_test(pred_acc_dict)
-        self._files_io.save_stat_test_result(SIGN_TEST_DATASET, values_df)
+    #     #sign test
+    #     _, values_df = self._analyzeResults.perform_sign_test(pred_acc_dict)
+    #     self._files_io.save_stat_test_result(SIGN_TEST_DATASET, values_df)
         
-        #t-test with Bonferroni correction test
-        _, values_df = self._analyzeResults.perform_t_test_with_bonferroni_correction(pred_acc_dict)
-        self._files_io.save_stat_test_result(BONFERRONI_CORRECTION_DATASET, values_df)
+    #     #t-test with Bonferroni correction test
+    #     _, values_df = self._analyzeResults.perform_t_test_with_bonferroni_correction(pred_acc_dict)
+    #     self._files_io.save_stat_test_result(BONFERRONI_CORRECTION_DATASET, values_df)
         
-        #Wilcoxon test
-        _, values_df =  self._analyzeResults.perform_wilcoxon(pred_acc_dict)
-        self._files_io.save_stat_test_result(WILCOXON_DATASET, values_df)
+    #     #Wilcoxon test
+    #     _, values_df =  self._analyzeResults.perform_wilcoxon(pred_acc_dict)
+    #     self._files_io.save_stat_test_result(WILCOXON_DATASET, values_df)
         
-        #Firedman test
-        _, values_df = self._analyzeResults.perform_friedman_test(pred_acc_dict)
-        self._files_io.save_stat_test_result(FRIEDMAN_DATASET, values_df)
+    #     #Firedman test
+    #     _, values_df = self._analyzeResults.perform_friedman_test(pred_acc_dict)
+    #     self._files_io.save_stat_test_result(FRIEDMAN_DATASET, values_df)
         
                 
             
