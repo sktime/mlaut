@@ -52,23 +52,11 @@ class Data:
         #delgado datasets
         datasets, dataset_names, metadata = self._prepare_delgado_datasets()
         #add full path to dataset name
-        reformatted_dataset_names = [ REFORMATTED_DATASETS_DIR + dts_name for dts_name in dataset_names]
-        self._files_io.save_datasets(datasets, reformatted_dataset_names, 
+        datasets_paths = [ REFORMATTED_DATASETS_DIR + dts_name for dts_name in dataset_names]
+        self._files_io.save_datasets(datasets, datasets_paths, 
             metadata, verbose=True)
         
         #create train /test split
-        for dts in zip(datasets, dataset_names, metadata):
-            dts_name = dts[1]
-            X_train, X_test, y_train, y_test = self._create_train_test_split(dts[0], dts[2])
-            #create save path
-            data = [X_train, X_test, y_train, y_test]
-            names = [
-                SPLIT_DATASETS_DIR + '/' + dts_name + X_TRAIN_DIR,
-                SPLIT_DATASETS_DIR + '/' + dts_name + X_TEST_DIR,
-                SPLIT_DATASETS_DIR + '/' + dts_name + Y_TRAIN_DIR,
-                SPLIT_DATASETS_DIR + '/' + dts_name + Y_TEST_DIR
-            ]
-            #add same metadata for all datasets
-            metadata = [dts[2]['source']] *4
-            self._files_io.save_datasets(data, names, metadata, verbose=True)  
+        self._files_io.split_and_save(datasets_paths, SPLIT_DATASETS_DIR)
+
 

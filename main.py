@@ -13,7 +13,7 @@ if __name__ == '__main__':
     models_container = ModelsContainer()
     
     files_io = FilesIO(HDF5_DATA_FILENAME)
-    analyze = AnalyseResults(files_io)
+    
 
     #save data in hdf5 database
     data = Data(files_io)
