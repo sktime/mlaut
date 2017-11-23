@@ -22,7 +22,7 @@ EXPERIMENTS_PREDICTIONS_DIR = 'experiments/predictions/'
 EXPERIMENTS_MODEL_ACCURACY_DIR = 'experiments/trained_models_accuracies/'
 
 RUNTIMES_GROUP = '/run_times'
-USE_PROXY = False
+USE_PROXY = True
 
 DELGADO_DATASET_DOWNLOAD_URL='https://persoal.citius.usc.es/manuel.fernandez.delgado/papers/jmlr/data.tar.gz'
 DELGADO_NUM_DATASETS = 120

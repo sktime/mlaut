@@ -11,11 +11,12 @@ import pandas as pd
 import tarfile
 class DownloadAndConvertDelgadoDatasets(object):
     
-    def download_and_extract_datasets(self):
+    def download_and_extract_datasets(self, verbose = None):
         #download
         filename = DELGADO_DATASET_DOWNLOAD_URL.split('/')[-1]
         if not os.path.isfile(DELGADO_DIR + filename):
-            print('Downloading Delgado dataset...')
+            if verbose is True:
+                print('Downloading Delgado dataset...')
             if USE_PROXY == True:
                 proxy  = urllib.request.ProxyHandler({'https': '127.0.0.1:3128'} )
                 opener = urllib.request.build_opener(proxy)
@@ -24,13 +25,15 @@ class DownloadAndConvertDelgadoDatasets(object):
         #extract
         delgado_dataset_dirs = glob(DELGADO_DIR+'*')
         if len(delgado_dataset_dirs) < 120:
-            print('Extracting datasets...')
+            if verbose is True:
+                print('Extracting datasets...')
             tar = tarfile.open(DELGADO_DIR + filename, "r:gz")
             tar.extractall(DELGADO_DIR)
             tar.close()
 
         #reformat datasets
-        print('Reformatting datasets...')
+        if verbose is True:
+            print('Reformatting datasets...')
         dataset_dirs = glob(DELGADO_DIR+'*')
         
         datasets = []
@@ -64,8 +67,8 @@ class DownloadAndConvertDelgadoDatasets(object):
 
                 else:
                     print('Error: Dataset {0} has a different number of arff files'.format(dataset_dirs[i]))
-                
-                print(f'Loading: {dts_name}...')
+                if verbose is True:
+                    print(f'Loading: {dts_name}...')
                 #return three arrays with data, name and metadata
                 dataset_names.append(dts_name)
                 datasets.append(result)
