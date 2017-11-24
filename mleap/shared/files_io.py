@@ -60,7 +60,7 @@ class FilesIO:
         for prediction in predictions:
             strategy_name = prediction[0]
             strategy_predictions = np.array(prediction[1])
-            save_path = EXPERIMENTS_PREDICTIONS_DIR + dataset_name  + '/' + strategy_name
+            save_path = EXPERIMENTS_PREDICTIONS_DIR + dataset_name  + strategy_name
             try:
                 f[save_path] = strategy_predictions
             except:
@@ -123,19 +123,20 @@ class FilesIO:
         store.close()
         return dataset, metadata
     
-    def save_datasets(self, save_loc_hdf5, datasets, dts_metadata, verbose = None):
+    def save_datasets(self, datasets, datasets_save_paths, dts_metadata, verbose = None):
         '''
         saves datasets in HDF5 database. 
         dataset_names must contain full path
         '''
         store = pd.HDFStore(self.hdf5_filename)
-        for dts in zip(datasets, dts_metadata):
-            if verbose is True:
-                print(f'Saving: {dts[1]} to HDF5 database')
+        for dts in zip(datasets, dts_metadata, datasets_save_paths):
+            
             dts_name = dts[1]['dataset_name']     
-            save_loc = save_loc_hdf5 + dts_name    
+            save_loc = dts[2]    
             store[save_loc] = dts[0]
             store.get_storer(save_loc).attrs.metadata = dts[1]
+            if verbose is True:
+                print(f'Saved: {dts_name} to HDF5 database')
         store.close()
     
     def split_dataset(self, dataset_path, test_size = None):
@@ -175,4 +176,4 @@ class FilesIO:
             self.save_datasets(datasets=[X_train, X_test, y_train, y_test], 
                             dataset_names = save_dataset_paths, 
                             dts_metadata = meta, 
-                            verbose = None)
+                            verbose=None)
