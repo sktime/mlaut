@@ -107,7 +107,7 @@ class FilesIO:
     def list_datasets(self, hdf5_group):
         '''
         TODO this needs to be linked. Currently copied from 
-        create_dataset_split
+        create_dataset_splitstrategy
         '''
         datasets = []
         f = h5py.File(self.hdf5_filename)
@@ -123,7 +123,7 @@ class FilesIO:
         store.close()
         return dataset, metadata
     
-    def save_datasets(self, datasets, datasets_save_paths, dts_metadata, verbose = None):
+    def save_datasets(self, datasets, datasets_save_paths, dts_metadata, verbose = False):
         '''
         saves datasets in HDF5 database. 
         dataset_names must contain full path
@@ -139,9 +139,7 @@ class FilesIO:
                 print(f'Saved: {dts_name} to HDF5 database')
         store.close()
     
-    def split_dataset(self, dataset_path, test_size = None):
-        if test_size is None:
-            test_size = 0.33
+    def split_dataset(self, dataset_path, test_size=0.33):
         #load
         dataset, metadata = self.load_dataset(dataset_path)
         class_name = metadata['class_name']

@@ -9,7 +9,7 @@ class TestOrchestrator:
         self._output_io = FilesIO(hdf5_output_path)
         self._experiments = RunExperiments()
 
-    def split_datasets(self, dataset_paths, split_datasets_dir, test_size = None, verbose=None):
+    def split_datasets(self, dataset_paths, split_datasets_dir, test_size=0.33, verbose=False):
         for dts_loc in dataset_paths:
             #split
             X_train, X_test, y_train, y_test = self._input_io.split_dataset(dts_loc, test_size)
@@ -58,14 +58,14 @@ class TestOrchestrator:
                     self._trained_models_all_datasets.append(trained_models)
                 
                 #make predictions
-                if not self._output_io.check_prediction_exists(dts):
+                if not self._output_io.check_prediction_exists(dts_name):
                     #it is used for choosing the directory in which to look for the saved file
                     predictions = self._experiments.make_predictions(trained_models, dts, X_test)
                     self._predictions_all_datasets.append(predictions)
-                    self._output_io.save_predictions_to_db(predictions, dts)
+                    self._output_io.save_predictions_to_db(predictions, dts_name)
                 else:
                     #load predictions on test dataset if they were already saved in the db
-                    predictions = self._output_io.load_predictions_for_dataset(dts)
+                    predictions = self._output_io.load_predictions_for_dataset(dts_name)
                     self._predictions_all_datasets.append(predictions)
                     
                 #calculate accuracy of predictions

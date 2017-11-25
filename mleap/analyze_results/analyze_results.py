@@ -6,11 +6,12 @@ import pandas as pd
 import numpy as np
 import itertools
 from scipy import stats
-
+from ..shared.files_io import FilesIO
 class AnalyseResults(object):
     SIGNIFICANCE_LEVEL = 0.05
 
-    def __init__(self, files_io):
+    def __init__(self, hdf5_loc):
+        files_io = FilesIO(hdf5_loc)
         self._files_io = files_io
         self._prediction_accuracies = files_io.get_prediction_accuracies_per_strategy()
 
