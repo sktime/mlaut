@@ -1,6 +1,6 @@
-# MLEAP (Machine Learning Experiemnts Package)
+# MLEAP (Machine Learning Experiments Automation Package)
 
-Package that automates running machine learning experiments.
+MLEAP automates running machine learning experiments. 
 
 ### Installing
 
