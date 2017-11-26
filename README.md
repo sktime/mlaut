@@ -1,4 +1,4 @@
-# Machine Learning Experiemnts Study
+# MLEAP (Machine Learning Experiemnts Package)
 
 Package that automates running machine learning experiments.
 
@@ -17,19 +17,10 @@ source ./py36/bin/activate
 pip install -r requirements.txt
 ```
 
-### Run Code
+### Using mleap
+
+Check mleap jupyter notebook for an example of using the package
 
 ```
-python main.py
+jupyter notebook mleap.ipynb
 ```
-
-### Change number of CPU cores
-
-Edit variable: 
-```
-GRIDSEARCH_CV_NUM_PARALLEL_JOBS in ./src/static_variables.py 
-```
-to change the number of CPU cores available for the calculations.
-
- 
-
