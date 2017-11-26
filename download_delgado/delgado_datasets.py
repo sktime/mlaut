@@ -1,16 +1,17 @@
-from src.static_variables import DELGADO_DIR
-from src.static_variables import DELGADO_DATASET_DOWNLOAD_URL
-from src.static_variables import REFORMATTED_DATASETS_DIR
-from src.static_variables import USE_PROXY
 import os
-from src.static_variables import REFORMATTED_DATASETS_DIR, DATA_DIR, HDF5_DATA_FILENAME
 import urllib.request
 from glob import glob
 from scipy.io import arff
 import pandas as pd
 import tarfile
+
+DELGADO_DIR = 'Delgado_data/'
+DELGADO_DATASET_DOWNLOAD_URL='https://persoal.citius.usc.es/manuel.fernandez.delgado/papers/jmlr/data.tar.gz'
+USE_PROXY = False
+
 class DownloadAndConvertDelgadoDatasets(object):
     
+
     def download_and_extract_datasets(self, verbose = None):
         #download
         filename = DELGADO_DATASET_DOWNLOAD_URL.split('/')[-1]
@@ -37,7 +38,6 @@ class DownloadAndConvertDelgadoDatasets(object):
         dataset_dirs = glob(DELGADO_DIR+'*')
         
         datasets = []
-        dataset_names = []
         metadata = []
         for i in range(len(dataset_dirs)):
             if os.path.isdir(dataset_dirs[i]) is True:
@@ -70,11 +70,10 @@ class DownloadAndConvertDelgadoDatasets(object):
                 if verbose is True:
                     print(f'Loading: {dts_name}...')
                 #return three arrays with data, name and metadata
-                dataset_names.append(dts_name)
                 datasets.append(result)
                 metadata.append({'class_name':'clase', 
                                 'source':'Delgado',
                                 'dataset_name': dts_name
                 })
-        return datasets, dataset_names, metadata
+        return datasets, metadata
         

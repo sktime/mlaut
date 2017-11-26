@@ -1,6 +1,6 @@
-from src.static_variables import  SPLIT_DATASETS_DIR
-from src.static_variables import MIN_EXAMPLES_PER_CLASS, COLUMN_LABEL_NAME
-from src.static_variables import  DATA_DIR,HDF5_DATA_FILENAME, GRIDSEARCH_CV_NUM_PARALLEL_JOBS
+from ..shared.static_variables import  SPLIT_DATASETS_DIR
+from ..shared.static_variables import MIN_EXAMPLES_PER_CLASS, COLUMN_LABEL_NAME
+from ..shared.static_variables import  DATA_DIR,HDF5_DATA_FILENAME, GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV

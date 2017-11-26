@@ -1,11 +1,11 @@
 import os
 import pickle
-from src.static_variables import EXPERIMENTS_TRAINED_MODELS_DIR, EXPERIMENTS_PREDICTIONS_DIR, EXPERIMENTS_MODEL_ACCURACY_DIR
-from src.static_variables import PICKLE_EXTENTION
-from src.static_variables import FLAG_ML_MODEL,FLAG_PREDICTIONS
-from src.static_variables import REFORMATTED_DATASETS_DIR
-from src.static_variables import RUNTIMES_GROUP
-from src.static_variables import RESULTS_DIR
+from .static_variables import EXPERIMENTS_TRAINED_MODELS_DIR, EXPERIMENTS_PREDICTIONS_DIR, EXPERIMENTS_MODEL_ACCURACY_DIR
+from .static_variables import PICKLE_EXTENTION
+from .static_variables import FLAG_ML_MODEL,FLAG_PREDICTIONS
+from .static_variables import REFORMATTED_DATASETS_DIR
+from .static_variables import RUNTIMES_GROUP
+from .static_variables import RESULTS_DIR
 import h5py
 import tables
 import numpy as np

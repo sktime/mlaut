@@ -10,6 +10,7 @@ class TestOrchestrator:
         self._experiments = RunExperiments()
 
     def split_datasets(self, dataset_paths, split_datasets_dir, test_size=0.33, verbose=False):
+        split_dts_list = []
         for dts_loc in dataset_paths:
             #split
             X_train, X_test, y_train, y_test = self._input_io.split_dataset(dts_loc, test_size)
@@ -30,6 +31,8 @@ class TestOrchestrator:
                                           dts_metadata=meta,
                                           verbose=verbose
                                             )
+            split_dts_list.append(split_datasets_dir + dataset_name)
+        return split_dts_list
     def run_experiments(self, datasets, modelling_strategies):
         try:
             #loop through all datasets

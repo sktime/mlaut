@@ -14,6 +14,8 @@ class Data:
     
     def list_datasets(self, hdf5_loc, hdf5_group):
         file_io = FilesIO(hdf5_loc)
-        return file_io.list_datasets(hdf5_group)
+        dts_list = file_io.list_datasets(hdf5_group)
+        dts_list = [hdf5_group + dts for dts in dts_list]
+        return dts_list
 
     
