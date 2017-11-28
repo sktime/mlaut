@@ -11,6 +11,7 @@ class Data:
         files_io.save_datasets(datasets=datasets, 
                                datasets_save_paths=save_paths, 
                                dts_metadata=dts_metadata)
+        return files_io
     
     def list_datasets(self, hdf5_loc, hdf5_group):
         file_io = FilesIO(hdf5_loc)
