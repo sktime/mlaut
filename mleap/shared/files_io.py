@@ -98,12 +98,12 @@ class FilesIO:
         store = pd.HDFStore(self.hdf5_filename)
         store[RUNTIMES_GROUP + '/' + dataset_name ] = timestamps_df
         store.close()
-    
+    '''
     def save_stat_test_result(self, stat_test_dataset, values):
         store = pd.HDFStore(self.hdf5_filename)
         store['/' + RESULTS_DIR + stat_test_dataset] = values
         store.close()
-    
+    '''
     def list_datasets(self, hdf5_group):
         '''
         TODO this needs to be linked. Currently copied from 
@@ -152,8 +152,8 @@ class FilesIO:
         #reformat y_train and y_test
         return (X_train, X_test, y_train,  
                 y_test)
-        
-    def split_and_save(self, dataset_paths, save_loc, test_size = None):
+   '''     
+    def split_and_save(self, dataset_paths, save_loc, test_size=0.33):
         for dts in dataset_paths:
             if test_size is None:
                 test_size = 0.33
@@ -175,3 +175,4 @@ class FilesIO:
                             dataset_names = save_dataset_paths, 
                             dts_metadata = meta, 
                             verbose=None)
+    '''
