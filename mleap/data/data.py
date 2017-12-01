@@ -50,7 +50,7 @@ class Data(object):
             if verbose is True:
                 print(f'Saving split for: {dataset_name}')
             hdf5_out.save_array_hdf5(datasets=[train_idx, test_idx],
-                                   group=split_datasets_group + '/' + dataset_name,
+                                   group='/'+ split_datasets_group + '/' + dataset_name,
                                    array_names=names,
                                    array_meta=meta)
             

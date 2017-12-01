@@ -72,7 +72,7 @@ class FilesIO:
        
         #create group if necessary
         f =  h5py.File(self.hdf5_filename, 'a')
-        if not '/' + group in f:
+        if not group in f:
             f.create_group('/' + group)
         f.close()
         #open again in pytables
