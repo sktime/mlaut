@@ -22,7 +22,6 @@ EXPERIMENTS_PREDICTIONS_DIR = 'experiments/predictions/'
 EXPERIMENTS_MODEL_ACCURACY_DIR = 'experiments/trained_models_accuracies/'
 
 RUNTIMES_GROUP = '/run_times'
-USE_PROXY = False
 
 DELGADO_DATASET_DOWNLOAD_URL='https://persoal.citius.usc.es/manuel.fernandez.delgado/papers/jmlr/data.tar.gz'
 DELGADO_NUM_DATASETS = 120
@@ -47,3 +46,7 @@ FLAG_PREDICTIONS = 'ml_predictions'
 FLAG_ACCURACY = 'accuracy'
 
 GRIDSEARCH_CV_NUM_PARALLEL_JOBS = 4
+
+TRAIN_IDX = '/train_idx'
+TEST_IDX = '/test_idx'
+SPLIT_DTS_GROUP = '/split_dts_idx'

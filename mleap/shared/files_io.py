@@ -56,6 +56,7 @@ class FilesIO:
             pickle.dump(trained_models,f)
     
     def save_predictions_to_db(self, predictions, dataset_name):
+        # TODO this seems a duplicate to def save_numpy_array_hdf5
         f = h5py.File(self.hdf5_filename)
         for prediction in predictions:
             strategy_name = prediction[0]
@@ -65,6 +66,22 @@ class FilesIO:
                 f[save_path] = strategy_predictions
             except:
                 raise ValueError('Save path already exists')
+        f.close()
+
+    def save_array_hdf5(self, group, datasets, array_names, array_meta):
+       
+        #create group if necessary
+        f =  h5py.File(self.hdf5_filename, 'a')
+        if not '/' + group in f:
+            f.create_group('/' + group)
+        f.close()
+        #open again in pytables
+        f = tables.open_file(self.hdf5_filename, 'a')             
+        for dts in zip(datasets, array_names, array_meta): 
+            data = dts[0]
+            name = dts[1]
+            meta = dts[2]
+            f.create_array('/'+group, name=name ,obj=data)
         f.close()
 
     def save_prediction_accuracies_to_db(self, model_accuracies):
@@ -98,17 +115,10 @@ class FilesIO:
         store = pd.HDFStore(self.hdf5_filename)
         store[RUNTIMES_GROUP + '/' + dataset_name ] = timestamps_df
         store.close()
-    '''
-    def save_stat_test_result(self, stat_test_dataset, values):
-        store = pd.HDFStore(self.hdf5_filename)
-        store['/' + RESULTS_DIR + stat_test_dataset] = values
-        store.close()
-    '''
+    
+  
     def list_datasets(self, hdf5_group):
-        '''
-        TODO this needs to be linked. Currently copied from 
-        create_dataset_splitstrategy
-        '''
+
         datasets = []
         f = h5py.File(self.hdf5_filename)
         for i in f[hdf5_group].items():
@@ -152,27 +162,27 @@ class FilesIO:
         #reformat y_train and y_test
         return (X_train, X_test, y_train,  
                 y_test)
-   '''     
-    def split_and_save(self, dataset_paths, save_loc, test_size=0.33):
-        for dts in dataset_paths:
-            if test_size is None:
-                test_size = 0.33
-            X_train, X_test, y_train, y_test = self.split_dataset(
-                    dataset_path=dts, test_size=0.33)
-            #load metadata
-            _, metadata = self.load_dataset(dts)
-            class_name = metadata['class_name']
-            dataset_name = metadata['dataset_name']
-            #save
-            save_dataset_paths = [
-                save_loc + '/' + dataset_name + '/X_train',
-                save_loc + '/' + dataset_name + '/X_test',
-                save_loc + '/' + dataset_name + '/y_train',
-                save_loc + '/' + dataset_name + '/y_test'
-            ]
-            meta = [{'dataset_name': dataset_name}]*4
-            self.save_datasets(datasets=[X_train, X_test, y_train, y_test], 
-                            dataset_names = save_dataset_paths, 
-                            dts_metadata = meta, 
-                            verbose=None)
-    '''
+         
+    # def split_and_save(self, dataset_paths, save_loc, test_size=0.33):
+    #     for dts in dataset_paths:
+    #         if test_size is None:
+    #             test_size = 0.33
+    #         X_train, X_test, y_train, y_test = self.split_dataset(
+    #                 dataset_path=dts, test_size=0.33)
+    #         #load metadata
+    #         _, metadata = self.load_dataset(dts)
+    #         class_name = metadata['class_name']
+    #         dataset_name = metadata['dataset_name']
+    #         #save
+    #         save_dataset_paths = [
+    #             save_loc + '/' + dataset_name + '/X_train',
+    #             save_loc + '/' + dataset_name + '/X_test',
+    #             save_loc + '/' + dataset_name + '/y_train',
+    #             save_loc + '/' + dataset_name + '/y_test'
+    #         ]
+    #         meta = [{'dataset_name': dataset_name}]*4
+    #         self.save_datasets(datasets=[X_train, X_test, y_train, y_test], 
+    #                         dataset_names = save_dataset_paths, 
+    #                         dts_metadata = meta, 
+    #                         verbose=None)
+     

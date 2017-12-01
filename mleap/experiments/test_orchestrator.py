@@ -4,8 +4,15 @@ import sys
 from ..shared.files_io import FilesIO
 from .run_experiments import RunExperiments
 class TestOrchestrator:
-    def __init__(self, hdf5_input_path, hdf5_output_path):
-        self._input_io = FilesIO(hdf5_input_path)
+    def __init__(self, hdf5_output_path, hdf5_input_path=None, hdf5_input_io=None):
+        if hdf5_input_path is None and hdf5_input_io is None:
+            raise ValueError('Provide path to input HDF5 file or files_io obejct.')
+        if hdf5_input_path is not None and hdf5_input_io is not None:
+            raise ValueError('Provide either path to input HDF5 file or files_io obejct.')
+        if hdf5_input_path is not None:
+            self._input_io = FilesIO(hdf5_input_path)
+        if hdf5_input_io is not None:
+            self._input_io = hdf5_input_io
         self._output_io = FilesIO(hdf5_output_path)
         self._experiments = RunExperiments()
 
