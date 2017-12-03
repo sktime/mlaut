@@ -19,8 +19,8 @@ class Data(object):
         dts_list = [hdf5_group  + dts for dts in dts_list]
         return dts_list
     
-    def open_hdf5(self, hdf5_path):
-        return FilesIO(hdf5_path)
+    def open_hdf5(self, hdf5_path, mode='a'):
+        return FilesIO(hdf5_path, mode)
 
     def split_datasets(self, hdf5_in, hdf5_out, dataset_paths, split_datasets_group=None, test_size=0.33, random_state=1, verbose=False):
         split_dts_list = []

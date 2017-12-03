@@ -15,8 +15,9 @@ from sklearn.model_selection import train_test_split
 
 class FilesIO:
 
-    def __init__(self, hdf5_filename):
+    def __init__(self, hdf5_filename, mode='a'):
         self.hdf5_filename = hdf5_filename
+        self._mode = mode
 
     
     def check_file_exists(self, dataset_name, file_type):
@@ -35,14 +36,14 @@ class FilesIO:
             return False
     
     def check_prediction_exists(self, dataset_name):
-        f = h5py.File(self.hdf5_filename)
+        f = h5py.File(self.hdf5_filename, self._mode)
         is_present = EXPERIMENTS_PREDICTIONS_DIR +  dataset_name in f
         f.close()
         return is_present
     
 
     def load_predictions_for_dataset(self, dataset_name):
-        f = h5py.File(self.hdf5_filename)
+        f = h5py.File(self.hdf5_filename, self._mode)
         predictions = f['/'+EXPERIMENTS_PREDICTIONS_DIR + dataset_name]
         
         predictions_for_dataset = []
@@ -57,7 +58,7 @@ class FilesIO:
     
     def save_predictions_to_db(self, predictions, dataset_name):
         # TODO this seems a duplicate to def save_numpy_array_hdf5
-        f = h5py.File(self.hdf5_filename)
+        f = h5py.File(self.hdf5_filename, self._mode)
         for prediction in predictions:
             strategy_name = prediction[0]
             strategy_predictions = np.array(prediction[1])
@@ -70,7 +71,7 @@ class FilesIO:
     def save_array_hdf5(self, group, datasets, array_names, array_meta):
         #TODO metadata not saved
         #create groups
-        f = h5py.File(self.hdf5_filename,'a')
+        f = h5py.File(self.hdf5_filename, self._mode)
         f.create_group(group)
         for dts in zip(datasets, array_names, array_meta):
             data = dts[0]
@@ -88,12 +89,12 @@ class FilesIO:
             model_accuracy = np.array([model[1]])
             
             #create group if necessary
-            f =  h5py.File(self.hdf5_filename, 'a')
+            f =  h5py.File(self.hdf5_filename, self._mode)
             if not '/' + EXPERIMENTS_MODEL_ACCURACY_DIR in f:
                 f.create_group('/' + EXPERIMENTS_MODEL_ACCURACY_DIR)
             f.close()            
             #create array with accuracies or append it
-            f = tables.open_file(self.hdf5_filename, 'a')
+            f = tables.open_file(self.hdf5_filename, self._mode)
             if not  '/' + EXPERIMENTS_MODEL_ACCURACY_DIR + model_name in f: 
                 f.create_earray('/' +EXPERIMENTS_MODEL_ACCURACY_DIR, name=model_name, obj=model_accuracy)
             else:
@@ -103,14 +104,14 @@ class FilesIO:
             
     def get_prediction_accuracies_per_strategy(self):
         pred_accuracies = {}
-        f = h5py.File(self.hdf5_filename)
+        f = h5py.File(self.hdf5_filename, self._mode)
         strategies = f[EXPERIMENTS_MODEL_ACCURACY_DIR]
         for strategy in strategies:
             pred_accuracies[strategy] = strategies[strategy][...]
         return pred_accuracies
     
     def save_ml_strategy_timestamps(self, timestamps_df, dataset_name):
-        store = pd.HDFStore(self.hdf5_filename)
+        store = pd.HDFStore(self.hdf5_filename, self._mode)
         store[RUNTIMES_GROUP + '/' + dataset_name ] = timestamps_df
         store.close()
     
@@ -118,14 +119,14 @@ class FilesIO:
     def list_datasets(self, hdf5_group):
 
         datasets = []
-        f = h5py.File(self.hdf5_filename)
+        f = h5py.File(self.hdf5_filename, self._mode)
         for i in f[hdf5_group].items():
             datasets.append(i[0])
         f.close()
         return datasets
 
     def load_dataset_h5(self, dataset_name):
-        f = h5py.File(self.hdf5_filename)
+        f = h5py.File(self.hdf5_filename, self._mode)
         idx = f[dataset_name][...]
         #load metadata
         meta = f[dataset_name].attrs.items()
@@ -136,7 +137,7 @@ class FilesIO:
         return idx, meta_dict
         
     def load_dataset_pd(self, dataset_name):
-        store = pd.HDFStore(self.hdf5_filename)
+        store = pd.HDFStore(self.hdf5_filename, self._mode)
         dataset = store[dataset_name]
         metadata = store.get_storer(dataset_name).attrs.metadata
         store.close()
@@ -147,7 +148,7 @@ class FilesIO:
         saves datasets in HDF5 database. 
         dataset_names must contain full path
         '''
-        store = pd.HDFStore(self.hdf5_filename)
+        store = pd.HDFStore(self.hdf5_filename, self._mode)
         for dts in zip(datasets, dts_metadata, datasets_save_paths):
             
             dts_name = dts[1]['dataset_name']     
