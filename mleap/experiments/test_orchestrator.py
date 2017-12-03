@@ -1,5 +1,5 @@
 from ..shared.static_variables import (FLAG_ML_MODEL, 
-    X_TRAIN_DIR, X_TEST_DIR, Y_TRAIN_DIR, Y_TEST_DIR)
+    X_TRAIN_DIR, X_TEST_DIR, Y_TRAIN_DIR, Y_TEST_DIR, TRAIN_IDX, TEST_IDX)
 import sys
 from ..shared.files_io import FilesIO
 from .run_experiments import RunExperiments
@@ -16,47 +16,36 @@ class TestOrchestrator:
         self._output_io = FilesIO(hdf5_output_path)
         self._experiments = RunExperiments()
 
-    def split_datasets(self, dataset_paths, split_datasets_dir, test_size=0.33, verbose=False):
-        split_dts_list = []
-        for dts_loc in dataset_paths:
-            #split
-            X_train, X_test, y_train, y_test = self._input_io.split_dataset(dts_loc, test_size)
-            #load metadata
-            _, metadata = self._input_io.load_dataset(dts_loc)
-            class_name = metadata['class_name']
-            dataset_name = metadata['dataset_name']
-            #save
-            save_split_dataset_paths = [
-                split_datasets_dir + '/' + dataset_name + X_TRAIN_DIR,
-                split_datasets_dir + '/' + dataset_name + X_TEST_DIR,
-                split_datasets_dir + '/' + dataset_name + Y_TRAIN_DIR,
-                split_datasets_dir + '/' + dataset_name + Y_TEST_DIR,
-            ]
-            meta = [{'dataset_name': dataset_name}]*4
-            self._output_io.save_datasets(datasets=[X_train, X_test, y_train, y_test],
-                                          datasets_save_paths=save_split_dataset_paths,
-                                          dts_metadata=meta,
-                                          verbose=verbose
-                                            )
-            split_dts_list.append(split_datasets_dir + dataset_name)
-        return split_dts_list
-    def run_experiments(self, datasets, modelling_strategies): #confusing !!!!
+    def run(self, input_io_datasets_loc, output_io_split_idx_loc, modelling_strategies): #confusing !!!!
         try:
             #loop through all datasets
             self._trained_models_all_datasets = []
             self._predictions_all_datasets = []
             self._prediction_accuracies = []
-            for dts in datasets:
-                X_train, _ = self._output_io.load_dataset(dts + X_TRAIN_DIR)
-                X_test, _  = self._output_io.load_dataset(dts + X_TEST_DIR)
-                y_train, _ = self._output_io.load_dataset(dts + Y_TRAIN_DIR)
-                y_test, _ = self._output_io.load_dataset(dts + Y_TEST_DIR)
+            for dts in zip(input_io_datasets_loc, output_io_split_idx_loc):
+                dataset_loc = dts[0]
+                idx_loc = dts[1]
+                train_idx, _ = self._output_io.load_dataset_h5(idx_loc + '/' + TRAIN_IDX)
+                test_idx, _ = self._output_io.load_dataset_h5(idx_loc + '/' + TEST_IDX)
+
+                orig_dts, orig_dts_meta = self._input_io.load_dataset_pd(dataset_loc)
+                label_column = orig_dts_meta['class_name']
+                y = orig_dts[label_column]
+                X = orig_dts
+                X = X.drop(label_column, axis=1)
+
+                X_train = X.iloc[train_idx]
+                y_train = y.iloc[train_idx]
+
+                X_test = X.iloc[test_idx]
+                y_test = y.iloc[test_idx]
+
                 #train ml strategy
-                dts_name = dts.split('/')[-1]
+                dts_name = orig_dts_meta['dataset_name']
                 if not self._output_io.check_file_exists(dts_name, FLAG_ML_MODEL):
                     #train model if file does not exist on disk
                     dts_trained = len(self._trained_models_all_datasets)
-                    dts_total = len(datasets)
+                    dts_total = len(input_io_datasets_loc)
                     print(f'*** Training models on dataset: {dts_name}. Total datasets processed: {dts_trained}/{dts_total} ***')
                     trained_models, timestamps_df = self._experiments.run_experiments(X_train, y_train, modelling_strategies)
                     self._trained_models_all_datasets.append(trained_models)

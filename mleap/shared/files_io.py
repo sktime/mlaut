@@ -61,29 +61,27 @@ class FilesIO:
         for prediction in predictions:
             strategy_name = prediction[0]
             strategy_predictions = np.array(prediction[1])
-            save_path = EXPERIMENTS_PREDICTIONS_DIR + dataset_name  + strategy_name
+            save_path = EXPERIMENTS_PREDICTIONS_DIR + dataset_name  +'/' + strategy_name
             try:
                 f[save_path] = strategy_predictions
             except:
                 raise ValueError('Save path already exists')
         f.close()
-
     def save_array_hdf5(self, group, datasets, array_names, array_meta):
-       
-        #create group if necessary
-        f =  h5py.File(self.hdf5_filename, 'a')
-        if not group in f:
-            f.create_group('/' + group)
-        f.close()
-        #open again in pytables
-        f = tables.open_file(self.hdf5_filename, 'a')             
-        for dts in zip(datasets, array_names, array_meta): 
+        #TODO metadata not saved
+        #create groups
+        f = h5py.File(self.hdf5_filename,'a')
+        f.create_group(group)
+        for dts in zip(datasets, array_names, array_meta):
             data = dts[0]
             name = dts[1]
             meta = dts[2]
-            f.create_array('/'+group, name=name ,obj=data)
+            f[group + '/' + name] = data
+            #save metadata
+            for k in meta.keys():
+                f[group + '/' + name].attrs[k] = meta[k]
         f.close()
-
+            
     def save_prediction_accuracies_to_db(self, model_accuracies):
         for model in model_accuracies:
             model_name = model[0]
@@ -125,8 +123,19 @@ class FilesIO:
             datasets.append(i[0])
         f.close()
         return datasets
-    
-    def load_dataset(self, dataset_name):
+
+    def load_dataset_h5(self, dataset_name):
+        f = h5py.File(self.hdf5_filename)
+        idx = f[dataset_name][...]
+        #load metadata
+        meta = f[dataset_name].attrs.items()
+        meta_dict = {}
+        for m in meta:
+            meta_dict[m[0]] = m[1]
+        f.close()
+        return idx, meta_dict
+        
+    def load_dataset_pd(self, dataset_name):
         store = pd.HDFStore(self.hdf5_filename)
         dataset = store[dataset_name]
         metadata = store.get_storer(dataset_name).attrs.metadata
@@ -163,26 +172,4 @@ class FilesIO:
         return (X_train, X_test, y_train,  
                 y_test)
          
-    # def split_and_save(self, dataset_paths, save_loc, test_size=0.33):
-    #     for dts in dataset_paths:
-    #         if test_size is None:
-    #             test_size = 0.33
-    #         X_train, X_test, y_train, y_test = self.split_dataset(
-    #                 dataset_path=dts, test_size=0.33)
-    #         #load metadata
-    #         _, metadata = self.load_dataset(dts)
-    #         class_name = metadata['class_name']
-    #         dataset_name = metadata['dataset_name']
-    #         #save
-    #         save_dataset_paths = [
-    #             save_loc + '/' + dataset_name + '/X_train',
-    #             save_loc + '/' + dataset_name + '/X_test',
-    #             save_loc + '/' + dataset_name + '/y_train',
-    #             save_loc + '/' + dataset_name + '/y_test'
-    #         ]
-    #         meta = [{'dataset_name': dataset_name}]*4
-    #         self.save_datasets(datasets=[X_train, X_test, y_train, y_test], 
-    #                         dataset_names = save_dataset_paths, 
-    #                         dts_metadata = meta, 
-    #                         verbose=None)
-     
+ 

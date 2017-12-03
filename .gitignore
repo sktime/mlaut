@@ -1,5 +1,13 @@
+# data 
 data/**
 Delgado_data/**
+
+#virtual env 
 py36/
-__pycache__/
+
+#binary files
+*.py[cod]
+__pycache__/*
+
+#IDE 
 .vscode/

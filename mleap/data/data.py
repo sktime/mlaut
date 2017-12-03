@@ -16,42 +16,37 @@ class Data(object):
     
     def list_datasets(self, hdf5_group, hdf5_io):
         dts_list = hdf5_io.list_datasets(hdf5_group)
-        dts_list = [hdf5_group + '/' + dts for dts in dts_list]
+        dts_list = [hdf5_group  + dts for dts in dts_list]
         return dts_list
     
     def open_hdf5(self, hdf5_path):
         return FilesIO(hdf5_path)
 
     def split_datasets(self, hdf5_in, hdf5_out, dataset_paths, split_datasets_group=None, test_size=0.33, random_state=1, verbose=False):
-        
+        split_dts_list = []
         if split_datasets_group is None:
             split_datasets_group = SPLIT_DTS_GROUP
 
         for dts_loc in dataset_paths:
             #split
-            dts, metadata = hdf5_in.load_dataset(dts_loc)
-
+            dts, metadata = hdf5_in.load_dataset_pd(dts_loc)
             idx_dts_rows = dts.shape[0]
             idx_split = np.arange(idx_dts_rows)
             train_idx, test_idx =  train_test_split(idx_split, test_size=test_size, random_state=random_state)
             train_idx = np.array(train_idx)
             test_idx = np.array(test_idx)
             #save
-            class_name = metadata['class_name']
             dataset_name = metadata['dataset_name']
-            save_split_dataset_paths = [
-                split_datasets_group + '/' + dataset_name,
-                split_datasets_group + '/' + dataset_name 
-            ]
-
-            meta = [{'dataset_name': dataset_name}]*2
-            names = ['train', 'test']
+            meta = [{u'dataset_name': dataset_name}]*2
+            names = [TRAIN_IDX, TEST_IDX]
 
             if verbose is True:
                 print(f'Saving split for: {dataset_name}')
             hdf5_out.save_array_hdf5(datasets=[train_idx, test_idx],
-                                   group='/'+ split_datasets_group + '/' + dataset_name,
+                                   group=split_datasets_group + '/' + dataset_name,
                                    array_names=names,
                                    array_meta=meta)
+            split_dts_list.append(split_datasets_group + '/' + dataset_name)
+        return split_dts_list
             
    
