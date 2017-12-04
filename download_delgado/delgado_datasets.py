@@ -7,7 +7,7 @@ import tarfile
 
 DELGADO_DIR = 'Delgado_data/'
 DELGADO_DATASET_DOWNLOAD_URL='https://persoal.citius.usc.es/manuel.fernandez.delgado/papers/jmlr/data.tar.gz'
-USE_PROXY = False
+USE_PROXY = True 
 
 class DownloadAndConvertDelgadoDatasets(object):
     
