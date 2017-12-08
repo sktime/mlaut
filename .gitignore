@@ -109,6 +109,4 @@ venv.bak/
 data/**
 Delgado_data/**
 
-#virtual env 
-py36/
 
