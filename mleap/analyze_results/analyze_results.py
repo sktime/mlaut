@@ -10,9 +10,8 @@ from ..shared.files_io import FilesIO
 class AnalyseResults(object):
     SIGNIFICANCE_LEVEL = 0.05
 
-    def __init__(self, hdf5_loc):
-        files_io = FilesIO(hdf5_loc)
-        self._files_io = files_io
+    def __init__(self, hdf5_output_io):
+        self._files_io = hdf5_output_io
         self._prediction_accuracies = files_io.get_prediction_accuracies_per_strategy()
 
     def convert_prediction_acc_from_array_to_dict(self, prediction_accuracies):

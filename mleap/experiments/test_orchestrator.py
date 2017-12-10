@@ -2,19 +2,12 @@ from ..shared.static_variables import (FLAG_ML_MODEL,
     X_TRAIN_DIR, X_TEST_DIR, Y_TRAIN_DIR, Y_TEST_DIR, TRAIN_IDX, TEST_IDX)
 import sys
 from ..shared.files_io import FilesIO
-from .run_experiments import RunExperiments
+from .experiments import Experiments
 class TestOrchestrator:
-    def __init__(self, hdf5_output_path, hdf5_input_path=None, hdf5_input_io=None):
-        if hdf5_input_path is None and hdf5_input_io is None:
-            raise ValueError('Provide path to input HDF5 file or files_io obejct.')
-        if hdf5_input_path is not None and hdf5_input_io is not None:
-            raise ValueError('Provide either path to input HDF5 file or files_io obejct.')
-        if hdf5_input_path is not None:
-            self._input_io = FilesIO(hdf5_input_path)
-        if hdf5_input_io is not None:
-            self._input_io = hdf5_input_io
-        self._output_io = FilesIO(hdf5_output_path)
-        self._experiments = RunExperiments()
+    def __init__(self, hdf5_input_io, hdf5_output_io):
+        self._input_io = hdf5_input_io
+        self._output_io = hdf5_output_io
+        self._experiments = Experiments()
 
     def run(self, input_io_datasets_loc, output_io_split_idx_loc, modelling_strategies): #confusing !!!!
         try:
@@ -67,11 +60,12 @@ class TestOrchestrator:
                     predictions = self._output_io.load_predictions_for_dataset(dts_name)
                     self._predictions_all_datasets.append(predictions)
                     
-                #calculate accuracy of predictions
-                model_accuracies = self._experiments.calculate_prediction_accuracy(predictions_per_ml_strategy=predictions, 
-                                                                true_labels=y_test)
-                self._prediction_accuracies.append(model_accuracies)
-                self._output_io.save_prediction_accuracies_to_db(model_accuracies)
+                # #calculate accuracy of predictions
+                # #TODO this needs to be moved to analyze rezults
+                # model_accuracies = self._experiments.calculate_prediction_accuracy(predictions_per_ml_strategy=predictions, 
+                #                                                 true_labels=y_test)
+                # self._prediction_accuracies.append(model_accuracies)
+                # self._output_io.save_prediction_accuracies_to_db(model_accuracies)
                 
         
         except KeyboardInterrupt:

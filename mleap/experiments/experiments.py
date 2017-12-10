@@ -1,13 +1,8 @@
-from ..shared.static_variables import  SPLIT_DATASETS_DIR
-from ..shared.static_variables import MIN_EXAMPLES_PER_CLASS, COLUMN_LABEL_NAME
-from ..shared.static_variables import  DATA_DIR,HDF5_DATA_FILENAME, GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 import pandas as pd
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import GridSearchCV
 from datetime import datetime
-from sklearn.model_selection import train_test_split
 
-class RunExperiments(object):
+class Experiments(object):
 
     trained_models = []
     trained_models_fold_result_list = []
@@ -49,6 +44,19 @@ class RunExperiments(object):
             ml_strategy = prediction[0]
             ml_predictions = prediction[1]
             acc_score = accuracy_score(true_labels, ml_predictions)
-            prediction_accuracy.append([ml_strategy,acc_score])
+            prediction_accuracy.append([ml_strategy, acc_score])
         return prediction_accuracy
+
+    def calculate_loss(self, metric, predictions_per_ml_strategy, true_labels):
+        score = []
+        for prediction in predictions_per_ml_strategy:
+            ml_strategy = prediction[0]
+            ml_predictions = prediction[1]
+
+            if metric=='accuracy':
+                result = accuracy_score(true_labels, ml_predictions)
+                score.append([ml_strategy, result])
+        
+        return score
+
         

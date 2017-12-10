@@ -1,6 +1,6 @@
 from ..shared.files_io import FilesIO
 from sklearn.model_selection import train_test_split
-from ..shared.static_variables import TRAIN_IDX, TEST_IDX, SPLIT_DTS_GROUP
+from ..shared.static_variables import TRAIN_IDX, TEST_IDX, SPLIT_DTS_GROUP, EXPERIMENTS_PREDICTIONS_DIR
 import numpy as np
 class Data(object):
 
@@ -15,9 +15,9 @@ class Data(object):
         return files_io
     
     def list_datasets(self, hdf5_group, hdf5_io):
-        dts_list = hdf5_io.list_datasets(hdf5_group)
-        dts_list = [hdf5_group  + dts for dts in dts_list]
-        return dts_list
+        dts_names_list = hdf5_io.list_datasets(hdf5_group)
+        dts_names_list_full_path = [hdf5_group  + dts for dts in dts_names_list]
+        return dts_names_list, dts_names_list_full_path
     
     def open_hdf5(self, hdf5_path, mode='a'):
         return FilesIO(hdf5_path, mode)
@@ -48,5 +48,29 @@ class Data(object):
                                    array_meta=meta)
             split_dts_list.append(split_datasets_group + '/' + dataset_name)
         return split_dts_list
+    
+    def load_train_test_split(self, hdf5_out, dataset_name, 
+                              split_dts_group=SPLIT_DTS_GROUP, 
+                              train_idx=TRAIN_IDX, 
+                              test_idx=TEST_IDX):
+        train, train_meta = hdf5_out.load_dataset_h5(split_dts_group +'/'+ \
+        dataset_name + '/' + train_idx)
+        
+        test, test_meta = hdf5_out.load_dataset_h5(split_dts_group +'/'+ \
+        dataset_name + '/' + test_idx)
+        
+        return train, test, train_meta, test_meta
+
+    def load_predictions(self, hdf5_out, dataset_name, 
+                         experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR):
+        pass
+
+    def load_true_labels(self, hdf5_in, dataset_loc, lables_idx):
+        dataset, meta = hdf5_in.load_dataset_pd(dataset_loc)
+        labels_col_name = meta['class_name']
+        return dataset[labels_col_name].iloc[lables_idx]
+        
+
+
             
    

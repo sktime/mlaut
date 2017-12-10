@@ -49,6 +49,7 @@ class FilesIO:
         predictions_for_dataset = []
         for strategy in list(predictions):
             predictions_for_dataset.append([strategy, predictions[strategy][...]])
+        f.close()
         return predictions_for_dataset
 
         
