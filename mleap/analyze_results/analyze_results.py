@@ -7,14 +7,52 @@ import numpy as np
 import itertools
 from scipy import stats
 from ..shared.files_io import FilesIO
+from ..data.data import Data
+
+from sklearn.metrics import accuracy_score, mean_squared_error
 class AnalyseResults(object):
     SIGNIFICANCE_LEVEL = 0.05
 
-    def __init__(self, hdf5_output_io):
-        self._files_io = hdf5_output_io
-        self._prediction_accuracies = files_io.get_prediction_accuracies_per_strategy()
+    def __init__(self, hdf5_output_io, hdf5_input_io):
+        self._input_io = hdf5_input_io
+        self._output_io = hdf5_output_io
+        self._data = Data()
+        #self._prediction_accuracies = files_io.get_prediction_accuracies_per_strategy()
+    
+    def calculate_loss_all_datasets(self, input_h5_original_datasets_group, output_h5_predictions_group, metric):
+        #load all datasets
+        dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=input_h5_original_datasets_group, hdf5_io=self._input_io)
 
-    def convert_prediction_acc_from_array_to_dict(self, prediction_accuracies):
+        #load all predcitions
+        dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(output_h5_predictions_group, self._output_io)
+        loss_arr = []
+        for dts in zip(dts_predictions_list, dts_predictions_list_full_path, dts_names_list_full_path):
+            predictions = self._output_io.load_predictions_for_dataset(dts[0])
+            train, test, _, _ = self._data.load_train_test_split(self._output_io, dts[0])
+            dataset, meta = self._input_io.load_dataset_pd(dts[2])
+            true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=dts[2], lables_idx=test)
+            true_labels = np.array(true_labels)
+            loss = self.calculate_prediction_loss_per_dataset(metric=metric, predictions_per_ml_strategy=predictions, true_labels=true_labels)
+            loss_arr.append(loss)
+    
+        return self.convert_from_array_to_dict(loss_arr)
+    
+    def calculate_prediction_loss_per_dataset(self, metric, predictions_per_ml_strategy, true_labels):
+        score = []
+        for prediction in predictions_per_ml_strategy:
+            ml_strategy = prediction[0]
+            ml_predictions = prediction[1]
+            result = 0
+            if metric=='accuracy':
+                result = accuracy_score(true_labels, ml_predictions)
+            if metric=='mean_squared_error':
+                result = mean_squared_error(y_true=true_labels, y_pred=ml_predictions)
+
+            score.append([ml_strategy, result])
+
+        return score
+    
+    def convert_from_array_to_dict(self, prediction_accuracies):
         prediction_accuracies = np.array(prediction_accuracies)
         num_datasets = prediction_accuracies.shape[0]
         num_strategies = prediction_accuracies.shape[1]
@@ -52,8 +90,8 @@ class AnalyseResults(object):
             t_test[comb] = [t_stat, p_val ]
         return t_test
     
-    def perform_t_test(self):
-        t_test = self._t_test(self.SIGNIFICANCE_LEVEL, 't-test', self._prediction_accuracies)
+    def perform_t_test(self, loss_per_strategy):
+        t_test = self._t_test(self.SIGNIFICANCE_LEVEL, 't-test', loss_per_strategy)
 
         values = []
         for pair in t_test.keys():        

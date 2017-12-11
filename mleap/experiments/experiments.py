@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, mean_squared_error
 from datetime import datetime
 
 class Experiments(object):
@@ -47,16 +47,19 @@ class Experiments(object):
             prediction_accuracy.append([ml_strategy, acc_score])
         return prediction_accuracy
 
-    def calculate_loss(self, metric, predictions_per_ml_strategy, true_labels):
-        score = []
-        for prediction in predictions_per_ml_strategy:
-            ml_strategy = prediction[0]
-            ml_predictions = prediction[1]
+    # def calculate_loss(self, metric, predictions_per_ml_strategy, true_labels):
+    #     score = []
+    #     for prediction in predictions_per_ml_strategy:
+    #         ml_strategy = prediction[0]
+    #         ml_predictions = prediction[1]
+    #         result = 0
+    #         if metric=='accuracy':
+    #             result = accuracy_score(true_labels, ml_predictions)
+    #         if metric=='mean_squared_error':
+    #             result = mean_squared_error(y_true=true_labels, y_pred=ml_predictions)
 
-            if metric=='accuracy':
-                result = accuracy_score(true_labels, ml_predictions)
-                score.append([ml_strategy, result])
-        
-        return score
+    #         score.append([ml_strategy, result])
+
+    #     return score
 
         
