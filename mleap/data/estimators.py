@@ -5,6 +5,10 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.model_selection import GridSearchCV
 
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense, Activation, Dropout
+from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor
+from tensorflow.python.keras import optimizers 
 
 '''
 See for tutorial on decorators with parameters
