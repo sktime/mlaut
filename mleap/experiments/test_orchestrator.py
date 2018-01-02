@@ -9,7 +9,19 @@ class TestOrchestrator:
         self._output_io = hdf5_output_io
         self._experiments = Experiments()
 
-    def run(self, input_io_datasets_loc, output_io_split_idx_loc, modelling_strategies): #confusing !!!!
+    def run(self, input_io_datasets_loc, output_io_split_idx_loc, modelling_strategies):
+        """ 
+        Main module for training the estimators. 
+        The inputs of the function are: 
+            1. The input and output databse files containing the datasets.
+            2. The instantiated estimators
+        
+        The method iterates through all datasets in the input database file 
+        and trains all modelling strategies on these datasets. At the end of the process 
+        we make predictions on the test sets and store them in the output database file.
+
+        The class uses helper methods in the experiments class to avoid too many nested loops.
+        """ 
         try:
             #loop through all datasets
             self._trained_models_all_datasets = []

@@ -8,6 +8,10 @@ class Experiments(object):
     trained_models_fold_result_list = []
    
     def run_experiments(self, X_train, y_train, model_container):
+        """ 
+        Trains estimators contained in the model_container on the dataset.
+        This is separated from the test_orchestrator class to avoid too many nested loops.
+        """
         trained_models = []
         timestamps_df = pd.DataFrame()
         for model in model_container:
@@ -20,6 +24,7 @@ class Experiments(object):
         return trained_models, timestamps_df
     
     def record_timestamp(self, strategy_name, begin_timestamp, timestamps_df):
+        """ Timestamp used to record the duration of training for each of the estimators"""
         STF = '%Y-%m-%d %H:%M:%S'
         end_timestamp = datetime.now()
         diff = (end_timestamp - begin_timestamp).total_seconds() 
@@ -30,6 +35,7 @@ class Experiments(object):
         return timestamps_df
         
     def make_predictions(self, models, dataset_name, X_test):
+        """ Makes predictions on the test set """
         predictions = []
         for model in models:
             strategy_name = model[0]
@@ -38,14 +44,14 @@ class Experiments(object):
             predictions.append([strategy_name, prediction])
         return predictions
     
-    def calculate_prediction_accuracy(self, predictions_per_ml_strategy, true_labels):
-        prediction_accuracy = []
-        for prediction in predictions_per_ml_strategy:
-            ml_strategy = prediction[0]
-            ml_predictions = prediction[1]
-            acc_score = accuracy_score(true_labels, ml_predictions)
-            prediction_accuracy.append([ml_strategy, acc_score])
-        return prediction_accuracy
+    # def calculate_prediction_accuracy(self, predictions_per_ml_strategy, true_labels):
+    #     prediction_accuracy = []
+    #     for prediction in predictions_per_ml_strategy:
+    #         ml_strategy = prediction[0]
+    #         ml_predictions = prediction[1]
+    #         acc_score = accuracy_score(true_labels, ml_predictions)
+    #         prediction_accuracy.append([ml_strategy, acc_score])
+    #     return prediction_accuracy
 
     # def calculate_loss(self, metric, predictions_per_ml_strategy, true_labels):
     #     score = []

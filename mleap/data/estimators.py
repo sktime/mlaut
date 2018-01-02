@@ -1,7 +1,10 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn import linear_model
+from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import BernoulliNB
 from sklearn.model_selection import GridSearchCV
+
 
 '''
 See for tutorial on decorators with parameters
@@ -18,7 +21,7 @@ def gridsearch(verbose=1, n_jobs=1, refit=True):
         return wrapper
     return real_decorator
 
-def randomforestclassifier(hyperparameters=None):
+def random_forest_classifier(hyperparameters=None):
     if hyperparameters is None:
         hyperparameters = {
             'n_estimators': [10, 20, 30],
@@ -42,11 +45,39 @@ def logisticregression(hyperparameters=None):
         }
     return linear_model.LogisticRegression(), hyperparameters
 
+def gaussian_naive_bayes():
+    return GaussianNB()
 
-def instantiate_default_estimators():
-    decorator_gridsearch = gridsearch(verbose=0)
-    rfc_model = ['RandomForestClassifier', decorator_gridsearch(randomforestclassifier)()]
-    svc_model = ['SVM', decorator_gridsearch(svc)()]
-    logisticregression_model = ['LogisticRegression', decorator_gridsearch(logisticregression)()]
+def multinomial_naive_bayes():
+    return MultinomialNB()
 
-    return [rfc_model, svc_model, logisticregression_model]
+def bernoulli_naive_bayes():
+    return BernoulliNB()
+
+
+def instantiate_default_estimators(estimators, verbose=0):
+    estimators_array = []
+
+    decorator_gridsearch = gridsearch(verbose=verbose)
+    
+    if 'RandomForestClassifier' in estimators or 'all' in estimators:
+        rfc_model = ['RandomForestClassifier', decorator_gridsearch(random_forest_classifier)()]
+        estimators_array.append(rfc_model)
+    
+    if 'SVC' in estimators or 'all' in estimators:
+        svc_model = ['SVC', decorator_gridsearch(svc)()]
+        estimators_array.append(svc_model)
+
+    if 'LogisticRegression' in estimators or 'all' in estimators:
+        logisticregression_model = ['LogisticRegression', decorator_gridsearch(logisticregression)()]
+        estimators_array.append(logisticregression_model)
+
+    if 'GaussianNaiveBayes' in estimators or 'all' in estimators:
+        gnb = ['GaussianNaiveBayes', gaussian_naive_bayes()]
+        estimators_array.append(gnb)
+
+    if 'BernoulliNaiveBayes' in estimators or 'all' in estimators:
+        bnb = ['BernoulliNaiveBayes', bernoulli_naive_bayes()]
+        estimators_array.append(bnb)
+
+    return estimators_array
