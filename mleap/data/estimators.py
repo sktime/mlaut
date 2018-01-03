@@ -15,7 +15,7 @@ import types
 import tempfile
 from tensorflow.python.keras import models as km
 
-
+from .mleap_estimator import MleapEstimator
 '''
 See for tutorial on decorators with parameters
 http://www.artima.com/weblogs/viewpost.jsp?thread=240845
@@ -64,7 +64,7 @@ def multinomial_naive_bayes():
 def bernoulli_naive_bayes():
     return BernoulliNB()
 
-class Deep_NN_Classifier:
+class Deep_NN_Classifier(MleapEstimator):
     def make_keras_picklable(self):
         """
         Workaround for saving keras models as pickle.
