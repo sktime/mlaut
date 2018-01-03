@@ -55,14 +55,14 @@ def logisticregression(hyperparameters=None):
         }
     return linear_model.LogisticRegression(), hyperparameters
 
-def gaussian_naive_bayes():
-    return GaussianNB()
+class Gaussian_Naive_Bayes(MleapEstimator):
+    def build(self):
+        return GaussianNB()
 
-def multinomial_naive_bayes():
-    return MultinomialNB()
+class Bernoulli_Naive_Bayes(MleapEstimator):
 
-def bernoulli_naive_bayes():
-    return BernoulliNB()
+    def build(self):
+        return BernoulliNB()
 
 class Deep_NN_Classifier(MleapEstimator):
     def make_keras_picklable(self):
@@ -137,11 +137,11 @@ def instantiate_default_estimators(estimators, verbose=0):
         estimators_array.append(logisticregression_model)
 
     if 'GaussianNaiveBayes' in estimators or 'all' in estimators:
-        gnb = ['GaussianNaiveBayes', gaussian_naive_bayes()]
+        gnb = ['GaussianNaiveBayes', Gaussian_Naive_Bayes()]
         estimators_array.append(gnb)
 
     if 'BernoulliNaiveBayes' in estimators or 'all' in estimators:
-        bnb = ['BernoulliNaiveBayes', bernoulli_naive_bayes()]
+        bnb = ['BernoulliNaiveBayes', Bernoulli_Naive_Bayes()]
         estimators_array.append(bnb)
 
     if 'NeuralNetworkDeepClassifier' in estimators or 'all' in estimators:
