@@ -25,27 +25,24 @@ class Experiments(object):
             # We need to build the model with the correct number of layers
             # and create the onehot label vectors
 
-            #TODO implement buils methods for all esitmators
-            if hasattr(modelling_strategy, 'build'):
-                #TODO think of way how to set hyperparams per model
-                if ml_strategy_name is 'NeuralNetworkDeepClassifier':
-                    #encode the labels 
-                    onehot_encoder = OneHotEncoder(sparse=False)
-                    len_y = len(y_train)
-                    reshaped_y = y_train.reshape(len_y, 1)
-                    y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
-                    num_classes = y_train_onehot_encoded.shape[1]
-                    input_dim = X_train.shape[1]
-                    built_model = modelling_strategy.build(num_classes, input_dim)
-                    #convert from DataFrame to nupy array
-                    X = np.array(X_train)
-                    y = np.array(y_train_onehot_encoded)
-                    trained_model = built_model.fit(X, y)
-                else:
-                    built_model = modelling_strategy.build()
-                    trained_model = built_model.fit(X_train, y_train)
+            if ml_strategy_name is 'NeuralNetworkDeepClassifier':
+                #encode the labels 
+                onehot_encoder = OneHotEncoder(sparse=False)
+                len_y = len(y_train)
+                reshaped_y = y_train.reshape(len_y, 1)
+                y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
+                num_classes = y_train_onehot_encoded.shape[1]
+                num_samples, input_dim = X_train.shape
+                print(f'***DEBUG: {num_samples},{input_dim}')
+                built_model = modelling_strategy.build(num_classes, input_dim, num_samples)
+                #convert from DataFrame to nupy array
+                X = np.array(X_train)
+                y = np.array(y_train_onehot_encoded)
+                trained_model = built_model.fit(X, y)
             else:
-                trained_model = modelling_strategy.fit(X_train, y_train)
+                built_model = modelling_strategy.build()
+                trained_model = built_model.fit(X_train, y_train)
+            
             timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
             trained_models.append([ml_strategy_name, trained_model])
         return trained_models, timestamps_df

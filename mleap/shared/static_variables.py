@@ -45,7 +45,7 @@ FLAG_ML_MODEL = 'ml_models'
 FLAG_PREDICTIONS = 'ml_predictions'
 FLAG_ACCURACY = 'accuracy'
 
-GRIDSEARCH_CV_NUM_PARALLEL_JOBS = 4
+GRIDSEARCH_CV_NUM_PARALLEL_JOBS = 1
 
 TRAIN_IDX = '/train_idx'
 TEST_IDX = '/test_idx'

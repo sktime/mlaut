@@ -16,44 +16,64 @@ import tempfile
 from tensorflow.python.keras import models as km
 
 from .mleap_estimator import MleapEstimator
-'''
-See for tutorial on decorators with parameters
-http://www.artima.com/weblogs/viewpost.jsp?thread=240845
-https://stackoverflow.com/questions/5929107/decorators-with-parameters
-'''
-def gridsearch(verbose=1, n_jobs=1, refit=True):
-    def real_decorator(function):
-        def wrapper(*args):
-             
-            model, hyperparameters = function()
-            gs = GridSearchCV(model, hyperparameters, verbose=verbose, n_jobs=n_jobs, refit=refit)
-            return gs
-        return wrapper
-    return real_decorator
 
-def random_forest_classifier(hyperparameters=None):
-    if hyperparameters is None:
-        hyperparameters = {
-            'n_estimators': [10, 20, 30],
-            'max_features': ['auto', 'sqrt','log2', None],
-            'max_depth': [5, 15, None]
-        }
-    return RandomForestClassifier(), hyperparameters
+from ..shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 
-def svc(hyperparameters=None):
-    if hyperparameters is None:
-        hyperparameters = {
-                        'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
-                        'gamma': [1e-3, 1] #[1e-3, 1e-2, 1e-1, 1]
-                    }
-    return SVC(), hyperparameters
 
-def logisticregression(hyperparameters=None):
-    if hyperparameters is None:
-        hyperparameters = {
-            'C': [1e-6, 1] #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
-        }
-    return linear_model.LogisticRegression(), hyperparameters
+class Random_Forest_Classifier(MleapEstimator):
+    def __init__(self, verbose=0, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, refit=True):
+        self._verbose=verbose
+        self._n_jobs=n_jobs
+        self._refit=refit
+
+    def build(self, hyperparameters=None):
+        if hyperparameters is None:
+            hyperparameters = {
+                'n_estimators': [10, 20, 30],
+                'max_features': ['auto', 'sqrt','log2', None],
+                'max_depth': [5, 15, None]
+            }
+        return GridSearchCV(RandomForestClassifier(), 
+                            hyperparameters, 
+                            verbose = self._verbose,
+                            n_jobs=self._n_jobs,
+                            refit=self._refit)
+
+class SVC_mleap(MleapEstimator):
+    def __init__(self, verbose=0, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, refit=True):
+        self._verbose=verbose
+        self._n_jobs=n_jobs
+        self._refit=refit
+
+    def build(self, hyperparameters=None):
+        if hyperparameters is None:
+            hyperparameters = {
+                            'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
+                            'gamma': [1e-3, 1] #[1e-3, 1e-2, 1e-1, 1]
+                        }
+        return GridSearchCV(SVC(), 
+                            hyperparameters, 
+                            verbose = self._verbose,
+                            n_jobs=self._n_jobs,
+                            refit=self._refit)
+
+class Logistic_Regression(MleapEstimator):
+    def __init__(self, verbose=0, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, refit=True):
+        self._verbose=verbose
+        self._n_jobs=n_jobs
+        self._refit=refit
+
+    def build(self, hyperparameters=None):
+        if hyperparameters is None:
+            hyperparameters = {
+                'C': [1e-6, 1] #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
+            }
+        return GridSearchCV(linear_model.LogisticRegression(), 
+                            hyperparameters, 
+                            verbose = self._verbose,
+                            n_jobs=self._n_jobs,
+                            refit=self._refit)
+
 
 class Gaussian_Naive_Bayes(MleapEstimator):
     def build(self):
@@ -65,37 +85,13 @@ class Bernoulli_Naive_Bayes(MleapEstimator):
         return BernoulliNB()
 
 class Deep_NN_Classifier(MleapEstimator):
-    def make_keras_picklable(self):
-        """
-        Workaround for saving keras models as pickle.
-        http://zachmoshe.com/2017/04/03/pickling-keras-models.html
-        """
-        def __getstate__(self):
-            model_str = ""
-            with tempfile.NamedTemporaryFile(suffix='.hdf5', delete=True) as fd:
-                km.save_model(self, fd.name, overwrite=True)
-                model_str = fd.read()
-            d = { 'model_str': model_str }
-            return d
-
-        def __setstate__(self, state):
-            with tempfile.NamedTemporaryFile(suffix='.hdf5', delete=True) as fd:
-                fd.write(state['model_str'])
-                fd.flush()
-                model = km.load_model(fd.name)
-            self.__dict__ = model.__dict__
-
-
-        cls = km.Model
-        cls.__getstate__ = __getstate__
-        cls.__setstate__ = __setstate__
+    
 
     def _nn_deep_classifier_model(self, num_classes, 
                                   input_dim,
                                   loss='mean_squared_error',
                                   optimizer = 'Adam',
                                   metrics = ['accuracy'] ):
-        self.make_keras_picklable()
         nn_deep_model = Sequential()
         nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
         nn_deep_model.add(Dense(144, activation='relu'))
@@ -110,30 +106,29 @@ class Deep_NN_Classifier(MleapEstimator):
         nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
         return nn_deep_model
     
-    def build(self, num_classes, input_dim, loss='mean_squared_error'):
+    def build(self, num_classes, input_dim, num_samples, loss='mean_squared_error', hyperparameters = None):
         model = KerasClassifier(build_fn=self._nn_deep_classifier_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim,
                                 loss=loss)
-        #TODO dynamically set hyperparameters
-        hyperparameters = {'epochs': [50,100], 'batch_size': [1865]}
+        if hyperparameters is None:
+            hyperparameters = {'epochs': [50,100], 'batch_size': [num_samples]}
         return GridSearchCV(model, hyperparameters)
+
 
 def instantiate_default_estimators(estimators, verbose=0):
     estimators_array = []
-
-    decorator_gridsearch = gridsearch(verbose=verbose)
     
     if 'RandomForestClassifier' in estimators or 'all' in estimators:
-        rfc_model = ['RandomForestClassifier', decorator_gridsearch(random_forest_classifier)()]
+        rfc_model = ['RandomForestClassifier', Random_Forest_Classifier()]
         estimators_array.append(rfc_model)
     
     if 'SVC' in estimators or 'all' in estimators:
-        svc_model = ['SVC', decorator_gridsearch(svc)()]
+        svc_model = ['SVC', SVC_mleap()]
         estimators_array.append(svc_model)
 
     if 'LogisticRegression' in estimators or 'all' in estimators:
-        logisticregression_model = ['LogisticRegression', decorator_gridsearch(logisticregression)()]
+        logisticregression_model = ['LogisticRegression', Logistic_Regression()]
         estimators_array.append(logisticregression_model)
 
     if 'GaussianNaiveBayes' in estimators or 'all' in estimators:

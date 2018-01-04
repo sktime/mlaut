@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod
+import abc 
 
-class MleapEstimator(ABC):
-
-    @abstractmethod
+class MleapEstimator(object):
+    __metaclass__  = abc.ABCMeta
+    @abc.abstractmethod
     def build(self):
-        pass
+        """ Returns the estimator and its hyper parameters"""
