@@ -10,20 +10,16 @@ class Experiments(object):
     trained_models = []
     trained_models_fold_result_list = []
    
-    def run_experiments(self, X_train, y_train, model_container):
+    def run_experiments(self, X_train, y_train, modelling_strategies):
         """ 
         Trains estimators contained in the model_container on the dataset.
         This is separated from the test_orchestrator class to avoid too many nested loops.
         """
         trained_models = []
         timestamps_df = pd.DataFrame()
-        for model in model_container:
-            ml_strategy_name = model[0]
-            modelling_strategy = model[1]
+        for modelling_strategy in modelling_strategies:
+            ml_strategy_name = modelling_strategy.get_estimator_name()
             begin_timestamp = datetime.now()
-            # TODO alter code to accomodate deep learning classifiers.
-            # We need to build the model with the correct number of layers
-            # and create the onehot label vectors
 
             if ml_strategy_name is 'NeuralNetworkDeepClassifier':
                 #encode the labels 
@@ -33,18 +29,19 @@ class Experiments(object):
                 y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
                 num_classes = y_train_onehot_encoded.shape[1]
                 num_samples, input_dim = X_train.shape
-                print(f'***DEBUG: {num_samples},{input_dim}')
+                #build the model with the appropriate parameters
                 built_model = modelling_strategy.build(num_classes, input_dim, num_samples)
                 #convert from DataFrame to nupy array
-                X = np.array(X_train)
-                y = np.array(y_train_onehot_encoded)
-                trained_model = built_model.fit(X, y)
+                built_model.fit(X_train, y_train_onehot_encoded)
+                trained_model = built_model
             else:
                 built_model = modelling_strategy.build()
                 trained_model = built_model.fit(X_train, y_train)
             
             timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
-            trained_models.append([ml_strategy_name, trained_model])
+            
+            modelling_strategy.set_trained_model(trained_model)
+            trained_models.append(modelling_strategy)
         return trained_models, timestamps_df
     
     def record_timestamp(self, strategy_name, begin_timestamp, timestamps_df):
@@ -62,10 +59,9 @@ class Experiments(object):
         """ Makes predictions on the test set """
         predictions = []
         for model in models:
-            strategy_name = model[0]
-            trained_model = model[1]
+            trained_model = model.get_trained_model()
             prediction = trained_model.predict(X_test)
-            predictions.append([strategy_name, prediction])
+            predictions.append([model.get_estimator_name(), prediction])
         return predictions
     
     # def calculate_prediction_accuracy(self, predictions_per_ml_strategy, true_labels):

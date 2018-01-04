@@ -17,7 +17,7 @@ WILCOXON_DATASET = 'wilcoxon_test'
 FRIEDMAN_DATASET = 'friedman_test'
 
 EXPERIMENTS_DIR = 'experiments'
-EXPERIMENTS_TRAINED_MODELS_DIR = DATA_DIR + '/trained_models/'
+EXPERIMENTS_TRAINED_MODELS_DIR = DATA_DIR + '/trained_models'
 EXPERIMENTS_PREDICTIONS_DIR = 'experiments/predictions/'
 EXPERIMENTS_MODEL_ACCURACY_DIR = 'experiments/trained_models_accuracies/'
 
@@ -38,6 +38,7 @@ SIGN_TEST_FILENAME = 'sign_test.p'
 BONFERRONI_TEST_FILENAME = 'bonferroni_correction_test.p'
 
 PICKLE_EXTENTION = '.pkl'
+HDF5_EXTENTION = '.h5'
 
 TEST_TRAIN_SPLIT = 1/4
 
@@ -45,7 +46,7 @@ FLAG_ML_MODEL = 'ml_models'
 FLAG_PREDICTIONS = 'ml_predictions'
 FLAG_ACCURACY = 'accuracy'
 
-GRIDSEARCH_CV_NUM_PARALLEL_JOBS = 1
+GRIDSEARCH_CV_NUM_PARALLEL_JOBS = 1 #use -1 for maximum
 
 TRAIN_IDX = '/train_idx'
 TEST_IDX = '/test_idx'

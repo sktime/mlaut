@@ -18,7 +18,7 @@ from tensorflow.python.keras import models as km
 from .mleap_estimator import MleapEstimator
 
 from ..shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
-
+from ..shared.files_io import DiskOperations
 
 class Random_Forest_Classifier(MleapEstimator):
     def __init__(self, verbose=0, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, refit=True):
@@ -38,6 +38,18 @@ class Random_Forest_Classifier(MleapEstimator):
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
+    
+    def get_estimator_name(self):
+        return 'RandomForestClassifier'
+
+    def save(self, dataset_name):
+        #set trained model method is implemented in the base class
+        trained_model = self._trained_model
+        disk_op = DiskOperations()
+        disk_op.save_to_pickle(trained_model=trained_model,
+                             model_name=self.get_estimator_name(),
+                             dataset_name=dataset_name)
+        
 
 class SVC_mleap(MleapEstimator):
     def __init__(self, verbose=0, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, refit=True):
@@ -56,7 +68,16 @@ class SVC_mleap(MleapEstimator):
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
+    def get_estimator_name(self):
+        return 'SVC'
 
+    def save(self, dataset_name):
+        #set trained model method is implemented in the base class
+        trained_model = self._trained_model
+        disk_op = DiskOperations()
+        disk_op.save_to_pickle(trained_model=trained_model,
+                             model_name=self.get_estimator_name(),
+                             dataset_name=dataset_name)
 class Logistic_Regression(MleapEstimator):
     def __init__(self, verbose=0, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, refit=True):
         self._verbose=verbose
@@ -73,20 +94,49 @@ class Logistic_Regression(MleapEstimator):
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
+    
+    def get_estimator_name(self):
+        return 'LogisticRegression'
 
+    def save(self, dataset_name):
+        #set trained model method is implemented in the base class
+        trained_model = self._trained_model
+        disk_op = DiskOperations()
+        disk_op.save_to_pickle(trained_model=trained_model,
+                             model_name=self.get_estimator_name(),
+                             dataset_name=dataset_name)
 
 class Gaussian_Naive_Bayes(MleapEstimator):
+    def get_estimator_name(self):
+        return 'GaussianNaiveBayes'
+    def save(self, dataset_name):
+        #set trained model method is implemented in the base class
+        trained_model = self._trained_model
+        disk_op = DiskOperations()
+        disk_op.save_to_pickle(trained_model=trained_model,
+                             model_name=self.get_estimator_name(),
+                             dataset_name=dataset_name)
     def build(self):
         return GaussianNB()
 
 class Bernoulli_Naive_Bayes(MleapEstimator):
-
+    def get_estimator_name(self):
+        return 'BernoulliNaiveBayes'
+    def save(self, dataset_name):
+        #set trained model method is implemented in the base class
+        trained_model = self._trained_model
+        disk_op = DiskOperations()
+        disk_op.save_to_pickle(trained_model=trained_model,
+                             model_name=self.get_estimator_name(),
+                             dataset_name=dataset_name)
     def build(self):
         return BernoulliNB()
 
 class Deep_NN_Classifier(MleapEstimator):
-    
-
+    def __init__(self, verbose=0, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, refit=True):
+        self._verbose=verbose
+        self._n_jobs=n_jobs
+        self._refit=refit
     def _nn_deep_classifier_model(self, num_classes, 
                                   input_dim,
                                   loss='mean_squared_error',
@@ -113,33 +163,41 @@ class Deep_NN_Classifier(MleapEstimator):
                                 loss=loss)
         if hyperparameters is None:
             hyperparameters = {'epochs': [50,100], 'batch_size': [num_samples]}
-        return GridSearchCV(model, hyperparameters)
+        return model
+        # return GridSearchCV(model, 
+        #                     hyperparameters, 
+        #                     verbose = self._verbose,
+        #                     n_jobs=self._n_jobs,
+        #                     refit=self._refit)
+    def get_estimator_name(self):
+        return 'NeuralNetworkDeepClassifier'
+
+    def save(self, dataset_name):
+        #set trained model method is implemented in the base class
+        trained_model = self._trained_model
+        disk_op = DiskOperations()
+        disk_op.save_keras_model(trained_model=trained_model,
+                                 model_name=self.get_estimator_name(),
+                                 dataset_name=dataset_name)
 
 
 def instantiate_default_estimators(estimators, verbose=0):
     estimators_array = []
-    
     if 'RandomForestClassifier' in estimators or 'all' in estimators:
-        rfc_model = ['RandomForestClassifier', Random_Forest_Classifier()]
-        estimators_array.append(rfc_model)
+        estimators_array.append(Random_Forest_Classifier())
     
     if 'SVC' in estimators or 'all' in estimators:
-        svc_model = ['SVC', SVC_mleap()]
-        estimators_array.append(svc_model)
+        estimators_array.append(SVC_mleap())
 
     if 'LogisticRegression' in estimators or 'all' in estimators:
-        logisticregression_model = ['LogisticRegression', Logistic_Regression()]
-        estimators_array.append(logisticregression_model)
+        estimators_array.append(Logistic_Regression())
 
     if 'GaussianNaiveBayes' in estimators or 'all' in estimators:
-        gnb = ['GaussianNaiveBayes', Gaussian_Naive_Bayes()]
-        estimators_array.append(gnb)
+        estimators_array.append(Gaussian_Naive_Bayes())
 
     if 'BernoulliNaiveBayes' in estimators or 'all' in estimators:
-        bnb = ['BernoulliNaiveBayes', Bernoulli_Naive_Bayes()]
-        estimators_array.append(bnb)
+        estimators_array.append(Bernoulli_Naive_Bayes())
 
     if 'NeuralNetworkDeepClassifier' in estimators or 'all' in estimators:
-        nnd = ['NeuralNetworkDeepClassifier', Deep_NN_Classifier()]
-        estimators_array.append(nnd)
+        estimators_array.append(Deep_NN_Classifier())
     return estimators_array

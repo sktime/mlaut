@@ -3,12 +3,14 @@ from ..shared.static_variables import (FLAG_ML_MODEL,
 import sys
 from ..shared.files_io import FilesIO
 from .experiments import Experiments
- 
+from ..shared.files_io import DiskOperations
+import numpy as np
 class TestOrchestrator:
     def __init__(self, hdf5_input_io, hdf5_output_io):
         self._input_io = hdf5_input_io
         self._output_io = hdf5_output_io
         self._experiments = Experiments()
+        self._disk_op = DiskOperations()
 
     def run(self, input_io_datasets_loc, output_io_split_idx_loc, modelling_strategies):
         """ 
@@ -40,11 +42,11 @@ class TestOrchestrator:
                 X = orig_dts
                 X = X.drop(label_column, axis=1)
 
-                X_train = X.iloc[train_idx]
-                y_train = y.iloc[train_idx]
+                X_train = np.array(X.iloc[train_idx])
+                y_train = np.array(y.iloc[train_idx])
 
-                X_test = X.iloc[test_idx]
-                y_test = y.iloc[test_idx]
+                X_test = np.array(X.iloc[test_idx])
+                y_test = np.array(y.iloc[test_idx])
 
                 #train ml strategy
                 dts_name = orig_dts_meta['dataset_name']
@@ -55,9 +57,10 @@ class TestOrchestrator:
                     print(f'*** Training models on dataset: {dts_name}. Total datasets processed: {dts_trained}/{dts_total} ***')
                     trained_models, timestamps_df = self._experiments.run_experiments(X_train, y_train, modelling_strategies)
                     self._trained_models_all_datasets.append(trained_models)
-                    self._output_io.save_trained_models_to_disk(trained_models,dts_name)
+                    self._disk_op.bulk_save(trained_models, dts_name)
                     self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
                 else:
+                    #TODO IMPLEMENT THIS FUNCTIONALITY
                     #if model was already trained load it from the pickle
                     trained_models = self._output_io.check_file_exists(dts,FLAG_ML_MODEL)
                     self._trained_models_all_datasets.append(trained_models)

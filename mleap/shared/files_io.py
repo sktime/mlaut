@@ -1,7 +1,7 @@
 import os
 import pickle
 from .static_variables import EXPERIMENTS_TRAINED_MODELS_DIR, EXPERIMENTS_PREDICTIONS_DIR, EXPERIMENTS_MODEL_ACCURACY_DIR
-from .static_variables import PICKLE_EXTENTION
+from .static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 from .static_variables import FLAG_ML_MODEL,FLAG_PREDICTIONS
 from .static_variables import REFORMATTED_DATASETS_DIR
 from .static_variables import RUNTIMES_GROUP
@@ -12,6 +12,32 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+class DiskOperations(object):
+    def bulk_save(self, trained_models, dataset_name):
+        for model in trained_models:
+            model.save(dataset_name)
+    def save_to_pickle(self, 
+                       trained_model, 
+                       model_name, 
+                       dataset_name, 
+                       root_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
+        if not os.path.exists(root_dir + os.sep + dataset_name):
+            os.makedirs(root_dir + os.sep + dataset_name)
+        
+        with open(root_dir + os.sep + dataset_name + os.sep + model_name + PICKLE_EXTENTION, 'wb') as f:
+            pickle.dump(trained_model,f)
+
+    def save_keras_model(self, 
+                        trained_model, 
+                        model_name, 
+                        dataset_name, 
+                        root_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
+        if not os.path.exists(root_dir + os.sep + dataset_name):
+            os.makedirs(root_dir + os.sep + dataset_name)
+        
+        trained_model.model.save(root_dir + os.sep + dataset_name + os.sep + model_name + HDF5_EXTENTION)
+        #for saving GridsearchCV models
+        #trained_model.best_estimator_.model.save(root_dir + os.sep + dataset_name + os.sep + model_name + HDF5_EXTENTION)
 
 class FilesIO:
 
@@ -52,10 +78,10 @@ class FilesIO:
         f.close()
         return predictions_for_dataset
 
-        
-    def save_trained_models_to_disk(self, trained_models, dataset_name):
-        with open(EXPERIMENTS_TRAINED_MODELS_DIR + dataset_name + PICKLE_EXTENTION,'wb') as f:
-            pickle.dump(trained_models,f)
+
+    # def save_trained_models_to_disk(self, trained_models, dataset_name):
+    #     with open(EXPERIMENTS_TRAINED_MODELS_DIR + dataset_name + PICKLE_EXTENTION,'wb') as f:
+    #         pickle.dump(trained_models,f)
     
     def save_predictions_to_db(self, predictions, dataset_name):
         # TODO this seems a duplicate to def save_numpy_array_hdf5
