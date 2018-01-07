@@ -2,7 +2,6 @@ import os
 import pickle
 from .static_variables import EXPERIMENTS_TRAINED_MODELS_DIR, EXPERIMENTS_PREDICTIONS_DIR, EXPERIMENTS_MODEL_ACCURACY_DIR
 from .static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
-from .static_variables import FLAG_ML_MODEL,FLAG_PREDICTIONS
 from .static_variables import REFORMATTED_DATASETS_DIR
 from .static_variables import RUNTIMES_GROUP
 from .static_variables import RESULTS_DIR
@@ -46,27 +45,19 @@ class FilesIO:
         self._mode = mode
 
     
-    def check_file_exists(self, dataset_name, file_type):
+    def check_file_exists(self, path_to_file):
         filename = ''
-        if file_type == FLAG_ML_MODEL:
-            filename = EXPERIMENTS_TRAINED_MODELS_DIR + dataset_name + PICKLE_EXTENTION
-        elif file_type == FLAG_PREDICTIONS:
-            filename = EXPERIMENTS_PREDICTIONS_DIR + dataset_name + PICKLE_EXTENTION
-        else:
-            raise ValueError('Please specify supported file type')
  
-        file_exists = os.path.isfile(filename)
+        file_exists = os.path.isfile(path_to_file)
         if file_exists:
             return pickle.load(open(filename, 'rb'))
         else:
             return False
-    
-    def check_prediction_exists(self, dataset_name):
+    def check_path_exists(self, path_to_check):
         f = h5py.File(self.hdf5_filename, self._mode)
-        is_present = EXPERIMENTS_PREDICTIONS_DIR +  dataset_name in f
+        is_present = path_to_check in f
         f.close()
-        return is_present
-    
+        return is_present 
 
     def load_predictions_for_dataset(self, dataset_name):
         f = h5py.File(self.hdf5_filename, self._mode)

@@ -1,16 +1,28 @@
-from ..shared.static_variables import (FLAG_ML_MODEL, 
-    X_TRAIN_DIR, X_TEST_DIR, Y_TRAIN_DIR, Y_TEST_DIR, TRAIN_IDX, TEST_IDX)
+from ..shared.static_variables import (X_TRAIN_DIR, 
+                                       X_TEST_DIR, 
+                                       Y_TRAIN_DIR, 
+                                       Y_TEST_DIR, 
+                                       TRAIN_IDX, 
+                                       TEST_IDX, 
+                                       EXPERIMENTS_PREDICTIONS_DIR,
+                                       EXPERIMENTS_TRAINED_MODELS_DIR)
 import sys
+import os
 from ..shared.files_io import FilesIO
 from .experiments import Experiments
 from ..shared.files_io import DiskOperations
 import numpy as np
 class TestOrchestrator:
-    def __init__(self, hdf5_input_io, hdf5_output_io):
+    def __init__(self, hdf5_input_io, 
+                 hdf5_output_io, 
+                 experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
+                 experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
         self._input_io = hdf5_input_io
         self._output_io = hdf5_output_io
         self._experiments = Experiments()
         self._disk_op = DiskOperations()
+        self._experiments_predictions_dir=experiments_predictions_dir
+        self._experiments_trained_models_dir=experiments_trained_models_dir
 
     def run(self, input_io_datasets_loc, output_io_split_idx_loc, modelling_strategies):
         """ 
@@ -50,7 +62,11 @@ class TestOrchestrator:
 
                 #train ml strategy
                 dts_name = orig_dts_meta['dataset_name']
-                if not self._output_io.check_file_exists(dts_name, FLAG_ML_MODEL):
+                #TODO ********************************************************
+                #TODO this check whether the model exists on disk does not work
+                #TODO this needs to be implemented properly
+                #TODO ********************************************************
+                if not self._output_io.check_file_exists(self._experiments_trained_models_dir + os.sep + dts_name):
                     #train model if file does not exist on disk
                     dts_trained = len(self._trained_models_all_datasets)
                     dts_total = len(input_io_datasets_loc)
@@ -62,11 +78,12 @@ class TestOrchestrator:
                 else:
                     #TODO IMPLEMENT THIS FUNCTIONALITY
                     #if model was already trained load it from the pickle
-                    trained_models = self._output_io.check_file_exists(dts,FLAG_ML_MODEL)
+                    trained_models = self._output_io.check_file_exists(dts)
                     self._trained_models_all_datasets.append(trained_models)
                 
                 #make predictions
-                if not self._output_io.check_prediction_exists(dts_name):
+                #check whether the prediction alrady exists
+                if not self._output_io.check_path_exists(self._experiments_predictions_dir +'/'+ dts_name):
                     #it is used for choosing the directory in which to look for the saved file
                     predictions = self._experiments.make_predictions(trained_models, dts, X_test)
                     self._predictions_all_datasets.append(predictions)

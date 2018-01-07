@@ -42,7 +42,6 @@ HDF5_EXTENTION = '.h5'
 
 TEST_TRAIN_SPLIT = 1/4
 
-FLAG_ML_MODEL = 'ml_models'
 FLAG_PREDICTIONS = 'ml_predictions'
 FLAG_ACCURACY = 'accuracy'
 
