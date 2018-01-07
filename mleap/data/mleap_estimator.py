@@ -1,5 +1,16 @@
 from abc import ABC, abstractmethod
+from ..shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 class MleapEstimator(ABC):
+
+    def __init__(self, 
+                verbose=0, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=3, 
+                refit=True):
+        self._num_cv_folds=num_cv_folds
+        self._verbose=verbose
+        self._n_jobs=n_jobs
+        self._refit=refit
 
     @abstractmethod
     def build(self):
