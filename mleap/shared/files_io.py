@@ -1,4 +1,5 @@
 import os
+import glob
 import pickle
 from .static_variables import EXPERIMENTS_TRAINED_MODELS_DIR, EXPERIMENTS_PREDICTIONS_DIR, EXPERIMENTS_MODEL_ACCURACY_DIR
 from .static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
@@ -37,7 +38,14 @@ class DiskOperations(object):
         trained_model.model.save(root_dir + os.sep + dataset_name + os.sep + model_name + HDF5_EXTENTION)
         #for saving GridsearchCV models
         #trained_model.best_estimator_.model.save(root_dir + os.sep + dataset_name + os.sep + model_name + HDF5_EXTENTION)
-
+    
+    def check_path_exists(self, path_to_file):
+ 
+        path_exists = glob.glob(path_to_file)
+        if len(path_exists) > 0:
+            return True
+        else:
+            return False
 class FilesIO:
 
     def __init__(self, hdf5_filename, mode='a'):
@@ -45,15 +53,8 @@ class FilesIO:
         self._mode = mode
 
     
-    def check_file_exists(self, path_to_file):
-        filename = ''
- 
-        file_exists = os.path.isfile(path_to_file)
-        if file_exists:
-            return pickle.load(open(filename, 'rb'))
-        else:
-            return False
-    def check_path_exists(self, path_to_check):
+
+    def check_h5_path_exists(self, path_to_check):
         f = h5py.File(self.hdf5_filename, self._mode)
         is_present = path_to_check in f
         f.close()

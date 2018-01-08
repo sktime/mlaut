@@ -5,24 +5,41 @@ from ..shared.static_variables import (X_TRAIN_DIR,
                                        TRAIN_IDX, 
                                        TEST_IDX, 
                                        EXPERIMENTS_PREDICTIONS_DIR,
-                                       EXPERIMENTS_TRAINED_MODELS_DIR)
+                                       EXPERIMENTS_TRAINED_MODELS_DIR, 
+                                       LOG_ERROR_FILE, set_logging_defaults)
 import sys
 import os
 from ..shared.files_io import FilesIO
 from .experiments import Experiments
 from ..shared.files_io import DiskOperations
 import numpy as np
+import logging
 class TestOrchestrator:
     def __init__(self, hdf5_input_io, 
                  hdf5_output_io, 
                  experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
                  experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
-        self._input_io = hdf5_input_io
-        self._output_io = hdf5_output_io
-        self._experiments = Experiments()
-        self._disk_op = DiskOperations()
         self._experiments_predictions_dir=experiments_predictions_dir
         self._experiments_trained_models_dir=experiments_trained_models_dir
+        self._input_io = hdf5_input_io
+        self._output_io = hdf5_output_io
+        self._experiments = Experiments(self._experiments_trained_models_dir)
+        self._disk_op = DiskOperations()
+        #set logging defaults
+        set_logging_defaults()
+        # logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+        # rootLogger = logging.getLogger()
+
+        # fileHandler = logging.FileHandler(LOG_ERROR_FILE)
+        # fileHandler.setFormatter(logFormatter)
+        # rootLogger.addHandler(fileHandler)
+
+        # consoleHandler = logging.StreamHandler()
+        # consoleHandler.setFormatter(logFormatter)
+        # rootLogger.addHandler(consoleHandler)
+
+
+
 
     def run(self, input_io_datasets_loc, output_io_split_idx_loc, modelling_strategies):
         """ 
@@ -62,34 +79,36 @@ class TestOrchestrator:
 
                 #train ml strategy
                 dts_name = orig_dts_meta['dataset_name']
-                #TODO ********************************************************
-                #TODO this check whether the model exists on disk does not work
-                #TODO this needs to be implemented properly
-                #TODO ********************************************************
-                if not self._output_io.check_file_exists(self._experiments_trained_models_dir + os.sep + dts_name):
-                    #train model if file does not exist on disk
-                    dts_trained = len(self._trained_models_all_datasets)
-                    dts_total = len(input_io_datasets_loc)
-                    print(f'*** Training models on dataset: {dts_name}. Total datasets processed: {dts_trained}/{dts_total} ***')
-                    trained_models, timestamps_df = self._experiments.run_experiments(X_train, y_train, modelling_strategies)
-                    self._trained_models_all_datasets.append(trained_models)
-                    self._disk_op.bulk_save(trained_models, dts_name)
-                    self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
-                else:
-                    #TODO IMPLEMENT THIS FUNCTIONALITY
-                    #if model was already trained load it from the pickle
-                    trained_models = self._output_io.check_file_exists(dts)
-                    self._trained_models_all_datasets.append(trained_models)
+
+                dts_trained = len(self._trained_models_all_datasets)
+                dts_total = len(input_io_datasets_loc)
+                print(f'*** Training models on dataset: {dts_name}. Total datasets processed: {dts_trained}/{dts_total} ***')
+                trained_models, timestamps_df = self._experiments.run_experiments(X_train, 
+                                                                                  y_train, 
+                                                                                  modelling_strategies, 
+                                                                                  dts_name)
+                self._trained_models_all_datasets.append(trained_models)
+                self._disk_op.bulk_save(trained_models, dts_name)
+                self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
+
                 
                 #make predictions
                 #check whether the prediction alrady exists
-                if not self._output_io.check_path_exists(self._experiments_predictions_dir +'/'+ dts_name):
+                #********************************************
+                # TODO this checks whether some preditions were made
+                # TODO we shoould check whether there are predictions for all individual estimators
+                # as opposed to for the group overall
+                # ********************************************** 
+                if not self._output_io.check_h5_path_exists(self._experiments_predictions_dir +'/'+ dts_name):
                     #it is used for choosing the directory in which to look for the saved file
                     predictions = self._experiments.make_predictions(trained_models, dts, X_test)
                     self._predictions_all_datasets.append(predictions)
                     self._output_io.save_predictions_to_db(predictions, dts_name)
                 else:
                     #load predictions on test dataset if they were already saved in the db
+                    logging.warning(f'Preditions for {dts_name} already exist in H5 database. '
+                    'Predictions will be loaded from the H5 database instead of generating new ones.'
+                    'Delete predictions from H5 databse if using previously made predictions is not desired behaviour.')
                     predictions = self._output_io.load_predictions_for_dataset(dts_name)
                     self._predictions_all_datasets.append(predictions)
                     

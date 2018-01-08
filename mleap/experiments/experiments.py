@@ -3,14 +3,21 @@ from sklearn.metrics import accuracy_score, mean_squared_error
 from datetime import datetime
 
 import numpy as np
+import os
+import logging
 from sklearn.preprocessing import OneHotEncoder
-
+from ..shared.files_io import DiskOperations
 class Experiments(object):
+    def __init__(self, experiments_trained_models_dir):
+        self._disk_op = DiskOperations()
+        self._experiments_trained_models_dir=experiments_trained_models_dir
+
+
 
     trained_models = []
     trained_models_fold_result_list = []
    
-    def run_experiments(self, X_train, y_train, modelling_strategies):
+    def run_experiments(self, X_train, y_train, modelling_strategies, dts_name):
         """ 
         Trains estimators contained in the model_container on the dataset.
         This is separated from the test_orchestrator class to avoid too many nested loops.
@@ -21,26 +28,34 @@ class Experiments(object):
             ml_strategy_name = modelling_strategy.get_estimator_name()
             begin_timestamp = datetime.now()
 
-            if ml_strategy_name is 'NeuralNetworkDeepClassifier':
-                #encode the labels 
-                onehot_encoder = OneHotEncoder(sparse=False)
-                len_y = len(y_train)
-                reshaped_y = y_train.reshape(len_y, 1)
-                y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
-                num_classes = y_train_onehot_encoded.shape[1]
-                num_samples, input_dim = X_train.shape
-                #build the model with the appropriate parameters
-                built_model = modelling_strategy.build(num_classes, input_dim, num_samples)
-                #convert from DataFrame to nupy array
-                built_model.fit(X_train, y_train_onehot_encoded)
-                trained_model = built_model
+            #check whether the model was already trained
+            path_to_check = self._experiments_trained_models_dir + os.sep + dts_name + os.sep + ml_strategy_name + '.*'
+            model_exists = self._disk_op.check_path_exists(path_to_check)
+            if model_exists is True:
+                logging.warning(f'Estimator {ml_strategy_name} already trained on {dts_name}. Loading it from disk.')
+                modelling_strategy.load(path_to_check)
             else:
-                built_model = modelling_strategy.build()
-                trained_model = built_model.fit(X_train, y_train)
+                #train the model if it does not exist on disk
+                if ml_strategy_name is 'NeuralNetworkDeepClassifier':
+                    #encode the labels 
+                    onehot_encoder = OneHotEncoder(sparse=False)
+                    len_y = len(y_train)
+                    reshaped_y = y_train.reshape(len_y, 1)
+                    y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
+                    num_classes = y_train_onehot_encoded.shape[1]
+                    num_samples, input_dim = X_train.shape
+                    #build the model with the appropriate parameters
+                    built_model = modelling_strategy.build(num_classes, input_dim, num_samples)
+                    #convert from DataFrame to nupy array
+                    built_model.fit(X_train, y_train_onehot_encoded)
+                    trained_model = built_model
+                else:
+                    built_model = modelling_strategy.build()
+                    trained_model = built_model.fit(X_train, y_train)
             
-            timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
-            
-            modelling_strategy.set_trained_model(trained_model)
+                timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
+                modelling_strategy.set_trained_model(trained_model)
+
             trained_models.append(modelling_strategy)
         return trained_models, timestamps_df
     

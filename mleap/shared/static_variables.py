@@ -1,3 +1,5 @@
+import os
+import logging
 ORIGINAL_DATASETS_DIR = 'original_datasets/'
 REFORMATTED_DATASETS_DIR = 'reformatted_datasets/'
 SPLIT_DATASETS_DIR = '/split_datasets'
@@ -5,7 +7,7 @@ X_TRAIN_DIR = '/X_train'
 X_TEST_DIR = '/X_test'
 Y_TRAIN_DIR = '/y_train'
 Y_TEST_DIR = '/y_test'
-DATA_DIR = 'data/'
+DATA_DIR = 'data' + os.sep
 PREDICTIONS_DIR = 'predictions/'
 HDF5_DATA_FILENAME = 'data/data.hdf5'
 RESULTS_DIR = 'results_summary/'
@@ -17,7 +19,7 @@ WILCOXON_DATASET = 'wilcoxon_test'
 FRIEDMAN_DATASET = 'friedman_test'
 
 EXPERIMENTS_DIR = 'experiments'
-EXPERIMENTS_TRAINED_MODELS_DIR = DATA_DIR + '/trained_models'
+EXPERIMENTS_TRAINED_MODELS_DIR = DATA_DIR + 'trained_models'
 EXPERIMENTS_PREDICTIONS_DIR = 'experiments/predictions/'
 EXPERIMENTS_MODEL_ACCURACY_DIR = 'experiments/trained_models_accuracies/'
 
@@ -50,3 +52,16 @@ GRIDSEARCH_CV_NUM_PARALLEL_JOBS = 1 #use -1 for maximum
 TRAIN_IDX = '/train_idx'
 TEST_IDX = '/test_idx'
 SPLIT_DTS_GROUP = '/split_dts_idx'
+LOG_ERROR_FILE = 'mleap_erros.log'
+
+def set_logging_defaults():
+    logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+    rootLogger = logging.getLogger()
+
+    fileHandler = logging.FileHandler(LOG_ERROR_FILE)
+    fileHandler.setFormatter(logFormatter)
+    rootLogger.addHandler(fileHandler)
+
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(logFormatter)
+    rootLogger.addHandler(consoleHandler)

@@ -20,9 +20,12 @@ class MleapEstimator(ABC):
     def save(self):
         """ saves the trained model to disk """
     @abstractmethod
+    def load(self, path_to_model):
+        """ loads the model from disk """
+    @abstractmethod
     def get_estimator_name(self):
         """ returs the name of the estimator"""    
-
+    
     def set_trained_model(self, trained_model):
         self._trained_model = trained_model
     

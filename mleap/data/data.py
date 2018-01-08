@@ -3,8 +3,9 @@ from sklearn.model_selection import train_test_split
 from ..shared.static_variables import (TRAIN_IDX, 
                                        TEST_IDX, 
                                        SPLIT_DTS_GROUP, 
-                                       EXPERIMENTS_PREDICTIONS_DIR)
+                                       EXPERIMENTS_PREDICTIONS_DIR, set_logging_defaults)
 import numpy as np
+import logging
 class Data(object):
     def __init__(self, 
                 experimeents_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
@@ -15,6 +16,9 @@ class Data(object):
         self._split_datasets_group=split_datasets_group
         self._train_idx=train_idx
         self._test_idx=test_idx
+
+        set_logging_defaults()
+
 
     def pandas_to_db(self, save_loc_hdf5, datasets, dts_metadata, save_loc_hdd):
         save_paths = []
@@ -43,9 +47,9 @@ class Data(object):
             #check if split exists in h5
             dts, metadata = hdf5_in.load_dataset_pd(dts_loc)
             dataset_name = metadata['dataset_name']
-            split_exists = hdf5_out.check_path_exists(self._split_datasets_group + '/'+ dataset_name)
+            split_exists = hdf5_out.check_h5_path_exists(self._split_datasets_group + '/'+ dataset_name)
             if split_exists is True:
-                print(f'Skipping {dataset_name} as test/train split already exists in output h5 file.')
+                logging.warning(f'Skipping {dataset_name} as test/train split already exists in output h5 file.')
             else:  
                 #split
                 idx_dts_rows = dts.shape[0]
