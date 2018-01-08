@@ -5,12 +5,12 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.model_selection import GridSearchCV
 
-from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.models import Sequential, load_model
 from tensorflow.python.keras.layers import Dense, Activation, Dropout
 from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor, KerasClassifier
 from tensorflow.python.keras import optimizers
 
-
+import pickle
 import types
 import tempfile
 from tensorflow.python.keras import models as km
@@ -20,6 +20,7 @@ from .mleap_estimator import MleapEstimator
 from ..shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 from ..shared.files_io import DiskOperations
 
+from ..shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 """
 Each estimator is coitained it its own class.
 Each estimator inherits from the abstract class MleapEstimator.
@@ -74,6 +75,7 @@ class Logistic_Regression(MleapEstimator):
         disk_op.save_to_pickle(trained_model=trained_model,
                              model_name=self.get_estimator_name(),
                              dataset_name=dataset_name)
+    
 
 class Ridge_Regression(MleapEstimator):
 
@@ -96,6 +98,7 @@ class Ridge_Regression(MleapEstimator):
         disk_op.save_to_pickle(trained_model=self._trained_model,
                                 model_name=self.get_estimator_name(),
                                 dataset_name=dataset_name)
+
 class Lasso(MleapEstimator):
     def __init__(self):
         super(Lasso, self).__init__()
@@ -261,8 +264,14 @@ class Deep_NN_Classifier(MleapEstimator):
         disk_op.save_keras_model(trained_model=trained_model,
                                  model_name=self.get_estimator_name(),
                                  dataset_name=dataset_name)
-
-
+    
+    #overloading method from parent class
+    def load(self, path_to_model):
+        #file name could be passed with .* as extention. 
+        split_path = path_to_model.split('.')
+        path_to_load = split_path[0] + HDF5_EXTENTION 
+        model = load_model(path_to_load)
+        self.set_trained_model(model)
 def instantiate_default_estimators(estimators, verbose=0):
     estimators_array = []
     if 'RandomForestClassifier' in estimators or 'all' in estimators:

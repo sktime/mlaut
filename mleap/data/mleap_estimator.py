@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from ..shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
+import pickle
+from ..shared.static_variables import PICKLE_EXTENTION
 class MleapEstimator(ABC):
 
     def __init__(self, 
@@ -19,9 +21,12 @@ class MleapEstimator(ABC):
     @abstractmethod
     def save(self):
         """ saves the trained model to disk """
-    @abstractmethod
     def load(self, path_to_model):
-        """ loads the model from disk """
+        #file name could be passed with .* as extention. 
+        split_path = path_to_model.split('.')
+        path_to_load = split_path[0] + PICKLE_EXTENTION 
+        model = pickle.load(open(path_to_load,'rb'))
+        self.set_trained_model(model)
     @abstractmethod
     def get_estimator_name(self):
         """ returs the name of the estimator"""    
