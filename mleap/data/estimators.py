@@ -21,6 +21,14 @@ from ..shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 from ..shared.files_io import DiskOperations
 
 from ..shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
+
+from ..shared.static_variables import(GENERALIZED_LINEAR_MODELS,
+                                      ENSEMBLE_METHODS, 
+                                      SVM,
+                                      NEURAL_NETWORKS,
+                                      NAIVE_BAYES,
+                                      REGRESSION, 
+                                      CLASSIFICATION)
 """
 Each estimator is coitained it its own class.
 Each estimator inherits from the abstract class MleapEstimator.
@@ -46,8 +54,37 @@ of the trined models. The pipeline is the following:
     3. The Experiments class evokes get_trained_model and makes predictions 
        on the test set. 
 """
-#Generalized Linear Models
 
+#decorator for adding properties to estimator classes
+class properties(object):
+    def __init__(self, estimator_family, tasks, name):
+        self._estimator_family = estimator_family
+        self._tasks = tasks
+        self._name = name
+
+    def __call__(self, cls):
+        
+        def properties():
+            #check whether the inputs are right
+            if not isinstance(self._estimator_family, list) or \
+               not isinstance(self._tasks, list):
+                raise ValueError('Arguments to property_decorator must be provided as an array')
+            properties_dict = {
+                'estimator_family': self._estimator_family,
+                'tasks': self._tasks,
+                'name':self._name
+            }
+            return properties_dict
+        cls.properties = properties
+        def wrapped_cls(*args):
+            
+            return cls
+        return wrapped_cls
+
+#Generalized Linear Models
+@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
+            tasks=[CLASSIFICATION,REGRESSION], 
+            name='LogisticRegression')
 class Logistic_Regression(MleapEstimator):
     def __init__(self, verbose=0, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, refit=True):
         self._verbose=verbose
@@ -76,7 +113,9 @@ class Logistic_Regression(MleapEstimator):
                              model_name=self.get_estimator_name(),
                              dataset_name=dataset_name)
     
-
+@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
+            tasks=[CLASSIFICATION,REGRESSION], 
+            name='RidgeRegression')
 class Ridge_Regression(MleapEstimator):
 
     def __init__(self):
@@ -98,7 +137,9 @@ class Ridge_Regression(MleapEstimator):
         disk_op.save_to_pickle(trained_model=self._trained_model,
                                 model_name=self.get_estimator_name(),
                                 dataset_name=dataset_name)
-
+@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
+            tasks=[CLASSIFICATION,REGRESSION], 
+            name='Lasso')
 class Lasso(MleapEstimator):
     def __init__(self):
         super(Lasso, self).__init__()
@@ -115,6 +156,9 @@ class Lasso(MleapEstimator):
         disk_op.save_to_pickle(trained_model=self._trained_model,
                                 model_name=self.get_estimator_name(),
                                 dataset_name=dataset_name)
+@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
+            tasks=[CLASSIFICATION,REGRESSION], 
+            name='LassoLars')
 class Lasso_Lars(MleapEstimator):
     def __init__(self):
         super(Lasso_Lars, self).__init__()
@@ -132,6 +176,11 @@ class Lasso_Lars(MleapEstimator):
                                 model_name=self.get_estimator_name(),
                                 dataset_name=dataset_name)
 ###End of Generalized Linear Models
+
+### Ensemble methods
+@properties(estimator_family=[ENSEMBLE_METHODS], 
+            tasks=[CLASSIFICATION,REGRESSION], 
+            name='RandomForestClassifier')
 class Random_Forest_Classifier(MleapEstimator):
 
     def __init__(self):
@@ -162,7 +211,9 @@ class Random_Forest_Classifier(MleapEstimator):
                              dataset_name=dataset_name)
         
 
-
+@properties(estimator_family=[SVM], 
+            tasks=[CLASSIFICATION], 
+            name='SVC')
 class SVC_mleap(MleapEstimator):
     def __init__(self):
         super(SVC_mleap, self).__init__()
@@ -190,7 +241,9 @@ class SVC_mleap(MleapEstimator):
                              dataset_name=dataset_name)
 
 
-
+@properties(estimator_family=[NAIVE_BAYES], 
+            tasks=[CLASSIFICATION], 
+            name='GaussianNaiveBayes')
 class Gaussian_Naive_Bayes(MleapEstimator):
     def get_estimator_name(self):
         return 'GaussianNaiveBayes'
@@ -204,6 +257,9 @@ class Gaussian_Naive_Bayes(MleapEstimator):
     def build(self):
         return GaussianNB()
 
+@properties(estimator_family=[NAIVE_BAYES], 
+            tasks=[CLASSIFICATION], 
+            name='BernoulliNaiveBayes')
 class Bernoulli_Naive_Bayes(MleapEstimator):
     def get_estimator_name(self):
         return 'BernoulliNaiveBayes'
@@ -217,6 +273,9 @@ class Bernoulli_Naive_Bayes(MleapEstimator):
     def build(self):
         return BernoulliNB()
 
+@properties(estimator_family=[NEURAL_NETWORKS], 
+            tasks=[CLASSIFICATION], 
+            name='NeuralNetworkDeepClassifier')
 class Deep_NN_Classifier(MleapEstimator):
     def __init__(self):
         super(Deep_NN_Classifier, self).__init__()
@@ -272,30 +331,38 @@ class Deep_NN_Classifier(MleapEstimator):
         path_to_load = split_path[0] + HDF5_EXTENTION 
         model = load_model(path_to_load)
         self.set_trained_model(model)
+
 def instantiate_default_estimators(estimators, verbose=0):
+
+    if not isinstance(estimators, list):
+        raise ValueError('Estimators parameter must be provided as an array')
+    
+    all_estimators_array=[
+        Logistic_Regression,
+        Ridge_Regression,
+        Lasso,
+        Lasso_Lars,
+        Random_Forest_Classifier,
+        SVC_mleap,
+        Gaussian_Naive_Bayes,
+        Bernoulli_Naive_Bayes,
+        Deep_NN_Classifier
+    ]
     estimators_array = []
-    if 'RandomForestClassifier' in estimators or 'all' in estimators:
-        estimators_array.append(Random_Forest_Classifier())
-    
-    if 'SVC' in estimators or 'all' in estimators:
-        estimators_array.append(SVC_mleap())
 
-    if 'LogisticRegression' in estimators or 'all' in estimators:
-        estimators_array.append(Logistic_Regression())
-    
-    if 'RidgeRegression' in estimators or 'all' in estimators:
-        estimators_array.append(Ridge_Regression())
-    if 'Lasso' in estimators or 'all' in estimators:
-        estimators_array.append(Lasso())
-    if 'LassoLars' in estimators or 'all' in estimators:
-        estimators_array.append(Lasso_Lars())
 
-    if 'GaussianNaiveBayes' in estimators or 'all' in estimators:
-        estimators_array.append(Gaussian_Naive_Bayes())
 
-    if 'BernoulliNaiveBayes' in estimators or 'all' in estimators:
-        estimators_array.append(Bernoulli_Naive_Bayes())
-
-    if 'NeuralNetworkDeepClassifier' in estimators or 'all' in estimators:
-        estimators_array.append(Deep_NN_Classifier())
+    if 'all' in estimators:
+        for est in all_estimators_array:
+            estimators_array.append(est())
+    else:
+        for input_estimator in estimators:
+            for est in all_estimators_array:
+                est_prop = est().properties()
+                
+                if input_estimator in est_prop['estimator_family'] or \
+                   input_estimator in est_prop['tasks'] or \
+                   input_estimator in est_prop['name']:
+                   
+                   estimators_array.append(est()) 
     return estimators_array

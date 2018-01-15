@@ -54,6 +54,17 @@ TEST_IDX = '/test_idx'
 SPLIT_DTS_GROUP = '/split_dts_idx'
 LOG_ERROR_FILE = 'mleap_erros.log'
 
+"""
+properties for decorator to estimators
+"""
+GENERALIZED_LINEAR_MODELS='Generalized Linear Models'
+ENSEMBLE_METHODS='Ensemble methods'
+NAIVE_BAYES='Naive Bayes'
+NEURAL_NETWORKS='Neural Networks'
+CLASSIFICATION='Classification'
+REGRESSION='Regression'
+SVM='Support Vector Machines'
+
 def set_logging_defaults():
     logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
     rootLogger = logging.getLogger()
