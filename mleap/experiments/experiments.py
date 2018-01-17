@@ -25,7 +25,7 @@ class Experiments(object):
         trained_models = []
         timestamps_df = pd.DataFrame()
         for modelling_strategy in modelling_strategies:
-            ml_strategy_name = modelling_strategy.get_estimator_name()
+            ml_strategy_name = modelling_strategy.properties()['name']
             begin_timestamp = datetime.now()
 
             #check whether the model was already trained

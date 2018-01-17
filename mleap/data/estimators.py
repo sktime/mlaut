@@ -1,3 +1,4 @@
+import itertools
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn import linear_model
@@ -61,57 +62,29 @@ class properties(object):
         self._estimator_family = estimator_family
         self._tasks = tasks
         self._name = name
-
+    
+    
     def __call__(self, cls):
-        
-        def properties():
-            #check whether the inputs are right
-            if not isinstance(self._estimator_family, list) or \
-               not isinstance(self._tasks, list):
-                raise ValueError('Arguments to property_decorator must be provided as an array')
-            properties_dict = {
-                'estimator_family': self._estimator_family,
-                'tasks': self._tasks,
-                'name':self._name
-            }
-            return properties_dict
-        cls.properties = properties
-        def wrapped_cls(*args):
+ 
+        class Wrapped(cls):
             
-            return cls
-        return wrapped_cls
+            def properties(self):
+                #check whether the inputs are right
+                if not isinstance(self._estimator_family, list) or \
+                    not isinstance(self._tasks, list):
+                    raise ValueError('Arguments to property_decorator must be provided as an array')
+                properties_dict = {
+                    'estimator_family': self._estimator_family,
+                    'tasks': self._tasks,
+                    'name':self._name
+                }
+                return properties_dict
+        return Wrapped
+
+
 
 #Generalized Linear Models
-@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
-            tasks=[CLASSIFICATION,REGRESSION], 
-            name='LogisticRegression')
-class Logistic_Regression(MleapEstimator):
-    def __init__(self, verbose=0, n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, refit=True):
-        self._verbose=verbose
-        self._n_jobs=n_jobs
-        self._refit=refit
 
-    def build(self, hyperparameters=None):
-        if hyperparameters is None:
-            hyperparameters = {
-                'C': [1e-6, 1] #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
-            }
-        return GridSearchCV(linear_model.LogisticRegression(), 
-                            hyperparameters, 
-                            verbose = self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit)
-    
-    def get_estimator_name(self):
-        return 'LogisticRegression'
-
-    def save(self, dataset_name):
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.get_estimator_name(),
-                             dataset_name=dataset_name)
     
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[CLASSIFICATION,REGRESSION], 
@@ -175,6 +148,56 @@ class Lasso_Lars(MleapEstimator):
         disk_op.save_to_pickle(trained_model=self._trained_model,
                                 model_name=self.get_estimator_name(),
                                 dataset_name=dataset_name)
+
+@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
+            tasks=[CLASSIFICATION,REGRESSION], 
+            name='LogisticRegression')
+class Logistic_Regression(MleapEstimator):
+    def __init__(self):
+        super(Logistic_Regression, self).__init__()
+
+    def build(self, hyperparameters=None):
+        if hyperparameters is None:
+            hyperparameters = {
+                'C': [1e-6, 1] #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
+            }
+        return GridSearchCV(linear_model.LogisticRegression(), 
+                            hyperparameters, 
+                            verbose = self._verbose,
+                            n_jobs=self._n_jobs,
+                            refit=self._refit)
+    
+    def get_estimator_name(self):
+        return 'LogisticRegression'
+
+    def save(self, dataset_name):
+        #set trained model method is implemented in the base class
+        trained_model = self._trained_model
+        disk_op = DiskOperations()
+        disk_op.save_to_pickle(trained_model=trained_model,
+                             model_name=self.get_estimator_name(),
+                             dataset_name=dataset_name)
+
+@properties(estimator_family=[GENERALIZED_LINEAR_MODELS],
+            tasks=[CLASSIFICATION],
+            name='PassiveAggressiveClassifier')
+class Passive_Aggressive_Classifier(MleapEstimator):
+    def __init__(self):
+        super(Passive_Aggressive_Classifier, self).__init__()
+    def build(self, hyperparameters=None):
+        hyperparameters = {
+                'C': [1e-6, 1] #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
+            }
+        return GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
+                            hyperparameters, 
+                            verbose=self._verbose
+                            )
+    def save(self, dataset_name):
+        trained_model = self._trained_model
+        disk_op = DiskOperations()
+        disk_op.save_to_pickle(trained_model=trained_model,
+                             model_name=self.properties()['name'],
+                             dataset_name=dataset_name)
 ###End of Generalized Linear Models
 
 ### Ensemble methods
@@ -346,7 +369,8 @@ def instantiate_default_estimators(estimators, verbose=0):
         SVC_mleap,
         Gaussian_Naive_Bayes,
         Bernoulli_Naive_Bayes,
-        Deep_NN_Classifier
+        Deep_NN_Classifier,
+        Passive_Aggressive_Classifier
     ]
     estimators_array = []
 
@@ -356,13 +380,16 @@ def instantiate_default_estimators(estimators, verbose=0):
         for est in all_estimators_array:
             estimators_array.append(est())
     else:
-        for input_estimator in estimators:
-            for est in all_estimators_array:
-                est_prop = est().properties()
+   
+        perms = itertools.product(estimators, all_estimators_array)
+        for p in perms:
+            input_estimator = p[0]
+            mleap_estimator = p[1]
+            mleap_estimator_prop = mleap_estimator().properties()
+
+            if input_estimator in mleap_estimator_prop['estimator_family'] or \
+                input_estimator in mleap_estimator_prop['tasks'] or \
+                input_estimator in mleap_estimator_prop['name']:
                 
-                if input_estimator in est_prop['estimator_family'] or \
-                   input_estimator in est_prop['tasks'] or \
-                   input_estimator in est_prop['name']:
-                   
-                   estimators_array.append(est()) 
+                estimators_array.append(mleap_estimator()) 
     return estimators_array
