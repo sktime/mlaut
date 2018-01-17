@@ -65,8 +65,7 @@ class properties(object):
     
     
     def __call__(self, cls):
-        def test():
-            print('test')
+
         class Wrapped(cls):
 
             def properties(cls):
@@ -83,9 +82,11 @@ class properties(object):
         return Wrapped
 
 
-
-#Generalized Linear Models
-
+"""
+************************************************************************
+BEGIN: Generalized Linear Models
+************************************************************************
+"""
     
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[CLASSIFICATION,REGRESSION], 
@@ -94,10 +95,7 @@ class Ridge_Regression(MleapEstimator):
 
     def __init__(self):
         super().__init__()
-    
-    def get_estimator_name(self):
-        return 'RidgeRegression'
-    
+       
     def build(self, hyperparameters=None):
         if hyperparameters is None:
             hyperparameters = {'alphas':[0.1, 1, 10.0],
@@ -109,7 +107,7 @@ class Ridge_Regression(MleapEstimator):
     def save(self, dataset_name):
         disk_op = DiskOperations()
         disk_op.save_to_pickle(trained_model=self._trained_model,
-                                model_name=self.get_estimator_name(),
+                                model_name=self.properties()['name'],
                                 dataset_name=dataset_name)
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[CLASSIFICATION,REGRESSION], 
@@ -118,8 +116,6 @@ class Lasso(MleapEstimator):
     def __init__(self):
         super().__init__()
     
-    def get_estimator_name(self):
-        return 'Lasso'
     def build(self, hyperparameters=None):
         if hyperparameters is None:
             hyperparameters = {'alphas':[0.1, 1, 10.0]}
@@ -128,7 +124,7 @@ class Lasso(MleapEstimator):
     def save(self, dataset_name):
         disk_op = DiskOperations()
         disk_op.save_to_pickle(trained_model=self._trained_model,
-                                model_name=self.get_estimator_name(),
+                                model_name=self.properties()['name'],
                                 dataset_name=dataset_name)
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[CLASSIFICATION,REGRESSION], 
@@ -137,8 +133,7 @@ class Lasso_Lars(MleapEstimator):
     def __init__(self):
         super().__init__()
     
-    def get_estimator_name(self):
-        return 'LassoLars'
+
     def build(self, hyperparameters=None):
         if hyperparameters is None:
             hyperparameters = {'max_n_alphas':1000}
@@ -147,7 +142,7 @@ class Lasso_Lars(MleapEstimator):
     def save(self, dataset_name):
         disk_op = DiskOperations()
         disk_op.save_to_pickle(trained_model=self._trained_model,
-                                model_name=self.get_estimator_name(),
+                                model_name=self.properties()['name'],
                                 dataset_name=dataset_name)
 
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
@@ -168,15 +163,12 @@ class Logistic_Regression(MleapEstimator):
                             n_jobs=self._n_jobs,
                             refit=self._refit)
     
-    def get_estimator_name(self):
-        return 'LogisticRegression'
-
     def save(self, dataset_name):
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
         disk_op = DiskOperations()
         disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.get_estimator_name(),
+                             model_name=self.properties()['name'],
                              dataset_name=dataset_name)
 
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS],
@@ -193,8 +185,7 @@ class Passive_Aggressive_Classifier(MleapEstimator):
                             hyperparameters, 
                             verbose=self._verbose
                             )
-    def get_estimator_name(self):
-        return 'PassiveAggressiveClassifier'
+
     
     def save(self, dataset_name):
         trained_model = self._trained_model
@@ -202,9 +193,18 @@ class Passive_Aggressive_Classifier(MleapEstimator):
         disk_op.save_to_pickle(trained_model=trained_model,
                              model_name=self.properties()['name'],
                              dataset_name=dataset_name)
-###End of Generalized Linear Models
+"""
+************************************************************************
+BEGIN: Generalized Linear Models
+************************************************************************
+"""
 
-### Ensemble methods
+
+"""
+************************************************************************
+BEGIN: Ensemble methods
+************************************************************************
+"""
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[CLASSIFICATION,REGRESSION], 
             name='RandomForestClassifier')
@@ -226,15 +226,14 @@ class Random_Forest_Classifier(MleapEstimator):
                             n_jobs=self._n_jobs,
                             refit=self._refit)
     
-    def get_estimator_name(self):
-        return 'RandomForestClassifier'
+
 
     def save(self, dataset_name):
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
         disk_op = DiskOperations()
         disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.get_estimator_name(),
+                             model_name=self.properties()['name'],
                              dataset_name=dataset_name)
         
 
@@ -256,15 +255,14 @@ class SVC_mleap(MleapEstimator):
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
-    def get_estimator_name(self):
-        return 'SVC'
+
 
     def save(self, dataset_name):
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
         disk_op = DiskOperations()
         disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.get_estimator_name(),
+                             model_name=self.properties()['name'],
                              dataset_name=dataset_name)
 
 
@@ -272,14 +270,14 @@ class SVC_mleap(MleapEstimator):
             tasks=[CLASSIFICATION], 
             name='GaussianNaiveBayes')
 class Gaussian_Naive_Bayes(MleapEstimator):
-    def get_estimator_name(self):
-        return 'GaussianNaiveBayes'
+
+
     def save(self, dataset_name):
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
         disk_op = DiskOperations()
         disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.get_estimator_name(),
+                             model_name=self.properties()['name'],
                              dataset_name=dataset_name)
     def build(self):
         return GaussianNB()
@@ -288,14 +286,13 @@ class Gaussian_Naive_Bayes(MleapEstimator):
             tasks=[CLASSIFICATION], 
             name='BernoulliNaiveBayes')
 class Bernoulli_Naive_Bayes(MleapEstimator):
-    def get_estimator_name(self):
-        return 'BernoulliNaiveBayes'
+
     def save(self, dataset_name):
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
         disk_op = DiskOperations()
         disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.get_estimator_name(),
+                             model_name=self.properties()['name'],
                              dataset_name=dataset_name)
     def build(self):
         return BernoulliNB()
@@ -340,15 +337,14 @@ class Deep_NN_Classifier(MleapEstimator):
         #                     verbose = self._verbose,
         #                     n_jobs=self._n_jobs,
         #                     refit=self._refit)
-    def get_estimator_name(self):
-        return 'NeuralNetworkDeepClassifier'
+
 
     def save(self, dataset_name):
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
         disk_op = DiskOperations()
         disk_op.save_keras_model(trained_model=trained_model,
-                                 model_name=self.get_estimator_name(),
+                                 model_name=self.properties()['name'],
                                  dataset_name=dataset_name)
     
     #overloading method from parent class

@@ -26,9 +26,6 @@ class MleapEstimator(ABC):
         path_to_load = split_path[0] + PICKLE_EXTENTION 
         model = pickle.load(open(path_to_load,'rb'))
         self.set_trained_model(model)
-    @abstractmethod
-    def get_estimator_name(self):
-        """ returs the name of the estimator"""    
     
     def set_trained_model(self, trained_model):
         self._trained_model = trained_model
