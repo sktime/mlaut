@@ -65,10 +65,11 @@ class properties(object):
     
     
     def __call__(self, cls):
- 
+        def test():
+            print('test')
         class Wrapped(cls):
-            
-            def properties(self):
+
+            def properties(cls):
                 #check whether the inputs are right
                 if not isinstance(self._estimator_family, list) or \
                     not isinstance(self._tasks, list):
@@ -76,7 +77,7 @@ class properties(object):
                 properties_dict = {
                     'estimator_family': self._estimator_family,
                     'tasks': self._tasks,
-                    'name':self._name
+                    'name': self._name
                 }
                 return properties_dict
         return Wrapped
@@ -92,7 +93,7 @@ class properties(object):
 class Ridge_Regression(MleapEstimator):
 
     def __init__(self):
-        super(Ridge_Regression, self).__init__()
+        super().__init__()
     
     def get_estimator_name(self):
         return 'RidgeRegression'
@@ -115,7 +116,7 @@ class Ridge_Regression(MleapEstimator):
             name='Lasso')
 class Lasso(MleapEstimator):
     def __init__(self):
-        super(Lasso, self).__init__()
+        super().__init__()
     
     def get_estimator_name(self):
         return 'Lasso'
@@ -134,7 +135,7 @@ class Lasso(MleapEstimator):
             name='LassoLars')
 class Lasso_Lars(MleapEstimator):
     def __init__(self):
-        super(Lasso_Lars, self).__init__()
+        super().__init__()
     
     def get_estimator_name(self):
         return 'LassoLars'
@@ -154,7 +155,7 @@ class Lasso_Lars(MleapEstimator):
             name='LogisticRegression')
 class Logistic_Regression(MleapEstimator):
     def __init__(self):
-        super(Logistic_Regression, self).__init__()
+        super().__init__()
 
     def build(self, hyperparameters=None):
         if hyperparameters is None:
@@ -183,7 +184,7 @@ class Logistic_Regression(MleapEstimator):
             name='PassiveAggressiveClassifier')
 class Passive_Aggressive_Classifier(MleapEstimator):
     def __init__(self):
-        super(Passive_Aggressive_Classifier, self).__init__()
+        super().__init__()
     def build(self, hyperparameters=None):
         hyperparameters = {
                 'C': [1e-6, 1] #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
@@ -192,6 +193,9 @@ class Passive_Aggressive_Classifier(MleapEstimator):
                             hyperparameters, 
                             verbose=self._verbose
                             )
+    def get_estimator_name(self):
+        return 'PassiveAggressiveClassifier'
+    
     def save(self, dataset_name):
         trained_model = self._trained_model
         disk_op = DiskOperations()
@@ -207,7 +211,7 @@ class Passive_Aggressive_Classifier(MleapEstimator):
 class Random_Forest_Classifier(MleapEstimator):
 
     def __init__(self):
-        super(Random_Forest_Classifier, self).__init__()
+        super().__init__()
 
     def build(self, hyperparameters=None):
         if hyperparameters is None:
@@ -239,7 +243,7 @@ class Random_Forest_Classifier(MleapEstimator):
             name='SVC')
 class SVC_mleap(MleapEstimator):
     def __init__(self):
-        super(SVC_mleap, self).__init__()
+        super().__init__()
 
     def build(self, hyperparameters=None):
         if hyperparameters is None:
@@ -301,7 +305,7 @@ class Bernoulli_Naive_Bayes(MleapEstimator):
             name='NeuralNetworkDeepClassifier')
 class Deep_NN_Classifier(MleapEstimator):
     def __init__(self):
-        super(Deep_NN_Classifier, self).__init__()
+        super().__init__()
 
     def _nn_deep_classifier_model(self, num_classes, 
                                   input_dim,

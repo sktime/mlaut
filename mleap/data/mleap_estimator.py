@@ -3,7 +3,6 @@ from ..shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 import pickle
 from ..shared.static_variables import PICKLE_EXTENTION
 class MleapEstimator(ABC):
-
     def __init__(self, 
                 verbose=0, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
