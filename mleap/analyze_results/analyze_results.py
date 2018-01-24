@@ -8,10 +8,10 @@ import itertools
 from scipy import stats
 from ..shared.files_io import FilesIO
 from ..data.data import Data
+from scipy.stats import ttest_ind
 
 from sklearn.metrics import accuracy_score, mean_squared_error
 class AnalyseResults(object):
-    SIGNIFICANCE_LEVEL = 0.05
 
     def __init__(self, hdf5_output_io, hdf5_input_io):
         self._input_io = hdf5_input_io
@@ -68,30 +68,19 @@ class AnalyseResults(object):
         return acc_per_strat
 
                            
-    def _t_test(self,alpha, test_type, prediction_accuracies):
+    def _t_test(self, prediction_accuracies):
         t_test = {}
         perms = itertools.combinations(prediction_accuracies.keys(), r=2)
         for perm in perms:
             comb  = perm[0] + ' - ' + perm[1]
-            a0 = np.array(prediction_accuracies[perm[0]]).astype(np.float)
-            a1 = np.array(prediction_accuracies[perm[1]]).astype(np.float)
-            d = a0-a1
-            n = len(d)
-            ts = np.sqrt(n) * np.average(d)/np.std(d)
-            ts = round(ts,2)
-            t_stat = stats.t.ppf(1 - alpha, n - 1)
-            t_stat = round(t_stat,2)
-            p_val = (1 - stats.t.cdf(np.abs(ts), n-1)) * 2
-            p_val = round(p_val,2)
-            if np.abs(ts) >= t_stat:
-                passed = 1
-            else:
-                passed = 0
+            a0 = np.array(prediction_accuracies[perm[0]])
+            a1 = np.array(prediction_accuracies[perm[1]])
+            t_stat, p_val = ttest_ind(a0,a1)
             t_test[comb] = [t_stat, p_val ]
         return t_test
     
     def perform_t_test(self, loss_per_strategy):
-        t_test = self._t_test(self.SIGNIFICANCE_LEVEL, 't-test', loss_per_strategy)
+        t_test = self._t_test(loss_per_strategy)
 
         values = []
         for pair in t_test.keys():        

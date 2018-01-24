@@ -2,7 +2,7 @@ from download_delgado.delgado_datasets import DownloadAndConvertDelgadoDatasets
 from mleap.data import Data
 from mleap.data.estimators import instantiate_default_estimators
 from mleap.experiments import TestOrchestrator
-from mleap.analyze_results import AnalyseResults
+
 
 data = Data()
 
@@ -17,6 +17,3 @@ test_o.run(input_io_datasets_loc=dts_names_list_full_path,
            modelling_strategies=instantiated_models)
 
 
-
-# instantiated_models = instantiate_default_estimators(estimators=['Lasso'])
-# print(instantiated_models)

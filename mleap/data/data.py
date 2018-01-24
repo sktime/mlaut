@@ -75,7 +75,7 @@ class Data(object):
         train, train_meta = hdf5_out.load_dataset_h5(self._split_datasets_group +'/'+ \
         dataset_name + '/' + self._train_idx)
         
-        test, test_meta = hdf5_out.load_dataset_h5(self.split_dts_group +'/'+ \
+        test, test_meta = hdf5_out.load_dataset_h5(self._split_datasets_group +'/'+ \
         dataset_name + '/' + self._test_idx)
         
         return train, test, train_meta, test_meta
