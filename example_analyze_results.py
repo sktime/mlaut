@@ -19,13 +19,13 @@ observations = analyze.calculate_loss_all_datasets(input_h5_original_datasets_gr
 # print('******sign test******')
 # print(sign_test_df)
 
-t_test_bonferroni, t_test_bonferroni_df = analyze.t_test_with_bonferroni_correction(observations)
-print('******t-test bonferroni correction******')
-print(t_test_bonferroni_df)
+# t_test_bonferroni, t_test_bonferroni_df = analyze.t_test_with_bonferroni_correction(observations)
+# print('******t-test bonferroni correction******')
+# print(t_test_bonferroni_df)
 
-# wilcoxon_test, wilcoxon_test_df = analyze.perform_wilcoxon()
-# print('******Wilcoxon test******')
-# print(wilcoxon_test_df)
+wilcoxon_test, wilcoxon_test_df = analyze.wilcoxon_test(observations)
+print('******Wilcoxon test******')
+print(wilcoxon_test_df)
 
 # friedman_test, friedman_test_df = analyze.perform_friedman_test()
 # print('******Friedman test******')

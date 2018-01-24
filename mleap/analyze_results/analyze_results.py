@@ -123,13 +123,18 @@ class AnalyseResults(object):
         t_test_bonferoni = np.array(values_df)
         return t_test_bonferoni, values_df
         
-    def perform_wilcoxon(self):
+    def wilcoxon_test(self, observations):
+        """
+        Wilcoxon signed-rank test.
+        Tests whether two  related paired samples come from the same distribution. 
+        In particular, it tests whether the distribution of the differences x-y is symmetric about zero
+        """
         wilcoxon_test ={}
-        perms = itertools.combinations(self._prediction_accuracies.keys(), r=2)
+        perms = itertools.combinations(observations.keys(), r=2)
         for perm in perms:
             comb  = perm[0] + ' - ' + perm[1]
-            wilcoxon_test[comb] = stats.wilcoxon(self._prediction_accuracies[perm[0]],
-                         self._prediction_accuracies[perm[1]])
+            wilcoxon_test[comb] = stats.wilcoxon(observations[perm[0]],
+                         observations[perm[1]])
         
         values = []
         for pair in wilcoxon_test.keys():        
