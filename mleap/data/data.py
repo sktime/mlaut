@@ -68,6 +68,7 @@ class Data(object):
                                     array_names=names,
                                     array_meta=meta)
             split_dts_list.append(split_datasets_group + '/' + dataset_name)
+        
         return split_dts_list
     
     def load_train_test_split(self, hdf5_out, dataset_name):

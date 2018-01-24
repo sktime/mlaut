@@ -93,8 +93,8 @@ BEGIN: Generalized Linear Models
             name='RidgeRegression')
 class Ridge_Regression(MleapEstimator):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0):
+        super().__init__(verbose=verbose)
        
     def build(self, hyperparameters=None):
         if hyperparameters is None:
@@ -113,8 +113,8 @@ class Ridge_Regression(MleapEstimator):
             tasks=[CLASSIFICATION,REGRESSION], 
             name='Lasso')
 class Lasso(MleapEstimator):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0):
+        super().__init__(verbose=verbose)
     
     def build(self, hyperparameters=None):
         if hyperparameters is None:
@@ -130,8 +130,8 @@ class Lasso(MleapEstimator):
             tasks=[CLASSIFICATION,REGRESSION], 
             name='LassoLars')
 class Lasso_Lars(MleapEstimator):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0):
+        super().__init__(verbose=verbose)
     
 
     def build(self, hyperparameters=None):
@@ -149,8 +149,8 @@ class Lasso_Lars(MleapEstimator):
             tasks=[CLASSIFICATION,REGRESSION], 
             name='LogisticRegression')
 class Logistic_Regression(MleapEstimator):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0):
+        super().__init__(verbose=verbose)
 
     def build(self, hyperparameters=None):
         if hyperparameters is None:
@@ -175,11 +175,12 @@ class Logistic_Regression(MleapEstimator):
             tasks=[CLASSIFICATION],
             name='PassiveAggressiveClassifier')
 class Passive_Aggressive_Classifier(MleapEstimator):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0):
+        super().__init__(verbose=verbose)
     def build(self, hyperparameters=None):
         hyperparameters = {
-                'C': [1e-6, 1] #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
+                'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6],
+                'max_iter':[1000]
             }
         return GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
                             hyperparameters, 
@@ -210,8 +211,8 @@ BEGIN: Ensemble methods
             name='RandomForestClassifier')
 class Random_Forest_Classifier(MleapEstimator):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0):
+        super().__init__(verbose=verbose)
 
     def build(self, hyperparameters=None):
         if hyperparameters is None:
@@ -241,8 +242,8 @@ class Random_Forest_Classifier(MleapEstimator):
             tasks=[CLASSIFICATION], 
             name='SVC')
 class SVC_mleap(MleapEstimator):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0):
+        super().__init__(verbose=verbose)
 
     def build(self, hyperparameters=None):
         if hyperparameters is None:
@@ -301,8 +302,8 @@ class Bernoulli_Naive_Bayes(MleapEstimator):
             tasks=[CLASSIFICATION], 
             name='NeuralNetworkDeepClassifier')
 class Deep_NN_Classifier(MleapEstimator):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0):
+        super().__init__(verbose=verbose)
 
     def _nn_deep_classifier_model(self, num_classes, 
                                   input_dim,
@@ -391,5 +392,5 @@ def instantiate_default_estimators(estimators, verbose=0):
                 input_estimator in mleap_estimator_prop['tasks'] or \
                 input_estimator in mleap_estimator_prop['name']:
                 
-                estimators_array.append(mleap_estimator()) 
+                estimators_array.append(mleap_estimator(verbose=verbose)) 
     return estimators_array

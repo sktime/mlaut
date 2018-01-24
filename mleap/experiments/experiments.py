@@ -76,7 +76,7 @@ class Experiments(object):
         for model in models:
             trained_model = model.get_trained_model()
             prediction = trained_model.predict(X_test)
-            predictions.append([model.get_estimator_name(), prediction])
+            predictions.append([model.properties()['name'], prediction])
         return predictions
     
     # def calculate_prediction_accuracy(self, predictions_per_ml_strategy, true_labels):
