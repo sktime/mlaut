@@ -9,6 +9,7 @@ from scipy import stats
 from ..shared.files_io import FilesIO
 from ..data.data import Data
 from scipy.stats import ttest_ind
+from scipy.stats import ranksums
 
 from sklearn.metrics import accuracy_score, mean_squared_error
 class AnalyseResults(object):
@@ -67,20 +68,16 @@ class AnalyseResults(object):
             acc_per_strat[strat] = df[df['strategy']==strat]['accuracy'].values.astype(np.float)
         return acc_per_strat
 
-                           
-    def _t_test(self, prediction_accuracies):
+       
+    def t_test(self, observations):
         t_test = {}
-        perms = itertools.combinations(prediction_accuracies.keys(), r=2)
+        perms = itertools.combinations(observations.keys(), r=2)
         for perm in perms:
             comb  = perm[0] + ' - ' + perm[1]
-            a0 = np.array(prediction_accuracies[perm[0]])
-            a1 = np.array(prediction_accuracies[perm[1]])
-            t_stat, p_val = ttest_ind(a0,a1)
+            x = np.array(observations[perm[0]])
+            y = np.array(observations[perm[1]])
+            t_stat, p_val = ttest_ind(x,y)
             t_test[comb] = [t_stat, p_val ]
-        return t_test
-    
-    def perform_t_test(self, loss_per_strategy):
-        t_test = self._t_test(loss_per_strategy)
 
         values = []
         for pair in t_test.keys():        
@@ -89,34 +86,25 @@ class AnalyseResults(object):
 
         return t_test, values_df
                         
-    def perform_sign_test(self):
+    def sign_test(self, observations):
+        """
+        Non-parametric test for testing consistent differences between pairs of obeservations.
+        The test counts the number of observations that are greater, smaller and equal to the mean
+        https://en.wikipedia.org/wiki/Sign_test
+        """
         sign_test = {}
-        perms = itertools.combinations(self._prediction_accuracies.keys(), r=2)
+        perms = itertools.combinations(observations.keys(), r=2)
         for perm in perms:
             comb  = perm[0] + ' - ' + perm[1]
-            d = np.array(self._prediction_accuracies[perm[0]]) - np.array(self._prediction_accuracies[perm[1]])
-            pos = sum(x > 0 for x in d)
-            neg = sum(x < 0 for x in d)
-            tie = sum(x == 0 for x in d)
-            
-            successes = 0
-            failures = 0
-            
-            if tie % 2 == 0:
-                successes = pos + tie/2
-                failures = neg + tie/2
-            else:
-                successes = pos + (tie -1)/2
-                failures = neg + (tie -1)/2 
-            z = (successes - failures)/np.sqrt(len(d) * 0.5 * 0.5)
-            p_val = (1-stats.norm.cdf(np.abs(z)))*2
-            
-            sign_test[comb] = p_val
+            x = observations[perm[0]]
+            y = observations[perm[1]]
+            t_stat, p_val = ranksums(x,y)
+            sign_test[comb] = [t_stat, p_val]
         
         values = []
         for pair in sign_test.keys():        
-            values.append( [pair, sign_test[pair] ])
-        values_df = pd.DataFrame(values, columns=['pair','p_value'])
+            values.append( [pair, sign_test[pair][0], sign_test[pair][1] ])
+        values_df = pd.DataFrame(values, columns=['pair','t_statistic','p_value'])
 
         return sign_test, values_df
         
