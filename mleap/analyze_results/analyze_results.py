@@ -10,6 +10,7 @@ from ..shared.files_io import FilesIO
 from ..data.data import Data
 from scipy.stats import ttest_ind
 from scipy.stats import ranksums
+from statsmodels.sandbox.stats.multicomp import multipletests
 
 from sklearn.metrics import accuracy_score, mean_squared_error
 class AnalyseResults(object):
@@ -108,15 +109,18 @@ class AnalyseResults(object):
 
         return sign_test, values_df
         
-    def perform_t_test_with_bonferroni_correction(self):
-        m = len(self._prediction_accuracies.keys())
-        t_test_bonferoni = self._t_test(self.SIGNIFICANCE_LEVEL/m, 't-test with Bonferroni correction', self._prediction_accuracies)
+    def t_test_with_bonferroni_correction(self, observations, alpha=0.05):
+        """
+        correction used to counteract multiple comparissons
+        https://en.wikipedia.org/wiki/Bonferroni_correction
+        """
+        t_test, df_t_test = self.t_test(observations)
         
-        values = []
-        for pair in t_test_bonferoni.keys():        
-            values.append( [pair, t_test_bonferoni[pair][0], t_test_bonferoni[pair][1] ])
-        values_df = pd.DataFrame(values, columns=['pair','t_statistic','p_value'])
+        unadjusted_p_vals = np.array(df_t_test['p_value'])
+        reject, p_adjusted, alphacSidak, alphacBonf = multipletests(unadjusted_p_vals, alpha=alpha, method='bonferroni')
         
+        values_df = pd.concat([df_t_test['pair'], pd.Series(p_adjusted, name='p_value')], axis=1)
+        t_test_bonferoni = np.array(values_df)
         return t_test_bonferoni, values_df
         
     def perform_wilcoxon(self):
