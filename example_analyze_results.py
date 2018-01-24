@@ -23,10 +23,10 @@ observations = analyze.calculate_loss_all_datasets(input_h5_original_datasets_gr
 # print('******t-test bonferroni correction******')
 # print(t_test_bonferroni_df)
 
-wilcoxon_test, wilcoxon_test_df = analyze.wilcoxon_test(observations)
-print('******Wilcoxon test******')
-print(wilcoxon_test_df)
+# wilcoxon_test, wilcoxon_test_df = analyze.wilcoxon_test(observations)
+# print('******Wilcoxon test******')
+# print(wilcoxon_test_df)
 
-# friedman_test, friedman_test_df = analyze.perform_friedman_test()
-# print('******Friedman test******')
-# print(friedman_test_df)
+friedman_test, friedman_test_df = analyze.friedman_test(observations)
+print('******Friedman test******')
+print(friedman_test_df)

@@ -1,13 +1,14 @@
-from ..shared.static_variables import T_TEST_FILENAME,FRIEDMAN_TEST_FILENAME, WILCOXON_TEST_FILENAME, SIGN_TEST_FILENAME, BONFERRONI_TEST_FILENAME
-from ..shared.static_variables import RESULTS_DIR, T_TEST_DATASET, SIGN_TEST_DATASET, BONFERRONI_CORRECTION_DATASET, WILCOXON_DATASET, FRIEDMAN_DATASET
+from mleap.shared.static_variables import T_TEST_FILENAME,FRIEDMAN_TEST_FILENAME, WILCOXON_TEST_FILENAME, SIGN_TEST_FILENAME, BONFERRONI_TEST_FILENAME
+from mleap.shared.static_variables import RESULTS_DIR, T_TEST_DATASET, SIGN_TEST_DATASET, BONFERRONI_CORRECTION_DATASET, WILCOXON_DATASET, FRIEDMAN_DATASET
 
-from ..shared.static_variables import DATA_DIR, HDF5_DATA_FILENAME
+from mleap.shared.static_variables import DATA_DIR, HDF5_DATA_FILENAME
 import pandas as pd
 import numpy as np
 import itertools
+from mleap.shared.files_io import FilesIO
+from mleap.data.data import Data
+
 from scipy import stats
-from ..shared.files_io import FilesIO
-from ..data.data import Data
 from scipy.stats import ttest_ind
 from scipy.stats import ranksums
 from statsmodels.sandbox.stats.multicomp import multipletests
@@ -143,10 +144,18 @@ class AnalyseResults(object):
 
         return wilcoxon_test, values_df
                         
-    def perform_friedman_test(self):
-        friedman_test = stats.friedmanchisquare(self._prediction_accuracies['SVM'], 
-                                                self._prediction_accuracies['LogisticRegression'], 
-                                                self._prediction_accuracies['RandomForestClassifier'])
+    def friedman_test(self, observations):
+        """
+        The Friedman test is a non-parametric statistical test used to detect differences 
+        in treatments across multiple test attempts. The procedure involves ranking each row (or block) together, 
+        then considering the values of ranks by columns. 
+        """
+
+        """
+        use the * operator to unpack a sequence
+        https://stackoverflow.com/questions/2921847/what-does-the-star-operator-mean/2921893#2921893
+        """
+        friedman_test = stats.friedmanchisquare(*[observations[k] for k in observations.keys()])
         values = [friedman_test[0], friedman_test[1]]
         values_df = pd.DataFrame([values], columns=['statistic','p_value'])
 
