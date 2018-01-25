@@ -30,3 +30,7 @@ observations = analyze.calculate_loss_all_datasets(input_h5_original_datasets_gr
 friedman_test, friedman_test_df = analyze.friedman_test(observations)
 print('******Friedman test******')
 print(friedman_test_df)
+
+nemeniy_test = analyze.nemenyi(observations)
+print('******Nemeniy test******')
+print(nemeniy_test)

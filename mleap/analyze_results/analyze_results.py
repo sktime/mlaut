@@ -14,6 +14,8 @@ from scipy.stats import ranksums
 from statsmodels.sandbox.stats.multicomp import multipletests
 
 from sklearn.metrics import accuracy_score, mean_squared_error
+import scikit_posthocs as sp
+
 class AnalyseResults(object):
 
     def __init__(self, hdf5_output_io, hdf5_input_io):
@@ -160,4 +162,10 @@ class AnalyseResults(object):
         values_df = pd.DataFrame([values], columns=['statistic','p_value'])
 
         return friedman_test, values_df
-        
+    
+    def nemenyi(self, obeservations):
+        obs = []
+        for o in obeservations:
+            obs.append(obeservations[o])
+            
+        return sp.posthoc_nemenyi(obs)
