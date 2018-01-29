@@ -169,7 +169,7 @@ class Gradient_Boosting_Classifier(MleapEstimator):
                              dataset_name=dataset_name)
 
 @properties(estimator_family=[ENSEMBLE_METHODS], 
-            tasks=[CLASSIFICATION], 
+            tasks=[REGRESSION], 
             name='GradientBoostingRegressor')
 class Gradient_Boosting_Regressor(MleapEstimator):
 
@@ -182,7 +182,7 @@ class Gradient_Boosting_Regressor(MleapEstimator):
                 'n_estimators': [10, 100, 1000, 2000],
                 'max_depth':[10,100]
             }
-        return GridSearchCV(Gradient_Boosting_Regressor(), 
+        return GridSearchCV(GradientBoostingRegressor(), 
                             hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
