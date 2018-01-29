@@ -32,3 +32,31 @@ class MleapEstimator(ABC):
     
     def get_trained_model(self):
         return self._trained_model
+
+
+
+#decorator for adding properties to estimator classes
+class properties(object):
+    def __init__(self, estimator_family, tasks, name):
+        self._estimator_family = estimator_family
+        self._tasks = tasks
+        self._name = name
+    
+    
+    def __call__(self, cls):
+
+        class Wrapped(cls):
+
+            def properties(cls):
+                #check whether the inputs are right
+                if not isinstance(self._estimator_family, list) or \
+                    not isinstance(self._tasks, list):
+                    raise ValueError('Arguments to property_decorator must be provided as an array')
+                properties_dict = {
+                    'estimator_family': self._estimator_family,
+                    'tasks': self._tasks,
+                    'name': self._name
+                }
+                return properties_dict
+        return Wrapped
+
