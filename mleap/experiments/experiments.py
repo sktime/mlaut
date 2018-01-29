@@ -7,6 +7,7 @@ import os
 import logging
 from sklearn.preprocessing import OneHotEncoder
 from ..shared.files_io import DiskOperations
+from mleap.shared.static_variables import NEURAL_NETWORKS
 class Experiments(object):
     def __init__(self, experiments_trained_models_dir):
         self._disk_op = DiskOperations()
@@ -26,6 +27,7 @@ class Experiments(object):
         timestamps_df = pd.DataFrame()
         for modelling_strategy in modelling_strategies:
             ml_strategy_name = modelling_strategy.properties()['name']
+            ml_strategy_family = modelling_strategy.properties()['estimator_family']
             begin_timestamp = datetime.now()
 
             #check whether the model was already trained
@@ -36,7 +38,7 @@ class Experiments(object):
                 modelling_strategy.load(path_to_check)
             else:
                 #train the model if it does not exist on disk
-                if ml_strategy_name is 'NeuralNetworkDeepClassifier':
+                if NEURAL_NETWORKS in ml_strategy_family:
                     #encode the labels 
                     onehot_encoder = OneHotEncoder(sparse=False)
                     len_y = len(y_train)
@@ -45,9 +47,13 @@ class Experiments(object):
                     num_classes = y_train_onehot_encoded.shape[1]
                     num_samples, input_dim = X_train.shape
                     #build the model with the appropriate parameters
-                    built_model = modelling_strategy.build(num_classes, input_dim, num_samples)
-                    #convert from DataFrame to nupy array
-                    built_model.fit(X_train, y_train_onehot_encoded)
+                    if ml_strategy_name is 'NeuralNetworkDeepClassifier':
+                        built_model = modelling_strategy.build(num_classes, input_dim, num_samples)
+                        built_model.fit(X_train, y_train_onehot_encoded)
+                    if ml_strategy_name is 'NeuralNetworkDeepRegressor':
+                        built_model = modelling_strategy.build(input_dim, num_samples)
+                        built_model.fit(X_train, y_train)
+                        
                     trained_model = built_model
                 else:
                     built_model = modelling_strategy.build()

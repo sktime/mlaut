@@ -5,7 +5,7 @@ from mleap.data.glm_estimators import (Ridge_Regression,
                                        Lasso_Lars, 
                                        Logistic_Regression, 
                                        Passive_Aggressive_Classifier)
-from mleap.data.nn_estimators import  Deep_NN_Classifier
+from mleap.data.nn_estimators import  Deep_NN_Classifier, Deep_NN_Regressor
 from mleap.data.bayes_estimators import Gaussian_Naive_Bayes, Bernoulli_Naive_Bayes
 from mleap.data.ensemble_estimators import Random_Forest_Classifier
 from mleap.data.svm_estimators import SVC_mleap
@@ -56,6 +56,7 @@ def instantiate_default_estimators(estimators, verbose=0):
         Gaussian_Naive_Bayes,
         Bernoulli_Naive_Bayes,
         Deep_NN_Classifier,
+        Deep_NN_Regressor,
         Passive_Aggressive_Classifier
     ]
     estimators_array = []
@@ -66,7 +67,6 @@ def instantiate_default_estimators(estimators, verbose=0):
         for est in all_estimators_array:
             estimators_array.append(est())
     else:
-   
         perms = itertools.product(estimators, all_estimators_array)
         for p in perms:
             input_estimator = p[0]
@@ -77,5 +77,8 @@ def instantiate_default_estimators(estimators, verbose=0):
                 input_estimator in mleap_estimator_prop['tasks'] or \
                 input_estimator in mleap_estimator_prop['name']:
                 
-                estimators_array.append(mleap_estimator(verbose=verbose)) 
-    return estimators_array
+                estimators_array.append(mleap_estimator(verbose=verbose))
+    if len(estimators_array) > 0:             
+        return estimators_array
+    else:
+        raise ValueError('Empty Estimator Array')
