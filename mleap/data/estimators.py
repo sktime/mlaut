@@ -10,7 +10,9 @@ from mleap.data.bayes_estimators import Gaussian_Naive_Bayes, Bernoulli_Naive_Ba
 from mleap.data.ensemble_estimators import (Random_Forest_Classifier,
                                             Random_Forest_Regressor,
                                             Bagging_Classifier,
-                                            Bagging_Regressor)
+                                            Bagging_Regressor, 
+                                            Gradient_Boosting_Classifier,
+                                            Gradient_Boosting_Regressor)
 from mleap.data.svm_estimators import SVC_mleap
 
 """
@@ -58,6 +60,8 @@ def instantiate_default_estimators(estimators, verbose=0):
         Random_Forest_Regressor,
         Bagging_Classifier,
         Bagging_Regressor,
+        Gradient_Boosting_Classifier,
+        Gradient_Boosting_Regressor,
         SVC_mleap,
         Gaussian_Naive_Bayes,
         Bernoulli_Naive_Bayes,
