@@ -4,9 +4,22 @@ from mleap.data import Data
 from mleap.data.estimators import instantiate_default_estimators
 from mleap.experiments import Orchestrator
 from mleap.analyze_results import AnalyseResults
-
+from mleap.shared import DiskOperations
 import pandas as pd
 import os
+import pytest
+
+def test_create_directories():
+    disk_op = DiskOperations()
+    disk_op.create_directory_on_hdd('data/trained_models')
+
+@pytest.fixture
+def db_files():
+    data = Data()
+    input_io = data.open_hdf5('data/iris.hdf5', mode='r')
+    out_io = data.open_hdf5('data/test_output.hdf5', mode='a')
+    return input_io, out_io
+
 def test_save_dataset_in_hdf5():
     iris = datasets.load_iris()
     X = iris.data
@@ -28,10 +41,10 @@ def test_default_models():
     instantiated_models = instantiate_default_estimators(estimators=['all'])
     assert len(instantiated_models) > 0
 
-def test_estimators_train_pipeline():
+def test_estimators_train_pipeline(db_files):
+    input_io, out_io = db_files
     data = Data()
-    input_io = data.open_hdf5('data/iris.hdf5', mode='r')
-    out_io = data.open_hdf5('data/test_output.hdf5', mode='a')
+
     dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, 
                                                                   hdf5_group='test_dataset/')
     split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_paths=dts_names_list_full_path)
@@ -43,11 +56,10 @@ def test_estimators_train_pipeline():
             output_io_split_idx_loc=split_dts_list, 
             modelling_strategies=instantiated_models)
 
-def test_analyze_results():
-    data = Data()
-    input_io = data.open_hdf5('data/iris.hdf5', mode='r')
-    out_io = data.open_hdf5('data/test_output.hdf5', mode='a')
+def test_analyze_results(db_files):
+    input_io, out_io = db_files
     analyze = AnalyseResults(hdf5_output_io=out_io, hdf5_input_io=input_io)
+
     observations = analyze.calculate_loss_all_datasets(input_h5_original_datasets_group='test_dataset/', 
                                         output_h5_predictions_group='experiments/predictions/', 
                                         metric='mean_squared_error')

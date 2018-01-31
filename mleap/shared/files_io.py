@@ -46,6 +46,9 @@ class DiskOperations(object):
             return True
         else:
             return False
+
+    def create_directory_on_hdd(self, directory_path):
+        os.makedirs(directory_path, exist_ok=True)
 class FilesIO:
 
     def __init__(self, hdf5_filename, mode='a'):
