@@ -14,7 +14,7 @@ from .experiments import Experiments
 from ..shared.files_io import DiskOperations
 import numpy as np
 import logging
-class TestOrchestrator:
+class Orchestrator:
     def __init__(self, hdf5_input_io, 
                  hdf5_output_io, 
                  experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
@@ -25,21 +25,7 @@ class TestOrchestrator:
         self._output_io = hdf5_output_io
         self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
-        #set logging defaults
         set_logging_defaults()
-        # logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
-        # rootLogger = logging.getLogger()
-
-        # fileHandler = logging.FileHandler(LOG_ERROR_FILE)
-        # fileHandler.setFormatter(logFormatter)
-        # rootLogger.addHandler(fileHandler)
-
-        # consoleHandler = logging.StreamHandler()
-        # consoleHandler.setFormatter(logFormatter)
-        # rootLogger.addHandler(consoleHandler)
-
-
-
 
     def run(self, input_io_datasets_loc, output_io_split_idx_loc, modelling_strategies):
         """ 

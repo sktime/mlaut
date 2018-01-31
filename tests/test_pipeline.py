@@ -2,6 +2,9 @@
 from sklearn import datasets
 from mleap.data import Data
 from mleap.data.estimators import instantiate_default_estimators
+from mleap.experiments import Orchestrator
+from mleap.analyze_results import AnalyseResults
+
 import pandas as pd
 import os
 def test_save_dataset_in_hdf5():
@@ -19,8 +22,39 @@ def test_save_dataset_in_hdf5():
     }
     data = Data()
     data.pandas_to_db(save_loc_hdf5='test_dataset/', datasets=[result], 
-                  dts_metadata=[metadata], save_loc_hdd='iris.hdf5')
+                  dts_metadata=[metadata], save_loc_hdd='data/iris.hdf5')
 
 def test_default_models():
     instantiated_models = instantiate_default_estimators(estimators=['all'])
     assert len(instantiated_models) > 0
+
+def test_estimators_train_pipeline():
+    data = Data()
+    input_io = data.open_hdf5('data/iris.hdf5', mode='r')
+    out_io = data.open_hdf5('data/test_output.hdf5', mode='a')
+    dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, 
+                                                                  hdf5_group='test_dataset/')
+    split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_paths=dts_names_list_full_path)
+    instantiated_models = instantiate_default_estimators(estimators=['all'], verbose=0)
+    orchest = Orchestrator(hdf5_input_io=input_io, 
+                              hdf5_output_io=out_io,
+                              experiments_trained_models_dir='data/trained_models')
+    orchest.run(input_io_datasets_loc=dts_names_list_full_path, 
+            output_io_split_idx_loc=split_dts_list, 
+            modelling_strategies=instantiated_models)
+
+def test_analyze_results():
+    data = Data()
+    input_io = data.open_hdf5('data/iris.hdf5', mode='r')
+    out_io = data.open_hdf5('data/test_output.hdf5', mode='a')
+    analyze = AnalyseResults(hdf5_output_io=out_io, hdf5_input_io=input_io)
+    observations = analyze.calculate_loss_all_datasets(input_h5_original_datasets_group='test_dataset/', 
+                                        output_h5_predictions_group='experiments/predictions/', 
+                                        metric='mean_squared_error')
+
+    t_test, t_test_df = analyze.t_test(observations)
+    sign_test, sign_test_df = analyze.sign_test(observations)
+    t_test_bonferroni, t_test_bonferroni_df = analyze.t_test_with_bonferroni_correction(observations)
+    wilcoxon_test, wilcoxon_test_df = analyze.wilcoxon_test(observations)
+    friedman_test, friedman_test_df = analyze.friedman_test(observations)
+    nemeniy_test = analyze.nemenyi(observations)

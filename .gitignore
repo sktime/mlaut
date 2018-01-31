@@ -104,9 +104,10 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-
+# project specific data files
 # data 
 data/**
 Delgado_data/**
+tests/data/**
 
 
