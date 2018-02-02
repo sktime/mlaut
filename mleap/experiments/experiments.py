@@ -85,28 +85,5 @@ class Experiments(object):
             predictions.append([model.properties()['name'], prediction])
         return predictions
     
-    # def calculate_prediction_accuracy(self, predictions_per_ml_strategy, true_labels):
-    #     prediction_accuracy = []
-    #     for prediction in predictions_per_ml_strategy:
-    #         ml_strategy = prediction[0]
-    #         ml_predictions = prediction[1]
-    #         acc_score = accuracy_score(true_labels, ml_predictions)
-    #         prediction_accuracy.append([ml_strategy, acc_score])
-    #     return prediction_accuracy
-
-    # def calculate_loss(self, metric, predictions_per_ml_strategy, true_labels):
-    #     score = []
-    #     for prediction in predictions_per_ml_strategy:
-    #         ml_strategy = prediction[0]
-    #         ml_predictions = prediction[1]
-    #         result = 0
-    #         if metric=='accuracy':
-    #             result = accuracy_score(true_labels, ml_predictions)
-    #         if metric=='mean_squared_error':
-    #             result = mean_squared_error(y_true=true_labels, y_pred=ml_predictions)
-
-    #         score.append([ml_strategy, result])
-
-    #     return score
 
         
