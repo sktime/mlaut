@@ -19,8 +19,8 @@ class SVC_mleap(MleapEstimator):
     def build(self, hyperparameters=None):
         if hyperparameters is None:
             hyperparameters = {
-                            'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
-                            'gamma': [1e-3, 1] #[1e-3, 1e-2, 1e-1, 1]
+                            'C': [1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6], #[1e-6, 1]
+                            'gamma': [1e-3, 1e-2, 1e-1, 1] #[1e-3, 1]
                         }
         return GridSearchCV(SVC(), 
                             hyperparameters, 
