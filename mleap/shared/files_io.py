@@ -13,9 +13,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 class DiskOperations(object):
-    def bulk_save(self, trained_models, dataset_name):
-        for model in trained_models:
-            model.save(dataset_name)
+
     def save_to_pickle(self, 
                        trained_model, 
                        model_name, 

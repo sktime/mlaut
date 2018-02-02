@@ -75,38 +75,25 @@ class Orchestrator:
                                                                                   modelling_strategies, 
                                                                                   dts_name)
                 self._trained_models_all_datasets.append(trained_models)
-                self._disk_op.bulk_save(trained_models, dts_name)
                 self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
 
                 
                 #make predictions
-                #check whether the prediction alrady exists
-                #********************************************
-                # TODO this checks whether some preditions were made
-                # TODO we shoould check whether there are predictions for all individual estimators
-                # as opposed to for the group overall
-                # ********************************************** 
-                if not self._output_io.check_h5_path_exists(self._experiments_predictions_dir +'/'+ dts_name):
-                    #it is used for choosing the directory in which to look for the saved file
-                    predictions = self._experiments.make_predictions(trained_models, dts, X_test)
-                    self._predictions_all_datasets.append(predictions)
-                    self._output_io.save_predictions_to_db(predictions, dts_name)
-                else:
-                    #load predictions on test dataset if they were already saved in the db
-                    logging.warning(f'Preditions for {dts_name} already exist in H5 database. '
-                    'Predictions will be loaded from the H5 database instead of generating new ones.'
-                    'Delete predictions from H5 databse if using previously made predictions is not desired behaviour.')
-                    predictions = self._output_io.load_predictions_for_dataset(dts_name)
-                    self._predictions_all_datasets.append(predictions)
-                    
-                # #calculate accuracy of predictions
-                # #TODO this needs to be moved to analyze rezults
-                # model_accuracies = self._experiments.calculate_prediction_accuracy(predictions_per_ml_strategy=predictions, 
-                #                                                 true_labels=y_test)
-                # self._prediction_accuracies.append(model_accuracies)
-                # self._output_io.save_prediction_accuracies_to_db(model_accuracies)
-                
-        
+
+                for trained_model in trained_models:
+                    model_name = trained_model.properties()['name']
+                    if not self._output_io.check_h5_path_exists(f'{self._experiments_predictions_dir}/{dts_name}/{model_name}'):
+                        predictions = self._experiments.make_predictions(trained_models, dts, X_test)
+                        self._output_io.save_predictions_to_db(predictions, dts_name)
+                    else:
+                        #load predictions on test dataset if they were already saved in the db
+                        logging.warning(f'Preditions for {dts_name} already exist in H5 database. '
+                        'Predictions will be loaded from the H5 database instead of generating new ones.'
+                        'Delete predictions from H5 databse if using previously made predictions is not desired behaviour.')
+                        predictions = self._output_io.load_predictions_for_dataset(dts_name)
+                        self._predictions_all_datasets.append(predictions)
+
+
         except KeyboardInterrupt:
             # quit
             print('***************************')
