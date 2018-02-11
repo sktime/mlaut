@@ -88,7 +88,7 @@ class Orchestrator:
                     else:
                         #load predictions on test dataset if they were already saved in the db
                         logging.warning(f'Preditions for {dts_name} already exist in H5 database. '
-                        'Predictions will be loaded from the H5 database instead of generating new ones.'
+                        'Predictions will be loaded from the H5 database instead of generating new ones. '
                         'Delete predictions from H5 databse if using previously made predictions is not desired behaviour.')
                         predictions = self._output_io.load_predictions_for_dataset(dts_name)
                         self._predictions_all_datasets.append(predictions)
