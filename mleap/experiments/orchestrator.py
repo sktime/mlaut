@@ -43,8 +43,9 @@ class Orchestrator:
 
         try:
             #loop through all datasets
-            self._trained_models_all_datasets = []
-            self._predictions_all_datasets = []
+            #self._trained_models_all_datasets = []
+            #self._predictions_all_datasets = []
+            dts_trained=0
             self._prediction_accuracies = []
             for dts in zip(input_io_datasets_loc, output_io_split_idx_loc):
                 dataset_loc = dts[0]
@@ -67,14 +68,15 @@ class Orchestrator:
                 #train ml strategy
                 dts_name = orig_dts_meta['dataset_name']
 
-                dts_trained = len(self._trained_models_all_datasets)
+                #dts_trained = len(self._trained_models_all_datasets)
+                dts_trained +=1
                 dts_total = len(input_io_datasets_loc)
                 print(f'*** Training models on dataset: {dts_name}. Total datasets processed: {dts_trained}/{dts_total} ***')
                 trained_models, timestamps_df = self._experiments.run_experiments(X_train, 
                                                                                   y_train, 
                                                                                   modelling_strategies, 
                                                                                   dts_name)
-                self._trained_models_all_datasets.append(trained_models)
+                #self._trained_models_all_datasets.append(trained_models)
                 self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
 
                 
@@ -90,8 +92,8 @@ class Orchestrator:
                         logging.warning(f'Preditions for {dts_name} already exist in H5 database. '
                         'Predictions will be loaded from the H5 database instead of generating new ones. '
                         'Delete predictions from H5 databse if using previously made predictions is not desired behaviour.')
-                        predictions = self._output_io.load_predictions_for_dataset(dts_name)
-                        self._predictions_all_datasets.append(predictions)
+                        #predictions = self._output_io.load_predictions_for_dataset(dts_name)
+                        #self._predictions_all_datasets.append(predictions)
 
 
         except KeyboardInterrupt:
