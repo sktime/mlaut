@@ -70,7 +70,7 @@ def instantiate_default_estimators(estimators, verbose=0):
         Deep_NN_Regressor,
         Passive_Aggressive_Classifier,
         Baseline_Classifier,
-        Bagging_Regressor
+        Baseline_Regressor
     ]
     estimators_array = []
 
