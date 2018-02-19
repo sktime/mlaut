@@ -14,7 +14,8 @@ from mleap.data.ensemble_estimators import (Random_Forest_Classifier,
                                             Gradient_Boosting_Classifier,
                                             Gradient_Boosting_Regressor)
 from mleap.data.svm_estimators import SVC_mleap
-
+from mleap.data.baseline_estimators import (Baseline_Regressor,
+                                            Baseline_Classifier)
 """
 Each estimator is coitained it its own class.
 Each estimator inherits from the abstract class MleapEstimator.
@@ -67,7 +68,9 @@ def instantiate_default_estimators(estimators, verbose=0):
         Bernoulli_Naive_Bayes,
         Deep_NN_Classifier,
         Deep_NN_Regressor,
-        Passive_Aggressive_Classifier
+        Passive_Aggressive_Classifier,
+        Baseline_Classifier,
+        Bagging_Regressor
     ]
     estimators_array = []
 

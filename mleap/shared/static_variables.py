@@ -64,6 +64,7 @@ NEURAL_NETWORKS='Neural Networks'
 CLASSIFICATION='Classification'
 REGRESSION='Regression'
 SVM='Support Vector Machines'
+BASELINE='Baseline'
 
 def set_logging_defaults():
     logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
