@@ -28,14 +28,15 @@ class AnalyseResults(object):
         #load all datasets
         dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=input_h5_original_datasets_group, hdf5_io=self._input_io)
 
-        #load all predcitions
+        #load all predictions
         dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(output_h5_predictions_group, self._output_io)
         loss_arr = []
-        for dts in zip(dts_predictions_list, dts_predictions_list_full_path, dts_names_list_full_path):
-            predictions = self._output_io.load_predictions_for_dataset(dts[0])
-            train, test, _, _ = self._data.load_train_test_split(self._output_io, dts[0])
-            dataset, meta = self._input_io.load_dataset_pd(dts[2])
-            true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=dts[2], lables_idx=test)
+        for dts in dts_predictions_list:
+            predictions = self._output_io.load_predictions_for_dataset(dts)
+            train, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
+            idx_orig_dts = dts_predictions_list.index(dts)
+            path_orig_dts = dts_names_list_full_path[idx_orig_dts]
+            true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
             true_labels = np.array(true_labels)
             loss = self.calculate_prediction_loss_per_dataset(metric=metric, predictions_per_ml_strategy=predictions, true_labels=true_labels)
             loss_arr.append(loss)
@@ -72,7 +73,28 @@ class AnalyseResults(object):
             acc_per_strat[strat] = df[df['strategy']==strat]['accuracy'].values.astype(np.float)
         return acc_per_strat
 
-       
+    def calculate_std_per_dataset(self, input_h5_original_datasets_group, output_h5_predictions_group):
+        orig_dts_names_list, orig_dts_names_list_full_path = self._data.list_datasets(hdf5_group=input_h5_original_datasets_group, 
+                                                                                      hdf5_io=self._input_io)
+        pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=output_h5_predictions_group, 
+                                                                                      hdf5_io=self._output_io)
+        std_per_dataset = {}
+        for dts in pred_dts_names_list:
+            predictions_all_estimators = self._output_io.load_predictions_for_dataset(dts)
+            _, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
+            idx_orig_dts = orig_dts_names_list.index(dts)
+            path_orig_dts = orig_dts_names_list_full_path[idx_orig_dts]
+            true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
+            true_labels = np.array(true_labels)
+            for pr in predictions_all_estimators:
+                estimator_name = pr[0]
+                estimator_predictions = pr[1]
+                diff = estimator_predictions - true_labels
+                s = np.std(diff)
+                std_per_dataset[estimator_name] = s
+        return std_per_dataset
+
+
     def t_test(self, observations):
         t_test = {}
         perms = itertools.combinations(observations.keys(), r=2)
