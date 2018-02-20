@@ -58,6 +58,41 @@ class AnalyseResults(object):
 
         return score
     
+    def calculate_score_per_dataset(self, input_h5_original_datasets_group, output_h5_predictions_group, metric):
+        orig_dts_names_list, orig_dts_names_list_full_path = self._data.list_datasets(hdf5_group=input_h5_original_datasets_group, hdf5_io=self._input_io)
+        pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=output_h5_predictions_group, hdf5_io=self._output_io)
+        result = {}
+        for dts in pred_dts_names_list:
+            predictions_all_estimators = self._output_io.load_predictions_for_dataset(dts)
+            _, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
+            idx_orig_dts = orig_dts_names_list.index(dts)
+            path_orig_dts = orig_dts_names_list_full_path[idx_orig_dts]
+            true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
+            true_labels = np.array(true_labels)
+
+            for est in predictions_all_estimators:
+                est_name = est[0]
+                est_predictions = est[1]
+                score_per_label = self._calculate_score_per_datapoint(predictions=est_predictions, 
+                                                                    true_labels=true_labels, 
+                                                                    metric=metric)
+                std_score = np.std(score_per_label)
+                if metric == 'mean_squared_error':
+                    score = mean_squared_error(est_predictions,true_labels)
+                    result[dts] = [est_name, score, std_score]
+        return result
+
+    def _calculate_score_per_datapoint(self, predictions, true_labels, metric):
+        errors = []
+        for pair in zip(predictions, true_labels):
+            prediction = pair[0]
+            true_label = pair[1]
+            
+            if metric == 'mean_squared_error':
+                mse = mean_squared_error([prediction], [true_label])
+                errors.append(mse)
+        return np.array(errors)
+
     def convert_from_array_to_dict(self, prediction_accuracies):
         prediction_accuracies = np.array(prediction_accuracies)
         num_datasets = prediction_accuracies.shape[0]
@@ -73,27 +108,7 @@ class AnalyseResults(object):
             acc_per_strat[strat] = df[df['strategy']==strat]['accuracy'].values.astype(np.float)
         return acc_per_strat
 
-    def calculate_std_per_dataset(self, input_h5_original_datasets_group, output_h5_predictions_group):
-        orig_dts_names_list, orig_dts_names_list_full_path = self._data.list_datasets(hdf5_group=input_h5_original_datasets_group, 
-                                                                                      hdf5_io=self._input_io)
-        pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=output_h5_predictions_group, 
-                                                                                      hdf5_io=self._output_io)
-        std_per_dataset = {}
-        for dts in pred_dts_names_list:
-            predictions_all_estimators = self._output_io.load_predictions_for_dataset(dts)
-            _, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
-            idx_orig_dts = orig_dts_names_list.index(dts)
-            path_orig_dts = orig_dts_names_list_full_path[idx_orig_dts]
-            true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
-            true_labels = np.array(true_labels)
-            for pr in predictions_all_estimators:
-                estimator_name = pr[0]
-                estimator_predictions = pr[1]
-                diff = estimator_predictions - true_labels
-                s = np.std(diff)
-                std_per_dataset[estimator_name] = s
-        return std_per_dataset
-
+   
 
     def t_test(self, observations):
         t_test = {}
