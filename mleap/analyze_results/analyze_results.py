@@ -18,18 +18,20 @@ import scikit_posthocs as sp
 
 class AnalyseResults(object):
 
-    def __init__(self, hdf5_output_io, hdf5_input_io):
+    def __init__(self, hdf5_output_io, hdf5_input_io, input_h5_original_datasets_group, output_h5_predictions_group):
         self._input_io = hdf5_input_io
         self._output_io = hdf5_output_io
+        self._input_h5_original_datasets_group = input_h5_original_datasets_group
+        self._output_h5_predictions_group = output_h5_predictions_group
         self._data = Data()
         #self._prediction_accuracies = files_io.get_prediction_accuracies_per_strategy()
     
-    def calculate_loss_all_datasets(self, input_h5_original_datasets_group, output_h5_predictions_group, metric):
+    def calculate_error_all_datasets(self, metric):
         #load all datasets
-        dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=input_h5_original_datasets_group, hdf5_io=self._input_io)
+        dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
 
         #load all predictions
-        dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(output_h5_predictions_group, self._output_io)
+        dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(self._output_h5_predictions_group, self._output_io)
         loss_arr = []
         for dts in dts_predictions_list:
             predictions = self._output_io.load_predictions_for_dataset(dts)
@@ -38,12 +40,12 @@ class AnalyseResults(object):
             path_orig_dts = dts_names_list_full_path[idx_orig_dts]
             true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
             true_labels = np.array(true_labels)
-            loss = self.calculate_prediction_loss_per_dataset(metric=metric, predictions_per_ml_strategy=predictions, true_labels=true_labels)
+            loss = self._calculate_prediction_error_per_dataset(metric=metric, predictions_per_ml_strategy=predictions, true_labels=true_labels)
             loss_arr.append(loss)
     
         return self.convert_from_array_to_dict(loss_arr)
     
-    def calculate_prediction_loss_per_dataset(self, metric, predictions_per_ml_strategy, true_labels):
+    def _calculate_prediction_error_per_dataset(self, metric, predictions_per_ml_strategy, true_labels):
         score = []
         for prediction in predictions_per_ml_strategy:
             ml_strategy = prediction[0]
@@ -58,9 +60,9 @@ class AnalyseResults(object):
 
         return score
     
-    def calculate_score_per_dataset(self, input_h5_original_datasets_group, output_h5_predictions_group, metric):
-        orig_dts_names_list, orig_dts_names_list_full_path = self._data.list_datasets(hdf5_group=input_h5_original_datasets_group, hdf5_io=self._input_io)
-        pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=output_h5_predictions_group, hdf5_io=self._output_io)
+    def calculate_error_per_dataset(self, metric):
+        orig_dts_names_list, orig_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
+        pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._output_h5_predictions_group, hdf5_io=self._output_io)
         result = {}
         for dts in pred_dts_names_list:
             predictions_all_estimators = self._output_io.load_predictions_for_dataset(dts)
@@ -73,7 +75,7 @@ class AnalyseResults(object):
             for est in predictions_all_estimators:
                 est_name = est[0]
                 est_predictions = est[1]
-                score_per_label = self._calculate_score_per_datapoint(predictions=est_predictions, 
+                score_per_label = self._calculate_error_per_datapoint(predictions=est_predictions, 
                                                                     true_labels=true_labels, 
                                                                     metric=metric)
                 std_score = np.std(score_per_label)
@@ -82,7 +84,7 @@ class AnalyseResults(object):
                     result[dts] = [est_name, score, std_score]
         return result
 
-    def _calculate_score_per_datapoint(self, predictions, true_labels, metric):
+    def _calculate_error_per_datapoint(self, predictions, true_labels, metric):
         errors = []
         for pair in zip(predictions, true_labels):
             prediction = pair[0]

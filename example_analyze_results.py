@@ -6,10 +6,11 @@ import pickle
 data = Data()
 input_io = data.open_hdf5('data/delgado.hdf5', mode='r')
 out_io = data.open_hdf5('data/experiments.hdf5', mode='a')
-analyze = AnalyseResults(hdf5_output_io=out_io, hdf5_input_io=input_io)
-observations = analyze.calculate_score_per_dataset(input_h5_original_datasets_group='delgado_datasets/', 
-                                    output_h5_predictions_group='experiments/predictions/', 
-                                    metric='mean_squared_error')
+analyze = AnalyseResults(hdf5_output_io=out_io, 
+                        hdf5_input_io=input_io, 
+                        input_h5_original_datasets_group='delgado_datasets/', 
+                        output_h5_predictions_group='experiments/predictions/')
+observations = analyze.calculate_error_per_dataset(metric='mean_squared_error')
 print(observations)
 
 # t_test, t_test_df = analyze.t_test(observations)
