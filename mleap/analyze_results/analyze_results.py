@@ -107,7 +107,7 @@ class AnalyseResults(object):
     
         acc_per_strat = {}
         for strat in list_strategies:
-            acc_per_strat[strat] = df[df['strategy']==strat]['accuracy'].values.astype(np.float)
+            acc_per_strat[strat] = df[df['strategy']==strat]['accuracy'].values.astype(np.float32)
         return acc_per_strat
 
    
