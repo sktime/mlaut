@@ -155,6 +155,7 @@ class Orchestrator:
             trained_estimators = os.listdir(f'{trained_models_dir}/{dts}')
             for trained_estimator in trained_estimators:
                 name_estimator = trained_estimator.split('.')[0]
+                print(name_estimator)
                 try:
                     idx_estimator = names_all_estimators.index(name_estimator)
                     estimator = estimators[idx_estimator]
