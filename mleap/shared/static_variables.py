@@ -49,9 +49,9 @@ FLAG_ACCURACY = 'accuracy'
 
 GRIDSEARCH_CV_NUM_PARALLEL_JOBS = -1 #use -1 for maximum
 
-TRAIN_IDX = '/train_idx'
-TEST_IDX = '/test_idx'
-SPLIT_DTS_GROUP = '/split_dts_idx'
+TRAIN_IDX = 'train_idx'
+TEST_IDX = 'test_idx'
+SPLIT_DTS_GROUP = 'split_dts_idx'
 LOG_ERROR_FILE = 'mleap_erros.log'
 
 """

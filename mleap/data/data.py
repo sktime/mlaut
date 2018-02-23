@@ -72,14 +72,32 @@ class Data(object):
         return split_dts_list
     
     def load_train_test_split(self, hdf5_out, dataset_name):
-        train, train_meta = hdf5_out.load_dataset_h5(self._split_datasets_group +'/'+ \
-        dataset_name + '/' + self._train_idx)
-        
-        test, test_meta = hdf5_out.load_dataset_h5(self._split_datasets_group +'/'+ \
-        dataset_name + '/' + self._test_idx)
+        path_train = f'/{self._split_datasets_group}/{dataset_name}/{self._train_idx}'
+        train, train_meta = hdf5_out.load_dataset_h5(path_train)
+        path_test = f'/{self._split_datasets_group}/{dataset_name}/{self._test_idx}'
+        test, test_meta = hdf5_out.load_dataset_h5(path_test)
         
         return train, test, train_meta, test_meta
 
+    def load_test_train_dts(self, hdf5_out, hdf5_in, dts_name, dts_grp_path):
+        train, test, _, _ = self.load_train_test_split(hdf5_out,dts_name)
+        dts, meta = hdf5_in.load_dataset_pd(f'{dts_grp_path}/{dts_name}')
+        label_column = meta['class_name']
+        
+        y_train = dts.iloc[train][label_column]
+        y_train = np.array(y_train)
+        
+        y_test = dts.iloc[test][label_column]
+        y_test = np.array(y_test)
+
+        X_train = dts.iloc[train]
+        X_train = X_train.drop(label_column, axis=1)
+
+        X_test = dts.iloc[test]
+        X_test = X_test.drop(label_column, axis=1)
+
+        return X_train, X_test, y_train, y_test
+        
     def load_predictions(self, hdf5_out, dataset_name, 
                          experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR):
         pass

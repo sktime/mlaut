@@ -12,24 +12,28 @@ import os
 from ..shared.files_io import FilesIO
 from .experiments import Experiments
 from ..shared.files_io import DiskOperations
+from mleap.data import Data
 import numpy as np
 import logging
 class Orchestrator:
     def __init__(self, 
                  hdf5_input_io, 
                  hdf5_output_io,
-                 input_io_datasets_loc,
-                 output_io_split_idx_loc, 
+                 input_io_datasets_loc, #to be removed
+                 output_io_split_idx_loc, #to be removed
+                 original_datasets_group_h5_path, 
                  experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
                  experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
         self._experiments_predictions_dir=experiments_predictions_dir
         self._experiments_trained_models_dir=experiments_trained_models_dir
         self._input_io = hdf5_input_io
         self._output_io = hdf5_output_io
+        self._original_datasets_group_h5_path = original_datasets_group_h5_path
         self._input_io_datasets_loc = input_io_datasets_loc
         self._output_io_split_idx_loc = output_io_split_idx_loc
         self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
+        self._data = Data() #TODO need to implement a way to change the defaults.
         set_logging_defaults()
 
     def run(self, modelling_strategies):
@@ -129,9 +133,36 @@ class Orchestrator:
         dts_name = orig_dts_meta['dataset_name']
         dts_total = len(self._input_io_datasets_loc)
         return X_train, y_train, X_test, y_test, dts_name, dts_total
+    
+    def _find_dts_loc(self, dts_name):
+        all_dataset_names = [dts.split('/')[-1] for dts in self._input_io_datasets_loc]
+        try:
+            idx_dts = all_dataset_names.index(dts_name)
+            dataset_path = self._input_io_datasets_loc[idx_dts]
+            split_path = self._output_io_split_idx_loc[idx_dts]
+
+        except:
+            logging.warning(f'Dataset {dts_name} not found in database. Unable to make a prediction')
 
     def predict_all(self, trained_models_dir, estimators):
-        pass
+        datasets = os.listdir(trained_models_dir)
+        names_all_estimators = [estimator.properties()['name'] for estimator in estimators]
+        for dts in datasets:
+            X_train, X_test, y_train, y_test = self._data.load_test_train_dts(hdf5_out=self._output_io, 
+                                                                              hdf5_in=self._input_io, 
+                                                                              dts_name=dts, 
+                                                                              dts_grp_path=self._input_io_datasets_loc)
+            trained_estimators = os.listdir(f'{trained_models_dir}/{dts}')
+            for trained_estimator in trained_estimators:
+                name_estimator = trained_estimator.split('.')[0]
+                try:
+                    idx_estimator = names_all_estimators.index(name_estimator)
+                    estimator = estimators[idx_estimator]
+                    estimator.load(f'{trained_models_dir}/{dts}/{trained_estimator}')
+                    predictions = estimator.predict(X_test)
+                    self._output_io.save_predictions_to_db(predictions, dts)
+                except:
+                    logging.warning(f'Did not find trained estimator {name_estimator} for dataset{dts}')
           #make predictions
 
                 # for trained_model in trained_models:
