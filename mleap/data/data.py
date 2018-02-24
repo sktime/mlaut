@@ -92,9 +92,11 @@ class Data(object):
 
         X_train = dts.iloc[train]
         X_train = X_train.drop(label_column, axis=1)
-
+        X_train = np.array(X_train)
+        
         X_test = dts.iloc[test]
         X_test = X_test.drop(label_column, axis=1)
+        X_test = np.array(X_test)
 
         return X_train, X_test, y_train, y_test
         

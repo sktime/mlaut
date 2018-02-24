@@ -77,14 +77,14 @@ class Experiments(object):
         
         return timestamps_df
         
-    def make_predictions(self, models, dataset_name, X_test):
-        """ Makes predictions on the test set """
-        predictions = []
-        for model in models:
-            trained_model = model.get_trained_model()
-            prediction = trained_model.predict(X_test)
-            predictions.append([model.properties()['name'], prediction])
-        return predictions
+    # def make_predictions(self, models, dataset_name, X_test):
+    #     """ Makes predictions on the test set """
+    #     predictions = []
+    #     for model in models:
+    #         trained_model = model.get_trained_model()
+    #         prediction = trained_model.predict(X_test)
+    #         predictions.append([model.properties()['name'], prediction])
+    #     return predictions
     
 
         
