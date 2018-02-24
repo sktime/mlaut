@@ -20,7 +20,7 @@ FRIEDMAN_DATASET = 'friedman_test'
 
 EXPERIMENTS_DIR = 'experiments'
 EXPERIMENTS_TRAINED_MODELS_DIR = DATA_DIR + 'trained_models'
-EXPERIMENTS_PREDICTIONS_DIR = 'experiments/predictions/'
+EXPERIMENTS_PREDICTIONS_DIR = 'experiments/predictions'
 EXPERIMENTS_MODEL_ACCURACY_DIR = 'experiments/trained_models_accuracies/'
 
 RUNTIMES_GROUP = '/run_times'

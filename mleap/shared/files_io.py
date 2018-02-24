@@ -49,9 +49,11 @@ class DiskOperations(object):
         os.makedirs(directory_path, exist_ok=True)
 class FilesIO:
 
-    def __init__(self, hdf5_filename, mode='a'):
+    def __init__(self, hdf5_filename, mode='a', 
+                 experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR):
         self.hdf5_filename = hdf5_filename
         self._mode = mode
+        self._experiments_predictions_dir=experiments_predictions_dir
 
     
 
@@ -76,6 +78,15 @@ class FilesIO:
     #     with open(EXPERIMENTS_TRAINED_MODELS_DIR + dataset_name + PICKLE_EXTENTION,'wb') as f:
     #         pickle.dump(trained_models,f)
     
+    def save_prediction_to_db(self, predictions, dataset_name, strategy_name):
+        f = h5py.File(self.hdf5_filename, self._mode)
+        save_path = f'{self._experiments_predictions_dir}/{dataset_name}/{strategy_name}'
+        try:
+            f[save_path] = np.array(predictions) 
+        except:
+            raise ValueError('Save path already exists')
+        f.close()
+
     def save_predictions_to_db(self, predictions, dataset_name):
         # TODO this seems a duplicate to def save_numpy_array_hdf5
         f = h5py.File(self.hdf5_filename, self._mode)

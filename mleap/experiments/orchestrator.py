@@ -19,8 +19,8 @@ class Orchestrator:
     def __init__(self, 
                  hdf5_input_io, 
                  hdf5_output_io,
-                 #input_io_datasets_loc, #to be removed
-                 #output_io_split_idx_loc, #to be removed
+                 input_io_datasets_loc, #to be removed
+                 output_io_split_idx_loc, #to be removed
                  original_datasets_group_h5_path, 
                  experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
                  experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
@@ -29,8 +29,8 @@ class Orchestrator:
         self._input_io = hdf5_input_io
         self._output_io = hdf5_output_io
         self._original_datasets_group_h5_path = original_datasets_group_h5_path
-        # self._input_io_datasets_loc = input_io_datasets_loc
-        # self._output_io_split_idx_loc = output_io_split_idx_loc
+        self._input_io_datasets_loc = input_io_datasets_loc
+        self._output_io_split_idx_loc = output_io_split_idx_loc
         self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
         self._data = Data() #TODO need to implement a way to change the defaults.
@@ -152,18 +152,20 @@ class Orchestrator:
                                                                               hdf5_in=self._input_io, 
                                                                               dts_name=dts, 
                                                                               dts_grp_path=self._original_datasets_group_h5_path)
-            trained_estimators = os.listdir(f'{trained_models_dir}/{dts}')
-            for trained_estimator in trained_estimators:
-                name_estimator = trained_estimator.split('.')[0]
-                print(name_estimator)
-                try:
-                    idx_estimator = names_all_estimators.index(name_estimator)
-                    estimator = estimators[idx_estimator]
-                    estimator.load(f'{trained_models_dir}/{dts}/{trained_estimator}')
-                    predictions = estimator.predict(X_test)
-                    self._output_io.save_predictions_to_db(predictions, dts)
-                except:
-                    logging.warning(f'Did not find trained estimator {name_estimator} for dataset{dts}')
+            saved_estimators = os.listdir(f'{trained_models_dir}/{dts}')
+            for saved_estimator in saved_estimators:
+                name_estimator = saved_estimator.split('.')[0]
+                #try:
+                idx_estimator = names_all_estimators.index(name_estimator)
+                estimator = estimators[idx_estimator]
+                estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
+                trained_estimator = estimator.get_trained_model()
+                predictions = trained_estimator.predict(X_test)
+                self._output_io.save_prediction_to_db(predictions=predictions, 
+                                                      dataset_name=dts, 
+                                                      strategy_name=name_estimator)
+                # except:
+                #     logging.warning(f'Did not find trained estimator {name_estimator} for dataset{dts}')
           #make predictions
 
                 # for trained_model in trained_models:
