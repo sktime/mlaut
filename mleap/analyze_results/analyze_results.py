@@ -82,6 +82,7 @@ class AnalyseResults(object):
         pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._output_h5_predictions_group, hdf5_io=self._output_io)
         result = {}
         for dts in pred_dts_names_list:
+            result[dts] = []
             predictions_all_estimators = self._output_io.load_predictions_for_dataset(dts)
             _, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
             idx_orig_dts = orig_dts_names_list.index(dts)
@@ -98,9 +99,21 @@ class AnalyseResults(object):
                 std_score = np.std(score_per_label)
                 if metric == 'mean_squared_error':
                     score = mean_squared_error(est_predictions,true_labels)
-                    result[dts] = [est_name, score, std_score]
+                    result[dts].append([est_name, score, std_score])
         return result
 
+    def reformat_error_per_dataset(self, error_per_dataset, estimators):
+        reformatted = {}
+        for dts in error_per_dataset.keys():
+            reformatted[dts] = []
+            for est in error_per_dataset[dts]:
+                score = round(est[1],4)
+                std = round(est[2],4)
+                reformatted[dts].append([score,std])
+        df = pd.DataFrame.from_dict(reformatted, orient='index')  
+        df.columns=estimators
+        return df
+        
     def _calculate_error_per_datapoint(self, predictions, true_labels, metric):
         errors = []
         for pair in zip(predictions, true_labels):
