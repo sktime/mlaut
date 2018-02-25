@@ -60,6 +60,8 @@ class AnalyseResults(object):
     
         return self.convert_from_array_to_dict(loss_arr)
     
+
+
     def _calculate_prediction_error_per_dataset(self, metric, predictions_per_ml_strategy, true_labels):
         score = []
         for prediction in predictions_per_ml_strategy:
@@ -109,13 +111,55 @@ class AnalyseResults(object):
                 errors.append(mse)
         return np.array(errors)
 
-    def convert_from_array_to_dict(self, prediction_accuracies):
-        prediction_accuracies = np.array(prediction_accuracies)
-        num_datasets = prediction_accuracies.shape[0]
-        num_strategies = prediction_accuracies.shape[1]
-        num_key_value_pairs = prediction_accuracies.shape[2]
+    def calculate_average_std(self, scores_dict):
+        result = {}
+        for k in scores_dict.keys():
+            average = np.average(scores_dict[k])
+            std = np.std(scores_dict[k])
+            result[k]=[average,std]
+        
+        res_df = pd.DataFrame.from_dict(result, orient='index')
+        res_df.columns=['avg','std']
+        res_df = res_df.sort_values(['avg','std'], ascending=[1,1])
+
+        return res_df
+
+    def cohens_d(self, estimator_dict):
+        cohens_d = {}
+        comb = itertools.combinations(estimator_dict.keys(), r=2)
+        for c in comb:
+            pair=f'{c[0]}-{c[1]}'
+            val1 = estimator_dict[c[0]]
+            val2 = estimator_dict[c[1]]
+            
+            n1 = len(val1)
+            n2 = len(val2)
+
+            v1 = np.var(val1)
+            v2 = np.var(val2)
+
+            m1 = np.mean(val1)
+            m2 = np.mean(val2)
+
+            SDpooled = np.sqrt(((n1-1)*v1 + (n2-1)*v2)/(n1+n2-2))
+            ef = (m2-m1)/SDpooled
+            cohens_d[pair] = ef
+        cohens_d_df = pd.DataFrame.from_dict(cohens_d, orient='index')
+        cohens_d_df.columns = ['Cohen\'s d']
+
+        #sort by absolute value
+        cohens_d_df['sort']= cohens_d_df['Cohen\'s d'].abs()
+        cohens_d_df = cohens_d_df.sort_values(['sort'], ascending=[0])
+        cohens_d_df = cohens_d_df.drop(['sort'], axis=1)
+        return cohens_d_df
+
+    def convert_from_array_to_dict(self, observations):
+        observations = np.array(observations)
+        num_datasets = observations.shape[0]
+        num_strategies = observations.shape[1]
+        num_key_value_pairs = observations.shape[2]
     
-        resh = prediction_accuracies.ravel().reshape(num_datasets * num_strategies,num_key_value_pairs)
+        resh = observations.ravel().reshape(num_datasets * num_strategies,num_key_value_pairs)
         df = pd.DataFrame(resh, columns=['strategy', 'accuracy'])
         list_strategies = df['strategy'].unique()
     
