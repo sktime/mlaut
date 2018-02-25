@@ -65,7 +65,8 @@ class FilesIO:
 
     def load_predictions_for_dataset(self, dataset_name):
         f = h5py.File(self.hdf5_filename, self._mode)
-        predictions = f['/'+EXPERIMENTS_PREDICTIONS_DIR + dataset_name]
+        load_path = f'/{self._experiments_predictions_dir}/{dataset_name}'
+        predictions = f[load_path]
         
         predictions_for_dataset = []
         for strategy in list(predictions):

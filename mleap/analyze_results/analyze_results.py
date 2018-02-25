@@ -1,7 +1,12 @@
 from mleap.shared.static_variables import T_TEST_FILENAME,FRIEDMAN_TEST_FILENAME, WILCOXON_TEST_FILENAME, SIGN_TEST_FILENAME, BONFERRONI_TEST_FILENAME
 from mleap.shared.static_variables import RESULTS_DIR, T_TEST_DATASET, SIGN_TEST_DATASET, BONFERRONI_CORRECTION_DATASET, WILCOXON_DATASET, FRIEDMAN_DATASET
 
-from mleap.shared.static_variables import DATA_DIR, HDF5_DATA_FILENAME
+from mleap.shared.static_variables import (DATA_DIR, 
+                                           HDF5_DATA_FILENAME, 
+                                           EXPERIMENTS_PREDICTIONS_DIR,
+                                           SPLIT_DTS_GROUP,
+                                           TRAIN_IDX,
+                                           TEST_IDX)
 import pandas as pd
 import numpy as np
 import itertools
@@ -15,16 +20,26 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 
 from sklearn.metrics import accuracy_score, mean_squared_error
 import scikit_posthocs as sp
-
 class AnalyseResults(object):
 
-    def __init__(self, hdf5_output_io, hdf5_input_io, input_h5_original_datasets_group, output_h5_predictions_group):
+    def __init__(self, 
+                 hdf5_output_io, 
+                 hdf5_input_io, 
+                 input_h5_original_datasets_group, 
+                 output_h5_predictions_group,
+                 experimeents_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
+                 split_datasets_group=SPLIT_DTS_GROUP,
+                 train_idx=TRAIN_IDX,
+                 test_idx=TEST_IDX):
+
         self._input_io = hdf5_input_io
         self._output_io = hdf5_output_io
         self._input_h5_original_datasets_group = input_h5_original_datasets_group
         self._output_h5_predictions_group = output_h5_predictions_group
-        self._data = Data()
-        #self._prediction_accuracies = files_io.get_prediction_accuracies_per_strategy()
+        self._data = Data(experimeents_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
+                          split_datasets_group=SPLIT_DTS_GROUP,
+                          train_idx=TRAIN_IDX,
+                          test_idx=TEST_IDX)
     
     def calculate_error_all_datasets(self, metric):
         #load all datasets
@@ -89,7 +104,6 @@ class AnalyseResults(object):
         for pair in zip(predictions, true_labels):
             prediction = pair[0]
             true_label = pair[1]
-            
             if metric == 'mean_squared_error':
                 mse = mean_squared_error([prediction], [true_label])
                 errors.append(mse)

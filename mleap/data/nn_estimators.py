@@ -16,7 +16,7 @@ from tensorflow.python.keras.layers import Dense, Activation, Dropout
 from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor, KerasClassifier
 from tensorflow.python.keras import optimizers
 
-
+import numpy as np
 
 @properties(estimator_family=[NEURAL_NETWORKS], 
             tasks=[CLASSIFICATION], 
@@ -54,13 +54,15 @@ class Deep_NN_Classifier(MleapEstimator):
         if hyperparameters is None:
             hyperparameters = {'epochs': [50,100], 'batch_size': [num_samples]}
         return model
-        # return GridSearchCV(model, 
-        #                     hyperparameters, 
-        #                     verbose = self._verbose,
-        #                     n_jobs=self._n_jobs,
-        #                     refit=self._refit)
 
+    def predict(self, X):
+        estimator = self.get_trained_model()
+        predictions = estimator.predict(X)
+        predictions = np.array(predictions)
+        predictions = predictions.argmax(axis=1)
+        return predictions
 
+        
     def save(self, dataset_name):
         #set trained model method is implemented in the base class
         trained_model = self._trained_model

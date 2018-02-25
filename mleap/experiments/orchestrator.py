@@ -62,7 +62,7 @@ class Orchestrator:
                                                                               dts_name=dts_name, 
                                                                               dts_grp_path=self._original_datasets_group_h5_path)
                 print(f'*** Training models on dataset: {dts_name}. Total datasets processed: {dts_trained}/{dts_total} ***')
-                trained_models, timestamps_df = self._experiments.run_experiments(X_train, 
+                timestamps_df = self._experiments.run_experiments(X_train, 
                                                                                   y_train, 
                                                                                   modelling_strategies, 
                                                                                   dts_name)
@@ -91,14 +91,12 @@ class Orchestrator:
             saved_estimators = os.listdir(f'{trained_models_dir}/{dts}')
             for saved_estimator in saved_estimators:
                 name_estimator = saved_estimator.split('.')[0]
-                try:
-                    idx_estimator = names_all_estimators.index(name_estimator)
-                    estimator = estimators[idx_estimator]
-                    estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
-                    trained_estimator = estimator.get_trained_model()
-                    predictions = trained_estimator.predict(X_test)
-                    self._output_io.save_prediction_to_db(predictions=predictions, 
-                                                        dataset_name=dts, 
-                                                        strategy_name=name_estimator)
-                except:
-                    logging.warning(f'Did not find trained estimator {name_estimator} for dataset{dts}')
+                idx_estimator = names_all_estimators.index(name_estimator)
+                estimator = estimators[idx_estimator]
+                estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
+                predictions = estimator.predict(X_test)
+                self._output_io.save_prediction_to_db(predictions=predictions, 
+                                                    dataset_name=dts, 
+                                                    strategy_name=name_estimator)
+                print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
+                

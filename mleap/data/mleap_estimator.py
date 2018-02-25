@@ -33,6 +33,9 @@ class MleapEstimator(ABC):
     def get_trained_model(self):
         return self._trained_model
 
+    def predict(self, X):
+        estimator = self.get_trained_model()
+        return estimator.predict(X)
 
 
 #decorator for adding properties to estimator classes

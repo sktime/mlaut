@@ -23,7 +23,7 @@ class Experiments(object):
         Trains estimators contained in the model_container on the dataset.
         This is separated from the test_orchestrator class to avoid too many nested loops.
         """
-        trained_models = []
+        #trained_models = []
         timestamps_df = pd.DataFrame()
         for modelling_strategy in modelling_strategies:
             ml_strategy_name = modelling_strategy.properties()['name']
@@ -34,8 +34,8 @@ class Experiments(object):
             path_to_check = self._experiments_trained_models_dir + os.sep + dts_name + os.sep + ml_strategy_name + '.*'
             model_exists = self._disk_op.check_path_exists(path_to_check)
             if model_exists is True:
-                logging.warning(f'Estimator {ml_strategy_name} already trained on {dts_name}. Loading it from disk.')
-                modelling_strategy.load(path_to_check)
+                logging.warning(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
+                #modelling_strategy.load(path_to_check)
             else:
                 #train the model if it does not exist on disk
                 if NEURAL_NETWORKS in ml_strategy_family:
@@ -63,8 +63,8 @@ class Experiments(object):
                 modelling_strategy.set_trained_model(trained_model)
                 modelling_strategy.save(dts_name)
 
-            trained_models.append(modelling_strategy)
-        return trained_models, timestamps_df
+            #trained_models.append(modelling_strategy)
+        return timestamps_df
     
     def record_timestamp(self, strategy_name, begin_timestamp, timestamps_df):
         """ Timestamp used to record the duration of training for each of the estimators"""
