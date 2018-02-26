@@ -274,8 +274,7 @@ class AnalyseResults(object):
         return friedman_test, values_df
     
     def nemenyi(self, obeservations):
-        obs = []
-        for o in obeservations:
-            obs.append(obeservations[o])
-            
-        return sp.posthoc_nemenyi(obs)
+        obeservations = pd.DataFrame(obeservations)
+        obeservations = obeservations.melt(var_name='groups', value_name='values')
+
+        return sp.posthoc_nemenyi(obeservations, val_col='values', group_col='groups')
