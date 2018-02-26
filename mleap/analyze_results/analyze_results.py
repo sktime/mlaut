@@ -100,18 +100,28 @@ class AnalyseResults(object):
                 if metric == 'mean_squared_error':
                     score = mean_squared_error(est_predictions,true_labels)
                     result[dts].append([est_name, score, std_score])
-        return result
+        result_df = self._reformat_error_per_dataset(result)
+        return result, result_df
 
-    def reformat_error_per_dataset(self, error_per_dataset, estimators):
-        reformatted = {}
-        for dts in error_per_dataset.keys():
-            reformatted[dts] = []
-            for est in error_per_dataset[dts]:
-                score = round(est[1],4)
-                std = round(est[2],4)
-                reformatted[dts].append([score,std])
-        df = pd.DataFrame.from_dict(reformatted, orient='index')  
-        df.columns=estimators
+    def _reformat_error_per_dataset(self, error_per_dataset):
+        df = pd.DataFrame(error_per_dataset)
+        #unpivot the data
+        df = df.melt(var_name='dts', value_name='values')
+        df['classifier'] = df.apply(lambda raw: raw.values[1][0], axis=1)
+        df['score'] = df.apply(lambda raw: raw.values[1][1], axis=1)
+        df['std'] = df.apply(lambda raw: raw.values[1][2], axis=1)
+        df = df.drop('values', axis=1)
+        #create multilevel index dataframe
+        dts = df['dts'].unique()
+        estimators_list = df['classifier'].unique()
+        score = df['score'].values
+        std = df['std'].values
+        
+        df = df.drop('dts', axis=1)
+        df=df.drop('classifier', axis=1)
+        
+        df.index = pd.MultiIndex.from_product([dts, estimators_list])
+
         return df
         
     def _calculate_error_per_datapoint(self, predictions, true_labels, metric):
