@@ -74,9 +74,9 @@ class Deep_NN_Classifier(MleapEstimator):
     #overloading method from parent class
     def load(self, path_to_model):
         #file name could be passed with .* as extention. 
-        split_path = path_to_model.split('.')
-        path_to_load = split_path[0] + HDF5_EXTENTION 
-        model = load_model(path_to_load)
+        #split_path = path_to_model.split('.')
+        #path_to_load = split_path[0] + HDF5_EXTENTION 
+        model = load_model(path_to_model)
         self.set_trained_model(model)
 
 

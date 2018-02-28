@@ -97,9 +97,11 @@ class AnalyseResults(object):
                                                                     true_labels=true_labels, 
                                                                     metric=metric)
                 std_score = np.std(score_per_label)
-                if metric == 'mean_squared_error':
-                    score = mean_squared_error(est_predictions,true_labels)
-                    result[dts].append([est_name, score, std_score])
+                sum_scores_per_label = np.sum(score_per_label)/np.sqrt(len(score_per_label))
+                result[dts].append([est_name, sum_scores_per_label, std_score])
+                # if metric == 'mean_squared_error':
+                #     score = mean_squared_error(est_predictions,true_labels)
+                #     result[dts].append([est_name, score, std_score])
         result_df = self._reformat_error_per_dataset(result)
         return result, result_df
 

@@ -91,12 +91,20 @@ class Orchestrator:
             saved_estimators = os.listdir(f'{trained_models_dir}/{dts}')
             for saved_estimator in saved_estimators:
                 name_estimator = saved_estimator.split('.')[0]
-                idx_estimator = names_all_estimators.index(name_estimator)
-                estimator = estimators[idx_estimator]
-                estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
-                predictions = estimator.predict(X_test)
-                self._output_io.save_prediction_to_db(predictions=predictions, 
-                                                    dataset_name=dts, 
-                                                    strategy_name=name_estimator)
-                print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
+                try:
+                    idx_estimator = names_all_estimators.index(name_estimator)
+                    estimator = estimators[idx_estimator]
+                    estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
+                    trained_estimator = estimator.get_trained_model()
+                    if name_estimator == 'NeuralNetworkDeepClassifier':
+                        predictions = trained_estimator.predict_classes(X_test)
+                    else:
+                        predictions = trained_estimator.predict(X_test)
+              
+                    self._output_io.save_prediction_to_db(predictions=predictions, 
+                                                        dataset_name=dts, 
+                                                        strategy_name=name_estimator)
+                    print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
+                except:
+                    print(f'Skipping trained estimator {name_estimator}. Saved on disk but not instantiated.')
                 

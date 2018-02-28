@@ -22,9 +22,9 @@ class MleapEstimator(ABC):
         """ saves the trained model to disk """
     def load(self, path_to_model):
         #file name could be passed with .* as extention. 
-        split_path = path_to_model.split('.')
-        path_to_load = split_path[0] + PICKLE_EXTENTION 
-        model = pickle.load(open(path_to_load,'rb'))
+        # split_path = path_to_model.split('.')
+        # path_to_load = split_path[0] + PICKLE_EXTENTION 
+        model = pickle.load(open(path_to_model,'rb'))
         self.set_trained_model(model)
     
     def set_trained_model(self, trained_model):
