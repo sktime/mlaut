@@ -11,13 +11,35 @@ from sklearn.dummy import DummyClassifier, DummyRegressor
             tasks=[REGRESSION],
             name='BaselineRegressor')
 class Baseline_Regressor(MleapEstimator):
+    """
+    Wrapper for sklearn dummy regressor
+    """
     def __init__(self, verbose=0):
+        """
+        calls contructor of MleapEstimator class
+
+        :type verbose: integer
+        :param verbose: The level of output displayed in the terminal. Default is 0  
+                    or no  output. Higher number means more messages will be printed.
+        """
         super().__init__(verbose=verbose)
 
     def build(self, strategy='median'):
+        """
+        Builds and returns estimator class.
+
+        :type strategy: string
+        :param strategy: as per :role: `sklearn.dummy.DummyRegressor <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html>`
+        """
         return DummyRegressor(strategy=strategy)
 
     def save(self, dataset_name):
+        """
+        Saves estimator on disk.
+
+        :type dataset_name: string
+        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+        """
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
         disk_op = DiskOperations()
@@ -30,13 +52,35 @@ class Baseline_Regressor(MleapEstimator):
             tasks=[CLASSIFICATION],
             name='BaselineClassifier')
 class Baseline_Classifier(MleapEstimator):
+    """
+    Wrapper for sklearn dummy classifier class.
+    """
     def __init__(self, verbose=0):
+        """
+        calls contructor of MleapEstimator class
+
+        :type verbose: integer
+        :param verbose: The level of output displayed in the terminal. Default is 0  
+                    or no  output. Higher number means more messages will be printed.
+        """
         super().__init__(verbose=verbose)
 
     def build(self, strategy='stratified'):
+        """
+        Builds and returns estimator class.
+
+        :type strategy: string
+        :param strategy: as per :role: `sklearn.dummy.DummyClassifier <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html>`
+        """
         return DummyClassifier(strategy=strategy)
 
     def save(self, dataset_name):
+        """
+        Saves estimator on disk.
+
+        :type dataset_name: string
+        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+        """
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
         disk_op = DiskOperations()

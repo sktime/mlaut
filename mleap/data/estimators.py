@@ -5,7 +5,8 @@ from mleap.data.glm_estimators import (Ridge_Regression,
                                        Lasso_Lars, 
                                        Logistic_Regression, 
                                        Passive_Aggressive_Classifier)
-from mleap.data.nn_estimators import  Deep_NN_Classifier, Deep_NN_Regressor
+from mleap.data.nn_estimators import  (Deep_NN_Classifier, 
+                                       Deep_NN_Regressor)
 from mleap.data.bayes_estimators import Gaussian_Naive_Bayes, Bernoulli_Naive_Bayes
 from mleap.data.ensemble_estimators import (Random_Forest_Classifier,
                                             Random_Forest_Regressor,
@@ -41,14 +42,17 @@ of the trined models. The pipeline is the following:
     3. The Experiments class evokes get_trained_model and makes predictions 
        on the test set. 
 """
-
-
-
-
-
-
 def instantiate_default_estimators(estimators, verbose=0):
+    """
+    instatiates default estimators.
 
+    :type estimators: array of strings
+    :param estimators: Estimator names, family class or type of task.
+
+    :type verbose: integer
+    :param verbose: The level of output displayed in the terminal. Default is 0  
+                    or no  output. Higher number means more messages will be printed.
+    """
     if not isinstance(estimators, list):
         raise ValueError('Estimators parameter must be provided as an array')
     
