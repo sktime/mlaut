@@ -1,4 +1,4 @@
-Shared module
+shared module
 ===============
 
 files_io

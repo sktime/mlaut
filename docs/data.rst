@@ -1,11 +1,14 @@
-Data module
+data module
 ============
+
+This module
 
 baseline\_estimators
 ---------------------------------
 
-.. autoclass:: mleap.data.baseline_estimators.Baseline_Regressor
-    :members:
+.. automodule:: mleap.data.baseline_estimators
+    :members: 
+    :show-inheritance:
 
 estimators
 -------------------------------------
