@@ -2,7 +2,9 @@ from abc import ABC, abstractmethod
 from ..shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 import pickle
 from ..shared.static_variables import PICKLE_EXTENTION
+import wrapt
 class MleapEstimator(ABC):
+
     def __init__(self, 
                 verbose=0, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
@@ -39,18 +41,22 @@ class MleapEstimator(ABC):
 
 
 #decorator for adding properties to estimator classes
+@wrapt.decorator
 class properties(object):
+
     def __init__(self, estimator_family, tasks, name):
         self._estimator_family = estimator_family
         self._tasks = tasks
         self._name = name
-    
+
     
     def __call__(self, cls):
+        
 
         class Wrapped(cls):
-
+ 
             def properties(cls):
+                
                 #check whether the inputs are right
                 if not isinstance(self._estimator_family, list) or \
                     not isinstance(self._tasks, list):
