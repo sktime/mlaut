@@ -19,7 +19,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('/media/viktor/Data/PhD/mleap'))
+sys.path.append('/media/viktor/Data/PhD/mleap/')
 
 
 # -- General configuration ------------------------------------------------

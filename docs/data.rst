@@ -1,21 +1,16 @@
-data package
+Data module
 ============
 
-Submodules
-----------
-
-data\.baseline\_estimators module
+baseline\_estimators
 ---------------------------------
 
-.. automodule:: mleap.data.baseline_estimators
+.. autoclass:: mleap.data.baseline_estimators.Baseline_Regressor
+    :members:
+
+estimators
+-------------------------------------
+.. automodule:: mleap.data.estimators
     :members:
     :undoc-members:
     :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: data
-    :members:
-    :undoc-members:
-    :show-inheritance:

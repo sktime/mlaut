@@ -15,7 +15,7 @@ Welcome to mleap (Machine Learning Experiments Automation Package).
 
    tutorial
    project
-   code
+   modules
 
 
 Indices and tables
