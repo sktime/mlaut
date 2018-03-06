@@ -13,12 +13,30 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 class DiskOperations(object):
+    """
+    Class with high level disk operations for loading and saving estimators.
+    """
 
     def save_to_pickle(self, 
                        trained_model, 
                        model_name, 
                        dataset_name, 
                        root_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
+        """
+        Saves sklearn estimator to disk as pickle file.
+
+        :type trained_model: sklearn estimator object.
+        :param trained_model: trained sklearn object to be saved on disk.
+
+        :type model_name: string
+        :param model_name: name of sklearn estimator.
+
+        :type dataset_name: string
+        :param dataset_name: name of dataset that the estimator was trained on.
+
+        :type root_dir: string
+        :param root_dir: root dir where the trained estimators will be saved. 
+        """
         if not os.path.exists(root_dir + os.sep + dataset_name):
             os.makedirs(root_dir + os.sep + dataset_name)
         
@@ -30,6 +48,21 @@ class DiskOperations(object):
                         model_name, 
                         dataset_name, 
                         root_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
+        """
+        Saves keras object to disk.
+
+        :type trained_model: keras estimator object.
+        :param trained_model: trained keras object to be saved on disk.
+
+        :type model_name: string
+        :param model_name: name of sklearn estimator.
+
+        :type dataset_name: string
+        :param dataset_name: name of dataset that the estimator was trained on.
+
+        :type root_dir: string
+        :param root_dir: root dir where the trained estimators will be saved. 
+        """
         if not os.path.exists(root_dir + os.sep + dataset_name):
             os.makedirs(root_dir + os.sep + dataset_name)
         
@@ -38,7 +71,14 @@ class DiskOperations(object):
         #trained_model.best_estimator_.model.save(root_dir + os.sep + dataset_name + os.sep + model_name + HDF5_EXTENTION)
     
     def check_path_exists(self, path_to_file):
- 
+        """
+        Checks whether path exists on disk
+
+        :type path_to_file: string.
+        :param path_to_file: path to check whether exists or not 
+
+        :rtype: `Boolean`
+        """
         path_exists = glob.glob(path_to_file)
         if len(path_exists) > 0:
             return True
@@ -46,9 +86,17 @@ class DiskOperations(object):
             return False
 
     def create_directory_on_hdd(self, directory_path):
+        """
+        Creates directory on hard drive
+
+        :type directory_path: string.
+        :param directory_path: path of directory that will be created.
+        """
         os.makedirs(directory_path, exist_ok=True)
 class FilesIO:
-
+    """
+    Methods for manipulating HDF5 databases and datasets.
+    """
     def __init__(self, hdf5_filename, mode='a', 
                  experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR):
         self.hdf5_filename = hdf5_filename
