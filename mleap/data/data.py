@@ -20,15 +20,14 @@ class Data(object):
         set_logging_defaults()
 
 
-    def pandas_to_db(self, save_loc_hdf5, datasets, dts_metadata, save_loc_hdd):
+    def pandas_to_db(self, save_loc_hdf5, datasets, dts_metadata, input_io):
         save_paths = []
         for dts in dts_metadata:
             save_paths.append(save_loc_hdf5 + dts['dataset_name'])
-        files_io = FilesIO(save_loc_hdd)
-        files_io.save_datasets(datasets=datasets, 
+        #files_io = FilesIO(save_loc_hdd)
+        input_io.save_datasets(datasets=datasets, 
                                datasets_save_paths=save_paths, 
                                dts_metadata=dts_metadata)
-        return files_io
     
     def list_datasets(self, hdf5_group, hdf5_io):
         dts_names_list = hdf5_io.list_datasets(hdf5_group)
