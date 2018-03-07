@@ -83,12 +83,9 @@ class MleapEstimator(ABC):
 #decorator for adding properties to estimator classes
 
 class properties(object):
-"""
-Decorator class used for adding properties to mleap estimator classes.
-The properties that all mleap estimator objects must have are: 
-estimator family, task (classification, regression), name of estimator. 
-
-"""
+    """
+    Decorator class used for adding properties to mleap estimator classes. The properties that all mleap estimator objects must have are: estimator family, task (classification, regression), name of estimator. 
+    """
     def __init__(self, estimator_family, tasks, name):
         """
         :type estimator_family: array of strings

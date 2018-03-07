@@ -14,12 +14,18 @@ class Baseline_Regressor(MleapEstimator):
     """
     Wrapper for sklearn dummy regressor
     """
-    def __init__(self):
+    def __init__(self, 
+                verbose=0,
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
         """
         calls constructor of MleapEstimator class
-
         """
-        super().__init__()
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs,
+                         num_cv_folds=num_cv_folds, 
+                         refit=refit)
 
     def build(self, strategy='median'):
         """
@@ -53,12 +59,18 @@ class Baseline_Classifier(MleapEstimator):
     """
     Wrapper for sklearn dummy classifier class.
     """
-    def __init__(self):
+    def __init__(self, 
+                verbose=0,
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
         """
         calls constructor of MleapEstimator class
-
         """
-        super().__init__(verbose=verbose)
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs,
+                         num_cv_folds=num_cv_folds, 
+                         refit=refit)
 
     def build(self, strategy='stratified'):
         """

@@ -18,6 +18,31 @@ from mleap.estimators.svm_estimators import SVC_mleap
 from mleap.estimators.baseline_estimators import (Baseline_Regressor,
                                             Baseline_Classifier)
 
+"""
+Each estimator is contained it its own class.
+Each estimator inherits from the abstract class MleapEstimator.
+Each estimator must implement the following methods:
+    1. get_estimator_name
+    2. build
+    3. save
+
+Each estimator is built for a specific dataset. This is particularly necessary
+for Neural Network classification models where the number of nodes in the last
+layer depends on the number of classes.
+
+The following methods are implemented in the MleapEstimator Abstract class and 
+are inherited by all estimators:
+    1. __init__
+    2. set_trained_model
+    3. get_trained_model
+
+The set/get_trained_model methods are used to facilitate saving 
+of the trined models. The pipeline is the following:
+    1. The Experiments class evokes the set_trained_model method.
+    2. The Test Orchestrator saves the trained model to disk
+    3. The Experiments class evokes get_trained_model and makes predictions 
+    on the test set. 
+"""
 def instantiate_default_estimators(estimators, verbose=0):
     """
     instatiates default estimators.
@@ -31,31 +56,6 @@ def instantiate_default_estimators(estimators, verbose=0):
     :rtype: `array of sklearn objects`
     """
 
-    """
-    Each estimator is contained it its own class.
-    Each estimator inherits from the abstract class MleapEstimator.
-    Each estimator must implement the following methods:
-        1. get_estimator_name
-        2. build
-        3. save
-
-    Each estimator is built for a specific dataset. This is particularly necessary
-    for Neural Network classification models where the number of nodes in the last
-    layer depends on the number of classes.
-
-    The following methods are implemented in the MleapEstimator Abstract class and 
-    are inherited by all estimators:
-        1. __init__
-        2. set_trained_model
-        3. get_trained_model
-
-    The set/get_trained_model methods are used to facilitate saving 
-    of the trined models. The pipeline is the following:
-        1. The Experiments class evokes the set_trained_model method.
-        2. The Test Orchestrator saves the trained model to disk
-        3. The Experiments class evokes get_trained_model and makes predictions 
-        on the test set. 
-    """
     if not isinstance(estimators, list):
         raise ValueError('Estimators parameter must be provided as an array')
     
