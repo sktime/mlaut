@@ -1,5 +1,5 @@
-from mleap.data.mleap_estimator import properties
-from mleap.data.mleap_estimator import MleapEstimator
+from mleap.estimators.mleap_estimator import properties
+from mleap.estimators.mleap_estimator import MleapEstimator
 
 from mleap.shared.files_io import DiskOperations
 

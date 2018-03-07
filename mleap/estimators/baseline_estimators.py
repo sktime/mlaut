@@ -1,5 +1,5 @@
-from mleap.data.mleap_estimator import properties
-from mleap.data.mleap_estimator import MleapEstimator
+from mleap.estimators.mleap_estimator import properties
+from mleap.estimators.mleap_estimator import MleapEstimator
 from mleap.shared.files_io import DiskOperations
 from mleap.shared.static_variables import(BASELINE,
                                       REGRESSION, 
@@ -29,7 +29,7 @@ class Baseline_Regressor(MleapEstimator):
         Builds and returns estimator class.
 
         :type strategy: string
-        :param strategy: as per :role: `sklearn.dummy.DummyRegressor <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html>`
+        :param strategy: as per `scikit-learn dummy regressor documentation <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html>`_.
         """
         return DummyRegressor(strategy=strategy)
 
@@ -70,7 +70,7 @@ class Baseline_Classifier(MleapEstimator):
         Builds and returns estimator class.
 
         :type strategy: string
-        :param strategy: as per :role: `sklearn.dummy.DummyClassifier <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html>`
+        :param strategy: as per `scikit-learn dummy classifier documentation <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html>`_.
         """
         return DummyClassifier(strategy=strategy)
 

@@ -1,21 +1,21 @@
 import itertools
 
-from mleap.data.glm_estimators import (Ridge_Regression, 
+from mleap.estimators.glm_estimators import (Ridge_Regression, 
                                        Lasso, 
                                        Lasso_Lars, 
                                        Logistic_Regression, 
                                        Passive_Aggressive_Classifier)
-from mleap.data.nn_estimators import  (Deep_NN_Classifier, 
+from mleap.estimators.nn_estimators import  (Deep_NN_Classifier, 
                                        Deep_NN_Regressor)
-from mleap.data.bayes_estimators import Gaussian_Naive_Bayes, Bernoulli_Naive_Bayes
-from mleap.data.ensemble_estimators import (Random_Forest_Classifier,
+from mleap.estimators.bayes_estimators import Gaussian_Naive_Bayes, Bernoulli_Naive_Bayes
+from mleap.estimators.ensemble_estimators import (Random_Forest_Classifier,
                                             Random_Forest_Regressor,
                                             Bagging_Classifier,
                                             Bagging_Regressor, 
                                             Gradient_Boosting_Classifier,
                                             Gradient_Boosting_Regressor)
-from mleap.data.svm_estimators import SVC_mleap
-from mleap.data.baseline_estimators import (Baseline_Regressor,
+from mleap.estimators.svm_estimators import SVC_mleap
+from mleap.estimators.baseline_estimators import (Baseline_Regressor,
                                             Baseline_Classifier)
 """
 Each estimator is coitained it its own class.
