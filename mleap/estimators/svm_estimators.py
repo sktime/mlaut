@@ -13,10 +13,24 @@ from sklearn.svm import SVC
             tasks=[CLASSIFICATION], 
             name='SVC')
 class SVC_mleap(MleapEstimator):
-    def __init__(self, verbose=0):
-        super().__init__(verbose=verbose)
+    """
+    Wrapper for `sklearn SVC estimator <http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`_.
+    """
+    def __init__(self):
+        """
+        calls constructor of MleapEstimator class
+
+        """
+        super().__init__()
 
     def build(self, hyperparameters=None):
+        """
+        builds and returns estimator
+
+        :type hyperparameters: dictionary
+        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
+        :rtype: `GridsearchCV object`
+        """
         if hyperparameters is None:
             hyperparameters = {
                             'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6], #[1e-6, 1]
@@ -30,6 +44,12 @@ class SVC_mleap(MleapEstimator):
 
 
     def save(self, dataset_name):
+        """
+        Saves estimator on disk.
+
+        :type dataset_name: string
+        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+        """
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
         disk_op = DiskOperations()
