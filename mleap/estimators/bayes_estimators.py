@@ -21,16 +21,6 @@ class Gaussian_Naive_Bayes(MleapEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html>`_.
     """
-    def __init__(self, verbose=0):
-        """
-        calls constructor of MleapEstimator class
-
-        :type verbose: integer
-        :param verbose: The level of output displayed in the terminal. Default is 0  
-                    or no  output. Higher number means more messages will be printed.
-        """
-        super().__init__(verbose=verbose)
-
     def save(self, dataset_name):
         """
         Saves estimator on disk.

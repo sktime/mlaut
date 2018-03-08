@@ -18,12 +18,7 @@ class Ridge_Regression(MleapEstimator):
     """
     Wrapper for `sklearn Ridge Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html>`_.
     """
-    def __init__(self, verbose=0):
-        """
-        calls constructor of MleapEstimator class
 
-        """
-        super().__init__(verbose=verbose)
        
     def build(self, hyperparameters=None):
         """
@@ -58,12 +53,7 @@ class Lasso(MleapEstimator):
     """
     Wrapper for `sklearn Lasso <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html>`_.
     """
-    def __init__(self, verbose=0):
-        """
-        calls constructor of MleapEstimator class
 
-        """
-        super().__init__(verbose=verbose)
     
     def build(self, hyperparameters=None):
         """
@@ -95,12 +85,7 @@ class Lasso_Lars(MleapEstimator):
     """
     Wrapper for `sklearn Lasso Lars <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoLars.html>`_.
     """
-    def __init__(verbose=0):
-        """
-        calls constructor of MleapEstimator class
 
-        """
-        super().__init__(verbose=verbose)
     
 
     def build(self, hyperparameters=None):
@@ -174,18 +159,7 @@ class Passive_Aggressive_Classifier(MleapEstimator):
     """
     Wrapper for `sklearn Passive Aggressive Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.PassiveAggressiveClassifier.html>`_.
     """
-    def __init__(self, 
-                verbose=0,
-                n_jobs=-1,
-                num_cv_folds=3, 
-                refit=True):
-        """
-        calls constructor of MleapEstimator class
-        """
-        super().__init__(verbose=verbose, 
-                         n_jobs=n_jobs,
-                         num_cv_folds=num_cv_folds, 
-                         refit=refit)
+
     def build(self, hyperparameters=None):
         """
         builds and returns estimator
