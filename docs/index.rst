@@ -12,9 +12,9 @@ Welcome to mleap (Machine Learning Experiments Automation Package).
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-   tutorial
+   
    project
+   tutorial
    modules
 
 

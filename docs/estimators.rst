@@ -52,6 +52,7 @@ svm_estimators
     :members: 
     :show-inheritance:
 
+.. _mleap_estimator-label:
 
 mleap_estimator
 ------------------------------------------

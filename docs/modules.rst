@@ -5,4 +5,5 @@ Modules
    :maxdepth: 4
 
    estimators
+   experiments
    shared
