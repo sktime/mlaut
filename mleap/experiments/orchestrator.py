@@ -46,6 +46,9 @@ class Orchestrator:
         we make predictions on the test sets and store them in the output database file.
 
         The class uses helper methods in the experiments class to avoid too many nested loops.
+
+        :type modelling_strategies: array of `mleap_estimator` objects
+        :param modelling_strategies: array of estimators that will be used for training
         """ 
 
         try:
@@ -81,6 +84,12 @@ class Orchestrator:
   
 
     def predict_all(self, trained_models_dir, estimators):
+        """
+        Make predictions on test sets
+
+        :type trained_models_dir: string
+        :param trained_models_dir:
+        """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties()['name'] for estimator in estimators]
         for dts in datasets:
