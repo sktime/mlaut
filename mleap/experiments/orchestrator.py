@@ -38,8 +38,10 @@ class Orchestrator:
         """ 
         Main module for training the estimators. 
         The inputs of the function are: 
-            1. The input and output databse files containing the datasets.
-            2. The instantiated estimators
+
+        1. The input and output databse files containing the datasets.
+
+        2. The instantiated estimators.
         
         The method iterates through all datasets in the input database file 
         and trains all modelling strategies on these datasets. At the end of the process 
@@ -47,7 +49,7 @@ class Orchestrator:
 
         The class uses helper methods in the experiments class to avoid too many nested loops.
 
-        :type modelling_strategies: array of `mleap_estimator` objects
+        :type modelling_strategies: array of :ref:`mleap_estimator-label` objects
         :param modelling_strategies: array of estimators that will be used for training
         """ 
 
@@ -90,8 +92,8 @@ class Orchestrator:
         :type trained_models_dir: string
         :param trained_models_dir: directory where the trained models are saved
 
-        :type estimators: array of MleapEstimator objects
-        :param estimators: MleapEstimator objects. The trained models are set as a property to the object.
+        :type estimators: array of :ref:`mleap_estimator-label` objects
+        :param estimators: :ref:`mleap_estimator-label` objects. The trained models are set as a property to the object.
         """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties()['name'] for estimator in estimators]
