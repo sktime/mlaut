@@ -1,6 +1,9 @@
 shared module
 ===============
 
+
+.. _files_io-label:
+
 files_io
 ----------------
 

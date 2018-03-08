@@ -6,4 +6,5 @@ Modules
 
    estimators
    experiments
+   data
    shared
