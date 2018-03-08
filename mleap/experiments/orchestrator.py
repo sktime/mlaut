@@ -88,7 +88,10 @@ class Orchestrator:
         Make predictions on test sets
 
         :type trained_models_dir: string
-        :param trained_models_dir:
+        :param trained_models_dir: directory where the trained models are saved
+
+        :type estimators: array of MleapEstimator objects
+        :param estimators: MleapEstimator objects. The trained models are set as a property to the object.
         """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties()['name'] for estimator in estimators]

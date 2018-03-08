@@ -245,18 +245,7 @@ class Gradient_Boosting_Classifier(MleapEstimator):
     """
     Wrapper for `sklearn Gradient Boosting Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html>`_.
     """
-    def __init__(self, 
-                verbose=0,
-                n_jobs=-1,
-                num_cv_folds=3, 
-                refit=True):
-        """
-        calls constructor of MleapEstimator class
-        """
-        super().__init__(verbose=verbose, 
-                         n_jobs=n_jobs,
-                         num_cv_folds=num_cv_folds, 
-                         refit=refit)
+  
 
     def build(self, hyperparameters=None):
         """
