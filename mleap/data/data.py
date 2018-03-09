@@ -10,8 +10,8 @@ class Data(object):
     """
     Interface class expanding the functionality of :func:`~mleap.shared.files_io.FilesIO`
 
-    :type experimeents_predictions_dir: string
-    :param experimeents_predictions_dir: location in HDF5 database were the experiment predictions are saved.
+    :type experiments_predictions_dir: string
+    :param experiments_predictions_dir: location in HDF5 database were the experiment predictions are saved.
 
     :type split_datasets_group: string
     :param split_datasets_group: location in HDF5 database were the test/train split will be saved.
@@ -23,11 +23,11 @@ class Data(object):
     :param test_idx: name of group where the indexes of the samples used for testing are saved
     """
     def __init__(self, 
-                experimeents_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
+                experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
                 split_datasets_group=SPLIT_DTS_GROUP,
                 train_idx=TRAIN_IDX,
                 test_idx=TEST_IDX):
-        self._experimeents_predictions_dir = experimeents_predictions_dir
+        self._experiments_predictions_dir = experiments_predictions_dir
         self._split_datasets_group=split_datasets_group
         self._train_idx=train_idx
         self._test_idx=test_idx
