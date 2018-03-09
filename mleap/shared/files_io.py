@@ -96,6 +96,15 @@ class DiskOperations(object):
 class FilesIO:
     """
     Methods for manipulating HDF5 databases and datasets.
+
+    :type hdf5_filename: string
+    :param hdf5_filename: full path where the database file will be stored.
+
+    :type mode: string
+    :param mode: open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
+    
+    :type experiments_predictions_dir: string
+    :param experiments_predictions_dir: Location in HDF5 database where estimator predictions will be saved.
     """
     def __init__(self, hdf5_filename, mode='a', 
                  experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR):
