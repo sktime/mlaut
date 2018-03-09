@@ -21,13 +21,36 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 from sklearn.metrics import accuracy_score, mean_squared_error
 import scikit_posthocs as sp
 class AnalyseResults(object):
+    """
+    Analyze results of machine learning experiments.
+
+    :type hdf5_input_io: :func:`~mleap.shared.files_io.FilesIO`
+    :param hdf5_input_io: Instance of :func:`~mleap.shared.files_io.FilesIO` class.
+
+    :type hdf5_input_io: :func:`~mleap.shared.files_io.FilesIO`
+    :param hdf5_input_io: Instance of :func:`~mleap.shared.files_io.FilesIO` class.
+
+    :type input_h5_original_datasets_group: string
+    :param input_h5_original_datasets_group: location in HDF5 database where the original datasets are stored.
+
+    :type output_h5_predictions_group: string
+    :param output_h5_predictions_group: location in HDF5 where the prediction of the estimators will be saved.
+
+    :type split_datasets_group: string
+    :param split_datasets_group: location in HDF5 database where the test/train splits are saved.
+
+    :type train_idx: string
+    :param train_idx: name of group where the train split index will be stored.
+
+    :type test_idx: string
+    :param test_idx: name of group where the test split index will be stored.
+    """
 
     def __init__(self, 
                  hdf5_output_io, 
                  hdf5_input_io, 
                  input_h5_original_datasets_group, 
                  output_h5_predictions_group,
-                 experimeents_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
                  split_datasets_group=SPLIT_DTS_GROUP,
                  train_idx=TRAIN_IDX,
                  test_idx=TEST_IDX):
@@ -36,12 +59,21 @@ class AnalyseResults(object):
         self._output_io = hdf5_output_io
         self._input_h5_original_datasets_group = input_h5_original_datasets_group
         self._output_h5_predictions_group = output_h5_predictions_group
-        self._data = Data(experimeents_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
-                          split_datasets_group=SPLIT_DTS_GROUP,
-                          train_idx=TRAIN_IDX,
-                          test_idx=TEST_IDX)
+        self._split_datasets_group = split_datasets_group
+        self._train_idx = test_idx
+        self._test_idx = test_idx
+        self._data = Data(experiments_predictions_dir=self._output_h5_predictions_group,
+                          split_datasets_group=self._split_datasets_group,
+                          train_idx=self._train_idx,
+                          test_idx=self._test_idx)
     
     def calculate_error_all_datasets(self, metric):
+        """
+        Calculates the prediction error for each estimator on all test splits.
+
+        :type metric: string
+        :param metric: accuracy score metric as per `sklearn documentation <http://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html>`_.
+        """
         #load all datasets
         dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
 
@@ -78,6 +110,12 @@ class AnalyseResults(object):
         return score
     
     def calculate_error_per_dataset(self, metric):
+        """
+        Calculates the prediction error for each estimator on each of the datasets.
+
+        :type metric: string
+        :param metric: accuracy score metric as per `sklearn documentation <http://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html>`_.
+        """
         orig_dts_names_list, orig_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
         pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._output_h5_predictions_group, hdf5_io=self._output_io)
         result = {}
