@@ -16,6 +16,24 @@ from mleap.data import Data
 import numpy as np
 import logging
 class Orchestrator:
+    """
+    Orchestrates the sequencing of running the machine learning experiments.
+
+    :type hdf5_input_io: :func:`~mleap.shared.files_io.FilesIO`
+    :param hdf5_input_io: instance of :func:`~mleap.shared.files_io.FilesIO` with reference to the input file
+
+    :type hdf5_output_io: :func:`~mleap.shared.files_io.FilesIO`
+    :param hdf5_output_io: instance of :func:`~mleap.shared.files_io.FilesIO` with reference to the output file
+
+    :type dts_names: array of strings
+    :param dts_names: array with the names of the datasets on which experiments will be run.
+
+    :type experiments_predictions_dir: string
+    :param experiments_predictions_dir: path in HDF5 database where predictions will be saved
+
+    :type experiments_trained_models_dir: string
+    :param experiments_trained_models_dir: folder on disk where trained estimators will be saved.
+    """
     def __init__(self, 
                  hdf5_input_io, 
                  hdf5_output_io,
