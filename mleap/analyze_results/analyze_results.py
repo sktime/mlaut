@@ -73,6 +73,7 @@ class AnalyseResults(object):
 
         :type metric: string
         :param metric: accuracy score metric as per `sklearn documentation <http://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html>`_.
+        :rtype: dictionary. Keys 
         """
         #load all datasets
         dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
@@ -90,7 +91,7 @@ class AnalyseResults(object):
             loss = self._calculate_prediction_error_per_dataset(metric=metric, predictions_per_ml_strategy=predictions, true_labels=true_labels)
             loss_arr.append(loss)
     
-        return self.convert_from_array_to_dict(loss_arr)
+        return self._convert_from_array_to_dict(loss_arr)
     
 
 
@@ -175,6 +176,15 @@ class AnalyseResults(object):
         return np.array(errors)
 
     def calculate_average_std(self, scores_dict):
+        """
+        Calculates simple average and standard deviation.
+
+        :type scores_dict: dictionary
+        :param scores_dict: Dictionary with estimators (keys) and corresponding 
+            prediction accuracies on different datasets.
+        
+        :rtype: pandas DataFrame
+        """
         result = {}
         for k in scores_dict.keys():
             average = np.average(scores_dict[k])
@@ -188,6 +198,17 @@ class AnalyseResults(object):
         return res_df
 
     def cohens_d(self, estimator_dict):
+        """
+        Cohen's d is an effect size used to indicate the standardised difference
+        between two means. The calculation is implemented natively (without the 
+        use of third-party libraries). More information can be found here:
+        `Cohen\'s d <https://en.wikiversity.org/wiki/Cohen%27s_d>`_.
+
+        :type estimator_dict: dictionary
+        :param estimator_dict: dictionay with keys `names of estimators` and 
+            values `errors achieved by estimators on test datasets`.
+        :rtype: pandas DataFrame.
+        """
         cohens_d = {}
         comb = itertools.combinations(estimator_dict.keys(), r=2)
         for c in comb:
@@ -216,7 +237,7 @@ class AnalyseResults(object):
         cohens_d_df = cohens_d_df.drop(['sort'], axis=1)
         return cohens_d_df
 
-    def convert_from_array_to_dict(self, observations):
+    def _convert_from_array_to_dict(self, observations):
         observations = np.array(observations)
         num_datasets = observations.shape[0]
         num_strategies = observations.shape[1]
@@ -234,6 +255,13 @@ class AnalyseResults(object):
    
 
     def t_test(self, observations):
+        """
+        Runs t-test on all possible combinations between the estimators.
+
+        :type observations: dictionary
+        :param observations: Dictionary with errors on test sets achieved by estimators.
+        :rtype: tuple of dictionary, pandas DataFrame
+        """
         t_test = {}
         perms = itertools.combinations(observations.keys(), r=2)
         for perm in perms:
@@ -254,7 +282,12 @@ class AnalyseResults(object):
         """
         Non-parametric test for testing consistent differences between pairs of obeservations.
         The test counts the number of observations that are greater, smaller and equal to the mean
-        https://en.wikipedia.org/wiki/Sign_test
+        `<https://en.wikipedia.org/wiki/Sign_test>`_.
+
+
+        :type observations: dictionary
+        :param observations: Dictionary with errors on test sets achieved by estimators.
+        :rtype: tuple of dictionary, pandas DataFrame
         """
         sign_test = {}
         perms = itertools.combinations(observations.keys(), r=2)
@@ -276,6 +309,14 @@ class AnalyseResults(object):
         """
         correction used to counteract multiple comparissons
         https://en.wikipedia.org/wiki/Bonferroni_correction
+
+
+        :type observations: dictionary
+        :param observations: Dictionary with errors on test sets achieved by estimators.
+
+        :type alpha: float
+        :param alpha: confidence level.
+        :rtype: tuple of dictionary, pandas DataFrame
         """
         t_test, df_t_test = self.t_test(observations)
         
@@ -288,9 +329,13 @@ class AnalyseResults(object):
         
     def wilcoxon_test(self, observations):
         """
-        Wilcoxon signed-rank test.
+        `Wilcoxon signed-rank test <https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test>`_.
         Tests whether two  related paired samples come from the same distribution. 
         In particular, it tests whether the distribution of the differences x-y is symmetric about zero
+
+        :type observations: dictionary
+        :param observations: Dictionary with errors on test sets achieved by estimators.
+        :rtype: tuple of dictionary, pandas DataFrame.
         """
         wilcoxon_test ={}
         perms = itertools.combinations(observations.keys(), r=2)
@@ -310,7 +355,13 @@ class AnalyseResults(object):
         """
         The Friedman test is a non-parametric statistical test used to detect differences 
         in treatments across multiple test attempts. The procedure involves ranking each row (or block) together, 
-        then considering the values of ranks by columns. 
+        then considering the values of ranks by columns.
+        Implementation used: `scipy.stats <https://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.stats.friedmanchisquare.html>`_. 
+
+        :type observations: dictionary
+        :param observations: Dictionary with errors on test sets achieved by estimators.
+        :rtype: tuple of dictionary, pandas DataFrame.
+        
         """
 
         """
@@ -324,6 +375,16 @@ class AnalyseResults(object):
         return friedman_test, values_df
     
     def nemenyi(self, obeservations):
+        """
+        Post-hoc test run if the `friedman_test` reveals statistical significance.
+        For more information see `Nemenyi test <https://en.wikipedia.org/wiki/Nemenyi_test>`_.
+        Implementation used `scikit-posthocs <https://github.com/maximtrp/scikit-posthocs>`_.
+
+        :type observations: dictionary
+        :param observations: Dictionary with errors on test sets achieved by estimators.
+        :rtype: pandas DataFrame.
+        """
+
         obeservations = pd.DataFrame(obeservations)
         obeservations = obeservations.melt(var_name='groups', value_name='values')
 
