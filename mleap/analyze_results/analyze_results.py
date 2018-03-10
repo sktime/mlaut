@@ -3,7 +3,7 @@ from mleap.shared.static_variables import RESULTS_DIR, T_TEST_DATASET, SIGN_TEST
 
 from mleap.shared.static_variables import (DATA_DIR, 
                                            HDF5_DATA_FILENAME, 
-                                           EXPERIMENTS_PREDICTIONS_DIR,
+                                           EXPERIMENTS_PREDICTIONS_GROUP,
                                            SPLIT_DTS_GROUP,
                                            TRAIN_IDX,
                                            TEST_IDX)
@@ -62,7 +62,7 @@ class AnalyseResults(object):
         self._split_datasets_group = split_datasets_group
         self._train_idx = test_idx
         self._test_idx = test_idx
-        self._data = Data(experiments_predictions_dir=self._output_h5_predictions_group,
+        self._data = Data(experiments_predictions_group=self._output_h5_predictions_group,
                           split_datasets_group=self._split_datasets_group,
                           train_idx=self._train_idx,
                           test_idx=self._test_idx)

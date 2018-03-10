@@ -4,7 +4,7 @@ from mleap.shared.static_variables import (X_TRAIN_DIR,
                                        Y_TEST_DIR, 
                                        TRAIN_IDX, 
                                        TEST_IDX, 
-                                       EXPERIMENTS_PREDICTIONS_DIR,
+                                       EXPERIMENTS_PREDICTIONS_GROUP,
                                        EXPERIMENTS_TRAINED_MODELS_DIR, 
                                        LOG_ERROR_FILE, set_logging_defaults)
 import sys
@@ -28,8 +28,8 @@ class Orchestrator:
     :type dts_names: array of strings
     :param dts_names: array with the names of the datasets on which experiments will be run.
 
-    :type experiments_predictions_dir: string
-    :param experiments_predictions_dir: path in HDF5 database where predictions will be saved
+    :type experiments_predictions_group: string
+    :param experiments_predictions_group: path in HDF5 database where predictions will be saved
 
     :type experiments_trained_models_dir: string
     :param experiments_trained_models_dir: folder on disk where trained estimators will be saved.
@@ -39,9 +39,9 @@ class Orchestrator:
                  hdf5_output_io,
                  dts_names,
                  original_datasets_group_h5_path, 
-                 experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR,
+                 experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP,
                  experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
-        self._experiments_predictions_dir=experiments_predictions_dir
+        self.experiments_predictions_group=experiments_predictions_group
         self._experiments_trained_models_dir=experiments_trained_models_dir
         self._input_io = hdf5_input_io
         self._output_io = hdf5_output_io

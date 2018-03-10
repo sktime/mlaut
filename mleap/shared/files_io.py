@@ -1,7 +1,7 @@
 import os
 import glob
 import pickle
-from .static_variables import EXPERIMENTS_TRAINED_MODELS_DIR, EXPERIMENTS_PREDICTIONS_DIR, EXPERIMENTS_MODEL_ACCURACY_DIR
+from .static_variables import EXPERIMENTS_TRAINED_MODELS_DIR, EXPERIMENTS_PREDICTIONS_GROUP, EXPERIMENTS_MODEL_ACCURACY_DIR
 from .static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 from .static_variables import REFORMATTED_DATASETS_DIR
 from .static_variables import RUNTIMES_GROUP
@@ -103,14 +103,14 @@ class FilesIO:
     :type mode: string
     :param mode: open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
     
-    :type experiments_predictions_dir: string
-    :param experiments_predictions_dir: Location in HDF5 database where estimator predictions will be saved.
+    :type experiments_predictions_group: string
+    :param experiments_predictions_group: Location in HDF5 database where estimator predictions will be saved.
     """
     def __init__(self, hdf5_filename, mode='a', 
-                 experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR):
+                 experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP):
         self.hdf5_filename = hdf5_filename
         self._mode = mode
-        self._experiments_predictions_dir=experiments_predictions_dir
+        self._experiments_predictions_group=experiments_predictions_group
 
     
 
@@ -136,7 +136,7 @@ class FilesIO:
         :rtype: `numpy array in the form [[strategy name][predictions]]`
         """
         f = h5py.File(self.hdf5_filename, self._mode)
-        load_path = f'/{self._experiments_predictions_dir}/{dataset_name}'
+        load_path = f'/{self._experiments_predictions_group}/{dataset_name}'
         predictions = f[load_path]
         
         predictions_for_dataset = []
@@ -164,7 +164,7 @@ class FilesIO:
         :param strategy_name: name of estimator/strategy 
         """
         f = h5py.File(self.hdf5_filename, self._mode)
-        save_path = f'{self._experiments_predictions_dir}/{dataset_name}/{strategy_name}'
+        save_path = f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}'
         try:
             f[save_path] = np.array(predictions) 
         except:
@@ -186,7 +186,7 @@ class FilesIO:
         for prediction in predictions:
             strategy_name = prediction[0]
             strategy_predictions = np.array(prediction[1])
-            save_path = EXPERIMENTS_PREDICTIONS_DIR + dataset_name  +'/' + strategy_name
+            save_path = f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}'
             try:
                 f[save_path] = strategy_predictions
             except:
