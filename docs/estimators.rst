@@ -1,5 +1,5 @@
-estimators module
-==================
+Estimators
+==========
 
 This module contains the default estimators that come with mleap.
 

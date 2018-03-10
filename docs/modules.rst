@@ -7,4 +7,5 @@ Modules
    estimators
    experiments
    data
+   analyze_results
    shared

@@ -5,7 +5,7 @@
 
 Welcome to mleap's documentation!
 =================================
-Welcome to mleap (Machine Learning Experiments Automation Package).
+Welcome to ``mleap`` (Machine Learning Experiments Automation Package).
 
 
 
