@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mleap.experiments.orchestrator &mdash; mleap 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="mleap 1.0.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> mleap
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../project.html">Description of the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">mleap</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mleap.experiments.orchestrator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mleap.experiments.orchestrator</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">mleap.shared.static_variables</span> <span class="k">import</span> <span class="p">(</span><span class="n">X_TRAIN_DIR</span><span class="p">,</span> 
+                                       <span class="n">X_TEST_DIR</span><span class="p">,</span> 
+                                       <span class="n">Y_TRAIN_DIR</span><span class="p">,</span> 
+                                       <span class="n">Y_TEST_DIR</span><span class="p">,</span> 
+                                       <span class="n">TRAIN_IDX</span><span class="p">,</span> 
+                                       <span class="n">TEST_IDX</span><span class="p">,</span> 
+                                       <span class="n">EXPERIMENTS_PREDICTIONS_GROUP</span><span class="p">,</span>
+                                       <span class="n">EXPERIMENTS_TRAINED_MODELS_DIR</span><span class="p">,</span> 
+                                       <span class="n">LOG_ERROR_FILE</span><span class="p">,</span> <span class="n">set_logging_defaults</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">mleap.shared.files_io</span> <span class="k">import</span> <span class="n">FilesIO</span>
+<span class="kn">from</span> <span class="nn">mleap.experiments.experiments</span> <span class="k">import</span> <span class="n">Experiments</span>
+<span class="kn">from</span> <span class="nn">mleap.shared.files_io</span> <span class="k">import</span> <span class="n">DiskOperations</span>
+<span class="kn">from</span> <span class="nn">mleap.data</span> <span class="k">import</span> <span class="n">Data</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<div class="viewcode-block" id="Orchestrator"><a class="viewcode-back" href="../../../experiments.html#mleap.experiments.orchestrator.Orchestrator">[docs]</a><span class="k">class</span> <span class="nc">Orchestrator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Orchestrates the sequencing of running the machine learning experiments.</span>
+
+<span class="sd">    :type hdf5_input_io: :func:`~mleap.shared.files_io.FilesIO`</span>
+<span class="sd">    :param hdf5_input_io: instance of :func:`~mleap.shared.files_io.FilesIO` with reference to the input file</span>
+
+<span class="sd">    :type hdf5_output_io: :func:`~mleap.shared.files_io.FilesIO`</span>
+<span class="sd">    :param hdf5_output_io: instance of :func:`~mleap.shared.files_io.FilesIO` with reference to the output file</span>
+
+<span class="sd">    :type dts_names: array of strings</span>
+<span class="sd">    :param dts_names: array with the names of the datasets on which experiments will be run.</span>
+
+<span class="sd">    :type experiments_predictions_group: string</span>
+<span class="sd">    :param experiments_predictions_group: path in HDF5 database where predictions will be saved</span>
+
+<span class="sd">    :type experiments_trained_models_dir: string</span>
+<span class="sd">    :param experiments_trained_models_dir: folder on disk where trained estimators will be saved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">hdf5_input_io</span><span class="p">,</span> 
+                 <span class="n">hdf5_output_io</span><span class="p">,</span>
+                 <span class="n">dts_names</span><span class="p">,</span>
+                 <span class="n">original_datasets_group_h5_path</span><span class="p">,</span> 
+                 <span class="n">experiments_predictions_group</span><span class="o">=</span><span class="n">EXPERIMENTS_PREDICTIONS_GROUP</span><span class="p">,</span>
+                 <span class="n">experiments_trained_models_dir</span><span class="o">=</span><span class="n">EXPERIMENTS_TRAINED_MODELS_DIR</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experiments_predictions_group</span><span class="o">=</span><span class="n">experiments_predictions_group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_experiments_trained_models_dir</span><span class="o">=</span><span class="n">experiments_trained_models_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_io</span> <span class="o">=</span> <span class="n">hdf5_input_io</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_io</span> <span class="o">=</span> <span class="n">hdf5_output_io</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dts_names</span><span class="o">=</span><span class="n">dts_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_datasets_group_h5_path</span> <span class="o">=</span> <span class="n">original_datasets_group_h5_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_experiments</span> <span class="o">=</span> <span class="n">Experiments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiments_trained_models_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_disk_op</span> <span class="o">=</span> <span class="n">DiskOperations</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">()</span> <span class="c1">#TODO need to implement a way to change the defaults.</span>
+        <span class="n">set_logging_defaults</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Orchestrator.run"><a class="viewcode-back" href="../../../experiments.html#mleap.experiments.orchestrator.Orchestrator.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modelling_strategies</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Main module for training the estimators. </span>
+<span class="sd">        The inputs of the function are: </span>
+
+<span class="sd">        1. The input and output databse files containing the datasets.</span>
+
+<span class="sd">        2. The instantiated estimators.</span>
+<span class="sd">        </span>
+<span class="sd">        The method iterates through all datasets in the input database file </span>
+<span class="sd">        and trains all modelling strategies on these datasets. At the end of the process </span>
+<span class="sd">        we make predictions on the test sets and store them in the output database file.</span>
+
+<span class="sd">        The class uses helper methods in the experiments class to avoid too many nested loops.</span>
+
+<span class="sd">        :type modelling_strategies: array of :ref:`mleap_estimator-label` objects</span>
+<span class="sd">        :param modelling_strategies: array of estimators that will be used for training</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#loop through all datasets</span>
+            <span class="n">dts_trained</span><span class="o">=</span><span class="mi">0</span>
+            <span class="n">dts_total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dts_names</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prediction_accuracies</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">dts_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dts_names</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">f</span><span class="s1">&#39;Training estimators on </span><span class="si">{dts_name}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="n">dts_trained</span> <span class="o">+=</span><span class="mi">1</span>
+                <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">load_test_train_dts</span><span class="p">(</span><span class="n">hdf5_out</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_io</span><span class="p">,</span> 
+                                                                              <span class="n">hdf5_in</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_io</span><span class="p">,</span> 
+                                                                              <span class="n">dts_name</span><span class="o">=</span><span class="n">dts_name</span><span class="p">,</span> 
+                                                                              <span class="n">dts_grp_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_datasets_group_h5_path</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;*** Training models on dataset: </span><span class="si">{dts_name}</span><span class="s1">. Total datasets processed: </span><span class="si">{dts_trained}</span><span class="s1">/</span><span class="si">{dts_total}</span><span class="s1"> ***&#39;</span><span class="p">)</span>
+                <span class="n">timestamps_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_experiments</span><span class="o">.</span><span class="n">run_experiments</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> 
+                                                                                  <span class="n">y_train</span><span class="p">,</span> 
+                                                                                  <span class="n">modelling_strategies</span><span class="p">,</span> 
+                                                                                  <span class="n">dts_name</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_output_io</span><span class="o">.</span><span class="n">save_ml_strategy_timestamps</span><span class="p">(</span><span class="n">timestamps_df</span><span class="p">,</span> <span class="n">dts_name</span><span class="p">)</span>
+
+
+
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="c1"># quit</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;***************************&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;********  EXITING  ********&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;***************************&#39;</span><span class="p">)</span>
+
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span></div>
+
+  
+
+<div class="viewcode-block" id="Orchestrator.predict_all"><a class="viewcode-back" href="../../../experiments.html#mleap.experiments.orchestrator.Orchestrator.predict_all">[docs]</a>    <span class="k">def</span> <span class="nf">predict_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trained_models_dir</span><span class="p">,</span> <span class="n">estimators</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make predictions on test sets</span>
+
+<span class="sd">        :type trained_models_dir: string</span>
+<span class="sd">        :param trained_models_dir: directory where the trained models are saved</span>
+
+<span class="sd">        :type estimators: array of :ref:`mleap_estimator-label` objects</span>
+<span class="sd">        :param estimators: :ref:`mleap_estimator-label` objects. The trained models are set as a property to the object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datasets</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">trained_models_dir</span><span class="p">)</span>
+        <span class="n">names_all_estimators</span> <span class="o">=</span> <span class="p">[</span><span class="n">estimator</span><span class="o">.</span><span class="n">properties</span><span class="p">()[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">estimator</span> <span class="ow">in</span> <span class="n">estimators</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">dts</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
+            <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">load_test_train_dts</span><span class="p">(</span><span class="n">hdf5_out</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_io</span><span class="p">,</span> 
+                                                                              <span class="n">hdf5_in</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_io</span><span class="p">,</span> 
+                                                                              <span class="n">dts_name</span><span class="o">=</span><span class="n">dts</span><span class="p">,</span> 
+                                                                              <span class="n">dts_grp_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_datasets_group_h5_path</span><span class="p">)</span>
+            <span class="n">saved_estimators</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{trained_models_dir}</span><span class="s1">/</span><span class="si">{dts}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">saved_estimator</span> <span class="ow">in</span> <span class="n">saved_estimators</span><span class="p">:</span>
+                <span class="n">name_estimator</span> <span class="o">=</span> <span class="n">saved_estimator</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx_estimator</span> <span class="o">=</span> <span class="n">names_all_estimators</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name_estimator</span><span class="p">)</span>
+                    <span class="n">estimator</span> <span class="o">=</span> <span class="n">estimators</span><span class="p">[</span><span class="n">idx_estimator</span><span class="p">]</span>
+                    <span class="n">estimator</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{trained_models_dir}</span><span class="s1">/</span><span class="si">{dts}</span><span class="s1">/</span><span class="si">{saved_estimator}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">trained_estimator</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">get_trained_model</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">name_estimator</span> <span class="o">==</span> <span class="s1">&#39;NeuralNetworkDeepClassifier&#39;</span><span class="p">:</span>
+                        <span class="n">predictions</span> <span class="o">=</span> <span class="n">trained_estimator</span><span class="o">.</span><span class="n">predict_classes</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">predictions</span> <span class="o">=</span> <span class="n">trained_estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+              
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_output_io</span><span class="o">.</span><span class="n">save_prediction_to_db</span><span class="p">(</span><span class="n">predictions</span><span class="o">=</span><span class="n">predictions</span><span class="p">,</span> 
+                                                        <span class="n">dataset_name</span><span class="o">=</span><span class="n">dts</span><span class="p">,</span> 
+                                                        <span class="n">strategy_name</span><span class="o">=</span><span class="n">name_estimator</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Predictions of estimator </span><span class="si">{name_estimator}</span><span class="s1"> on </span><span class="si">{dts}</span><span class="s1"> stored in database&#39;</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Skipping trained estimator </span><span class="si">{name_estimator}</span><span class="s1">. Saved on disk but not instantiated.&#39;</span><span class="p">)</span></div></div>
+                
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Viktor Kazakov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

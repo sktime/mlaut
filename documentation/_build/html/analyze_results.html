@@ -1,0 +1,460 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analyze Results &mdash; mleap 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="mleap 1.0.0 documentation" href="index.html"/>
+        <link rel="up" title="Modules" href="modules.html"/>
+        <link rel="next" title="Shared" href="shared.html"/>
+        <link rel="prev" title="Data" href="data.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> mleap
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="project.html">Description of the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="estimators.html">Estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Analyze Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">analyze_results</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="shared.html">Shared</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mleap</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+        
+      <li>Analyze Results</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/analyze_results.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="analyze-results">
+<span id="id1"></span><h1>Analyze Results<a class="headerlink" href="#analyze-results" title="Permalink to this headline">¶</a></h1>
+<p>This modules contains methods for analyzing the results
+produced by the trained estimators and benchmarking their performance.</p>
+<div class="section" id="id2">
+<h2>analyze_results<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-mleap.analyze_results.analyze_results"></span><dl class="class">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults">
+<em class="property">class </em><code class="descclassname">mleap.analyze_results.analyze_results.</code><code class="descname">AnalyseResults</code><span class="sig-paren">(</span><em>hdf5_output_io</em>, <em>hdf5_input_io</em>, <em>input_h5_original_datasets_group</em>, <em>output_h5_predictions_group</em>, <em>split_datasets_group='split_dts_idx'</em>, <em>train_idx='train_idx'</em>, <em>test_idx='test_idx'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Analyze results of machine learning experiments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hdf5_input_io</strong> (<a class="reference internal" href="shared.html#mleap.shared.files_io.FilesIO" title="mleap.shared.files_io.FilesIO"><code class="xref py py-func docutils literal"><span class="pre">FilesIO()</span></code></a>) – Instance of <a class="reference internal" href="shared.html#mleap.shared.files_io.FilesIO" title="mleap.shared.files_io.FilesIO"><code class="xref py py-func docutils literal"><span class="pre">FilesIO()</span></code></a> class.</li>
+<li><strong>hdf5_input_io</strong> – Instance of <a class="reference internal" href="shared.html#mleap.shared.files_io.FilesIO" title="mleap.shared.files_io.FilesIO"><code class="xref py py-func docutils literal"><span class="pre">FilesIO()</span></code></a> class.</li>
+<li><strong>input_h5_original_datasets_group</strong> (<em>string</em>) – location in HDF5 database where the original datasets are stored.</li>
+<li><strong>output_h5_predictions_group</strong> (<em>string</em>) – location in HDF5 where the prediction of the estimators will be saved.</li>
+<li><strong>split_datasets_group</strong> (<em>string</em>) – location in HDF5 database where the test/train splits are saved.</li>
+<li><strong>train_idx</strong> (<em>string</em>) – name of group where the train split index will be stored.</li>
+<li><strong>test_idx</strong> (<em>string</em>) – name of group where the test split index will be stored.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.calculate_average_std">
+<code class="descname">calculate_average_std</code><span class="sig-paren">(</span><em>scores_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.calculate_average_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.calculate_average_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates simple average and standard deviation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scores_dict</strong> (<em>dictionary</em>) – Dictionary with estimators (keys) and corresponding 
+prediction accuracies on different datasets.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.calculate_error_all_datasets">
+<code class="descname">calculate_error_all_datasets</code><span class="sig-paren">(</span><em>metric</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.calculate_error_all_datasets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.calculate_error_all_datasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the prediction error for each estimator on all test splits.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>metric</strong> (<em>string</em>) – Loss metric. Supported values are: <code class="docutils literal"><span class="pre">accuracy</span></code>,  <code class="docutils literal"><span class="pre">mean_squared_error</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dictionary with keys representing the name of the estimator 
+and values representing the loss achieved on each dataset.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.calculate_error_per_dataset">
+<code class="descname">calculate_error_per_dataset</code><span class="sig-paren">(</span><em>metric</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.calculate_error_per_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.calculate_error_per_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the prediction error for each estimator on each of the datasets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>metric</strong> (<em>string</em>) – Loss metric. Supported values are: <code class="docutils literal"><span class="pre">accuracy</span></code>,  <code class="docutils literal"><span class="pre">mean_squared_error</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.cohens_d">
+<code class="descname">cohens_d</code><span class="sig-paren">(</span><em>estimator_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.cohens_d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.cohens_d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohen’s d is an effect size used to indicate the standardised difference
+between two means. The calculation is implemented natively (without the 
+use of third-party libraries). More information can be found here:
+<a class="reference external" href="https://en.wikiversity.org/wiki/Cohen%27s_d">Cohen’s d</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>estimator_dict</strong> (<em>dictionary</em>) – dictionay with keys <cite>names of estimators</cite> and 
+values <cite>errors achieved by estimators on test datasets</cite>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pandas DataFrame.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.friedman_test">
+<code class="descname">friedman_test</code><span class="sig-paren">(</span><em>observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.friedman_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.friedman_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Friedman test is a non-parametric statistical test used to detect differences 
+in treatments across multiple test attempts. The procedure involves ranking each row (or block) together, 
+then considering the values of ranks by columns.
+Implementation used: <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.stats.friedmanchisquare.html">scipy.stats</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>observations</strong> (<em>dictionary</em>) – Dictionary with errors on test sets achieved by estimators.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple of dictionary, pandas DataFrame.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.nemenyi">
+<code class="descname">nemenyi</code><span class="sig-paren">(</span><em>obeservations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.nemenyi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.nemenyi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post-hoc test run if the <cite>friedman_test</cite> reveals statistical significance.
+For more information see <a class="reference external" href="https://en.wikipedia.org/wiki/Nemenyi_test">Nemenyi test</a>.
+Implementation used <a class="reference external" href="https://github.com/maximtrp/scikit-posthocs">scikit-posthocs</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>observations</strong> (<em>dictionary</em>) – Dictionary with errors on test sets achieved by estimators.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pandas DataFrame.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.sign_test">
+<code class="descname">sign_test</code><span class="sig-paren">(</span><em>observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.sign_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.sign_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Non-parametric test for testing consistent differences between pairs of obeservations.
+The test counts the number of observations that are greater, smaller and equal to the mean
+<a class="reference external" href="https://en.wikipedia.org/wiki/Sign_test">https://en.wikipedia.org/wiki/Sign_test</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>observations</strong> (<em>dictionary</em>) – Dictionary with errors on test sets achieved by estimators.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple of dictionary, pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.t_test">
+<code class="descname">t_test</code><span class="sig-paren">(</span><em>observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.t_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.t_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs t-test on all possible combinations between the estimators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>observations</strong> (<em>dictionary</em>) – Dictionary with errors on test sets achieved by estimators.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple of dictionary, pandas DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.t_test_with_bonferroni_correction">
+<code class="descname">t_test_with_bonferroni_correction</code><span class="sig-paren">(</span><em>observations</em>, <em>alpha=0.05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.t_test_with_bonferroni_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.t_test_with_bonferroni_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>correction used to counteract multiple comparissons
+<a class="reference external" href="https://en.wikipedia.org/wiki/Bonferroni_correction">https://en.wikipedia.org/wiki/Bonferroni_correction</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>observations</strong> (<em>dictionary</em>) – Dictionary with errors on test sets achieved by estimators.</li>
+<li><strong>alpha</strong> (<em>float</em>) – confidence level.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple of dictionary, pandas DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.analyze_results.AnalyseResults.wilcoxon_test">
+<code class="descname">wilcoxon_test</code><span class="sig-paren">(</span><em>observations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/analyze_results.html#AnalyseResults.wilcoxon_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.analyze_results.AnalyseResults.wilcoxon_test" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon signed-rank test</a>.
+Tests whether two  related paired samples come from the same distribution. 
+In particular, it tests whether the distribution of the differences x-y is symmetric about zero</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>observations</strong> (<em>dictionary</em>) – Dictionary with errors on test sets achieved by estimators.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple of dictionary, pandas DataFrame.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="shared.html" class="btn btn-neutral float-right" title="Shared" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data.html" class="btn btn-neutral" title="Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Viktor Kazakov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

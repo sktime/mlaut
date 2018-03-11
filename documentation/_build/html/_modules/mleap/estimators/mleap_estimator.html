@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mleap.estimators.mleap_estimator &mdash; mleap 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="mleap 1.0.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> mleap
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../project.html">Description of the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">mleap</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mleap.estimators.mleap_estimator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mleap.estimators.mleap_estimator</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">mleap.shared.static_variables</span> <span class="k">import</span> <span class="n">GRIDSEARCH_CV_NUM_PARALLEL_JOBS</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">mleap.shared.static_variables</span> <span class="k">import</span> <span class="n">PICKLE_EXTENTION</span>
+<span class="kn">import</span> <span class="nn">wrapt</span>
+<div class="viewcode-block" id="MleapEstimator"><a class="viewcode-back" href="../../../estimators.html#mleap.estimators.mleap_estimator.MleapEstimator">[docs]</a><span class="k">class</span> <span class="nc">MleapEstimator</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstact base class that all mleap estimators should inherit from.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                <span class="n">n_jobs</span><span class="o">=</span><span class="n">GRIDSEARCH_CV_NUM_PARALLEL_JOBS</span><span class="p">,</span>
+                <span class="n">num_cv_folds</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> 
+                <span class="n">refit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_cv_folds</span><span class="o">=</span><span class="n">num_cv_folds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="o">=</span><span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_jobs</span><span class="o">=</span><span class="n">n_jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refit</span><span class="o">=</span><span class="n">refit</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :type verbose: int</span>
+<span class="sd">    :param verbose: Sets the amount of output in the terminal. Higher numbers mean more output.</span>
+
+<span class="sd">    :type n_jobs: number</span>
+<span class="sd">    :param n_jobs: number of CPU cores used for training the estimators. If set to -1 all available cores are used.</span>
+
+<span class="sd">    :type num_cv_folds: int</span>
+<span class="sd">    :param num_cv_folds: number of cross validation folds used by GridsearchCV.</span>
+
+<span class="sd">    :type refit: Boolean</span>
+<span class="sd">    :param refit: Refit an estimator using the best found parameters on the whole dataset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MleapEstimator.build"><a class="viewcode-back" href="../../../estimators.html#mleap.estimators.mleap_estimator.MleapEstimator.build">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Abstract method that needs to be implemented by all estimators. </span>
+<span class="sd">        It should return an estimator object.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+    
+<div class="viewcode-block" id="MleapEstimator.save"><a class="viewcode-back" href="../../../estimators.html#mleap.estimators.mleap_estimator.MleapEstimator.save">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Abstract method that needs to be implemented by all estimators.</span>
+<span class="sd">        Saves the trained model to disk.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="MleapEstimator.load"><a class="viewcode-back" href="../../../estimators.html#mleap.estimators.mleap_estimator.MleapEstimator.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads trained estimator from disk.</span>
+<span class="sd">        The default implemented method loads a sklearn estimator from a pickle file. </span>
+<span class="sd">        This method needs to be overwritten in the child estimator class if another </span>
+<span class="sd">        framework/procedure for saving/loading is used. </span>
+
+<span class="sd">        :type path_to_model: string</span>
+<span class="sd">        :param path_to_model: Location of the trained estimator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#file name could be passed with .* as extention. </span>
+        <span class="c1"># split_path = path_to_model.split(&#39;.&#39;)</span>
+        <span class="c1"># path_to_load = split_path[0] + PICKLE_EXTENTION </span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">path_to_model</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_trained_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="MleapEstimator.set_trained_model"><a class="viewcode-back" href="../../../estimators.html#mleap.estimators.mleap_estimator.MleapEstimator.set_trained_model">[docs]</a>    <span class="k">def</span> <span class="nf">set_trained_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trained_model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        setter method for storing trained estimator in memory</span>
+
+<span class="sd">        :type trained_model: estimator object</span>
+<span class="sd">        :param trained_model: Trained sklearn, keras, etc. estimator object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trained_model</span> <span class="o">=</span> <span class="n">trained_model</span></div>
+    
+<div class="viewcode-block" id="MleapEstimator.get_trained_model"><a class="viewcode-back" href="../../../estimators.html#mleap.estimators.mleap_estimator.MleapEstimator.get_trained_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_trained_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Getter method.</span>
+
+<span class="sd">        :rtype: `estimator object`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trained_model</span></div></div>
+
+    <span class="c1"># def predict(self, X):</span>
+    <span class="c1">#     estimator = self.get_trained_model()</span>
+    <span class="c1">#     return estimator.predict(X)</span>
+
+
+<span class="c1">#decorator for adding properties to estimator classes</span>
+
+<div class="viewcode-block" id="properties"><a class="viewcode-back" href="../../../estimators.html#mleap.estimators.mleap_estimator.properties">[docs]</a><span class="k">class</span> <span class="nc">properties</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator class used for adding properties to mleap estimator classes. The properties that all mleap estimator objects must have are: estimator family, task (classification, regression), name of estimator. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator_family</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :type estimator_family: array of strings</span>
+<span class="sd">        :param estimator_family: family of machine learning algorithms that the estimator belongs to.</span>
+
+<span class="sd">        :type tasks: array of strings</span>
+<span class="sd">        :param tasks: array of tasks (classification and/or regression) that the estimator can be applied to.</span>
+
+<span class="sd">        :type name: string</span>
+<span class="sd">        :param name: name of estimator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_estimator_family</span> <span class="o">=</span> <span class="n">estimator_family</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span> <span class="o">=</span> <span class="n">tasks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method attached by the decorator to the mleap estimator object.</span>
+<span class="sd">        :rtype: `dictionary`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>            
+        <span class="c1">#check whether the inputs are right</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_estimator_family</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> \
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Arguments to property_decorator must be provided as an array&#39;</span><span class="p">)</span>
+        <span class="n">properties_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;estimator_family&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimator_family</span><span class="p">,</span>
+            <span class="s1">&#39;tasks&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">properties_dict</span>
+
+    <span class="nd">@wrapt</span><span class="o">.</span><span class="n">decorator</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">#add properties to class</span>
+        <span class="n">wrapped</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span>
+        <span class="k">return</span> <span class="n">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        
+        <span class="c1"># class Wrapped(cls):</span>
+ 
+        <span class="c1">#     def properties(cls):</span>
+                
+        <span class="c1">#         #check whether the inputs are right</span>
+        <span class="c1">#         if not isinstance(self._estimator_family, list) or \</span>
+        <span class="c1">#             not isinstance(self._tasks, list):</span>
+        <span class="c1">#             raise ValueError(&#39;Arguments to property_decorator must be provided as an array&#39;)</span>
+        <span class="c1">#         properties_dict = {</span>
+        <span class="c1">#             &#39;estimator_family&#39;: self._estimator_family,</span>
+        <span class="c1">#             &#39;tasks&#39;: self._tasks,</span>
+        <span class="c1">#             &#39;name&#39;: self._name</span>
+        <span class="c1">#         }</span>
+        <span class="c1">#         return properties_dict</span>
+        <span class="c1"># return Wrapped</span>
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Viktor Kazakov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

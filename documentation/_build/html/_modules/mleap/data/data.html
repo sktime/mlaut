@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mleap.data.data &mdash; mleap 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="mleap 1.0.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> mleap
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../project.html">Description of the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">mleap</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mleap.data.data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mleap.data.data</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">..shared.files_io</span> <span class="k">import</span> <span class="n">FilesIO</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">..shared.static_variables</span> <span class="k">import</span> <span class="p">(</span><span class="n">TRAIN_IDX</span><span class="p">,</span> 
+                                       <span class="n">TEST_IDX</span><span class="p">,</span> 
+                                       <span class="n">SPLIT_DTS_GROUP</span><span class="p">,</span>
+                                       <span class="n">EXPERIMENTS_PREDICTIONS_GROUP</span><span class="p">,</span> 
+                                       <span class="n">set_logging_defaults</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../../data.html#mleap.data.data.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface class expanding the functionality of :func:`~mleap.shared.files_io.FilesIO`</span>
+
+<span class="sd">   </span>
+<span class="sd">    :type split_datasets_group: string</span>
+<span class="sd">    :param split_datasets_group: location in HDF5 database were the test/train split will be saved.</span>
+
+<span class="sd">    :type train_idx: string</span>
+<span class="sd">    :param train_idx: name of group where the indexes of the samples used for training are saved</span>
+
+<span class="sd">    :type test_idx: string</span>
+<span class="sd">    :param test_idx: name of group where the indexes of the samples used for testing are saved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">experiments_predictions_group</span><span class="o">=</span><span class="n">EXPERIMENTS_PREDICTIONS_GROUP</span><span class="p">,</span>
+                <span class="n">split_datasets_group</span><span class="o">=</span><span class="n">SPLIT_DTS_GROUP</span><span class="p">,</span>
+                <span class="n">train_idx</span><span class="o">=</span><span class="n">TRAIN_IDX</span><span class="p">,</span>
+                <span class="n">test_idx</span><span class="o">=</span><span class="n">TEST_IDX</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_experiments_predictions_group</span> <span class="o">=</span> <span class="n">experiments_predictions_group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_datasets_group</span><span class="o">=</span><span class="n">split_datasets_group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_idx</span><span class="o">=</span><span class="n">train_idx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_idx</span><span class="o">=</span><span class="n">test_idx</span>
+
+        <span class="n">set_logging_defaults</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Data.pandas_to_db"><a class="viewcode-back" href="../../../data.html#mleap.data.data.Data.pandas_to_db">[docs]</a>    <span class="k">def</span> <span class="nf">pandas_to_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_loc_hdf5</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">dts_metadata</span><span class="p">,</span> <span class="n">input_io</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves array of datasets in pandas DataFrame format in HDf5 Database.</span>
+<span class="sd">        This represents an interface method for :func:`~mleap.shared.files_io.FilesIO.save_datasets`</span>
+
+<span class="sd">        :type save_loc_hdf5: string</span>
+<span class="sd">        :param save_loc_hdf5: Root group in HDF5 database where the datasets will be saved.</span>
+
+<span class="sd">        :type datasets: array of pandas DataFrame</span>
+<span class="sd">        :param datasets: array of datasets formatted as pandas DataFrame.</span>
+
+<span class="sd">        :type dts_meta: array of dictionaries</span>
+<span class="sd">        :param dts_meta: Metadata for each dataset.</span>
+
+<span class="sd">        :type input_io: :func:`~mleap.shared.files_io.FilesIO`</span>
+<span class="sd">        :param input_io: Instance of :func:`~mleap.shared.files_io.FilesIO` class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">save_paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dts</span> <span class="ow">in</span> <span class="n">dts_metadata</span><span class="p">:</span>
+            <span class="n">save_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">save_loc_hdf5</span> <span class="o">+</span> <span class="n">dts</span><span class="p">[</span><span class="s1">&#39;dataset_name&#39;</span><span class="p">])</span>
+        <span class="c1">#files_io = FilesIO(save_loc_hdd)</span>
+        <span class="n">input_io</span><span class="o">.</span><span class="n">save_datasets</span><span class="p">(</span><span class="n">datasets</span><span class="o">=</span><span class="n">datasets</span><span class="p">,</span> 
+                               <span class="n">datasets_save_paths</span><span class="o">=</span><span class="n">save_paths</span><span class="p">,</span> 
+                               <span class="n">dts_metadata</span><span class="o">=</span><span class="n">dts_metadata</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Data.list_datasets"><a class="viewcode-back" href="../../../data.html#mleap.data.data.Data.list_datasets">[docs]</a>    <span class="k">def</span> <span class="nf">list_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hdf5_group</span><span class="p">,</span> <span class="n">hdf5_io</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns sub group in parent HDF5 group.</span>
+
+<span class="sd">        :type hdf5_group: string</span>
+<span class="sd">        :param hdf5_group: Path to HDF5 parent group of which we are quering the subgroups.</span>
+
+<span class="sd">        :type hdf5_io: :func:`~mleap.shared.files_io.FilesIO`</span>
+<span class="sd">        :param hdf5_io: Instance of :func:`~mleap.shared.files_io.FilesIO`</span>
+
+<span class="sd">        :rtype: tuple with array with dataset names and array with full path to datasets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dts_names_list</span> <span class="o">=</span> <span class="n">hdf5_io</span><span class="o">.</span><span class="n">list_datasets</span><span class="p">(</span><span class="n">hdf5_group</span><span class="p">)</span>
+        <span class="n">dts_names_list_full_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">hdf5_group</span>  <span class="o">+</span> <span class="n">dts</span> <span class="k">for</span> <span class="n">dts</span> <span class="ow">in</span> <span class="n">dts_names_list</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dts_names_list</span><span class="p">,</span> <span class="n">dts_names_list_full_path</span></div>
+    
+<div class="viewcode-block" id="Data.open_hdf5"><a class="viewcode-back" href="../../../data.html#mleap.data.data.Data.open_hdf5">[docs]</a>    <span class="k">def</span> <span class="nf">open_hdf5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hdf5_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :type hdf5_path: string</span>
+<span class="sd">        :param hdf5_path: path to HDF5 file saved on disk.</span>
+
+<span class="sd">        :type mode: string</span>
+<span class="sd">        :param mode: open and create file modes as per the `h5py documentation &lt;http://docs.h5py.org/en/latest/high/file.html&gt;`_.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FilesIO</span><span class="p">(</span><span class="n">hdf5_path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Data.split_datasets"><a class="viewcode-back" href="../../../data.html#mleap.data.data.Data.split_datasets">[docs]</a>    <span class="k">def</span> <span class="nf">split_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                       <span class="n">hdf5_in</span><span class="p">,</span> 
+                       <span class="n">hdf5_out</span><span class="p">,</span> 
+                       <span class="n">dataset_paths</span><span class="p">,</span> 
+                       <span class="n">test_size</span><span class="o">=</span><span class="mf">0.33</span><span class="p">,</span> 
+                       <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                       <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Splits datasets in test and train sets.</span>
+
+<span class="sd">        :type hdf5_in: :func:`~mleap.shared.files_io.FilesIO` object</span>
+<span class="sd">        :param hdf5_in: :func:`~mleap.shared.files_io.FilesIO` object where the original/input datasets are stored.</span>
+
+<span class="sd">        :type hdf5_out: :func:`~mleap.shared.files_io.FilesIO` object</span>
+<span class="sd">        :param hdf5_out: :func:`~mleap.shared.files_io.FilesIO` object where the split/output test/train indices are stored.</span>
+
+<span class="sd">        :type dataset_paths: array of strings</span>
+<span class="sd">        :param dataset_paths: full path to each dataset stored in the origial/input HDF5 database that will be split to test/train.</span>
+
+<span class="sd">        :type test_size: float</span>
+<span class="sd">        :param test_size: percentage of samples to be put in the test set.</span>
+
+<span class="sd">        :type random_state: integer</span>
+<span class="sd">        :param random_state: random state for test/train split.</span>
+
+<span class="sd">        :type verbose: boolean</span>
+<span class="sd">        :param verbose: if True prints progress messages in terminal.</span>
+
+<span class="sd">        :rtype: array of strings containing locations of split datasets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">split_dts_list</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">dts_loc</span> <span class="ow">in</span> <span class="n">dataset_paths</span><span class="p">:</span>
+            <span class="c1">#check if split exists in h5</span>
+            <span class="n">dts</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">hdf5_in</span><span class="o">.</span><span class="n">load_dataset_pd</span><span class="p">(</span><span class="n">dts_loc</span><span class="p">)</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;dataset_name&#39;</span><span class="p">]</span>
+            <span class="n">split_exists</span> <span class="o">=</span> <span class="n">hdf5_out</span><span class="o">.</span><span class="n">check_h5_path_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_datasets_group</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="o">+</span> <span class="n">dataset_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">split_exists</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Skipping </span><span class="si">{dataset_name}</span><span class="s1"> as test/train split already exists in output h5 file.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  
+                <span class="c1">#split</span>
+                <span class="n">idx_dts_rows</span> <span class="o">=</span> <span class="n">dts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">idx_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">idx_dts_rows</span><span class="p">)</span>
+                <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="o">=</span>  <span class="n">train_test_split</span><span class="p">(</span><span class="n">idx_split</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
+                <span class="n">train_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">train_idx</span><span class="p">)</span>
+                <span class="n">test_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">test_idx</span><span class="p">)</span>
+                <span class="c1">#save</span>
+                <span class="n">meta</span> <span class="o">=</span> <span class="p">[{</span><span class="sa">u</span><span class="s1">&#39;dataset_name&#39;</span><span class="p">:</span> <span class="n">dataset_name</span><span class="p">}]</span><span class="o">*</span><span class="mi">2</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_train_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test_idx</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Saving split for: </span><span class="si">{dataset_name}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">hdf5_out</span><span class="o">.</span><span class="n">save_array_hdf5</span><span class="p">(</span><span class="n">datasets</span><span class="o">=</span><span class="p">[</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">],</span>
+                                    <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_datasets_group</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">dataset_name</span><span class="p">,</span>
+                                    <span class="n">array_names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                                    <span class="n">array_meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span>
+            <span class="n">split_dts_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_datasets_group</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">dataset_name</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">split_dts_list</span></div>
+    
+<div class="viewcode-block" id="Data.load_train_test_split"><a class="viewcode-back" href="../../../data.html#mleap.data.data.Data.load_train_test_split">[docs]</a>    <span class="k">def</span> <span class="nf">load_train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hdf5_out</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads test train split form HDF5 database.</span>
+
+<span class="sd">        :type hdf5_out: :func:`~mleap.shared.files_io.FilesIO` object</span>
+<span class="sd">        :param hdf5_out: :func:`~mleap.shared.files_io.FilesIO` output object where the test/train index splits are stored.</span>
+
+<span class="sd">        :type dataset_name: string</span>
+<span class="sd">        :param dataset_name: name of dataset for which the splits will be loaded.</span>
+
+<span class="sd">        :rtype: tuple with train indices, test indices, train metadata and test metadata.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path_train</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/</span><span class="si">{self._split_datasets_group}</span><span class="s1">/</span><span class="si">{dataset_name}</span><span class="s1">/</span><span class="si">{self._train_idx}</span><span class="s1">&#39;</span>
+        <span class="n">train</span><span class="p">,</span> <span class="n">train_meta</span> <span class="o">=</span> <span class="n">hdf5_out</span><span class="o">.</span><span class="n">load_dataset_h5</span><span class="p">(</span><span class="n">path_train</span><span class="p">)</span>
+        <span class="n">path_test</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/</span><span class="si">{self._split_datasets_group}</span><span class="s1">/</span><span class="si">{dataset_name}</span><span class="s1">/</span><span class="si">{self._test_idx}</span><span class="s1">&#39;</span>
+        <span class="n">test</span><span class="p">,</span> <span class="n">test_meta</span> <span class="o">=</span> <span class="n">hdf5_out</span><span class="o">.</span><span class="n">load_dataset_h5</span><span class="p">(</span><span class="n">path_test</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">train_meta</span><span class="p">,</span> <span class="n">test_meta</span></div>
+
+<div class="viewcode-block" id="Data.load_test_train_dts"><a class="viewcode-back" href="../../../data.html#mleap.data.data.Data.load_test_train_dts">[docs]</a>    <span class="k">def</span> <span class="nf">load_test_train_dts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hdf5_out</span><span class="p">,</span> <span class="n">hdf5_in</span><span class="p">,</span> <span class="n">dts_name</span><span class="p">,</span> <span class="n">dts_grp_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads test/train data.</span>
+
+<span class="sd">        :type hdf5_out: :func:`~mleap.shared.files_io.FilesIO` object</span>
+<span class="sd">        :param hdf5_out: instance of :func:`~mleap.shared.files_io.FilesIO` object with output data.</span>
+
+<span class="sd">        :type hdf5_in: :func:`~mleap.shared.files_io.FilesIO` object</span>
+<span class="sd">        :param hdf5_in: instance of :func:`~mleap.shared.files_io.FilesIO` object with input data.</span>
+
+<span class="sd">        :type dts_name: string</span>
+<span class="sd">        :param dts_name: name of dataset for which the splits will be loaded.</span>
+
+<span class="sd">        :type dts_grp_path: string</span>
+<span class="sd">        :param dts_grp_path: path to root group where the original datasets are stored.</span>
+
+<span class="sd">        :rtype: tuple arrays in the form: X_train, X_test, y_train, y_test where X are the features and y are the lables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_train_test_split</span><span class="p">(</span><span class="n">hdf5_out</span><span class="p">,</span><span class="n">dts_name</span><span class="p">)</span>
+        <span class="n">dts</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">hdf5_in</span><span class="o">.</span><span class="n">load_dataset_pd</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{dts_grp_path}</span><span class="s1">/</span><span class="si">{dts_name}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">label_column</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;class_name&#39;</span><span class="p">]</span>
+        
+        <span class="n">y_train</span> <span class="o">=</span> <span class="n">dts</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">train</span><span class="p">][</span><span class="n">label_column</span><span class="p">]</span>
+        <span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span>
+        
+        <span class="n">y_test</span> <span class="o">=</span> <span class="n">dts</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">test</span><span class="p">][</span><span class="n">label_column</span><span class="p">]</span>
+        <span class="n">y_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
+
+        <span class="n">X_train</span> <span class="o">=</span> <span class="n">dts</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">train</span><span class="p">]</span>
+        <span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">label_column</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+        
+        <span class="n">X_test</span> <span class="o">=</span> <span class="n">dts</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">test</span><span class="p">]</span>
+        <span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">label_column</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">X_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span></div>
+        
+    <span class="c1"># def load_predictions(self, hdf5_out, dataset_name, </span>
+    <span class="c1">#                      experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR):</span>
+    <span class="c1">#     pass</span>
+
+<div class="viewcode-block" id="Data.load_true_labels"><a class="viewcode-back" href="../../../data.html#mleap.data.data.Data.load_true_labels">[docs]</a>    <span class="k">def</span> <span class="nf">load_true_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hdf5_in</span><span class="p">,</span> <span class="n">dataset_loc</span><span class="p">,</span> <span class="n">lables_idx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads labels for dataset</span>
+
+<span class="sd">        :type hdf5_in: :func:`~mleap.shared.files_io.FilesIO` object</span>
+<span class="sd">        :param hdf5_in: instance of :func:`~mleap.shared.files_io.FilesIO` object containing the original datasets</span>
+
+<span class="sd">        :type lables_idx: string</span>
+<span class="sd">        :param lables_idx: path the dataset. </span>
+
+<span class="sd">        :rtype: pandas DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">hdf5_in</span><span class="o">.</span><span class="n">load_dataset_pd</span><span class="p">(</span><span class="n">dataset_loc</span><span class="p">)</span>
+        <span class="n">labels_col_name</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;class_name&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dataset</span><span class="p">[</span><span class="n">labels_col_name</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">lables_idx</span><span class="p">]</span></div></div>
+        
+
+
+            
+   
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Viktor Kazakov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
