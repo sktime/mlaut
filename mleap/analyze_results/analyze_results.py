@@ -72,8 +72,10 @@ class AnalyseResults(object):
         Calculates the prediction error for each estimator on all test splits.
 
         :type metric: string
-        :param metric: accuracy score metric as per `sklearn documentation <http://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html>`_.
-        :rtype: dictionary. Keys 
+        :param metric: Loss metric. Supported values are: ``accuracy``,  ``mean_squared_error``
+
+        :rtype: dictionary with keys representing the name of the estimator 
+            and values representing the loss achieved on each dataset. 
         """
         #load all datasets
         dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
@@ -115,7 +117,9 @@ class AnalyseResults(object):
         Calculates the prediction error for each estimator on each of the datasets.
 
         :type metric: string
-        :param metric: accuracy score metric as per `sklearn documentation <http://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html>`_.
+        :param metric: Loss metric. Supported values are: ``accuracy``,  ``mean_squared_error``
+
+        :rtype: dictionary
         """
         orig_dts_names_list, orig_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
         pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._output_h5_predictions_group, hdf5_io=self._output_io)
@@ -173,6 +177,10 @@ class AnalyseResults(object):
             if metric == 'mean_squared_error':
                 mse = mean_squared_error([prediction], [true_label])
                 errors.append(mse)
+            if metric == 'accuracy':
+                accuracy = accuracy_score(true_label, prediction)
+                errors.append(accuracy)
+
         return np.array(errors)
 
     def calculate_average_std(self, scores_dict):
