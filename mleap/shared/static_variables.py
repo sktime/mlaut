@@ -58,13 +58,13 @@ LOG_ERROR_FILE = 'mleap_erros.log'
 """
 properties for decorator to estimators
 """
-GENERALIZED_LINEAR_MODELS='Generalized Linear Models'
+GENERALIZED_LINEAR_MODELS='Generalized_Linear_Models'
 ENSEMBLE_METHODS='Ensemble methods'
-NAIVE_BAYES='Naive Bayes'
-NEURAL_NETWORKS='Neural Networks'
+NAIVE_BAYES='Naive_Bayes'
+NEURAL_NETWORKS='Neural_Networks'
 CLASSIFICATION='Classification'
 REGRESSION='Regression'
-SVM='Support Vector Machines'
+SVM='Support_Vector_Machines'
 BASELINE='Baseline'
 
 def set_logging_defaults():
