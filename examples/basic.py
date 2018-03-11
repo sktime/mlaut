@@ -28,10 +28,13 @@ split_dts_list = data.split_datasets(hdf5_in=input_io,
 
 #Instantiate estimator objects and the experiments orchestrator class.
 instantiated_models = instantiate_default_estimators(estimators=['all'])
-test_o = Orchestrator(hdf5_input_io=input_io, 
+orchest = Orchestrator(hdf5_input_io=input_io, 
                       hdf5_output_io=out_io, 
                       dts_names=dts_names_list,
                       original_datasets_group_h5_path='delgado_datasets/')
 
 #Run the experiments
-test_o.run(modelling_strategies=instantiated_models)
+orchest.run(modelling_strategies=instantiated_models)
+
+#Make predictions on the test set
+orchest.predict_all(trained_models_dir='data/trained_models', estimators=instantiated_models)
