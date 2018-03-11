@@ -11,7 +11,6 @@ import sys
 import os
 from mleap.shared.files_io import FilesIO
 from mleap.experiments.experiments import Experiments
-from mleap.shared.files_io import DiskOperations
 from mleap.data import Data
 import numpy as np
 import logging
@@ -48,7 +47,6 @@ class Orchestrator:
         self._dts_names=dts_names
         self._original_datasets_group_h5_path = original_datasets_group_h5_path
         self._experiments = Experiments(self._experiments_trained_models_dir)
-        self._disk_op = DiskOperations()
         self._data = Data() #TODO need to implement a way to change the defaults.
         set_logging_defaults()
 
