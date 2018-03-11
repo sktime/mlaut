@@ -13,8 +13,7 @@ Data Preprocessing and Estimator Training Phase
 
 **1. Get your data.**
 
-The included code downloads preprocessed datasets from the UCI Machine Learning Repository
-and stores them locally.
+The included code downloads preprocessed datasets from the UCI Machine Learning Repository and stores them locally.
 
 :download:`delgado_datasets.py <../download_delgado/delgado_datasets.py>`
 
@@ -58,12 +57,9 @@ Once the datasets are stored locally we put them in an HDF5 database.
     :language: python
     :lines: 37
 
-At this point mleap will train all instantiated estimators on all datasets that 
-were passed to the constructor.
-The trained models will be saved on the disk.
+At this point mleap will train all instantiated estimators on all datasets that were passed to the constructor. The trained models will be saved on the disk.
 
-After this process is finished we can make predictions on the test sets 
-using the trained estimators. in the previous step.
+After this process is finished we can make predictions on the test sets using the trained estimators. in the previous step.
 
 **7. Make predictions on the test sets.**
 
