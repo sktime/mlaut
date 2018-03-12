@@ -70,3 +70,27 @@ After this process is finished we can make predictions on the test sets using th
 
 Analyze Results of Machine Learning Experiments Phase
 -----------------------------------------------------
+
+After the training phase is completed the user can use the predictions on the test sets to run statistical tests.
+
+The starting point is to calculate the prediction error achieved on the test sets. Two main methods are available for this purpose:
+
+* :meth:`mleap.analyze_results.analyze_results.calculate_error_all_datasets`. This method calculates the error achieved by each estimator on each of the datasets and returns the results in a dictionary format. 
+* :meth:`mleap.analyze_results.analyze_results.calculate_error_per_dataset`. This method calculates the prediction error for each estimator on each datapoint for each dataset.
+
+.. literalinclude:: ../examples/basic.py
+    :language: python
+    :lines: 43-48
+
+The output of these two functions can be used as an input to the flowing methods tests:
+
+* :meth:`mleap.analyze_results.analyze_results.calculate_average_std`
+* :meth:`mleap.analyze_results.analyze_results.cohens_d`
+* :meth:`mleap.analyze_results.analyze_results.t_test`
+* :meth:`mleap.analyze_results.analyze_results.sign_test`
+* :meth:`mleap.analyze_results.analyze_results.t_test_with_bonferroni_correction`
+* :meth:`mleap.analyze_results.analyze_results.wilcoxon_test`
+* :meth:`mleap.analyze_results.analyze_results.friedman_test`
+* :meth:`mleap.analyze_results.analyze_results.nemenyi`
+
+Please refer to :ref:`analyze_results` for additional information about their use.

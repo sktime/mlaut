@@ -219,6 +219,32 @@
 </div>
 <div class="section" id="analyze-results-of-machine-learning-experiments-phase">
 <h2>Analyze Results of Machine Learning Experiments Phase<a class="headerlink" href="#analyze-results-of-machine-learning-experiments-phase" title="Permalink to this headline">¶</a></h2>
+<p>After the training phase is completed the user can use the predictions on the test sets to run statistical tests.</p>
+<p>The starting point is to calculate the prediction error achieved on the test sets. Two main methods are available for this purpose:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.calculate_error_all_datasets()</span></code>. This method calculates the error achieved by each estimator on each of the datasets and returns the results in a dictionary format.</li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.calculate_error_per_dataset()</span></code>. This method calculates the prediction error for each estimator on each datapoint for each dataset.</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">analyze</span> <span class="o">=</span> <span class="n">AnalyseResults</span><span class="p">(</span><span class="n">hdf5_output_io</span><span class="o">=</span><span class="n">out_io</span><span class="p">,</span> 
+                        <span class="n">hdf5_input_io</span><span class="o">=</span><span class="n">input_io</span><span class="p">,</span> 
+                        <span class="n">input_h5_original_datasets_group</span><span class="o">=</span><span class="s1">&#39;delgado_datasets/&#39;</span><span class="p">,</span> 
+                        <span class="n">output_h5_predictions_group</span><span class="o">=</span><span class="s1">&#39;experiments/predictions/&#39;</span><span class="p">)</span>
+<span class="n">error_all_datasets</span> <span class="o">=</span> <span class="n">analyze</span><span class="o">.</span><span class="n">calculate_error_all_datasets</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s1">&#39;mean_squared_error&#39;</span><span class="p">)</span>
+<span class="n">error_per_dataset</span><span class="p">,</span> <span class="n">error_per_dataset_df</span> <span class="o">=</span> <span class="n">analyze</span><span class="o">.</span><span class="n">calculate_error_per_dataset</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s1">&#39;mean_squared_error&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The output of these two functions can be used as an input to the flowing methods tests:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.calculate_average_std()</span></code></li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.cohens_d()</span></code></li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.t_test()</span></code></li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.sign_test()</span></code></li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.t_test_with_bonferroni_correction()</span></code></li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.wilcoxon_test()</span></code></li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.friedman_test()</span></code></li>
+<li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.nemenyi()</span></code></li>
+</ul>
+<p>Please refer to <a class="reference internal" href="analyze_results.html#analyze-results"><span class="std std-ref">Analyze Results</span></a> for additional information about their use.</p>
 </div>
 </div>
 
