@@ -1,0 +1,115 @@
+\indexentry{mleap.estimators.estimators (module)|hyperpage}{9}
+\indexentry{instantiate\_default\_estimators() (in module mleap.estimators.estimators)|hyperpage}{9}
+\indexentry{mleap.estimators.baseline\_estimators (module)|hyperpage}{9}
+\indexentry{Baseline\_Classifier (class in mleap.estimators.baseline\_estimators)|hyperpage}{9}
+\indexentry{build() (mleap.estimators.baseline\_estimators.Baseline\_Classifier method)|hyperpage}{9}
+\indexentry{save() (mleap.estimators.baseline\_estimators.Baseline\_Classifier method)|hyperpage}{9}
+\indexentry{Baseline\_Regressor (class in mleap.estimators.baseline\_estimators)|hyperpage}{9}
+\indexentry{build() (mleap.estimators.baseline\_estimators.Baseline\_Regressor method)|hyperpage}{9}
+\indexentry{save() (mleap.estimators.baseline\_estimators.Baseline\_Regressor method)|hyperpage}{10}
+\indexentry{mleap.estimators.bayes\_estimators (module)|hyperpage}{10}
+\indexentry{Bernoulli\_Naive\_Bayes (class in mleap.estimators.bayes\_estimators)|hyperpage}{10}
+\indexentry{build() (mleap.estimators.bayes\_estimators.Bernoulli\_Naive\_Bayes method)|hyperpage}{10}
+\indexentry{save() (mleap.estimators.bayes\_estimators.Bernoulli\_Naive\_Bayes method)|hyperpage}{10}
+\indexentry{Gaussian\_Naive\_Bayes (class in mleap.estimators.bayes\_estimators)|hyperpage}{10}
+\indexentry{build() (mleap.estimators.bayes\_estimators.Gaussian\_Naive\_Bayes method)|hyperpage}{10}
+\indexentry{save() (mleap.estimators.bayes\_estimators.Gaussian\_Naive\_Bayes method)|hyperpage}{10}
+\indexentry{mleap.estimators.ensemble\_estimators (module)|hyperpage}{10}
+\indexentry{Bagging\_Classifier (class in mleap.estimators.ensemble\_estimators)|hyperpage}{10}
+\indexentry{build() (mleap.estimators.ensemble\_estimators.Bagging\_Classifier method)|hyperpage}{10}
+\indexentry{save() (mleap.estimators.ensemble\_estimators.Bagging\_Classifier method)|hyperpage}{11}
+\indexentry{Bagging\_Regressor (class in mleap.estimators.ensemble\_estimators)|hyperpage}{11}
+\indexentry{build() (mleap.estimators.ensemble\_estimators.Bagging\_Regressor method)|hyperpage}{11}
+\indexentry{save() (mleap.estimators.ensemble\_estimators.Bagging\_Regressor method)|hyperpage}{11}
+\indexentry{Gradient\_Boosting\_Classifier (class in mleap.estimators.ensemble\_estimators)|hyperpage}{11}
+\indexentry{build() (mleap.estimators.ensemble\_estimators.Gradient\_Boosting\_Classifier method)|hyperpage}{11}
+\indexentry{save() (mleap.estimators.ensemble\_estimators.Gradient\_Boosting\_Classifier method)|hyperpage}{11}
+\indexentry{Gradient\_Boosting\_Regressor (class in mleap.estimators.ensemble\_estimators)|hyperpage}{11}
+\indexentry{build() (mleap.estimators.ensemble\_estimators.Gradient\_Boosting\_Regressor method)|hyperpage}{11}
+\indexentry{save() (mleap.estimators.ensemble\_estimators.Gradient\_Boosting\_Regressor method)|hyperpage}{12}
+\indexentry{Random\_Forest\_Classifier (class in mleap.estimators.ensemble\_estimators)|hyperpage}{12}
+\indexentry{build() (mleap.estimators.ensemble\_estimators.Random\_Forest\_Classifier method)|hyperpage}{12}
+\indexentry{save() (mleap.estimators.ensemble\_estimators.Random\_Forest\_Classifier method)|hyperpage}{12}
+\indexentry{Random\_Forest\_Regressor (class in mleap.estimators.ensemble\_estimators)|hyperpage}{12}
+\indexentry{build() (mleap.estimators.ensemble\_estimators.Random\_Forest\_Regressor method)|hyperpage}{12}
+\indexentry{save() (mleap.estimators.ensemble\_estimators.Random\_Forest\_Regressor method)|hyperpage}{12}
+\indexentry{mleap.estimators.glm\_estimators (module)|hyperpage}{12}
+\indexentry{Lasso (class in mleap.estimators.glm\_estimators)|hyperpage}{12}
+\indexentry{build() (mleap.estimators.glm\_estimators.Lasso method)|hyperpage}{12}
+\indexentry{save() (mleap.estimators.glm\_estimators.Lasso method)|hyperpage}{13}
+\indexentry{Lasso\_Lars (class in mleap.estimators.glm\_estimators)|hyperpage}{13}
+\indexentry{build() (mleap.estimators.glm\_estimators.Lasso\_Lars method)|hyperpage}{13}
+\indexentry{save() (mleap.estimators.glm\_estimators.Lasso\_Lars method)|hyperpage}{13}
+\indexentry{Logistic\_Regression (class in mleap.estimators.glm\_estimators)|hyperpage}{13}
+\indexentry{build() (mleap.estimators.glm\_estimators.Logistic\_Regression method)|hyperpage}{13}
+\indexentry{save() (mleap.estimators.glm\_estimators.Logistic\_Regression method)|hyperpage}{13}
+\indexentry{Passive\_Aggressive\_Classifier (class in mleap.estimators.glm\_estimators)|hyperpage}{13}
+\indexentry{build() (mleap.estimators.glm\_estimators.Passive\_Aggressive\_Classifier method)|hyperpage}{13}
+\indexentry{save() (mleap.estimators.glm\_estimators.Passive\_Aggressive\_Classifier method)|hyperpage}{14}
+\indexentry{Ridge\_Regression (class in mleap.estimators.glm\_estimators)|hyperpage}{14}
+\indexentry{build() (mleap.estimators.glm\_estimators.Ridge\_Regression method)|hyperpage}{14}
+\indexentry{save() (mleap.estimators.glm\_estimators.Ridge\_Regression method)|hyperpage}{14}
+\indexentry{mleap.estimators.nn\_estimators (module)|hyperpage}{14}
+\indexentry{Deep\_NN\_Classifier (class in mleap.estimators.nn\_estimators)|hyperpage}{14}
+\indexentry{build() (mleap.estimators.nn\_estimators.Deep\_NN\_Classifier method)|hyperpage}{14}
+\indexentry{load() (mleap.estimators.nn\_estimators.Deep\_NN\_Classifier method)|hyperpage}{14}
+\indexentry{save() (mleap.estimators.nn\_estimators.Deep\_NN\_Classifier method)|hyperpage}{14}
+\indexentry{Deep\_NN\_Regressor (class in mleap.estimators.nn\_estimators)|hyperpage}{15}
+\indexentry{build() (mleap.estimators.nn\_estimators.Deep\_NN\_Regressor method)|hyperpage}{15}
+\indexentry{load() (mleap.estimators.nn\_estimators.Deep\_NN\_Regressor method)|hyperpage}{15}
+\indexentry{save() (mleap.estimators.nn\_estimators.Deep\_NN\_Regressor method)|hyperpage}{15}
+\indexentry{mleap.estimators.svm\_estimators (module)|hyperpage}{15}
+\indexentry{SVC\_mleap (class in mleap.estimators.svm\_estimators)|hyperpage}{15}
+\indexentry{build() (mleap.estimators.svm\_estimators.SVC\_mleap method)|hyperpage}{15}
+\indexentry{save() (mleap.estimators.svm\_estimators.SVC\_mleap method)|hyperpage}{15}
+\indexentry{mleap.estimators.mleap\_estimator (module)|hyperpage}{16}
+\indexentry{MleapEstimator (class in mleap.estimators.mleap\_estimator)|hyperpage}{16}
+\indexentry{build() (mleap.estimators.mleap\_estimator.MleapEstimator method)|hyperpage}{16}
+\indexentry{get\_trained\_model() (mleap.estimators.mleap\_estimator.MleapEstimator method)|hyperpage}{16}
+\indexentry{load() (mleap.estimators.mleap\_estimator.MleapEstimator method)|hyperpage}{16}
+\indexentry{save() (mleap.estimators.mleap\_estimator.MleapEstimator method)|hyperpage}{16}
+\indexentry{set\_trained\_model() (mleap.estimators.mleap\_estimator.MleapEstimator method)|hyperpage}{16}
+\indexentry{properties (class in mleap.estimators.mleap\_estimator)|hyperpage}{16}
+\indexentry{mleap.experiments.orchestrator (module)|hyperpage}{16}
+\indexentry{Orchestrator (class in mleap.experiments.orchestrator)|hyperpage}{16}
+\indexentry{predict\_all() (mleap.experiments.orchestrator.Orchestrator method)|hyperpage}{17}
+\indexentry{run() (mleap.experiments.orchestrator.Orchestrator method)|hyperpage}{17}
+\indexentry{mleap.data.data (module)|hyperpage}{17}
+\indexentry{Data (class in mleap.data.data)|hyperpage}{17}
+\indexentry{list\_datasets() (mleap.data.data.Data method)|hyperpage}{18}
+\indexentry{load\_test\_train\_dts() (mleap.data.data.Data method)|hyperpage}{18}
+\indexentry{load\_train\_test\_split() (mleap.data.data.Data method)|hyperpage}{18}
+\indexentry{load\_true\_labels() (mleap.data.data.Data method)|hyperpage}{18}
+\indexentry{open\_hdf5() (mleap.data.data.Data method)|hyperpage}{18}
+\indexentry{pandas\_to\_db() (mleap.data.data.Data method)|hyperpage}{18}
+\indexentry{split\_datasets() (mleap.data.data.Data method)|hyperpage}{19}
+\indexentry{mleap.analyze\_results.analyze\_results (module)|hyperpage}{19}
+\indexentry{AnalyseResults (class in mleap.analyze\_results.analyze\_results)|hyperpage}{19}
+\indexentry{calculate\_average\_std() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{20}
+\indexentry{calculate\_error\_all\_datasets() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{20}
+\indexentry{calculate\_error\_per\_dataset() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{20}
+\indexentry{cohens\_d() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{20}
+\indexentry{friedman\_test() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{20}
+\indexentry{nemenyi() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{20}
+\indexentry{sign\_test() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{20}
+\indexentry{t\_test() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{21}
+\indexentry{t\_test\_with\_bonferroni\_correction() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{21}
+\indexentry{wilcoxon\_test() (mleap.analyze\_results.analyze\_results.AnalyseResults method)|hyperpage}{21}
+\indexentry{mleap.shared.files\_io (module)|hyperpage}{21}
+\indexentry{DiskOperations (class in mleap.shared.files\_io)|hyperpage}{21}
+\indexentry{check\_path\_exists() (mleap.shared.files\_io.DiskOperations method)|hyperpage}{21}
+\indexentry{create\_directory\_on\_hdd() (mleap.shared.files\_io.DiskOperations method)|hyperpage}{21}
+\indexentry{save\_keras\_model() (mleap.shared.files\_io.DiskOperations method)|hyperpage}{22}
+\indexentry{save\_to\_pickle() (mleap.shared.files\_io.DiskOperations method)|hyperpage}{22}
+\indexentry{FilesIO (class in mleap.shared.files\_io)|hyperpage}{22}
+\indexentry{check\_h5\_path\_exists() (mleap.shared.files\_io.FilesIO method)|hyperpage}{22}
+\indexentry{list\_datasets() (mleap.shared.files\_io.FilesIO method)|hyperpage}{22}
+\indexentry{load\_dataset\_h5() (mleap.shared.files\_io.FilesIO method)|hyperpage}{22}
+\indexentry{load\_dataset\_pd() (mleap.shared.files\_io.FilesIO method)|hyperpage}{22}
+\indexentry{load\_predictions\_for\_dataset() (mleap.shared.files\_io.FilesIO method)|hyperpage}{23}
+\indexentry{save\_array\_hdf5() (mleap.shared.files\_io.FilesIO method)|hyperpage}{23}
+\indexentry{save\_datasets() (mleap.shared.files\_io.FilesIO method)|hyperpage}{23}
+\indexentry{save\_ml\_strategy\_timestamps() (mleap.shared.files\_io.FilesIO method)|hyperpage}{23}
+\indexentry{save\_prediction\_to\_db() (mleap.shared.files\_io.FilesIO method)|hyperpage}{23}
+\indexentry{save\_predictions\_to\_db() (mleap.shared.files\_io.FilesIO method)|hyperpage}{23}
+\indexentry{split\_dataset() (mleap.shared.files\_io.FilesIO method)|hyperpage}{24}

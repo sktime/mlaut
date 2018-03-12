@@ -1,0 +1,187 @@
+\begin{sphinxtheindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter A
+  \item AnalyseResults (class in mleap.analyze\_results.analyze\_results), \hyperpage{19}
+
+  \indexspace
+  \bigletter B
+  \item Bagging\_Classifier (class in mleap.estimators.ensemble\_estimators), \hyperpage{10}
+  \item Bagging\_Regressor (class in mleap.estimators.ensemble\_estimators), \hyperpage{11}
+  \item Baseline\_Classifier (class in mleap.estimators.baseline\_estimators), \hyperpage{9}
+  \item Baseline\_Regressor (class in mleap.estimators.baseline\_estimators), \hyperpage{9}
+  \item Bernoulli\_Naive\_Bayes (class in mleap.estimators.bayes\_estimators), \hyperpage{10}
+  \item build() (mleap.estimators.baseline\_estimators.Baseline\_Classifier method), \hyperpage{9}
+  \item build() (mleap.estimators.baseline\_estimators.Baseline\_Regressor method), \hyperpage{9}
+  \item build() (mleap.estimators.bayes\_estimators.Bernoulli\_Naive\_Bayes method), \hyperpage{10}
+  \item build() (mleap.estimators.bayes\_estimators.Gaussian\_Naive\_Bayes method), \hyperpage{10}
+  \item build() (mleap.estimators.ensemble\_estimators.Bagging\_Classifier method), \hyperpage{10}
+  \item build() (mleap.estimators.ensemble\_estimators.Bagging\_Regressor method), \hyperpage{11}
+  \item build() (mleap.estimators.ensemble\_estimators.Gradient\_Boosting\_Classifier method), 
+		\hyperpage{11}
+  \item build() (mleap.estimators.ensemble\_estimators.Gradient\_Boosting\_Regressor method), 
+		\hyperpage{11}
+  \item build() (mleap.estimators.ensemble\_estimators.Random\_Forest\_Classifier method), 
+		\hyperpage{12}
+  \item build() (mleap.estimators.ensemble\_estimators.Random\_Forest\_Regressor method), 
+		\hyperpage{12}
+  \item build() (mleap.estimators.glm\_estimators.Lasso method), \hyperpage{12}
+  \item build() (mleap.estimators.glm\_estimators.Lasso\_Lars method), \hyperpage{13}
+  \item build() (mleap.estimators.glm\_estimators.Logistic\_Regression method), \hyperpage{13}
+  \item build() (mleap.estimators.glm\_estimators.Passive\_Aggressive\_Classifier method), 
+		\hyperpage{13}
+  \item build() (mleap.estimators.glm\_estimators.Ridge\_Regression method), \hyperpage{14}
+  \item build() (mleap.estimators.mleap\_estimator.MleapEstimator method), \hyperpage{16}
+  \item build() (mleap.estimators.nn\_estimators.Deep\_NN\_Classifier method), \hyperpage{14}
+  \item build() (mleap.estimators.nn\_estimators.Deep\_NN\_Regressor method), \hyperpage{15}
+  \item build() (mleap.estimators.svm\_estimators.SVC\_mleap method), \hyperpage{15}
+
+  \indexspace
+  \bigletter C
+  \item calculate\_average\_std() (mleap.analyze\_results.analyze\_results.AnalyseResults method), 
+		\hyperpage{20}
+  \item calculate\_error\_all\_datasets() (mleap.analyze\_results.analyze\_results.AnalyseResults method), 
+		\hyperpage{20}
+  \item calculate\_error\_per\_dataset() (mleap.analyze\_results.analyze\_results.AnalyseResults method), 
+		\hyperpage{20}
+  \item check\_h5\_path\_exists() (mleap.shared.files\_io.FilesIO method), \hyperpage{22}
+  \item check\_path\_exists() (mleap.shared.files\_io.DiskOperations method), \hyperpage{21}
+  \item cohens\_d() (mleap.analyze\_results.analyze\_results.AnalyseResults method), \hyperpage{20}
+  \item create\_directory\_on\_hdd() (mleap.shared.files\_io.DiskOperations method), \hyperpage{21}
+
+  \indexspace
+  \bigletter D
+  \item Data (class in mleap.data.data), \hyperpage{17}
+  \item Deep\_NN\_Classifier (class in mleap.estimators.nn\_estimators), \hyperpage{14}
+  \item Deep\_NN\_Regressor (class in mleap.estimators.nn\_estimators), \hyperpage{15}
+  \item DiskOperations (class in mleap.shared.files\_io), \hyperpage{21}
+
+  \indexspace
+  \bigletter F
+  \item FilesIO (class in mleap.shared.files\_io), \hyperpage{22}
+  \item friedman\_test() (mleap.analyze\_results.analyze\_results.AnalyseResults method), 
+		\hyperpage{20}
+
+  \indexspace
+  \bigletter G
+  \item Gaussian\_Naive\_Bayes (class in mleap.estimators.bayes\_estimators), \hyperpage{10}
+  \item get\_trained\_model() (mleap.estimators.mleap\_estimator.MleapEstimator method), 
+		\hyperpage{16}
+  \item Gradient\_Boosting\_Classifier (class in mleap.estimators.ensemble\_estimators), 
+		\hyperpage{11}
+  \item Gradient\_Boosting\_Regressor (class in mleap.estimators.ensemble\_estimators), 
+		\hyperpage{11}
+
+  \indexspace
+  \bigletter I
+  \item instantiate\_default\_estimators() (in module mleap.estimators.estimators), \hyperpage{9}
+
+  \indexspace
+  \bigletter L
+  \item Lasso (class in mleap.estimators.glm\_estimators), \hyperpage{12}
+  \item Lasso\_Lars (class in mleap.estimators.glm\_estimators), \hyperpage{13}
+  \item list\_datasets() (mleap.data.data.Data method), \hyperpage{18}
+  \item list\_datasets() (mleap.shared.files\_io.FilesIO method), \hyperpage{22}
+  \item load() (mleap.estimators.mleap\_estimator.MleapEstimator method), \hyperpage{16}
+  \item load() (mleap.estimators.nn\_estimators.Deep\_NN\_Classifier method), \hyperpage{14}
+  \item load() (mleap.estimators.nn\_estimators.Deep\_NN\_Regressor method), \hyperpage{15}
+  \item load\_dataset\_h5() (mleap.shared.files\_io.FilesIO method), \hyperpage{22}
+  \item load\_dataset\_pd() (mleap.shared.files\_io.FilesIO method), \hyperpage{22}
+  \item load\_predictions\_for\_dataset() (mleap.shared.files\_io.FilesIO method), \hyperpage{23}
+  \item load\_test\_train\_dts() (mleap.data.data.Data method), \hyperpage{18}
+  \item load\_train\_test\_split() (mleap.data.data.Data method), \hyperpage{18}
+  \item load\_true\_labels() (mleap.data.data.Data method), \hyperpage{18}
+  \item Logistic\_Regression (class in mleap.estimators.glm\_estimators), \hyperpage{13}
+
+  \indexspace
+  \bigletter M
+  \item mleap.analyze\_results.analyze\_results (module), \hyperpage{19}
+  \item mleap.data.data (module), \hyperpage{17}
+  \item mleap.estimators.baseline\_estimators (module), \hyperpage{9}
+  \item mleap.estimators.bayes\_estimators (module), \hyperpage{10}
+  \item mleap.estimators.ensemble\_estimators (module), \hyperpage{10}
+  \item mleap.estimators.estimators (module), \hyperpage{9}
+  \item mleap.estimators.glm\_estimators (module), \hyperpage{12}
+  \item mleap.estimators.mleap\_estimator (module), \hyperpage{16}
+  \item mleap.estimators.nn\_estimators (module), \hyperpage{14}
+  \item mleap.estimators.svm\_estimators (module), \hyperpage{15}
+  \item mleap.experiments.orchestrator (module), \hyperpage{16}
+  \item mleap.shared.files\_io (module), \hyperpage{21}
+  \item MleapEstimator (class in mleap.estimators.mleap\_estimator), \hyperpage{16}
+
+  \indexspace
+  \bigletter N
+  \item nemenyi() (mleap.analyze\_results.analyze\_results.AnalyseResults method), \hyperpage{20}
+
+  \indexspace
+  \bigletter O
+  \item open\_hdf5() (mleap.data.data.Data method), \hyperpage{18}
+  \item Orchestrator (class in mleap.experiments.orchestrator), \hyperpage{16}
+
+  \indexspace
+  \bigletter P
+  \item pandas\_to\_db() (mleap.data.data.Data method), \hyperpage{18}
+  \item Passive\_Aggressive\_Classifier (class in mleap.estimators.glm\_estimators), \hyperpage{13}
+  \item predict\_all() (mleap.experiments.orchestrator.Orchestrator method), \hyperpage{17}
+  \item properties (class in mleap.estimators.mleap\_estimator), \hyperpage{16}
+
+  \indexspace
+  \bigletter R
+  \item Random\_Forest\_Classifier (class in mleap.estimators.ensemble\_estimators), \hyperpage{12}
+  \item Random\_Forest\_Regressor (class in mleap.estimators.ensemble\_estimators), \hyperpage{12}
+  \item Ridge\_Regression (class in mleap.estimators.glm\_estimators), \hyperpage{14}
+  \item run() (mleap.experiments.orchestrator.Orchestrator method), \hyperpage{17}
+
+  \indexspace
+  \bigletter S
+  \item save() (mleap.estimators.baseline\_estimators.Baseline\_Classifier method), \hyperpage{9}
+  \item save() (mleap.estimators.baseline\_estimators.Baseline\_Regressor method), \hyperpage{10}
+  \item save() (mleap.estimators.bayes\_estimators.Bernoulli\_Naive\_Bayes method), \hyperpage{10}
+  \item save() (mleap.estimators.bayes\_estimators.Gaussian\_Naive\_Bayes method), \hyperpage{10}
+  \item save() (mleap.estimators.ensemble\_estimators.Bagging\_Classifier method), \hyperpage{11}
+  \item save() (mleap.estimators.ensemble\_estimators.Bagging\_Regressor method), \hyperpage{11}
+  \item save() (mleap.estimators.ensemble\_estimators.Gradient\_Boosting\_Classifier method), 
+		\hyperpage{11}
+  \item save() (mleap.estimators.ensemble\_estimators.Gradient\_Boosting\_Regressor method), 
+		\hyperpage{12}
+  \item save() (mleap.estimators.ensemble\_estimators.Random\_Forest\_Classifier method), 
+		\hyperpage{12}
+  \item save() (mleap.estimators.ensemble\_estimators.Random\_Forest\_Regressor method), 
+		\hyperpage{12}
+  \item save() (mleap.estimators.glm\_estimators.Lasso method), \hyperpage{13}
+  \item save() (mleap.estimators.glm\_estimators.Lasso\_Lars method), \hyperpage{13}
+  \item save() (mleap.estimators.glm\_estimators.Logistic\_Regression method), \hyperpage{13}
+  \item save() (mleap.estimators.glm\_estimators.Passive\_Aggressive\_Classifier method), 
+		\hyperpage{14}
+  \item save() (mleap.estimators.glm\_estimators.Ridge\_Regression method), \hyperpage{14}
+  \item save() (mleap.estimators.mleap\_estimator.MleapEstimator method), \hyperpage{16}
+  \item save() (mleap.estimators.nn\_estimators.Deep\_NN\_Classifier method), \hyperpage{14}
+  \item save() (mleap.estimators.nn\_estimators.Deep\_NN\_Regressor method), \hyperpage{15}
+  \item save() (mleap.estimators.svm\_estimators.SVC\_mleap method), \hyperpage{15}
+  \item save\_array\_hdf5() (mleap.shared.files\_io.FilesIO method), \hyperpage{23}
+  \item save\_datasets() (mleap.shared.files\_io.FilesIO method), \hyperpage{23}
+  \item save\_keras\_model() (mleap.shared.files\_io.DiskOperations method), \hyperpage{22}
+  \item save\_ml\_strategy\_timestamps() (mleap.shared.files\_io.FilesIO method), \hyperpage{23}
+  \item save\_prediction\_to\_db() (mleap.shared.files\_io.FilesIO method), \hyperpage{23}
+  \item save\_predictions\_to\_db() (mleap.shared.files\_io.FilesIO method), \hyperpage{23}
+  \item save\_to\_pickle() (mleap.shared.files\_io.DiskOperations method), \hyperpage{22}
+  \item set\_trained\_model() (mleap.estimators.mleap\_estimator.MleapEstimator method), 
+		\hyperpage{16}
+  \item sign\_test() (mleap.analyze\_results.analyze\_results.AnalyseResults method), 
+		\hyperpage{20}
+  \item split\_dataset() (mleap.shared.files\_io.FilesIO method), \hyperpage{24}
+  \item split\_datasets() (mleap.data.data.Data method), \hyperpage{19}
+  \item SVC\_mleap (class in mleap.estimators.svm\_estimators), \hyperpage{15}
+
+  \indexspace
+  \bigletter T
+  \item t\_test() (mleap.analyze\_results.analyze\_results.AnalyseResults method), \hyperpage{21}
+  \item t\_test\_with\_bonferroni\_correction() (mleap.analyze\_results.analyze\_results.AnalyseResults method), 
+		\hyperpage{21}
+
+  \indexspace
+  \bigletter W
+  \item wilcoxon\_test() (mleap.analyze\_results.analyze\_results.AnalyseResults method), 
+		\hyperpage{21}
+
+\end{sphinxtheindex}
