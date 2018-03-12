@@ -96,6 +96,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#data-preprocessing-and-estimator-training-phase">Data Preprocessing and Estimator Training Phase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#analyze-results-of-machine-learning-experiments-phase">Analyze Results of Machine Learning Experiments Phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-estimators">Defining estimators</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
@@ -245,6 +246,10 @@
 <li><code class="xref py py-meth docutils literal"><span class="pre">mleap.analyze_results.analyze_results.nemenyi()</span></code></li>
 </ul>
 <p>Please refer to <a class="reference internal" href="analyze_results.html#analyze-results"><span class="std std-ref">Analyze Results</span></a> for additional information about their use.</p>
+</div>
+<div class="section" id="defining-estimators">
+<h2>Defining estimators<a class="headerlink" href="#defining-estimators" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">mleap</span></code> comes with a number of built-in estimators. However, the user also has the flexibility to define its own by inehriting from the <span class="xref std std-ref">mleap_estimator-label’ class. The user should at a minimum implement the ``save()`</span> and <code class="docutils literal"><span class="pre">build()</span></code> methods. Please refer to one of the implemented estimators (<a class="reference internal" href="estimators.html#estimators"><span class="std std-ref">Estimators</span></a>) for additional information.</p>
 </div>
 </div>
 

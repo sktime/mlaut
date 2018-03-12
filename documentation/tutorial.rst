@@ -94,3 +94,8 @@ The output of these two functions can be used as an input to the flowing methods
 * :meth:`mleap.analyze_results.analyze_results.nemenyi`
 
 Please refer to :ref:`analyze_results` for additional information about their use.
+
+Defining estimators
+-------------------
+
+``mleap`` comes with a number of built-in estimators. However, the user also has the flexibility to define its own by inehriting from the :ref:`mleap_estimator-label' class. The user should at a minimum implement the ``save()`` and ``build()`` methods. Please refer to one of the implemented :ref:`estimators` for additional information.
