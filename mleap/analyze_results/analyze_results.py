@@ -114,7 +114,7 @@ class AnalyseResults(object):
     
     def calculate_error_per_dataset(self, metric):
         """
-        Calculates the prediction error for each estimator on each of the datasets.
+        Calculates the prediction error for each estimator on each datapoint for each dataset.
 
         :type metric: string
         :param metric: Loss metric. Supported values are: ``accuracy``,  ``mean_squared_error``

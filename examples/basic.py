@@ -38,3 +38,11 @@ orchest.run(modelling_strategies=instantiated_models)
 
 #Make predictions on the test set
 orchest.predict_all(trained_models_dir='data/trained_models', estimators=instantiated_models)
+
+#analyze results stage
+analyze = AnalyseResults(hdf5_output_io=out_io, 
+                        hdf5_input_io=input_io, 
+                        input_h5_original_datasets_group='delgado_datasets/', 
+                        output_h5_predictions_group='experiments/predictions/')
+error_all_datasets = analyze.calculate_error_all_datasets(metric='mean_squared_error')
+error_per_dataset, error_per_dataset_df = analyze.calculate_error_per_dataset(metric='mean_squared_error')
