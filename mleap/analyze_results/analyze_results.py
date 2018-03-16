@@ -20,6 +20,8 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 
 from sklearn.metrics import accuracy_score, mean_squared_error
 import scikit_posthocs as sp
+
+from mleap.analyze_results.losses import Losses
 class AnalyseResults(object):
     """
     Analyze results of machine learning experiments.
@@ -67,7 +69,7 @@ class AnalyseResults(object):
                           train_idx=self._train_idx,
                           test_idx=self._test_idx)
     
-    def calculate_error_all_datasets(self, metric):
+    def calculate_error_all_datasets(self, metrics):
         """
         Calculates the prediction error for each estimator on all test splits.
 
@@ -82,7 +84,7 @@ class AnalyseResults(object):
 
         #load all predictions
         dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(self._output_h5_predictions_group, self._output_io)
-        loss_arr = []
+        losses = Losses()
         for dts in dts_predictions_list:
             predictions = self._output_io.load_predictions_for_dataset(dts)
             train, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
@@ -90,10 +92,13 @@ class AnalyseResults(object):
             path_orig_dts = dts_names_list_full_path[idx_orig_dts]
             true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
             true_labels = np.array(true_labels)
-            loss = self._calculate_prediction_error_per_dataset(metric=metric, predictions_per_ml_strategy=predictions, true_labels=true_labels)
-            loss_arr.append(loss)
-    
-        return self._convert_from_array_to_dict(loss_arr)
+            losses.evaluate(metrics=metrics, 
+                            predictions=predictions, 
+                            true_labels=true_labels)
+            # loss = self._calculate_prediction_error_per_dataset(metric=metric, predictions_per_ml_strategy=predictions, true_labels=true_labels)
+            # loss_arr.append(loss)
+        return losses.get_losses()
+        # return self._convert_from_array_to_dict(loss_arr)
     
 
 
