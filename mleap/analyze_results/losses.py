@@ -27,14 +27,16 @@ class Losses(object):
         for prediction in predictions:
             estimator_name = prediction[0]
             estimator_predictions = prediction[1]
-            # self._losses[estimator_name] = collections.defaultdict(list)
+            self._losses[estimator_name] = collections.defaultdict(list)
             for metric in metrics:
                 
 
                 if metric is 'accuracy':
-                    self._losses[estimator_name][metric].append( accuracy_score(true_labels, estimator_predictions) )
+                    loss = accuracy_score(true_labels, estimator_predictions)
+                    self._losses[estimator_name][metric].append( loss )
                 elif metric is 'mean_squared_error':
-                    self._losses[estimator_name][metric].append(mean_squared_error(true_labels, estimator_predictions))   
+                    loss = mean_squared_error(true_labels, estimator_predictions)
+                    self._losses[estimator_name][metric].append(loss)   
                 else:
                     raise ValueError(f'metric {metric} is not supported.')
             
