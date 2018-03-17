@@ -12,3 +12,11 @@ analyze_results
     :members:
     :undoc-members:
     :show-inheritance:
+
+losses
+------
+
+.. automodule:: mleap.analyze_results.losses
+    :members:
+    :undoc-members:
+    :show-inheritance:
