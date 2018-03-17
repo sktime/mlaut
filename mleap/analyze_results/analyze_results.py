@@ -69,7 +69,7 @@ class AnalyseResults(object):
                           train_idx=self._train_idx,
                           test_idx=self._test_idx)
     
-    def calculate_error_all_datasets(self, metrics):
+    def calculate_error_all_datasets(self, metric):
         """
         Calculates the prediction error for each estimator on all test splits.
 
@@ -84,7 +84,7 @@ class AnalyseResults(object):
 
         #load all predictions
         dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(self._output_h5_predictions_group, self._output_io)
-        losses = Losses()
+        losses = Losses(metric)
         for dts in dts_predictions_list:
             predictions = self._output_io.load_predictions_for_dataset(dts)
             train, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
@@ -92,8 +92,7 @@ class AnalyseResults(object):
             path_orig_dts = dts_names_list_full_path[idx_orig_dts]
             true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
             true_labels = np.array(true_labels)
-            losses.evaluate(metrics=metrics, 
-                            predictions=predictions, 
+            losses.evaluate(predictions=predictions, 
                             true_labels=true_labels)
             # loss = self._calculate_prediction_error_per_dataset(metric=metric, predictions_per_ml_strategy=predictions, true_labels=true_labels)
             # loss_arr.append(loss)
@@ -102,20 +101,20 @@ class AnalyseResults(object):
     
 
 
-    def _calculate_prediction_error_per_dataset(self, metric, predictions_per_ml_strategy, true_labels):
-        score = []
-        for prediction in predictions_per_ml_strategy:
-            ml_strategy = prediction[0]
-            ml_predictions = prediction[1]
-            result = 0
-            if metric=='accuracy':
-                result = accuracy_score(true_labels, ml_predictions)
-            if metric=='mean_squared_error':
-                result = mean_squared_error(y_true=true_labels, y_pred=ml_predictions)
+    # def _calculate_prediction_error_per_dataset(self, metric, predictions_per_ml_strategy, true_labels):
+    #     score = []
+    #     for prediction in predictions_per_ml_strategy:
+    #         ml_strategy = prediction[0]
+    #         ml_predictions = prediction[1]
+    #         result = 0
+    #         if metric=='accuracy':
+    #             result = accuracy_score(true_labels, ml_predictions)
+    #         if metric=='mean_squared_error':
+    #             result = mean_squared_error(y_true=true_labels, y_pred=ml_predictions)
 
-            score.append([ml_strategy, result])
+    #         score.append([ml_strategy, result])
 
-        return score
+    #     return score
     
     def calculate_error_per_dataset(self, metric):
         """
@@ -128,9 +127,10 @@ class AnalyseResults(object):
         """
         orig_dts_names_list, orig_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
         pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._output_h5_predictions_group, hdf5_io=self._output_io)
-        result = {}
+        # result = {}
+        losses = Losses(metric=metric)
         for dts in pred_dts_names_list:
-            result[dts] = []
+            # result[dts] = []
             predictions_all_estimators = self._output_io.load_predictions_for_dataset(dts)
             _, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
             idx_orig_dts = orig_dts_names_list.index(dts)
@@ -138,55 +138,59 @@ class AnalyseResults(object):
             true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
             true_labels = np.array(true_labels)
 
-            for est in predictions_all_estimators:
-                est_name = est[0]
-                est_predictions = est[1]
-                score_per_label = self._calculate_error_per_datapoint(predictions=est_predictions, 
-                                                                    true_labels=true_labels, 
-                                                                    metric=metric)
-                std_score = np.std(score_per_label)
-                n = len(score_per_label)
-                sum_score = np.sum(score_per_label)
-                score = np.sqrt(sum_score/n)
-                result[dts].append([est_name, score, std_score])
-
-        result_df = self._reformat_error_per_dataset(result)
+            
+            for pred in predictions_all_estimators:
+                losses.evaluate_per_dataset(true_labels=true_labels, 
+                                            predictions=pred, 
+                                            dataset_name=dts)
+                # est_name = est[0]
+                # est_predictions = est[1]
+                # score_per_label = self._calculate_error_per_datapoint(predictions=est_predictions, 
+                #                                                     true_labels=true_labels, 
+                #                                                     metric=metric)
+                # std_score = np.std(score_per_label)
+                # n = len(score_per_label)
+                # sum_score = np.sum(score_per_label)
+                # score = np.sqrt(sum_score/n)
+                # result[dts].append([est_name, score, std_score])
+        result = losses.get_losses()
+        result_df = losses.losses_to_dataframe(result)
         return result, result_df
 
-    def _reformat_error_per_dataset(self, error_per_dataset):
-        df = pd.DataFrame(error_per_dataset)
-        #unpivot the data
-        df = df.melt(var_name='dts', value_name='values')
-        df['classifier'] = df.apply(lambda raw: raw.values[1][0], axis=1)
-        df['score'] = df.apply(lambda raw: raw.values[1][1], axis=1)
-        df['std'] = df.apply(lambda raw: raw.values[1][2], axis=1)
-        df = df.drop('values', axis=1)
-        #create multilevel index dataframe
-        dts = df['dts'].unique()
-        estimators_list = df['classifier'].unique()
-        score = df['score'].values
-        std = df['std'].values
+    # def _reformat_error_per_dataset(self, error_per_dataset):
+    #     df = pd.DataFrame(error_per_dataset)
+    #     #unpivot the data
+    #     df = df.melt(var_name='dts', value_name='values')
+    #     df['classifier'] = df.apply(lambda raw: raw.values[1][0], axis=1)
+    #     df['score'] = df.apply(lambda raw: raw.values[1][1], axis=1)
+    #     df['std'] = df.apply(lambda raw: raw.values[1][2], axis=1)
+    #     df = df.drop('values', axis=1)
+    #     #create multilevel index dataframe
+    #     dts = df['dts'].unique()
+    #     estimators_list = df['classifier'].unique()
+    #     score = df['score'].values
+    #     std = df['std'].values
         
-        df = df.drop('dts', axis=1)
-        df=df.drop('classifier', axis=1)
+    #     df = df.drop('dts', axis=1)
+    #     df=df.drop('classifier', axis=1)
         
-        df.index = pd.MultiIndex.from_product([dts, estimators_list])
+    #     df.index = pd.MultiIndex.from_product([dts, estimators_list])
 
-        return df
+    #     return df
         
-    def _calculate_error_per_datapoint(self, predictions, true_labels, metric):
-        errors = []
-        for pair in zip(predictions, true_labels):
-            prediction = pair[0]
-            true_label = pair[1]
-            if metric == 'mean_squared_error':
-                mse = mean_squared_error([prediction], [true_label])
-                errors.append(mse)
-            if metric == 'accuracy':
-                accuracy = accuracy_score(true_label, prediction)
-                errors.append(accuracy)
+    # def _calculate_error_per_datapoint(self, predictions, true_labels, metric):
+    #     errors = []
+    #     for pair in zip(predictions, true_labels):
+    #         prediction = pair[0]
+    #         true_label = pair[1]
+    #         if metric == 'mean_squared_error':
+    #             mse = mean_squared_error([prediction], [true_label])
+    #             errors.append(mse)
+    #         if metric == 'accuracy':
+    #             accuracy = accuracy_score(true_label, prediction)
+    #             errors.append(accuracy)
 
-        return np.array(errors)
+    #     return np.array(errors)
 
     def calculate_average_std(self, scores_dict):
         """
@@ -250,20 +254,20 @@ class AnalyseResults(object):
         cohens_d_df = cohens_d_df.drop(['sort'], axis=1)
         return cohens_d_df
 
-    def _convert_from_array_to_dict(self, observations):
-        observations = np.array(observations)
-        num_datasets = observations.shape[0]
-        num_strategies = observations.shape[1]
-        num_key_value_pairs = observations.shape[2]
+    # def _convert_from_array_to_dict(self, observations):
+    #     observations = np.array(observations)
+    #     num_datasets = observations.shape[0]
+    #     num_strategies = observations.shape[1]
+    #     num_key_value_pairs = observations.shape[2]
     
-        resh = observations.ravel().reshape(num_datasets * num_strategies,num_key_value_pairs)
-        df = pd.DataFrame(resh, columns=['strategy', 'accuracy'])
-        list_strategies = df['strategy'].unique()
+    #     resh = observations.ravel().reshape(num_datasets * num_strategies,num_key_value_pairs)
+    #     df = pd.DataFrame(resh, columns=['strategy', 'accuracy'])
+    #     list_strategies = df['strategy'].unique()
     
-        acc_per_strat = {}
-        for strat in list_strategies:
-            acc_per_strat[strat] = df[df['strategy']==strat]['accuracy'].values.astype(np.float32)
-        return acc_per_strat
+    #     acc_per_strat = {}
+    #     for strat in list_strategies:
+    #         acc_per_strat[strat] = df[df['strategy']==strat]['accuracy'].values.astype(np.float32)
+    #     return acc_per_strat
 
    
 
