@@ -109,5 +109,8 @@ venv.bak/
 data/**
 Delgado_data/**
 tests/data/**
+documentation/_build/**
+documentation/_static/**
+documentation/_templates/**
 
 
