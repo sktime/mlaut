@@ -180,6 +180,8 @@
 
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">mean_squared_error</span>
 <span class="kn">import</span> <span class="nn">scikit_posthocs</span> <span class="k">as</span> <span class="nn">sp</span>
+
+<span class="kn">from</span> <span class="nn">mleap.analyze_results.losses</span> <span class="k">import</span> <span class="n">Losses</span>
 <div class="viewcode-block" id="AnalyseResults"><a class="viewcode-back" href="../../../analyze_results.html#mleap.analyze_results.analyze_results.AnalyseResults">[docs]</a><span class="k">class</span> <span class="nc">AnalyseResults</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Analyze results of machine learning experiments.</span>
@@ -242,7 +244,7 @@
 
         <span class="c1">#load all predictions</span>
         <span class="n">dts_predictions_list</span><span class="p">,</span> <span class="n">dts_predictions_list_full_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">list_datasets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_h5_predictions_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_io</span><span class="p">)</span>
-        <span class="n">loss_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">losses</span> <span class="o">=</span> <span class="n">Losses</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">dts</span> <span class="ow">in</span> <span class="n">dts_predictions_list</span><span class="p">:</span>
             <span class="n">predictions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_io</span><span class="o">.</span><span class="n">load_predictions_for_dataset</span><span class="p">(</span><span class="n">dts</span><span class="p">)</span>
             <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">load_train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_io</span><span class="p">,</span> <span class="n">dts</span><span class="p">)</span>
@@ -250,27 +252,29 @@
             <span class="n">path_orig_dts</span> <span class="o">=</span> <span class="n">dts_names_list_full_path</span><span class="p">[</span><span class="n">idx_orig_dts</span><span class="p">]</span>
             <span class="n">true_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">load_true_labels</span><span class="p">(</span><span class="n">hdf5_in</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_io</span><span class="p">,</span> <span class="n">dataset_loc</span><span class="o">=</span><span class="n">path_orig_dts</span><span class="p">,</span> <span class="n">lables_idx</span><span class="o">=</span><span class="n">test</span><span class="p">)</span>
             <span class="n">true_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">true_labels</span><span class="p">)</span>
-            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_prediction_error_per_dataset</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span> <span class="n">predictions_per_ml_strategy</span><span class="o">=</span><span class="n">predictions</span><span class="p">,</span> <span class="n">true_labels</span><span class="o">=</span><span class="n">true_labels</span><span class="p">)</span>
-            <span class="n">loss_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+            <span class="n">losses</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">predictions</span><span class="o">=</span><span class="n">predictions</span><span class="p">,</span> 
+                            <span class="n">true_labels</span><span class="o">=</span><span class="n">true_labels</span><span class="p">)</span>
+            <span class="c1"># loss = self._calculate_prediction_error_per_dataset(metric=metric, predictions_per_ml_strategy=predictions, true_labels=true_labels)</span>
+            <span class="c1"># loss_arr.append(loss)</span>
+        <span class="k">return</span> <span class="n">losses</span><span class="o">.</span><span class="n">get_losses</span><span class="p">()</span></div>
+        <span class="c1"># return self._convert_from_array_to_dict(loss_arr)</span>
     
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_from_array_to_dict</span><span class="p">(</span><span class="n">loss_arr</span><span class="p">)</span></div>
-    
 
 
-    <span class="k">def</span> <span class="nf">_calculate_prediction_error_per_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">predictions_per_ml_strategy</span><span class="p">,</span> <span class="n">true_labels</span><span class="p">):</span>
-        <span class="n">score</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">prediction</span> <span class="ow">in</span> <span class="n">predictions_per_ml_strategy</span><span class="p">:</span>
-            <span class="n">ml_strategy</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">ml_predictions</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="n">metric</span><span class="o">==</span><span class="s1">&#39;accuracy&#39;</span><span class="p">:</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">ml_predictions</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">metric</span><span class="o">==</span><span class="s1">&#39;mean_squared_error&#39;</span><span class="p">:</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">y_pred</span><span class="o">=</span><span class="n">ml_predictions</span><span class="p">)</span>
+    <span class="c1"># def _calculate_prediction_error_per_dataset(self, metric, predictions_per_ml_strategy, true_labels):</span>
+    <span class="c1">#     score = []</span>
+    <span class="c1">#     for prediction in predictions_per_ml_strategy:</span>
+    <span class="c1">#         ml_strategy = prediction[0]</span>
+    <span class="c1">#         ml_predictions = prediction[1]</span>
+    <span class="c1">#         result = 0</span>
+    <span class="c1">#         if metric==&#39;accuracy&#39;:</span>
+    <span class="c1">#             result = accuracy_score(true_labels, ml_predictions)</span>
+    <span class="c1">#         if metric==&#39;mean_squared_error&#39;:</span>
+    <span class="c1">#             result = mean_squared_error(y_true=true_labels, y_pred=ml_predictions)</span>
 
-            <span class="n">score</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ml_strategy</span><span class="p">,</span> <span class="n">result</span><span class="p">])</span>
+    <span class="c1">#         score.append([ml_strategy, result])</span>
 
-        <span class="k">return</span> <span class="n">score</span>
+    <span class="c1">#     return score</span>
     
 <div class="viewcode-block" id="AnalyseResults.calculate_error_per_dataset"><a class="viewcode-back" href="../../../analyze_results.html#mleap.analyze_results.analyze_results.AnalyseResults.calculate_error_per_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_error_per_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -405,20 +409,20 @@
         <span class="n">cohens_d_df</span> <span class="o">=</span> <span class="n">cohens_d_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;sort&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cohens_d_df</span></div>
 
-    <span class="k">def</span> <span class="nf">_convert_from_array_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">):</span>
-        <span class="n">observations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">observations</span><span class="p">)</span>
-        <span class="n">num_datasets</span> <span class="o">=</span> <span class="n">observations</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">num_strategies</span> <span class="o">=</span> <span class="n">observations</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">num_key_value_pairs</span> <span class="o">=</span> <span class="n">observations</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="c1"># def _convert_from_array_to_dict(self, observations):</span>
+    <span class="c1">#     observations = np.array(observations)</span>
+    <span class="c1">#     num_datasets = observations.shape[0]</span>
+    <span class="c1">#     num_strategies = observations.shape[1]</span>
+    <span class="c1">#     num_key_value_pairs = observations.shape[2]</span>
     
-        <span class="n">resh</span> <span class="o">=</span> <span class="n">observations</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">num_datasets</span> <span class="o">*</span> <span class="n">num_strategies</span><span class="p">,</span><span class="n">num_key_value_pairs</span><span class="p">)</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">resh</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;strategy&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
-        <span class="n">list_strategies</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;strategy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="c1">#     resh = observations.ravel().reshape(num_datasets * num_strategies,num_key_value_pairs)</span>
+    <span class="c1">#     df = pd.DataFrame(resh, columns=[&#39;strategy&#39;, &#39;accuracy&#39;])</span>
+    <span class="c1">#     list_strategies = df[&#39;strategy&#39;].unique()</span>
     
-        <span class="n">acc_per_strat</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">strat</span> <span class="ow">in</span> <span class="n">list_strategies</span><span class="p">:</span>
-            <span class="n">acc_per_strat</span><span class="p">[</span><span class="n">strat</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;strategy&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">strat</span><span class="p">][</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">acc_per_strat</span>
+    <span class="c1">#     acc_per_strat = {}</span>
+    <span class="c1">#     for strat in list_strategies:</span>
+    <span class="c1">#         acc_per_strat[strat] = df[df[&#39;strategy&#39;]==strat][&#39;accuracy&#39;].values.astype(np.float32)</span>
+    <span class="c1">#     return acc_per_strat</span>
 
    
 

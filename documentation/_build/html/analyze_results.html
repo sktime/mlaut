@@ -101,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Analyze Results</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id2">analyze_results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mleap.analyze_results.losses">losses</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="shared.html">Shared</a></li>
@@ -377,6 +378,71 @@ In particular, it tests whether the distribution of the differences x-y is symme
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mleap.analyze_results.losses">
+<span id="losses"></span><h2>losses<a class="headerlink" href="#module-mleap.analyze_results.losses" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mleap.analyze_results.losses.Losses">
+<em class="property">class </em><code class="descclassname">mleap.analyze_results.losses.</code><code class="descname">Losses</code><span class="sig-paren">(</span><em>metric</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/losses.html#Losses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.losses.Losses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Calculates prediction losses on test datasets achieved by the trained estimators. When the class is instantiated it creates a dictionary that stores the losses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>metrics</strong> – loss metric that will be calculated.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mleap.analyze_results.losses.Losses.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>predictions</em>, <em>true_labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/losses.html#Losses.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.losses.Losses.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the loss metrics on the test sets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> – Predictions of trained estimators in the form [estimator_name, [predictions]]</li>
+<li><strong>true_labels</strong> (<em>numpy array</em>) – true labels of test dataset.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.losses.Losses.evaluate_per_dataset">
+<code class="descname">evaluate_per_dataset</code><span class="sig-paren">(</span><em>predictions</em>, <em>true_labels</em>, <em>dataset_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/losses.html#Losses.evaluate_per_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.losses.Losses.evaluate_per_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the error of an estimator per dataset.</p>
+<p>predictions : 2d array-like in the form [estimator name, [estimator_predictions]].
+true_labels : 1d array-like</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.losses.Losses.get_losses">
+<code class="descname">get_losses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/losses.html#Losses.get_losses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.losses.Losses.get_losses" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the Losses class is instantiated a dictionary that holds all losses is created and appended every time the evaluate() method is run. This method returns this dictionary with the losses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mleap.analyze_results.losses.Losses.losses_to_dataframe">
+<code class="descname">losses_to_dataframe</code><span class="sig-paren">(</span><em>losses</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mleap/analyze_results/losses.html#Losses.losses_to_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mleap.analyze_results.losses.Losses.losses_to_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reformats the output of the dictionary returned by the <a class="reference internal" href="#mleap.analyze_results.losses.Losses.get_losses" title="mleap.analyze_results.losses.Losses.get_losses"><code class="xref py py-func docutils literal"><span class="pre">mleap.analyze_results.losses.Losses.get_losses()</span></code></a> to a pandas DataFrame. This method can only be applied to reformat the output produced by <code class="xref py py-func docutils literal"><span class="pre">mleap.analyze_results.Losses.evaluate_per_dataset()</span></code>.</p>
+<p>losses: dictionary returned by the <a class="reference internal" href="#mleap.analyze_results.losses.Losses.get_losses" title="mleap.analyze_results.losses.Losses.get_losses"><code class="xref py py-func docutils literal"><span class="pre">mleap.analyze_results.losses.Losses.get_losses()</span></code></a> generated by <code class="xref py py-func docutils literal"><span class="pre">mleap.analyze_results.Losses.evaluate_per_dataset()</span></code></p>
 </dd></dl>
 
 </dd></dl>
