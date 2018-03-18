@@ -15,6 +15,8 @@ from tensorflow.python.keras.models import Sequential, load_model
 from tensorflow.python.keras.layers import Dense, Activation, Dropout
 from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor, KerasClassifier
 from tensorflow.python.keras import optimizers
+from sklearn.preprocessing import OneHotEncoder
+
 
 import numpy as np
 
@@ -32,7 +34,7 @@ class Deep_NN_Classifier(MleapEstimator):
                                   optimizer = 'Adam',
                                   learning_rate=0.001,
                                   metrics = ['accuracy'] ):
-        nn_deep_model = Sequential()
+        nn_deep_model = OverwrittenSequentialClassifier()
         nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
         nn_deep_model.add(Dense(144, activation='relu'))
         nn_deep_model.add(Dropout(0.5))
@@ -154,9 +156,7 @@ class Deep_NN_Regressor(MleapEstimator):
         nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
         return nn_deep_model
     
-    def build(self, 
-              input_dim, 
-              num_samples, 
+    def build(self,
               loss='mean_squared_error', 
               learning_rate=0.001, 
               hyperparameters = None, 
@@ -184,8 +184,8 @@ class Deep_NN_Regressor(MleapEstimator):
             raise ValueError('You need to specify input dimentions when building the model')
         if 'num_samples' not in kwargs:
             raise ValueError('You need to specify num_samples when building the keras model.')
-        input_dim=kwargs[input_dim]
-        num_samples = kwargs[num_samples]
+        input_dim=kwargs['input_dim']
+        num_samples = kwargs['num_samples']
         model = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
                                 input_dim=input_dim,
                                 verbose=self._verbose,
@@ -228,3 +228,60 @@ class Deep_NN_Regressor(MleapEstimator):
         path_to_load = split_path[0] + HDF5_EXTENTION 
         model = load_model(path_to_load)
         self.set_trained_model(model)
+
+
+class OverwrittenSequentialClassifier(Sequential):
+    """
+    Keras sequential model that overrides the default :func:`tensorflow.python.keras.models.fit` and :func:`tensorflow.python.keras.models.predict` methods.
+    """
+
+    def fit(self, 
+            X_train, 
+            y_train, 
+            batch_size=None, 
+            epochs=1, 
+            verbose=1, 
+            callbacks=None, 
+            validation_split=0.0, 
+            validation_data=None, 
+            shuffle=True, 
+            class_weight=None, 
+            sample_weight=None, 
+            initial_epoch=0, 
+            steps_per_epoch=None, 
+            validation_steps=None):
+            
+        """
+        Overrides the default :func:`tensorflow.python.keras.models.fit` and reshapes the `y_train` in one hot array. 
+
+        Paremeters
+        ----------
+        X_train: training data
+        y_train: Labels that will be converted to onehot array.
+
+
+        Returns
+        -------
+        :func:`tensorflow.python.keras.models.fit` object
+
+        """
+        def __init__(self):
+            super().__init__(self)
+
+        onehot_encoder = OneHotEncoder(sparse=False)
+        len_y = len(y_train)
+        reshaped_y = y_train.reshape(len_y, 1)
+        y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
+        
+        
+        return super().fit(X_train, y_train_onehot_encoded)
+
+    def predict(self, X_test):
+        """
+        Overrides the default :func:`tensorflow.python.keras.models.predict` by replacing it with a :func:`tensorflow.python.keras.models.predict_classes`  
+
+        Returns
+        --------
+        :func:`tensorflow.python.keras.models.predict_classes`
+        """
+        return super().predict_classes(X_test)

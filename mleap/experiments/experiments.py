@@ -37,31 +37,35 @@ class Experiments(object):
                 logging.warning(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
                 #modelling_strategy.load(path_to_check)
             else:
-                #train the model if it does not exist on disk
-                # TODO I need to override the fit() and predict() methods of the keras classifiers. The fit method needs to convert the y_train vector  in one hot vector. The predict() method needs to output predict_classes().
-                if NEURAL_NETWORKS in ml_strategy_family:
-                    #encode the labels 
-                    onehot_encoder = OneHotEncoder(sparse=False)
-                    len_y = len(y_train)
-                    reshaped_y = y_train.reshape(len_y, 1)
-                    y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
-                    num_classes = y_train_onehot_encoded.shape[1]
-                    num_samples, input_dim = X_train.shape
-                    #build the model with the appropriate parameters
-                    if ml_strategy_name is 'NeuralNetworkDeepClassifier':
-                        built_model = modelling_strategy.build(num_classes=num_classes, 
-                                                               input_dim=input_dim,
-                                                               num_samples=num_samples)
-                        built_model.fit(X_train, y_train_onehot_encoded)
-                    if ml_strategy_name is 'NeuralNetworkDeepRegressor':
-                        built_model = modelling_strategy.build(input_dim=input_dim, 
-                                                               num_samples=num_samples)
-                        built_model.fit(X_train, y_train)
+                # #train the model if it does not exist on disk
+                # # TODO I need to override the fit() and predict() methods of the keras classifiers. The fit method needs to convert the y_train vector  in one hot vector. The predict() method needs to output predict_classes().
+                # if NEURAL_NETWORKS in ml_strategy_family:
+                #     #encode the labels 
+                #     onehot_encoder = OneHotEncoder(sparse=False)
+                #     len_y = len(y_train)
+                #     reshaped_y = y_train.reshape(len_y, 1)
+                #     y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
+                #     num_classes = y_train_onehot_encoded.shape[1]
+                #     num_samples, input_dim = X_train.shape
+                #     #build the model with the appropriate parameters
+                #     if ml_strategy_name is 'NeuralNetworkDeepClassifier':
+                #         built_model = modelling_strategy.build(num_classes=num_classes, 
+                #                                                input_dim=input_dim,
+                #                                                num_samples=num_samples)
+                #         built_model.fit(X_train, y_train_onehot_encoded)
+                #     if ml_strategy_name is 'NeuralNetworkDeepRegressor':
+                #         built_model = modelling_strategy.build(input_dim=input_dim, 
+                #                                                num_samples=num_samples)
+                #         built_model.fit(X_train, y_train)
                         
-                    trained_model = built_model
-                else:
-                    built_model = modelling_strategy.build()
-                    trained_model = built_model.fit(X_train, y_train)
+                #     trained_model = built_model
+                # else:
+                num_samples, input_dim = X_train.shape
+                num_classes = np.max(y_train + 1)
+                built_model = modelling_strategy.build(num_classes=num_classes, 
+                                                        input_dim=input_dim,
+                                                        num_samples=num_samples)
+                trained_model = built_model.fit(X_train, y_train)
                 
                 timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
                 modelling_strategy.set_trained_model(trained_model)
