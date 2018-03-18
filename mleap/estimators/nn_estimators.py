@@ -46,18 +46,14 @@ class Deep_NN_Classifier(MleapEstimator):
         nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
         return nn_deep_model
     
-    def build(self, num_classes, input_dim, num_samples, loss='mean_squared_error', learning_rate=0.001, hyperparameters = None):
+    def build(self, 
+              loss='mean_squared_error', 
+              learning_rate=0.001, 
+              hyperparameters = None, 
+              **kwargs):
         """
         builds and returns estimator
 
-        :type num_classes: int
-        :param num_classes: number of classes in datset
-
-        :type input_dim: int
-        :param input_dim: number of features in dataset.
-
-        :type num_samples: int
-        :param num_samples: number of samples in dataset.
 
         :type loss: string
         :param loss: loss metric as per `keras documentation <https://keras.io/losses/>`_.
@@ -68,9 +64,21 @@ class Deep_NN_Classifier(MleapEstimator):
         :type hypehyperparameters: dictionary
         :param hypehyperparameters: dictionary used for tuning the network if Gridsearch is used.
 
+        :type kwargs: key-value
+        :param kwargs: At a minimum the user must specify ``input_dim``, ``num_samples`` and ``num_classes``.
         :rtype: `keras object`
         """
+        if 'input_dim' not in kwargs:
+            raise ValueError('You need to specify input dimentions when building the model.')
+        if 'num_samples' not in kwargs:
+            raise ValueError('You need to specify num_samples when building the keras model.')
+        if 'num_classes' not in kwargs:
+            raise ValueError('You need to specify num_classes when building the keras model.')
         
+        input_dim=kwargs['input_dim']
+        num_samples = kwargs['num_samples']
+        num_classes = kwargs['num_classes']
+
         model = KerasClassifier(build_fn=self._nn_deep_classifier_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim,
@@ -146,15 +154,17 @@ class Deep_NN_Regressor(MleapEstimator):
         nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
         return nn_deep_model
     
-    def build(self, input_dim, num_samples, loss='mean_squared_error', learning_rate=0.001, hyperparameters = None):
+    def build(self, 
+              input_dim, 
+              num_samples, 
+              loss='mean_squared_error', 
+              learning_rate=0.001, 
+              hyperparameters = None, 
+              **kwargs):
         """
         builds and returns estimator
 
-        :type input_dim: int
-        :param input_dim: number of features in dataset.
-
-        :type num_samples: int
-        :param num_samples: number of samples in dataset.
+        
 
         :type loss: string
         :param loss: loss metric as per `keras documentation <https://keras.io/losses/>`_.
@@ -165,14 +175,23 @@ class Deep_NN_Regressor(MleapEstimator):
         :type hypehyperparameters: dictionary
         :param hypehyperparameters: dictionary used for tuning the network if Gridsearch is used.
 
+        :type kwargs: key-value(integer)
+        :param kwargs: The user must specify ``input_dim`` and ``num_samples``.
+
         :rtype: `keras object`
         """
-        
+        if 'input_dim' not in kwargs:
+            raise ValueError('You need to specify input dimentions when building the model')
+        if 'num_samples' not in kwargs:
+            raise ValueError('You need to specify num_samples when building the keras model.')
+        input_dim=kwargs[input_dim]
+        num_samples = kwargs[num_samples]
         model = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
                                 input_dim=input_dim,
                                 verbose=self._verbose,
                                 loss=loss)
         if hyperparameters is None:
+            
             hyperparameters = {'epochs': [50,100], 'batch_size': [num_samples]}
         return model
         # return GridSearchCV(model, 

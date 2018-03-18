@@ -38,6 +38,7 @@ class Experiments(object):
                 #modelling_strategy.load(path_to_check)
             else:
                 #train the model if it does not exist on disk
+                # TODO I need to override the fit() and predict() methods of the keras classifiers. The fit method needs to convert the y_train vector  in one hot vector. The predict() method needs to output predict_classes().
                 if NEURAL_NETWORKS in ml_strategy_family:
                     #encode the labels 
                     onehot_encoder = OneHotEncoder(sparse=False)
@@ -48,10 +49,13 @@ class Experiments(object):
                     num_samples, input_dim = X_train.shape
                     #build the model with the appropriate parameters
                     if ml_strategy_name is 'NeuralNetworkDeepClassifier':
-                        built_model = modelling_strategy.build(num_classes, input_dim, num_samples)
+                        built_model = modelling_strategy.build(num_classes=num_classes, 
+                                                               input_dim=input_dim,
+                                                               num_samples=num_samples)
                         built_model.fit(X_train, y_train_onehot_encoded)
                     if ml_strategy_name is 'NeuralNetworkDeepRegressor':
-                        built_model = modelling_strategy.build(input_dim, num_samples)
+                        built_model = modelling_strategy.build(input_dim=input_dim, 
+                                                               num_samples=num_samples)
                         built_model.fit(X_train, y_train)
                         
                     trained_model = built_model
