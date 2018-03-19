@@ -18,13 +18,22 @@ class SVC_mleap(MleapEstimator):
     """
 
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
-
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `GridsearchCV object`
+        
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `GridsearchCV` object
+            Instantiated estimator object.
+        
         """
         if hyperparameters is None:
             hyperparameters = {

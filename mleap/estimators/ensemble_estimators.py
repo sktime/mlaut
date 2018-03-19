@@ -23,13 +23,22 @@ class Random_Forest_Classifier(MleapEstimator):
     """
 
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `GridsearchCV object`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `GridsearchCV object`
+            Instantiated estimator object.
+
         """
         if hyperparameters is None:
             hyperparameters = {
@@ -68,13 +77,22 @@ class Random_Forest_Regressor(MleapEstimator):
     """
 
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `GridsearchCV object`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `GridsearchCV object`
+            Instantiated estimator object.
+
         """
         if hyperparameters is None:
             hyperparameters = {
@@ -113,13 +131,21 @@ class Bagging_Classifier(MleapEstimator):
     Wrapper for `sklearn Bagging Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html>`_.
     """
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `GridsearchCV object`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `GridsearchCV object`
+            Instantiated estimator object.
         """
         if hyperparameters is None:
             hyperparameters = {
@@ -157,13 +183,21 @@ class Bagging_Regressor(MleapEstimator):
     """
  
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `GridsearchCV object`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `GridSearchCV` object
+            Instantiated estimator object.
         """
         if hyperparameters is None:
             hyperparameters = {
@@ -202,13 +236,22 @@ class Gradient_Boosting_Classifier(MleapEstimator):
     """
   
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `GridsearchCV object`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `GridsearchCV` object
+            Instantiated estimator object.
+
         """
         if hyperparameters is None:
             hyperparameters = {
@@ -246,17 +289,26 @@ class Gradient_Boosting_Regressor(MleapEstimator):
     """
 
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `GridsearchCV object`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `GridsearchCV object`
+            Instantiated estimator object.
+
         """
         if hyperparameters is None:
             hyperparameters = {
-                'n_estimators': [10, 100, 1000, 2000],
+                'n_estimators': [10, 100, 500],
                 'max_depth':[10,100]
             }
         return GridSearchCV(GradientBoostingRegressor(), 

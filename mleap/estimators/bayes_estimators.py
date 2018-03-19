@@ -34,11 +34,19 @@ class Gaussian_Naive_Bayes(MleapEstimator):
         disk_op.save_to_pickle(trained_model=trained_model,
                              model_name=self.properties()['name'],
                              dataset_name=dataset_name)
-    def build(self):
+    def build(self, **kwargs):
         """
         Builds and returns estimator class.
-
-        :rtype: `sklearn object`
+        
+        Parameters
+        ----------
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `sklearn object`
+            Instantiated estimator object.
         """
         return GaussianNB()
 
@@ -64,10 +72,18 @@ class Bernoulli_Naive_Bayes(MleapEstimator):
         disk_op.save_to_pickle(trained_model=trained_model,
                              model_name=self.properties()['name'],
                              dataset_name=dataset_name)
-    def build(self):
+    def build(self, **kwargs):
         """
         Builds and returns estimator class.
 
-        :rtype: `sklearn object`
+        Parameters
+        ----------
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `sklearn object`
+            Instantiated estimator object.
         """
         return BernoulliNB()

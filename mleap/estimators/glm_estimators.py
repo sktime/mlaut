@@ -20,13 +20,21 @@ class Ridge_Regression(MleapEstimator):
     """
 
        
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `sklearn object with built-in cross-validation`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `sklearn object with built-in cross-validation`
+            Instantiated estimator object.
         """
         if hyperparameters is None:
             hyperparameters = {'alphas':[0.1, 1, 10.0],
@@ -55,13 +63,21 @@ class Lasso(MleapEstimator):
     """
 
     
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `sklearn object with built-in cross-validationt`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `sklearn object with built-in cross-validation`
+            Instantiated estimator object.
         """
         if hyperparameters is None:
             hyperparameters = {'alphas':[0.1, 1, 10.0]}
@@ -88,13 +104,21 @@ class Lasso_Lars(MleapEstimator):
 
     
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `sklearn object with built-in cross-validation`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `sklearn object with built-in cross-validation`
+            Instantiated estimator object.
         """
         if hyperparameters is None:
             hyperparameters = {'max_n_alphas':1000}
@@ -120,13 +144,22 @@ class Logistic_Regression(MleapEstimator):
     Wrapper for `sklearn Logistic Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`_.
     """
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `GridsearchCV object`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `GridsearchCV` object
+            Instantiated estimator object.
+
         """
         if hyperparameters is None:
             hyperparameters = {
@@ -160,13 +193,21 @@ class Passive_Aggressive_Classifier(MleapEstimator):
     Wrapper for `sklearn Passive Aggressive Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.PassiveAggressiveClassifier.html>`_.
     """
 
-    def build(self, hyperparameters=None):
+    def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
 
-        :type hyperparameters: dictionary
-        :param hyperparameters: dictionary of hyperparameters to be used for tuning the estimator
-        :rtype: `GridsearchCV object`
+        Parameters
+        ----------
+        hyperparameters: dictionary
+            Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `GridsearchCV object`
+            Instantiated estimator object.
         """
         hyperparameters = {
                 'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6],

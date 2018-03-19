@@ -16,13 +16,21 @@ class Baseline_Regressor(MleapEstimator):
     """
 
 
-    def build(self, strategy='median'):
+    def build(self, strategy='median', **kwargs):
         """
         Builds and returns estimator class.
 
-        :type strategy: string
-        :param strategy: as per `scikit-learn dummy regressor documentation <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html>`_.
-        :rtype: `sklearn object`
+        Parameters
+        ----------
+        strategy : string
+            as per `scikit-learn dummy regressor documentation <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html>`_.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `sklearn.dummy.DummyRegressor` 
+            Instantiated estimator object.
         """
         return DummyRegressor(strategy=strategy)
 
@@ -50,12 +58,21 @@ class Baseline_Classifier(MleapEstimator):
     """
 
 
-    def build(self, strategy='stratified'):
+    def build(self, strategy='stratified', **kwargs):
         """
         Builds and returns estimator class.
 
-        :type strategy: string
-        :param strategy: as per `scikit-learn dummy classifier documentation <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html>`_.
+        Parameters
+        -----------
+        strategy : string
+            Name of strategy of baseline classifier. Default is ``stratified``. See `sklean.dummy.DummyClasifier <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html>`_ for additional information.
+        **kwargs : key-value arguments.
+            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns
+        -------
+        `sklearn.dummy.DummyClassifier` 
+            Instantiated estimator object.
         """
         return DummyClassifier(strategy=strategy)
 
