@@ -14,6 +14,10 @@ from mleap.experiments.experiments import Experiments
 from mleap.data import Data
 import numpy as np
 import logging
+from datetime import datetime
+import pandas as pd
+from mleap.shared.files_io import DiskOperations
+
 class Orchestrator:
     """
     Orchestrates the sequencing of running the machine learning experiments.
@@ -47,6 +51,7 @@ class Orchestrator:
         self._dts_names=dts_names
         self._original_datasets_group_h5_path = original_datasets_group_h5_path
         self._experiments = Experiments(self._experiments_trained_models_dir)
+        self._disk_op = DiskOperations()
         self._data = Data() #TODO need to implement a way to change the defaults.
         set_logging_defaults()
 
@@ -83,11 +88,36 @@ class Orchestrator:
                                                                               dts_name=dts_name, 
                                                                               dts_grp_path=self._original_datasets_group_h5_path)
                 print(f'*** Training models on dataset: {dts_name}. Total datasets processed: {dts_trained}/{dts_total} ***')
-                timestamps_df = self._experiments.run_experiments(X_train, 
-                                                                                  y_train, 
-                                                                                  modelling_strategies, 
-                                                                                  dts_name)
-                self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
+                # timestamps_df = self._experiments.run_experiments(X_train, 
+                #                                                                   y_train, 
+                #                                                                   modelling_strategies, 
+                #                                                                   dts_name)
+                timestamps_df = pd.DataFrame()
+                for modelling_strategy in modelling_strategies:
+                    ml_strategy_name = modelling_strategy.properties()['name']
+                    ml_strategy_family = modelling_strategy.properties()['estimator_family']
+                    begin_timestamp = datetime.now()
+
+                    #check whether the model was already trained
+                    path_to_check = self._experiments_trained_models_dir + os.sep + dts_name + os.sep + ml_strategy_name + '.*'
+                    model_exists = self._disk_op.check_path_exists(path_to_check)
+                    if model_exists is True:
+                        logging.warning(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
+                        #modelling_strategy.load(path_to_check)
+                    else:
+                    
+                        num_samples, input_dim = X_train.shape
+                        num_classes = np.max(y_train + 1)
+                        built_model = modelling_strategy.build(num_classes=num_classes, 
+                                                                input_dim=input_dim,
+                                                                num_samples=num_samples)
+                        trained_model = built_model.fit(X_train, y_train)
+                        
+                        timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
+                        modelling_strategy.set_trained_model(trained_model)
+                        modelling_strategy.save(dts_name)
+                        
+                        self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
 
 
 
@@ -99,7 +129,16 @@ class Orchestrator:
 
             sys.exit()
 
-  
+    def record_timestamp(self, strategy_name, begin_timestamp, timestamps_df):
+        """ Timestamp used to record the duration of training for each of the estimators"""
+        STF = '%Y-%m-%d %H:%M:%S'
+        end_timestamp = datetime.now()
+        diff = (end_timestamp - begin_timestamp).total_seconds() 
+        vals = [strategy_name, begin_timestamp.strftime(STF),end_timestamp.strftime(STF),diff]
+        run_time_df = pd.DataFrame([vals], columns=['strategy_name','begin_time','end_time','total_seconds'])
+        timestamps_df = timestamps_df.append(run_time_df)
+        
+        return timestamps_df
 
     def predict_all(self, trained_models_dir, estimators):
         """
