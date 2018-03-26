@@ -10,7 +10,7 @@ from mleap.shared.static_variables import (X_TRAIN_DIR,
 import sys
 import os
 from mleap.shared.files_io import FilesIO
-from mleap.experiments.experiments import Experiments
+#from mleap.experiments.experiments import Experiments
 from mleap.data import Data
 import numpy as np
 import logging
@@ -50,7 +50,7 @@ class Orchestrator:
         self._output_io = hdf5_output_io
         self._dts_names=dts_names
         self._original_datasets_group_h5_path = original_datasets_group_h5_path
-        self._experiments = Experiments(self._experiments_trained_models_dir)
+        #self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
         self._data = Data() #TODO need to implement a way to change the defaults.
         set_logging_defaults()
@@ -87,7 +87,6 @@ class Orchestrator:
                                                                               hdf5_in=self._input_io, 
                                                                               dts_name=dts_name, 
                                                                               dts_grp_path=self._original_datasets_group_h5_path)
-                print(f'*** Training models on dataset: {dts_name}. Total datasets processed: {dts_trained}/{dts_total} ***')
                 # timestamps_df = self._experiments.run_experiments(X_train, 
                 #                                                                   y_train, 
                 #                                                                   modelling_strategies, 
@@ -111,6 +110,7 @@ class Orchestrator:
                         built_model = modelling_strategy.build(num_classes=num_classes, 
                                                                 input_dim=input_dim,
                                                                 num_samples=num_samples)
+                        print(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
                         trained_model = built_model.fit(X_train, y_train)
                         
                         timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)

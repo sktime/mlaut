@@ -9,7 +9,7 @@ class MleapEstimator(ABC):
     """
     def __init__(self, 
                 verbose=0, 
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                n_jobs=-1,
                 num_cv_folds=3, 
                 refit=True):
         self._num_cv_folds=num_cv_folds
