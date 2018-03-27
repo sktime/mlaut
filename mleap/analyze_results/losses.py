@@ -69,10 +69,10 @@ class Losses(object):
                 accuracy = accuracy_score([true_label], [prediction])
                 errors.append(accuracy)
 
-        std_score = np.std(errors)
+        std_score = np.std(errors)/np.sqrt(n) #!!!!
         n = len(errors)
         sum_score = np.sum(errors)
-        score = np.sqrt(sum_score/n)
+        svg_score = sum_score/n
         self._losses[dataset_name].append([estimator_name, score, std_score])
 
     def get_losses(self):
