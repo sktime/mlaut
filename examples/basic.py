@@ -1,3 +1,4 @@
+
 from mleap.data import Data
 from mleap.estimators.estimators import instantiate_default_estimators
 from mleap.experiments import Orchestrator
@@ -16,8 +17,8 @@ out_io = data.open_hdf5('data/classification.hdf5', mode='a')
 #store datasets in HDF5 database
 data.pandas_to_db(save_loc_hdf5='delgado_datasets/', 
                   datasets=datasets, 
-                  dts_metadata=metadata, 
-                  save_loc_hdd='data/delgado.hdf5') 
+                  dts_metadata=metadata,
+                  input_io=input_io) 
 
 #split the datasets in train and test
 dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, 
@@ -27,7 +28,7 @@ split_dts_list = data.split_datasets(hdf5_in=input_io,
                                      dataset_paths=dts_names_list_full_path)
 
 #Instantiate estimator objects and the experiments orchestrator class.
-instantiated_models = instantiate_default_estimators(estimators=['all'])
+instantiated_models = instantiate_default_estimators(estimators=['Classification'])
 orchest = Orchestrator(hdf5_input_io=input_io, 
                       hdf5_output_io=out_io, 
                       dts_names=dts_names_list,
