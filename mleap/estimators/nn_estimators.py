@@ -235,6 +235,8 @@ class OverwrittenSequentialClassifier(Sequential):
     Keras sequential model that overrides the default :func:`tensorflow.python.keras.models.fit` and :func:`tensorflow.python.keras.models.predict` methods.
     """
 
+
+
     def fit(self, 
             X_train, 
             y_train, 
@@ -265,9 +267,6 @@ class OverwrittenSequentialClassifier(Sequential):
         :func:`tensorflow.python.keras.models.fit` object
 
         """
-        def __init__(self):
-            super().__init__(self)
-
         onehot_encoder = OneHotEncoder(sparse=False)
         len_y = len(y_train)
         reshaped_y = y_train.reshape(len_y, 1)
