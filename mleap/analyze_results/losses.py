@@ -6,16 +6,22 @@ class Losses(object):
     """
     Calculates prediction losses on test datasets achieved by the trained estimators. When the class is instantiated it creates a dictionary that stores the losses.
 
-    
-    :type metric: string
-    :param metrics: loss metric that will be calculated.
+    Parameters
+    ----------
+    metric(string): loss metric that will be calculated.
+    round_round_predictions(Boolean): Sets whether the predictions of the estimators should be rounded to the nearest integer. This is useful when calculating the accuracy scores of the outputs of estimators that produce regression results as opposed to classification results. The default behaviour is to round the predictions if the ``accuracy`` metric is used.   
 
     """
 
-    def __init__(self, metric):
+    def __init__(self, metric, round_predictions=None):
 
         self._losses = collections.defaultdict(list)
         self._metric = metric
+
+        if round_predictions is None and metric is 'accuracy':
+            self._round_predictions = True
+        else:
+            self._round_predictions = round_predictions
 
     def evaluate(self, predictions, true_labels):
         """
@@ -31,6 +37,8 @@ class Losses(object):
         for prediction in predictions:
             estimator_name = prediction[0]
             estimator_predictions = prediction[1]
+            if self._round_predictions is True:
+                estimator_predictions = np.rint(estimator_predictions)
             
             
             if self._metric is 'accuracy':
@@ -58,22 +66,13 @@ class Losses(object):
         """
         estimator_name = predictions[0]
         estimator_predictions = np.array(predictions[1])
-        errors = []
-        for pair in zip(estimator_predictions, true_labels):
-            prediction = pair[0]
-            true_label = pair[1]
-            if self._metric is 'mean_squared_error':
-                mse = mean_squared_error([prediction], [true_label])
-                errors.append(mse)
-            if self._metric is 'accuracy':
-                accuracy = accuracy_score([true_label], [prediction])
-                errors.append(accuracy)
-
-        std_score = np.std(errors)/np.sqrt(n) #!!!!
+        errors = (estimator_predictions - true_labels)**2
         n = len(errors)
+
+        std_score = np.std(errors)/np.sqrt(n) 
         sum_score = np.sum(errors)
-        svg_score = sum_score/n
-        self._losses[dataset_name].append([estimator_name, score, std_score])
+        avg_score = sum_score/n
+        self._losses[dataset_name].append([estimator_name, avg_score, std_score])
 
     def get_losses(self):
         """
