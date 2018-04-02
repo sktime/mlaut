@@ -12,7 +12,7 @@ from sklearn.model_selection import GridSearchCV
 
 
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
-            tasks=[CLASSIFICATION,REGRESSION], 
+            tasks=[REGRESSION], 
             name='RidgeRegression')
 class Ridge_Regression(MleapEstimator):
     """
@@ -55,7 +55,7 @@ class Ridge_Regression(MleapEstimator):
                                 model_name=self.properties()['name'],
                                 dataset_name=dataset_name)
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
-            tasks=[CLASSIFICATION,REGRESSION], 
+            tasks=[REGRESSION], 
             name='Lasso')
 class Lasso(MleapEstimator):
     """
@@ -95,7 +95,7 @@ class Lasso(MleapEstimator):
                                 model_name=self.properties()['name'],
                                 dataset_name=dataset_name)
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
-            tasks=[CLASSIFICATION,REGRESSION], 
+            tasks=[REGRESSION], 
             name='LassoLars')
 class Lasso_Lars(MleapEstimator):
     """
