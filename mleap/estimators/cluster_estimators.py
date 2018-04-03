@@ -1,5 +1,5 @@
 
-from sklean import cluster
+from sklearn import cluster
 from sklearn.model_selection import GridSearchCV
 from mleap.estimators.mleap_estimator import properties
 from mleap.estimators.mleap_estimator import MleapEstimator
@@ -33,7 +33,7 @@ class K_Means(MleapEstimator):
         disk_op.save_to_pickle(trained_model=trained_model,
                              model_name=self.properties()['name'],
                              dataset_name=dataset_name)
-    def build(hyperparameters=None, **kwargs):
+    def build(self, hyperparameters=None, **kwargs):
         """
         Builds and returns estimator class.
 
@@ -51,7 +51,7 @@ class K_Means(MleapEstimator):
         num_classes = kwargs['num_classes']
         k_means = cluster.KMeans(n_clusters=num_classes)
         
-        f hyperparameters is None:
+        if hyperparameters is None:
             hyperparameters = {
                             'n_init': [10], 
                             'max_iter': [300],

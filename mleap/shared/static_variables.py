@@ -66,6 +66,7 @@ CLASSIFICATION='Classification'
 REGRESSION='Regression'
 SVM='Support_Vector_Machines'
 BASELINE='Baseline'
+CLUSTER='Cluster'
 
 def set_logging_defaults():
     logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
