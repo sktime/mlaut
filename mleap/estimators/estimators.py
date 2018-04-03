@@ -17,6 +17,7 @@ from mleap.estimators.ensemble_estimators import (Random_Forest_Classifier,
 from mleap.estimators.svm_estimators import SVC_mleap
 from mleap.estimators.baseline_estimators import (Baseline_Regressor,
                                             Baseline_Classifier)
+from mleap.estimators.cluster_estimators import K_Means
 
 """
 Each estimator is contained it its own class.
@@ -77,7 +78,8 @@ def instantiate_default_estimators(estimators, verbose=0):
         Deep_NN_Regressor,
         Passive_Aggressive_Classifier,
         Baseline_Classifier,
-        Baseline_Regressor
+        Baseline_Regressor,
+        K_Means
     ]
     estimators_array = []
 
