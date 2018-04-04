@@ -69,6 +69,36 @@ class AnalyseResults(object):
                           train_idx=self._train_idx,
                           test_idx=self._test_idx)
     
+    def prediction_errors(self, metric):
+        """
+        Calculates the average prediction error per estimator as well as the prediction error achieved by each estimator on individual datasets.
+
+        Parameters
+        ----------
+        metric(string): Error metric. Supported values are: ``accuracy``,  ``mean_squared_error``
+
+        Returns
+        -------
+            estimator_avg_error, estimator_avg_error_per_dataset (pickle of pandas DataFrame): ``estimator_avg_error`` represents the average error and standard deviation achieved by each estimator. ``estimator_avg_error_per_dataset`` represents the average error and standard deviation achieved by each estimator on each dataset.
+        """
+        #load all datasets
+        dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
+
+        #load all predictions
+        dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(self._output_h5_predictions_group, self._output_io)
+        losses = Losses(metric)
+        for dts in dts_predictions_list:
+            predictions = self._output_io.load_predictions_for_dataset(dts)
+            train, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
+            idx_orig_dts = dts_predictions_list.index(dts)
+            path_orig_dts = dts_names_list_full_path[idx_orig_dts]
+            true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
+            true_labels = np.array(true_labels)
+            losses.evaluate(predictions=predictions, 
+                            true_labels=true_labels,
+                            dataset_name=dts)
+        return losses.get_losses()
+
     def calculate_error_all_datasets(self, metric):
         """
         Calculates the prediction error for each estimator on all test splits.
@@ -93,7 +123,8 @@ class AnalyseResults(object):
             true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
             true_labels = np.array(true_labels)
             losses.evaluate(predictions=predictions, 
-                            true_labels=true_labels)
+                            true_labels=true_labels,
+                            dataset_name=dts)
 
         return losses.get_losses()
 

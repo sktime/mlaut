@@ -17,39 +17,51 @@ class Losses(object):
 
         self._losses = collections.defaultdict(list)
         self._metric = metric
+        self._errors_per_estimator = collections.defaultdict(list)
+        self._errors_per_dataset_per_estimator = collections.defaultdict(list)
 
         if round_predictions is None and metric is 'accuracy':
             self._round_predictions = True
         else:
             self._round_predictions = round_predictions
 
-    def evaluate(self, predictions, true_labels):
+    def evaluate(self, predictions, true_labels, dataset_name):
         """
         Calculates the loss metrics on the test sets.
 
-        :type predictions: 2d numpy array
-        :param v: Predictions of trained estimators in the form [estimator_name, [predictions]]
-
-        :type true_labels: numpy array
-        :param true_labels: true labels of test dataset.
+        Parameters
+        ----------
+        predictions(2d numpy array): Predictions of trained estimators in the form [estimator_name, [predictions]]
+        true_labels(numpy array): true labels of test dataset.
         """
         
         for prediction in predictions:
+            #evaluates error per estimator
             estimator_name = prediction[0]
             estimator_predictions = prediction[1]
             if self._round_predictions is True:
                 estimator_predictions = np.rint(estimator_predictions)
             
-            
+            loss=0
             if self._metric is 'accuracy':
                 loss = accuracy_score(true_labels, estimator_predictions)
-                self._losses[estimator_name].append( loss )
+                # self._losses[estimator_name].append( loss )
             elif self._metric is 'mean_squared_error':
                 loss = mean_squared_error(true_labels, estimator_predictions)
-                self._losses[estimator_name].append(loss)   
+                # self._losses[estimator_name].append(loss)   
             else:
                 raise ValueError(f'metric {self._metric} is not supported.')
             
+            self._errors_per_estimator[estimator_name].append(loss)
+
+            #evaluate errors per dataset per estimator
+            errors = (estimator_predictions - true_labels)**2
+            n = len(errors)
+
+            std_score = np.std(errors)/np.sqrt(n) 
+            sum_score = np.sum(errors)
+            avg_score = sum_score/n
+            self._errors_per_dataset_per_estimator[dataset_name].append([estimator_name, avg_score, std_score])
     def evaluate_per_dataset(self, 
                             predictions, 
                             true_labels, 
@@ -78,11 +90,16 @@ class Losses(object):
         """
         When the Losses class is instantiated a dictionary that holds all losses is created and appended every time the evaluate() method is run. This method returns this dictionary with the losses.
 
-        :rtype: dictionary
+        Returns
+        -------
+            errors_per_estimator (dictionary), errors_per_dataset_per_estimator (dictionary), errors_per_dataset_per_estimator_df (pandas DataFrame): Returns dictionaries with the errors achieved by each estimator and errors achieved by each estimator on each of the datasets.  ``errors_per_dataset_per_estimator`` and ``errors_per_dataset_per_estimator_df`` return the same results but the first object is a dictionary and the second one a pandas DataFrame. ``errors_per_dataset_per_estimator`` and ``errors_per_dataset_per_estimator_df`` contain both the mean error and deviation.
         """ 
-        return self._losses
+        # return self._losses
+        return (self._errors_per_estimator, 
+                self._errors_per_dataset_per_estimator, 
+                self._losses_to_dataframe(self._errors_per_dataset_per_estimator))
 
-    def losses_to_dataframe(self, losses):
+    def _losses_to_dataframe(self, losses):
         """
         Reformats the output of the dictionary returned by the :func:`mleap.analyze_results.losses.Losses.get_losses` to a pandas DataFrame. This method can only be applied to reformat the output produced by :func:`mleap.analyze_results.Losses.evaluate_per_dataset`.
 
@@ -96,13 +113,13 @@ class Losses(object):
         #unpivot the data
         df = df.melt(var_name='dts', value_name='values')
         df['classifier'] = df.apply(lambda raw: raw.values[1][0], axis=1)
-        df['score'] = df.apply(lambda raw: raw.values[1][1], axis=1)
+        df['loss'] = df.apply(lambda raw: raw.values[1][1], axis=1)
         df['std'] = df.apply(lambda raw: raw.values[1][2], axis=1)
         df = df.drop('values', axis=1)
         #create multilevel index dataframe
         dts = df['dts'].unique()
         estimators_list = df['classifier'].unique()
-        score = df['score'].values
+        score = df['loss'].values
         std = df['std'].values
         
         df = df.drop('dts', axis=1)
