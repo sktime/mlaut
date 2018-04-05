@@ -1,7 +1,7 @@
-from mleap.shared.static_variables import T_TEST_FILENAME,FRIEDMAN_TEST_FILENAME, WILCOXON_TEST_FILENAME, SIGN_TEST_FILENAME, BONFERRONI_TEST_FILENAME
-from mleap.shared.static_variables import RESULTS_DIR, T_TEST_DATASET, SIGN_TEST_DATASET, BONFERRONI_CORRECTION_DATASET, WILCOXON_DATASET, FRIEDMAN_DATASET
+from mlaut.shared.static_variables import T_TEST_FILENAME,FRIEDMAN_TEST_FILENAME, WILCOXON_TEST_FILENAME, SIGN_TEST_FILENAME, BONFERRONI_TEST_FILENAME
+from mlaut.shared.static_variables import RESULTS_DIR, T_TEST_DATASET, SIGN_TEST_DATASET, BONFERRONI_CORRECTION_DATASET, WILCOXON_DATASET, FRIEDMAN_DATASET
 
-from mleap.shared.static_variables import (DATA_DIR, 
+from mlaut.shared.static_variables import (DATA_DIR, 
                                            HDF5_DATA_FILENAME, 
                                            EXPERIMENTS_PREDICTIONS_GROUP,
                                            SPLIT_DTS_GROUP,
@@ -10,8 +10,8 @@ from mleap.shared.static_variables import (DATA_DIR,
 import pandas as pd
 import numpy as np
 import itertools
-from mleap.shared.files_io import FilesIO
-from mleap.data.data import Data
+from mlaut.shared.files_io import FilesIO
+from mlaut.data.data import Data
 
 from scipy import stats
 from scipy.stats import ttest_ind
@@ -21,16 +21,16 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 from sklearn.metrics import accuracy_score, mean_squared_error
 import scikit_posthocs as sp
 
-from mleap.analyze_results.losses import Losses
+from mlaut.analyze_results.losses import Losses
 class AnalyseResults(object):
     """
     Analyze results of machine learning experiments.
 
-    :type hdf5_input_io: :func:`~mleap.shared.files_io.FilesIO`
-    :param hdf5_input_io: Instance of :func:`~mleap.shared.files_io.FilesIO` class.
+    :type hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
+    :param hdf5_input_io: Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
 
-    :type hdf5_input_io: :func:`~mleap.shared.files_io.FilesIO`
-    :param hdf5_input_io: Instance of :func:`~mleap.shared.files_io.FilesIO` class.
+    :type hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
+    :param hdf5_input_io: Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
 
     :type input_h5_original_datasets_group: string
     :param input_h5_original_datasets_group: location in HDF5 database where the original datasets are stored.

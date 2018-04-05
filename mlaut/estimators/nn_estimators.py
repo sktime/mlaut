@@ -1,15 +1,15 @@
-from mleap.estimators.mleap_estimator import properties
-from mleap.estimators.mleap_estimator import MleapEstimator
+from mlaut.estimators.mlaut_estimator import properties
+from mlaut.estimators.mlaut_estimator import mlautEstimator
 
-from mleap.shared.files_io import DiskOperations
-from mleap.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
+from mlaut.shared.files_io import DiskOperations
+from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       ENSEMBLE_METHODS, 
                                       SVM,
                                       NEURAL_NETWORKS,
                                       NAIVE_BAYES,
                                       REGRESSION, 
                                       CLASSIFICATION)
-from mleap.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
+from mlaut.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 
 from tensorflow.python.keras.models import Sequential, load_model
 from tensorflow.python.keras.layers import Dense, Activation, Dropout
@@ -23,7 +23,7 @@ import numpy as np
 @properties(estimator_family=[NEURAL_NETWORKS], 
             tasks=[CLASSIFICATION], 
             name='NeuralNetworkDeepClassifier')
-class Deep_NN_Classifier(MleapEstimator):
+class Deep_NN_Classifier(mlautEstimator):
     """
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
@@ -130,7 +130,7 @@ class Deep_NN_Classifier(MleapEstimator):
 @properties(estimator_family=[NEURAL_NETWORKS], 
             tasks=[REGRESSION], 
             name='NeuralNetworkDeepRegressor')
-class Deep_NN_Regressor(MleapEstimator):
+class Deep_NN_Regressor(mlautEstimator):
     """
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """

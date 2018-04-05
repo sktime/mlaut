@@ -1,5 +1,5 @@
-from mleap.analyze_results import AnalyseResults
-from mleap.data import Data
+from mlaut.analyze_results import AnalyseResults
+from mlaut.data import Data
 
 import pickle
 

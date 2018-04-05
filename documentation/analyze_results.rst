@@ -8,7 +8,7 @@ This modules contains methods for analyzing the results produced by the trained 
 analyze_results
 ----------------
 
-.. automodule:: mleap.analyze_results.analyze_results
+.. automodule:: mlaut.analyze_results.analyze_results
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,7 +16,7 @@ analyze_results
 losses
 ------
 
-.. automodule:: mleap.analyze_results.losses
+.. automodule:: mlaut.analyze_results.losses
     :members:
     :undoc-members:
     :show-inheritance:

@@ -1,15 +1,15 @@
-from mleap.estimators.mleap_estimator import properties
-from mleap.estimators.mleap_estimator import MleapEstimator
+from mlaut.estimators.mlaut_estimator import properties
+from mlaut.estimators.mlaut_estimator import mlautEstimator
 
-from mleap.shared.files_io import DiskOperations
-from mleap.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
+from mlaut.shared.files_io import DiskOperations
+from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       ENSEMBLE_METHODS, 
                                       SVM,
                                       NEURAL_NETWORKS,
                                       NAIVE_BAYES,
                                       REGRESSION, 
                                       CLASSIFICATION)
-from mleap.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
+from mlaut.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 
 from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import BernoulliNB
@@ -17,7 +17,7 @@ from sklearn.naive_bayes import BernoulliNB
 @properties(estimator_family=[NAIVE_BAYES], 
             tasks=[CLASSIFICATION], 
             name='GaussianNaiveBayes')
-class Gaussian_Naive_Bayes(MleapEstimator):
+class Gaussian_Naive_Bayes(mlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html>`_.
     """
@@ -41,7 +41,7 @@ class Gaussian_Naive_Bayes(MleapEstimator):
         Parameters
         ----------
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -53,7 +53,7 @@ class Gaussian_Naive_Bayes(MleapEstimator):
 @properties(estimator_family=[NAIVE_BAYES], 
             tasks=[CLASSIFICATION], 
             name='BernoulliNaiveBayes')
-class Bernoulli_Naive_Bayes(MleapEstimator):
+class Bernoulli_Naive_Bayes(mlautEstimator):
     """
     Wrapper for `sklearn Bernoulli Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html>`_.
     """
@@ -79,7 +79,7 @@ class Bernoulli_Naive_Bayes(MleapEstimator):
         Parameters
         ----------
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------

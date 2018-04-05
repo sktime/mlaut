@@ -1,6 +1,6 @@
-from mleap.data import Data
-from mleap.estimators.estimators import instantiate_default_estimators
-from mleap.experiments import Orchestrator
+from mlaut.data import Data
+from mlaut.estimators.estimators import instantiate_default_estimators
+from mlaut.experiments import Orchestrator
 
 
 if __name__ == "__main__":

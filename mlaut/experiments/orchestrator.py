@@ -1,4 +1,4 @@
-from mleap.shared.static_variables import (X_TRAIN_DIR, 
+from mlaut.shared.static_variables import (X_TRAIN_DIR, 
                                        X_TEST_DIR, 
                                        Y_TRAIN_DIR, 
                                        Y_TEST_DIR, 
@@ -9,24 +9,24 @@ from mleap.shared.static_variables import (X_TRAIN_DIR,
                                        LOG_ERROR_FILE, set_logging_defaults)
 import sys
 import os
-from mleap.shared.files_io import FilesIO
-#from mleap.experiments.experiments import Experiments
-from mleap.data import Data
+from mlaut.shared.files_io import FilesIO
+#from mlaut.experiments.experiments import Experiments
+from mlaut.data import Data
 import numpy as np
 import logging
 from datetime import datetime
 import pandas as pd
-from mleap.shared.files_io import DiskOperations
+from mlaut.shared.files_io import DiskOperations
 
 class Orchestrator:
     """
     Orchestrates the sequencing of running the machine learning experiments.
 
-    :type hdf5_input_io: :func:`~mleap.shared.files_io.FilesIO`
-    :param hdf5_input_io: instance of :func:`~mleap.shared.files_io.FilesIO` with reference to the input file
+    :type hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
+    :param hdf5_input_io: instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the input file
 
-    :type hdf5_output_io: :func:`~mleap.shared.files_io.FilesIO`
-    :param hdf5_output_io: instance of :func:`~mleap.shared.files_io.FilesIO` with reference to the output file
+    :type hdf5_output_io: :func:`~mlaut.shared.files_io.FilesIO`
+    :param hdf5_output_io: instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the output file
 
     :type dts_names: array of strings
     :param dts_names: array with the names of the datasets on which experiments will be run.
@@ -70,7 +70,7 @@ class Orchestrator:
 
         The class uses helper methods in the experiments class to avoid too many nested loops.
 
-        :type modelling_strategies: array of :ref:`mleap_estimator-label` objects
+        :type modelling_strategies: array of :ref:`mlaut_estimator-label` objects
         :param modelling_strategies: array of estimators that will be used for training
         """ 
 
@@ -147,8 +147,8 @@ class Orchestrator:
         :type trained_models_dir: string
         :param trained_models_dir: directory where the trained models are saved
 
-        :type estimators: array of :ref:`mleap_estimator-label` objects
-        :param estimators: :ref:`mleap_estimator-label` objects. The trained models are set as a property to the object.
+        :type estimators: array of :ref:`mlaut_estimator-label` objects
+        :param estimators: :ref:`mlaut_estimator-label` objects. The trained models are set as a property to the object.
         """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties()['name'] for estimator in estimators]

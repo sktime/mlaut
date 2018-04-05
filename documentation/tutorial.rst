@@ -1,11 +1,11 @@
 Tutorial
 ========
 
-The code below will help you get started with mleap.
+The code below will help you get started with mlaut.
 
 The following Jupyter Notebook contains the code used below.
 
-:download:`mleap.ipynb <../mleap.ipynb>`.
+:download:`mlaut.ipynb <../mlaut.ipynb>`.
 
 
 Data Preprocessing and Estimator Training Phase
@@ -57,7 +57,7 @@ Once the datasets are stored locally we put them in an HDF5 database.
     :language: python
     :lines: 37
 
-At this point mleap will train all instantiated estimators on all datasets that were passed to the constructor. The trained models will be saved on the disk.
+At this point mlaut will train all instantiated estimators on all datasets that were passed to the constructor. The trained models will be saved on the disk.
 
 After this process is finished we can make predictions on the test sets using the trained estimators. in the previous step.
 
@@ -75,8 +75,8 @@ After the training phase is completed the user can use the predictions on the te
 
 The starting point is to calculate the prediction error achieved on the test sets. Two main methods are available for this purpose:
 
-* :meth:`mleap.analyze_results.analyze_results.calculate_error_all_datasets`. This method calculates the error achieved by each estimator on each of the datasets and returns the results in a dictionary format. 
-* :meth:`mleap.analyze_results.analyze_results.calculate_error_per_dataset`. This method calculates the prediction error for each estimator on each datapoint for each dataset.
+* :meth:`mlaut.analyze_results.analyze_results.calculate_error_all_datasets`. This method calculates the error achieved by each estimator on each of the datasets and returns the results in a dictionary format. 
+* :meth:`mlaut.analyze_results.analyze_results.calculate_error_per_dataset`. This method calculates the prediction error for each estimator on each datapoint for each dataset.
 
 .. literalinclude:: ../examples/basic.py
     :language: python
@@ -84,18 +84,18 @@ The starting point is to calculate the prediction error achieved on the test set
 
 The output of these two functions can be used as an input to the flowing methods tests:
 
-* :meth:`mleap.analyze_results.analyze_results.calculate_average_std`
-* :meth:`mleap.analyze_results.analyze_results.cohens_d`
-* :meth:`mleap.analyze_results.analyze_results.t_test`
-* :meth:`mleap.analyze_results.analyze_results.sign_test`
-* :meth:`mleap.analyze_results.analyze_results.t_test_with_bonferroni_correction`
-* :meth:`mleap.analyze_results.analyze_results.wilcoxon_test`
-* :meth:`mleap.analyze_results.analyze_results.friedman_test`
-* :meth:`mleap.analyze_results.analyze_results.nemenyi`
+* :meth:`mlaut.analyze_results.analyze_results.calculate_average_std`
+* :meth:`mlaut.analyze_results.analyze_results.cohens_d`
+* :meth:`mlaut.analyze_results.analyze_results.t_test`
+* :meth:`mlaut.analyze_results.analyze_results.sign_test`
+* :meth:`mlaut.analyze_results.analyze_results.t_test_with_bonferroni_correction`
+* :meth:`mlaut.analyze_results.analyze_results.wilcoxon_test`
+* :meth:`mlaut.analyze_results.analyze_results.friedman_test`
+* :meth:`mlaut.analyze_results.analyze_results.nemenyi`
 
 Please refer to :ref:`analyze_results` for additional information about their use.
 
 Defining Estimators
 -------------------
 
-``mleap`` comes with a number of built-in estimators. However, the user also has the flexibility to define its own by inehriting from the :ref:`mleap_estimator-label` class. The user should at a minimum implement the ``save()`` and ``build()`` methods. Please refer to one of the implemented :ref:`estimators` for additional information.
+``mlaut`` comes with a number of built-in estimators. However, the user also has the flexibility to define its own by inehriting from the :ref:`mlaut_estimator-label` class. The user should at a minimum implement the ``save()`` and ``build()`` methods. Please refer to one of the implemented :ref:`estimators` for additional information.

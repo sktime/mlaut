@@ -1,10 +1,10 @@
 import sys
-sys.path.append('/media/viktor/Data/PhD/mleap/')
+sys.path.append('/media/viktor/Data/PhD/mlaut/')
 
-from mleap.data import Data
-from mleap.estimators.estimators import instantiate_default_estimators
-from mleap.experiments import Orchestrator
-from mleap.analyze_results import AnalyseResults
+from mlaut.data import Data
+from mlaut.estimators.estimators import instantiate_default_estimators
+from mlaut.experiments import Orchestrator
+from mlaut.analyze_results import AnalyseResults
 from download_delgado.delgado_datasets import DownloadAndConvertDelgadoDatasets
 
 

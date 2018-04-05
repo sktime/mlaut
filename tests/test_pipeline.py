@@ -1,10 +1,10 @@
-#sys.path.append('/media/viktor/Data/PhD/mleap')
+#sys.path.append('/media/viktor/Data/PhD/mlaut')
 from sklearn import datasets
-from mleap.data import Data
-from mleap.data.estimators import instantiate_default_estimators
-from mleap.experiments import Orchestrator
-from mleap.analyze_results import AnalyseResults
-from mleap.shared import DiskOperations
+from mlaut.data import Data
+from mlaut.data.estimators import instantiate_default_estimators
+from mlaut.experiments import Orchestrator
+from mlaut.analyze_results import AnalyseResults
+from mlaut.shared import DiskOperations
 import pandas as pd
 import os
 import pytest

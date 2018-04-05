@@ -1,11 +1,11 @@
 
 from sklearn import cluster
 from sklearn.model_selection import GridSearchCV
-from mleap.estimators.mleap_estimator import properties
-from mleap.estimators.mleap_estimator import MleapEstimator
+from mlaut.estimators.mlaut_estimator import properties
+from mlaut.estimators.mlaut_estimator import mlautEstimator
 
-from mleap.shared.files_io import DiskOperations
-from mleap.shared.static_variables import (CLUSTER, 
+from mlaut.shared.files_io import DiskOperations
+from mlaut.shared.static_variables import (CLUSTER, 
                                            CLASSIFICATION,
                                            PICKLE_EXTENTION, 
                                            HDF5_EXTENTION)
@@ -15,7 +15,7 @@ from mleap.shared.static_variables import (CLUSTER,
 @properties(estimator_family=[CLUSTER], 
             tasks=[CLASSIFICATION], 
             name='K_Means')
-class K_Means(MleapEstimator):
+class K_Means(mlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
     """

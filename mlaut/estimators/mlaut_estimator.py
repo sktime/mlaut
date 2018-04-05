@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from mleap.shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
+from mlaut.shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 import pickle
-from mleap.shared.static_variables import PICKLE_EXTENTION
+from mlaut.shared.static_variables import PICKLE_EXTENTION
 import wrapt
-class MleapEstimator(ABC):
+class mlautEstimator(ABC):
     """
-    Abstact base class that all mleap estimators should inherit from.
+    Abstact base class that all mlaut estimators should inherit from.
     """
     def __init__(self, 
                 verbose=0, 
@@ -84,7 +84,7 @@ class MleapEstimator(ABC):
 
 class properties(object):
     """
-    Decorator class used for adding properties to mleap estimator classes. The properties that all mleap estimator objects must have are: estimator family, task (classification, regression), name of estimator. 
+    Decorator class used for adding properties to mlaut estimator classes. The properties that all mlaut estimator objects must have are: estimator family, task (classification, regression), name of estimator. 
     """
     def __init__(self, estimator_family, tasks, name):
         """
@@ -103,7 +103,7 @@ class properties(object):
 
     def _properties(self):
         """
-        Method attached by the decorator to the mleap estimator object.
+        Method attached by the decorator to the mlaut estimator object.
         :rtype: `dictionary`
 
         """            

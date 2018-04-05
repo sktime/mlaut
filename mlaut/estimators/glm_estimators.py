@@ -1,11 +1,11 @@
-from mleap.estimators.mleap_estimator import properties
-from mleap.estimators.mleap_estimator import MleapEstimator
+from mlaut.estimators.mlaut_estimator import properties
+from mlaut.estimators.mlaut_estimator import mlautEstimator
 
-from mleap.shared.files_io import DiskOperations
-from mleap.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
+from mlaut.shared.files_io import DiskOperations
+from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       REGRESSION, 
                                       CLASSIFICATION)
-from mleap.shared.static_variables import PICKLE_EXTENTION
+from mlaut.shared.static_variables import PICKLE_EXTENTION
 
 from sklearn import linear_model
 from sklearn.model_selection import GridSearchCV
@@ -14,7 +14,7 @@ from sklearn.model_selection import GridSearchCV
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[REGRESSION], 
             name='RidgeRegression')
-class Ridge_Regression(MleapEstimator):
+class Ridge_Regression(mlautEstimator):
     """
     Wrapper for `sklearn Ridge Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html>`_.
     """
@@ -29,7 +29,7 @@ class Ridge_Regression(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -57,7 +57,7 @@ class Ridge_Regression(MleapEstimator):
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[REGRESSION], 
             name='Lasso')
-class Lasso(MleapEstimator):
+class Lasso(mlautEstimator):
     """
     Wrapper for `sklearn Lasso <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html>`_.
     """
@@ -72,7 +72,7 @@ class Lasso(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -97,7 +97,7 @@ class Lasso(MleapEstimator):
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[REGRESSION], 
             name='LassoLars')
-class Lasso_Lars(MleapEstimator):
+class Lasso_Lars(mlautEstimator):
     """
     Wrapper for `sklearn Lasso Lars <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoLars.html>`_.
     """
@@ -113,7 +113,7 @@ class Lasso_Lars(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -139,7 +139,7 @@ class Lasso_Lars(MleapEstimator):
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[CLASSIFICATION,REGRESSION], 
             name='LogisticRegression')
-class Logistic_Regression(MleapEstimator):
+class Logistic_Regression(mlautEstimator):
     """
     Wrapper for `sklearn Logistic Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`_.
     """
@@ -153,7 +153,7 @@ class Logistic_Regression(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -188,7 +188,7 @@ class Logistic_Regression(MleapEstimator):
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS],
             tasks=[CLASSIFICATION],
             name='PassiveAggressiveClassifier')
-class Passive_Aggressive_Classifier(MleapEstimator):
+class Passive_Aggressive_Classifier(mlautEstimator):
     """
     Wrapper for `sklearn Passive Aggressive Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.PassiveAggressiveClassifier.html>`_.
     """
@@ -202,7 +202,7 @@ class Passive_Aggressive_Classifier(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------

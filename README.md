@@ -1,6 +1,6 @@
-# MLEAP (Machine Learning Experiments Automation Package)
+# mlaut (Machine Learning Experiments Automation Package)
 
-MLEAP automates running machine learning experiments. 
+mlaut automates running machine learning experiments. 
 
 ### Installing
 
@@ -17,10 +17,10 @@ source ./py36/bin/activate
 pip install -r requirements.txt
 ```
 
-### Using mleap
+### Using mlaut
 
-Check mleap jupyter notebook for an example of using the package
+Check mlaut jupyter notebook for an example of using the package
 
 ```
-jupyter notebook mleap.ipynb
+jupyter notebook mlaut.ipynb
 ```

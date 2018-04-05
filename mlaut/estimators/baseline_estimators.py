@@ -1,7 +1,7 @@
-from mleap.estimators.mleap_estimator import properties
-from mleap.estimators.mleap_estimator import MleapEstimator
-from mleap.shared.files_io import DiskOperations
-from mleap.shared.static_variables import(BASELINE,
+from mlaut.estimators.mlaut_estimator import properties
+from mlaut.estimators.mlaut_estimator import mlautEstimator
+from mlaut.shared.files_io import DiskOperations
+from mlaut.shared.static_variables import(BASELINE,
                                       REGRESSION, 
                                       CLASSIFICATION)
 
@@ -10,7 +10,7 @@ from sklearn.dummy import DummyClassifier, DummyRegressor
 @properties(estimator_family=[BASELINE],
             tasks=[REGRESSION],
             name='BaselineRegressor')
-class Baseline_Regressor(MleapEstimator):
+class Baseline_Regressor(mlautEstimator):
     """
     Wrapper for sklearn dummy regressor
     """
@@ -25,7 +25,7 @@ class Baseline_Regressor(MleapEstimator):
         strategy : string
             as per `scikit-learn dummy regressor documentation <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html>`_.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -52,7 +52,7 @@ class Baseline_Regressor(MleapEstimator):
 @properties(estimator_family=[BASELINE],
             tasks=[CLASSIFICATION],
             name='BaselineClassifier')
-class Baseline_Classifier(MleapEstimator):
+class Baseline_Classifier(mlautEstimator):
     """
     Wrapper for sklearn dummy classifier class.
     """
@@ -67,7 +67,7 @@ class Baseline_Classifier(MleapEstimator):
         strategy : string
             Name of strategy of baseline classifier. Default is ``stratified``. See `sklean.dummy.DummyClasifier <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html>`_ for additional information.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------

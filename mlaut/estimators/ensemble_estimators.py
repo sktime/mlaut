@@ -1,10 +1,10 @@
-from mleap.estimators.mleap_estimator import properties
-from mleap.estimators.mleap_estimator import MleapEstimator
+from mlaut.estimators.mlaut_estimator import properties
+from mlaut.estimators.mlaut_estimator import mlautEstimator
 
-from mleap.shared.files_io import DiskOperations
+from mlaut.shared.files_io import DiskOperations
 
 from sklearn.model_selection import GridSearchCV
-from mleap.shared.static_variables import(ENSEMBLE_METHODS, 
+from mlaut.shared.static_variables import(ENSEMBLE_METHODS, 
                                       REGRESSION, 
                                       CLASSIFICATION)
 from sklearn.ensemble import RandomForestClassifier
@@ -17,7 +17,7 @@ from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegress
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[CLASSIFICATION], 
             name='RandomForestClassifier')
-class Random_Forest_Classifier(MleapEstimator):
+class Random_Forest_Classifier(mlautEstimator):
     """
     Wrapper for `sklearn Random Forest Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html>`_.
     """
@@ -32,7 +32,7 @@ class Random_Forest_Classifier(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -71,7 +71,7 @@ class Random_Forest_Classifier(MleapEstimator):
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[REGRESSION], 
             name='RandomForestRegressor')
-class Random_Forest_Regressor(MleapEstimator):
+class Random_Forest_Regressor(mlautEstimator):
     """
     Wrapper for `sklearn Random Forest Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html>`_.
     """
@@ -86,7 +86,7 @@ class Random_Forest_Regressor(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -126,7 +126,7 @@ class Random_Forest_Regressor(MleapEstimator):
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[CLASSIFICATION], 
             name='BaggingClassifier')
-class Bagging_Classifier(MleapEstimator):
+class Bagging_Classifier(mlautEstimator):
     """
     Wrapper for `sklearn Bagging Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html>`_.
     """
@@ -140,7 +140,7 @@ class Bagging_Classifier(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -177,7 +177,7 @@ class Bagging_Classifier(MleapEstimator):
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[REGRESSION], 
             name='BaggingRegressor')
-class Bagging_Regressor(MleapEstimator):
+class Bagging_Regressor(mlautEstimator):
     """
     Wrapper for `sklearn Bagging Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html>`_.
     """
@@ -192,7 +192,7 @@ class Bagging_Regressor(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -230,7 +230,7 @@ class Bagging_Regressor(MleapEstimator):
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[CLASSIFICATION], 
             name='GradientBoostingClassifier')
-class Gradient_Boosting_Classifier(MleapEstimator):
+class Gradient_Boosting_Classifier(mlautEstimator):
     """
     Wrapper for `sklearn Gradient Boosting Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html>`_.
     """
@@ -245,7 +245,7 @@ class Gradient_Boosting_Classifier(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------
@@ -283,7 +283,7 @@ class Gradient_Boosting_Classifier(MleapEstimator):
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[REGRESSION], 
             name='GradientBoostingRegressor')
-class Gradient_Boosting_Regressor(MleapEstimator):
+class Gradient_Boosting_Regressor(mlautEstimator):
     """
     Wrapper for `sklearn Gradient Boosting Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html>`_.
     """
@@ -298,7 +298,7 @@ class Gradient_Boosting_Regressor(MleapEstimator):
         hyperparameters: dictionary
             Dictionary of hyperparameters to be used for tuning the estimator.
         **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mleap.estimators.nn_estimators.Deep_NN_Classifier`.
+            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns
         -------

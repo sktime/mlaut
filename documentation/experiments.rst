@@ -7,7 +7,7 @@ This module orchestrates the process of training the estimators on the datasets.
 
 orchestrator
 ------------
-.. automodule:: mleap.experiments.orchestrator
+.. automodule:: mlaut.experiments.orchestrator
     :members: 
     :undoc-members:
     :show-inheritance:

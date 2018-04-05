@@ -11,7 +11,7 @@ This module provides functionality that is used in the other modules. It contain
 files_io
 ----------------
 
-.. automodule:: mleap.shared.files_io
+.. automodule:: mlaut.shared.files_io
     :members:
     :undoc-members:
     :show-inheritance:

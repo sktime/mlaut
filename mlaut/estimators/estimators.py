@@ -1,27 +1,27 @@
 import itertools
 
-from mleap.estimators.glm_estimators import (Ridge_Regression, 
+from mlaut.estimators.glm_estimators import (Ridge_Regression, 
                                        Lasso, 
                                        Lasso_Lars, 
                                        Logistic_Regression, 
                                        Passive_Aggressive_Classifier)
-from mleap.estimators.nn_estimators import  (Deep_NN_Classifier, 
+from mlaut.estimators.nn_estimators import  (Deep_NN_Classifier, 
                                        Deep_NN_Regressor)
-from mleap.estimators.bayes_estimators import Gaussian_Naive_Bayes, Bernoulli_Naive_Bayes
-from mleap.estimators.ensemble_estimators import (Random_Forest_Classifier,
+from mlaut.estimators.bayes_estimators import Gaussian_Naive_Bayes, Bernoulli_Naive_Bayes
+from mlaut.estimators.ensemble_estimators import (Random_Forest_Classifier,
                                             Random_Forest_Regressor,
                                             Bagging_Classifier,
                                             Bagging_Regressor, 
                                             Gradient_Boosting_Classifier,
                                             Gradient_Boosting_Regressor)
-from mleap.estimators.svm_estimators import SVC_mleap
-from mleap.estimators.baseline_estimators import (Baseline_Regressor,
+from mlaut.estimators.svm_estimators import SVC_mlaut
+from mlaut.estimators.baseline_estimators import (Baseline_Regressor,
                                             Baseline_Classifier)
-from mleap.estimators.cluster_estimators import K_Means
+from mlaut.estimators.cluster_estimators import K_Means
 
 """
 Each estimator is contained it its own class.
-Each estimator inherits from the abstract class MleapEstimator.
+Each estimator inherits from the abstract class mlautEstimator.
 Each estimator must implement the following methods:
     1. get_estimator_name
     2. build
@@ -31,7 +31,7 @@ Each estimator is built for a specific dataset. This is particularly necessary
 for Neural Network classification models where the number of nodes in the last
 layer depends on the number of classes.
 
-The following methods are implemented in the MleapEstimator Abstract class and 
+The following methods are implemented in the mlautEstimator Abstract class and 
 are inherited by all estimators:
     1. __init__
     2. set_trained_model
@@ -71,7 +71,7 @@ def instantiate_default_estimators(estimators, verbose=0):
         Bagging_Regressor,
         Gradient_Boosting_Classifier,
         Gradient_Boosting_Regressor,
-        SVC_mleap,
+        SVC_mlaut,
         Gaussian_Naive_Bayes,
         Bernoulli_Naive_Bayes,
         Deep_NN_Classifier,
@@ -92,14 +92,14 @@ def instantiate_default_estimators(estimators, verbose=0):
         perms = itertools.product(estimators, all_estimators_array)
         for p in perms:
             input_estimator = p[0]
-            mleap_estimator = p[1]
-            mleap_estimator_prop = mleap_estimator().properties()
+            mlaut_estimator = p[1]
+            mlaut_estimator_prop = mlaut_estimator().properties()
 
-            if input_estimator in mleap_estimator_prop['estimator_family'] or \
-                input_estimator in mleap_estimator_prop['tasks'] or \
-                input_estimator in mleap_estimator_prop['name']:
+            if input_estimator in mlaut_estimator_prop['estimator_family'] or \
+                input_estimator in mlaut_estimator_prop['tasks'] or \
+                input_estimator in mlaut_estimator_prop['name']:
                 
-                estimators_array.append(mleap_estimator(verbose=verbose))
+                estimators_array.append(mlaut_estimator(verbose=verbose))
     if len(estimators_array) > 0:             
         return estimators_array
     else:
