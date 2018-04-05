@@ -5,7 +5,7 @@
 
 Welcome to mlaut's documentation!
 =================================
-Welcome to ``mlaut`` (Machine Learning Experiments Automation Package).
+Welcome to ``mlaut`` (Machine Learning Automation Toolbox).
 
 
 
