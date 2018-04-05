@@ -1,4 +1,4 @@
-# mlaut (Machine Learning Experiments Automation Package)
+# mlaut (Machine Learning Automation Toolbox)
 
 mlaut automates running machine learning experiments. 
 
