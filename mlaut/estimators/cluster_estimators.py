@@ -21,7 +21,7 @@ class K_Means(mlautEstimator):
     """
     def __init__(self):
         super().__init__()
-        _hyperparameters = {
+        self._hyperparameters = {
                                 'n_init': [10], 
                                 'max_iter': [300],
                                 'tol':[1e-4],
