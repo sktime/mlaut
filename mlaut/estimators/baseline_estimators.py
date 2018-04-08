@@ -14,7 +14,9 @@ class Baseline_Regressor(mlautEstimator):
     """
     Wrapper for sklearn dummy regressor
     """
-
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = None
 
     def build(self, strategy='median', **kwargs):
         """
@@ -56,6 +58,9 @@ class Baseline_Classifier(mlautEstimator):
     """
     Wrapper for sklearn dummy classifier class.
     """
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = None
 
 
     def build(self, strategy='stratified', **kwargs):

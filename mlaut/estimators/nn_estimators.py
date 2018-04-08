@@ -27,7 +27,10 @@ class Deep_NN_Classifier(mlautEstimator):
     """
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
-
+    def __init__(self):
+        super().__init__()
+        self.hyperparameters = {'epochs': [50,100], 'batch_size': 1}
+    
     def _nn_deep_classifier_model(self, num_classes, 
                                   input_dim,
                                   loss='mean_squared_error',
@@ -70,24 +73,27 @@ class Deep_NN_Classifier(mlautEstimator):
         :param kwargs: At a minimum the user must specify ``input_dim``, ``num_samples`` and ``num_classes``.
         :rtype: `keras object`
         """
+
+
         if 'input_dim' not in kwargs:
-            raise ValueError('You need to specify input dimentions when building the model.')
+            raise ValueError('You need to specify input dimensions when building the model.')
         if 'num_samples' not in kwargs:
             raise ValueError('You need to specify num_samples when building the keras model.')
         if 'num_classes' not in kwargs:
             raise ValueError('You need to specify num_classes when building the keras model.')
-        
+
         input_dim=kwargs['input_dim']
         num_samples = kwargs['num_samples']
         num_classes = kwargs['num_classes']
 
+        #TODO implement cross validation and hyperameters
+        # https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
         model = KerasClassifier(build_fn=self._nn_deep_classifier_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim,
                                 verbose=self._verbose,
                                 loss=loss)
-        if hyperparameters is None:
-            hyperparameters = {'epochs': [50,100], 'batch_size': [num_samples]}
+
         return model
 
     # def predict(self, X):

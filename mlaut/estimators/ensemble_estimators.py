@@ -22,7 +22,13 @@ class Random_Forest_Classifier(mlautEstimator):
     Wrapper for `sklearn Random Forest Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html>`_.
     """
 
-
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = {
+                    'n_estimators': [10, 20, 30],
+                    'max_features': ['auto', 'sqrt','log2', None],
+                    'max_depth': [5, 15, None]
+                }
     def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
@@ -40,14 +46,11 @@ class Random_Forest_Classifier(mlautEstimator):
             Instantiated estimator object.
 
         """
-        if hyperparameters is None:
-            hyperparameters = {
-                'n_estimators': [10, 20, 30],
-                'max_features': ['auto', 'sqrt','log2', None],
-                'max_depth': [5, 15, None]
-            }
+        if hyperparameters is not None:
+            self._hyperparameters = hyperparameters
+
         return GridSearchCV(RandomForestClassifier(), 
-                            hyperparameters, 
+                            self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
@@ -75,7 +78,13 @@ class Random_Forest_Regressor(mlautEstimator):
     """
     Wrapper for `sklearn Random Forest Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html>`_.
     """
-
+        def __init__(self):
+        super().__init__()
+        self._hyperparameters = {
+                'n_estimators': [10, 20, 30],
+                'max_features': ['auto', 'sqrt','log2', None],
+                'max_depth': [5, 15, None]
+            }
 
     def build(self, hyperparameters=None, **kwargs):
         """
@@ -94,14 +103,11 @@ class Random_Forest_Regressor(mlautEstimator):
             Instantiated estimator object.
 
         """
-        if hyperparameters is None:
-            hyperparameters = {
-                'n_estimators': [10, 20, 30],
-                'max_features': ['auto', 'sqrt','log2', None],
-                'max_depth': [5, 15, None]
-            }
+        if hyperparameters is not None:
+            self._hyperparameters = hyperparameters 
+            
         return GridSearchCV(RandomForestRegressor(), 
-                            hyperparameters, 
+                            self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
@@ -130,7 +136,11 @@ class Bagging_Classifier(mlautEstimator):
     """
     Wrapper for `sklearn Bagging Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html>`_.
     """
-
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = {
+                'n_estimators': [10, 100, 1000, 2000]
+            }
     def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
@@ -147,13 +157,12 @@ class Bagging_Classifier(mlautEstimator):
         `GridsearchCV object`
             Instantiated estimator object.
         """
-        if hyperparameters is None:
-            hyperparameters = {
-                'n_estimators': [10, 100, 1000, 2000]
-            }
+        if hyperparameters is not None:
+            self._hyperparameters = hyperparameters 
+
         model = BaggingClassifier(base_estimator=DecisionTreeClassifier())    
         return GridSearchCV(model, 
-                            hyperparameters, 
+                            self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
@@ -181,7 +190,11 @@ class Bagging_Regressor(mlautEstimator):
     """
     Wrapper for `sklearn Bagging Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html>`_.
     """
- 
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = {
+                'n_estimators': [10, 100, 1000, 2000]
+            }
 
     def build(self, hyperparameters=None, **kwargs):
         """
@@ -199,13 +212,12 @@ class Bagging_Regressor(mlautEstimator):
         `GridSearchCV` object
             Instantiated estimator object.
         """
-        if hyperparameters is None:
-            hyperparameters = {
-                'n_estimators': [10, 100, 1000, 2000]
-            }
+        if hyperparameters is not None:
+            self._hyperparameters = hyperparameters 
+
         model = BaggingRegressor(base_estimator=DecisionTreeClassifier())
         return GridSearchCV(model, 
-                            hyperparameters, 
+                            self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
@@ -234,7 +246,12 @@ class Gradient_Boosting_Classifier(mlautEstimator):
     """
     Wrapper for `sklearn Gradient Boosting Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html>`_.
     """
-  
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = {
+                'n_estimators': [10, 100, 1000, 2000],
+                'max_depth':[10,100]
+            }
 
     def build(self, hyperparameters=None, **kwargs):
         """
@@ -253,13 +270,11 @@ class Gradient_Boosting_Classifier(mlautEstimator):
             Instantiated estimator object.
 
         """
-        if hyperparameters is None:
-            hyperparameters = {
-                'n_estimators': [10, 100, 1000, 2000],
-                'max_depth':[10,100]
-            }
+        if hyperparameters is not None:
+            self._hyperparameters = hyperparameters
+
         return GridSearchCV(GradientBoostingClassifier(), 
-                            hyperparameters, 
+                            self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
@@ -288,7 +303,12 @@ class Gradient_Boosting_Regressor(mlautEstimator):
     Wrapper for `sklearn Gradient Boosting Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html>`_.
     """
 
-
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = {
+                'n_estimators': [10, 100, 500],
+                'max_depth':[10,100]
+            }
     def build(self, hyperparameters=None, **kwargs):
         """
         builds and returns estimator
@@ -306,13 +326,10 @@ class Gradient_Boosting_Regressor(mlautEstimator):
             Instantiated estimator object.
 
         """
-        if hyperparameters is None:
-            hyperparameters = {
-                'n_estimators': [10, 100, 500],
-                'max_depth':[10,100]
-            }
+        if hyperparameters is not None:
+            self._hyperparameters = hyperparameters 
         return GridSearchCV(GradientBoostingRegressor(), 
-                            hyperparameters, 
+                            self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)

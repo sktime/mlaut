@@ -21,6 +21,10 @@ class Gaussian_Naive_Bayes(mlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html>`_.
     """
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = None
+
     def save(self, dataset_name):
         """
         Saves estimator on disk.
@@ -57,6 +61,9 @@ class Bernoulli_Naive_Bayes(mlautEstimator):
     """
     Wrapper for `sklearn Bernoulli Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html>`_.
     """
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = None
     
 
     def save(self, dataset_name):

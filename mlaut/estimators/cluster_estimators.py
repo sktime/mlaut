@@ -19,6 +19,14 @@ class K_Means(mlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
     """
+    def __init__(self):
+        super().__init__()
+        _hyperparameters = {
+                                'n_init': [10], 
+                                'max_iter': [300],
+                                'tol':[1e-4],
+                                'n_jobs':[1] #parallelization done on GridSearchCV level
+                        }
     def save(self, dataset_name):
         """
         Saves estimator on disk.
@@ -46,20 +54,15 @@ class K_Means(mlautEstimator):
         -------
             KMeans: `sklearn object`
         """
-        input_dim=kwargs['input_dim']
-        num_samples = kwargs['num_samples']
+        # input_dim=kwargs['input_dim']
+        # num_samples = kwargs['num_samples']
         num_classes = kwargs['num_classes']
         k_means = cluster.KMeans(n_clusters=num_classes)
         
-        if hyperparameters is None:
-            hyperparameters = {
-                            'n_init': [10], 
-                            'max_iter': [300],
-                            'tol':[1e-4],
-                            'n_jobs':[1] #parallelization done on GridSearchCV level
-                        }
+        if hyperparameters is not None:
+            self._hyperparameters = hyperparameters
         return GridSearchCV(k_means, 
-                            hyperparameters, 
+                            self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)

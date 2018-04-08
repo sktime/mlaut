@@ -42,6 +42,23 @@ class mlautEstimator(ABC):
         Abstract method that needs to be implemented by all estimators.
         Saves the trained model to disk.
         """
+    
+    def get_params(self):
+        """
+        Gets the hyperparaments of the estimator.
+
+        Returns
+        -------
+            hyperparaments(dictionary): Dictionary with the hyperparaments of the estimator
+        """
+        return self._hyperparameters
+
+    def _set_params(self, hyperparameters):
+        """
+        Private method for setting the hyperparaments of the estimator. It is used by the build(). If the user specified hyperparaments the default values are overwritten. 
+        """
+        self._hyperparameters = hyperparameters
+    
     def load(self, path_to_model):
         """
         Loads trained estimator from disk.
