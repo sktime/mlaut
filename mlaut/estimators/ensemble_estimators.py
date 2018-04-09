@@ -29,7 +29,7 @@ class Random_Forest_Classifier(mlautEstimator):
                     'max_features': ['auto', 'sqrt','log2', None],
                     'max_depth': [5, 15, None]
                 }
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -46,8 +46,6 @@ class Random_Forest_Classifier(mlautEstimator):
             Instantiated estimator object.
 
         """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters
 
         return GridSearchCV(RandomForestClassifier(), 
                             self._hyperparameters, 
@@ -86,7 +84,7 @@ class Random_Forest_Regressor(mlautEstimator):
                 'max_depth': [5, 15, None]
             }
 
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -102,10 +100,7 @@ class Random_Forest_Regressor(mlautEstimator):
         `GridsearchCV object`
             Instantiated estimator object.
 
-        """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters 
-            
+        """           
         return GridSearchCV(RandomForestRegressor(), 
                             self._hyperparameters, 
                             verbose = self._verbose,
@@ -141,7 +136,7 @@ class Bagging_Classifier(mlautEstimator):
         self._hyperparameters = {
                 'n_estimators': [10, 100, 1000, 2000]
             }
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -157,9 +152,6 @@ class Bagging_Classifier(mlautEstimator):
         `GridsearchCV object`
             Instantiated estimator object.
         """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters 
-
         model = BaggingClassifier(base_estimator=DecisionTreeClassifier())    
         return GridSearchCV(model, 
                             self._hyperparameters, 
@@ -196,7 +188,7 @@ class Bagging_Regressor(mlautEstimator):
                 'n_estimators': [10, 100, 1000, 2000]
             }
 
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -212,9 +204,7 @@ class Bagging_Regressor(mlautEstimator):
         `GridSearchCV` object
             Instantiated estimator object.
         """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters 
-
+       
         model = BaggingRegressor(base_estimator=DecisionTreeClassifier())
         return GridSearchCV(model, 
                             self._hyperparameters, 
@@ -253,7 +243,7 @@ class Gradient_Boosting_Classifier(mlautEstimator):
                 'max_depth':[10,100]
             }
 
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -270,9 +260,6 @@ class Gradient_Boosting_Classifier(mlautEstimator):
             Instantiated estimator object.
 
         """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters
-
         return GridSearchCV(GradientBoostingClassifier(), 
                             self._hyperparameters, 
                             verbose = self._verbose,
@@ -309,7 +296,7 @@ class Gradient_Boosting_Regressor(mlautEstimator):
                 'n_estimators': [10, 100, 500],
                 'max_depth':[10,100]
             }
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -326,8 +313,7 @@ class Gradient_Boosting_Regressor(mlautEstimator):
             Instantiated estimator object.
 
         """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters 
+
         return GridSearchCV(GradientBoostingRegressor(), 
                             self._hyperparameters, 
                             verbose = self._verbose,

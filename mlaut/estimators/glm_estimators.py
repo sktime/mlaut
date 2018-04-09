@@ -24,7 +24,7 @@ class Ridge_Regression(mlautEstimator):
             
             } # this is the alpha hyperparam
        
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -40,8 +40,7 @@ class Ridge_Regression(mlautEstimator):
         `sklearn object with built-in cross-validation`
             Instantiated estimator object.
         """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters 
+        
         
         return linear_model.RidgeCV(alphas=hyperparameters['alphas'],
                                 cv=self._num_cv_folds)
@@ -67,7 +66,7 @@ class Lasso(mlautEstimator):
         super().__init__()
         self._hyperparameters = {'alphas':[0.1, 1, 10.0]}
     
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -83,8 +82,7 @@ class Lasso(mlautEstimator):
         `sklearn object with built-in cross-validation`
             Instantiated estimator object.
         """
-        if hyperparameters is not None:
-           self._hyperparameters = hyperparameters
+
         return linear_model.LassoCV(alphas= self._hyperparameters['alphas'],
                                     cv=self._num_cv_folds)
     def save(self, dataset_name):
@@ -110,7 +108,7 @@ class Lasso_Lars(mlautEstimator):
     def __init__(self):
         super().__init__()
         self._hyperparameters = {'max_n_alphas':1000}
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -126,8 +124,7 @@ class Lasso_Lars(mlautEstimator):
         `sklearn object with built-in cross-validation`
             Instantiated estimator object.
         """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters 
+
         return linear_model.LassoLarsCV(max_n_alphas=self._hyperparameters['max_n_alphas'],
                                     cv=self._num_cv_folds)
     def save(self, dataset_name):
@@ -154,7 +151,7 @@ class Logistic_Regression(mlautEstimator):
         self._hyperparameters = {
                 'C': [1e-6, 1] #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
             }
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -171,8 +168,7 @@ class Logistic_Regression(mlautEstimator):
             Instantiated estimator object.
 
         """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters 
+
         return GridSearchCV(linear_model.LogisticRegression(), 
                             self._hyperparameters, 
                             verbose = self._verbose,
@@ -207,7 +203,7 @@ class Passive_Aggressive_Classifier(mlautEstimator):
                 'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6],
                 'max_iter':[1000]
             }
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -223,8 +219,7 @@ class Passive_Aggressive_Classifier(mlautEstimator):
         `GridsearchCV object`
             Instantiated estimator object.
         """
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters
+ 
         return GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
                             self._hyperparameters, 
                             verbose=self._verbose

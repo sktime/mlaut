@@ -41,7 +41,7 @@ class K_Means(mlautEstimator):
         disk_op.save_to_pickle(trained_model=trained_model,
                              model_name=self.properties()['name'],
                              dataset_name=dataset_name)
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         Builds and returns estimator class.
 
@@ -59,8 +59,7 @@ class K_Means(mlautEstimator):
         num_classes = kwargs['num_classes']
         k_means = cluster.KMeans(n_clusters=num_classes)
         
-        if hyperparameters is not None:
-            self._hyperparameters = hyperparameters
+
         return GridSearchCV(k_means, 
                             self._hyperparameters, 
                             verbose = self._verbose,

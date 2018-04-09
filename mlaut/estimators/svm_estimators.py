@@ -16,9 +16,14 @@ class SVC_mlaut(mlautEstimator):
     """
     Wrapper for `sklearn SVC estimator <http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`_.
     """
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = {
+                            'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6], #[1e-6, 1]
+                            'gamma': [1e-3, 1], #[1e-3, 1e-2, 1e-1, 1]
+                        }
 
-
-    def build(self, hyperparameters=None, **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
         
@@ -35,13 +40,9 @@ class SVC_mlaut(mlautEstimator):
             Instantiated estimator object.
         
         """
-        if hyperparameters is None:
-            hyperparameters = {
-                            'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6], #[1e-6, 1]
-                            'gamma': [1e-3, 1], #[1e-3, 1e-2, 1e-1, 1]
-                        }
+
         return GridSearchCV(SVC(), 
-                            hyperparameters, 
+                            self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)

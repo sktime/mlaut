@@ -29,14 +29,14 @@ class Deep_NN_Classifier(mlautEstimator):
     """
     def __init__(self):
         super().__init__()
-        self.hyperparameters = {'epochs': [50,100], 'batch_size': 1}
+        self._hyperparameters = {'epochs': [50,100], 
+                                'batch_size': 0,  
+                                'learning_rate':0.001,
+                                'loss': 'mean_squared_error',
+                                'optimizer': 'Adam',
+                                'metrics' : ['accuracy']}
     
-    def _nn_deep_classifier_model(self, num_classes, 
-                                  input_dim,
-                                  loss='mean_squared_error',
-                                  optimizer = 'Adam',
-                                  learning_rate=0.001,
-                                  metrics = ['accuracy'] ):
+    def _nn_deep_classifier_model(self, num_classes, input_dim):
         nn_deep_model = OverwrittenSequentialClassifier()
         nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
         nn_deep_model.add(Dense(144, activation='relu'))
@@ -44,30 +44,23 @@ class Deep_NN_Classifier(mlautEstimator):
         nn_deep_model.add(Dense(12, activation='relu'))
         nn_deep_model.add(Dense(num_classes, activation='softmax'))
         
-        
+        optimizer = self._hyperparameters['optimizer']
+        metrics = self._hyperparameters['metrics']
+        learning_rate = self._hyperparameters['learning_rate']
+        loss = self._hyperparameters['loss']
         if optimizer is 'Adam':
             model_optimizer = optimizers.Adam(lr=learning_rate)
         
         nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
         return nn_deep_model
     
-    def build(self, 
-              loss='mean_squared_error', 
-              learning_rate=0.001, 
-              hyperparameters = None, 
-              **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
 
         :type loss: string
         :param loss: loss metric as per `keras documentation <https://keras.io/losses/>`_.
-
-        :type learning_rate: float
-        :param learning_rate: learning rate for training the neural network.
-
-        :type hypehyperparameters: dictionary
-        :param hypehyperparameters: dictionary used for tuning the network if Gridsearch is used.
 
         :type kwargs: key-value
         :param kwargs: At a minimum the user must specify ``input_dim``, ``num_samples`` and ``num_classes``.
@@ -85,23 +78,17 @@ class Deep_NN_Classifier(mlautEstimator):
         input_dim=kwargs['input_dim']
         num_samples = kwargs['num_samples']
         num_classes = kwargs['num_classes']
-
+        
         #TODO implement cross validation and hyperameters
         # https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
         model = KerasClassifier(build_fn=self._nn_deep_classifier_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim,
                                 verbose=self._verbose,
-                                loss=loss)
+                                loss=self._hyperparameters['loss'])
 
         return model
 
-    # def predict(self, X):
-    #     estimator = self.get_trained_model()
-    #     predictions = estimator.predict(X)
-    #     predictions = np.array(predictions)
-    #     predictions = predictions.argmax(axis=1)
-    #     return predictions
 
         
     def save(self, dataset_name):
@@ -141,13 +128,16 @@ class Deep_NN_Regressor(mlautEstimator):
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
 
+    def __init__(self):
+        super().__init__()
+        self._hyperparameters = {'loss':'mean_squared_error', 
+                                 'learning_rate':0.001,
+                                 'optimizer': 'Adam',
+                                 'metrics': ['accuracy'],
+                                 'epochs': [50,100], 
+                                 'batch_size': 0 }
 
-    def _nn_deep_classifier_model(self,  
-                                  input_dim,
-                                  loss='mean_squared_error',
-                                  optimizer = 'Adam',
-                                  learning_rate=0.001,
-                                  metrics = ['accuracy'] ):
+    def _nn_deep_classifier_model(self, input_dim):
         nn_deep_model = Sequential()
         nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
         nn_deep_model.add(Dense(144, activation='relu'))
@@ -155,18 +145,14 @@ class Deep_NN_Regressor(mlautEstimator):
         nn_deep_model.add(Dense(12, activation='relu'))
         nn_deep_model.add(Dense(1, activation='sigmoid'))
         
-        
+        optimizer = self._hyperparameters['optimizer']
         if optimizer is 'Adam':
-            model_optimizer  = optimizers.Adam(lr=learning_rate)
+            model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
         
-        nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
+        nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=self._hyperparameters['metrics'])
         return nn_deep_model
     
-    def build(self,
-              loss='mean_squared_error', 
-              learning_rate=0.001, 
-              hyperparameters = None, 
-              **kwargs):
+    def build(self, **kwargs):
         """
         builds and returns estimator
 
@@ -195,10 +181,8 @@ class Deep_NN_Regressor(mlautEstimator):
         model = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
                                 input_dim=input_dim,
                                 verbose=self._verbose,
-                                loss=loss)
-        if hyperparameters is None:
-            
-            hyperparameters = {'epochs': [50,100], 'batch_size': [num_samples]}
+                                loss=self._hyperparameters['loss'])
+
         return model
         # return GridSearchCV(model, 
         #                     hyperparameters, 
@@ -243,21 +227,7 @@ class OverwrittenSequentialClassifier(Sequential):
 
 
 
-    def fit(self, 
-            X_train, 
-            y_train, 
-            batch_size=None, 
-            epochs=1, 
-            verbose=1, 
-            callbacks=None, 
-            validation_split=0.0, 
-            validation_data=None, 
-            shuffle=True, 
-            class_weight=None, 
-            sample_weight=None, 
-            initial_epoch=0, 
-            steps_per_epoch=None, 
-            validation_steps=None):
+    def fit(self, X_train, y_train):
             
         """
         Overrides the default :func:`tensorflow.python.keras.models.fit` and reshapes the `y_train` in one hot array. 
