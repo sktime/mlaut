@@ -34,7 +34,8 @@ class Deep_NN_Classifier(mlautEstimator):
                                 'learning_rate':0.001,
                                 'loss': 'mean_squared_error',
                                 'optimizer': 'Adam',
-                                'metrics' : ['accuracy']}
+                                'metrics' : ['accuracy'],
+                                'verbose':0}
     
     def _nn_deep_classifier_model(self, num_classes, input_dim):
         nn_deep_model = OverwrittenSequentialClassifier()
@@ -81,11 +82,11 @@ class Deep_NN_Classifier(mlautEstimator):
         
         #TODO implement cross validation and hyperameters
         # https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
+        loss = self._hyperparameters['loss']
         model = KerasClassifier(build_fn=self._nn_deep_classifier_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim,
-                                verbose=self._verbose,
-                                loss=self._hyperparameters['loss'])
+                                verbose=self._verbose)
 
         return model
 
@@ -149,7 +150,9 @@ class Deep_NN_Regressor(mlautEstimator):
         if optimizer is 'Adam':
             model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
         
-        nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=self._hyperparameters['metrics'])
+        nn_deep_model.compile(loss=self._hyperparameters['loss'], 
+                              optimizer=model_optimizer, 
+                              metrics=self._hyperparameters['metrics'])
         return nn_deep_model
     
     def build(self, **kwargs):
@@ -180,8 +183,7 @@ class Deep_NN_Regressor(mlautEstimator):
         num_samples = kwargs['num_samples']
         model = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
                                 input_dim=input_dim,
-                                verbose=self._verbose,
-                                loss=self._hyperparameters['loss'])
+                                verbose=self._verbose)
 
         return model
         # return GridSearchCV(model, 

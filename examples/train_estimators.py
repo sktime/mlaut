@@ -31,7 +31,7 @@ split_dts_list = data.split_datasets(hdf5_in=input_io,
                                      dataset_paths=dts_names_list_full_path[0:1])
 
 #Instantiate estimator objects and the experiments orchestrator class.
-instantiated_models = instantiate_default_estimators(estimators=['K_Means'])
+instantiated_models = instantiate_default_estimators(estimators=['all'])
 orchest = Orchestrator(hdf5_input_io=input_io, 
                       hdf5_output_io=out_io, 
                       dts_names=dts_names_list,

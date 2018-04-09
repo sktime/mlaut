@@ -42,7 +42,7 @@ class Ridge_Regression(mlautEstimator):
         """
         
         
-        return linear_model.RidgeCV(alphas=hyperparameters['alphas'],
+        return linear_model.RidgeCV(alphas=self._hyperparameters['alphas'],
                                 cv=self._num_cv_folds)
     def save(self, dataset_name):
         """
