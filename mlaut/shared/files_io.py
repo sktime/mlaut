@@ -318,8 +318,26 @@ class FilesIO:
         metadata = store.get_storer(dataset_path).attrs.metadata
         store.close()
         return dataset, metadata
-    
+    def save_pandas_dataset(self, dataset, save_loc, metadata, verbose=False):
+        """
+        Saves a dataset stored in DataFrame format in the database
+
+        Parameters
+        -----------
+        dataset (DataFrame): Dataset that will be saved in the databse
+        save_path(string): group in HDF5 database where the data will be saved
+        metadata(JSON): Must contain ``class_name``, and ``dataset_name`` key-value pairs
+        """
+
+        store = pd.HDFStore(self.hdf5_filename, self._mode)
+        dts_name = metadata['dataset_name']
+        save_path = f'{save_loc}/{dts_name}'
+        store[save_path] = dataset
+        store.get_storer(save_path).attrs.metadata = metadata
+        store.close()
+
     def save_datasets(self, datasets, datasets_save_paths, dts_metadata, verbose = False):
+        #TODO This function needs to be removed together with its implementation in the data package
         '''
         saves datasets in HDF5 database. 
         dataset_names must contain full path.
