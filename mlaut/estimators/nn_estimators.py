@@ -27,7 +27,7 @@ class Deep_NN_Classifier(mlautEstimator):
     """
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
-    def __init__(self):
+    def __init__(self, keras_model=None):
         super().__init__()
         self._hyperparameters = {'epochs': [50,100], 
                                 'batch_size': 0,  
@@ -35,6 +35,17 @@ class Deep_NN_Classifier(mlautEstimator):
                                 'loss': 'mean_squared_error',
                                 'optimizer': 'Adam',
                                 'metrics' : ['accuracy']}
+        if keras_model is None:
+            #default keras model for classification tasks
+            def _keras_model(self, num_classes, input_dim):
+                nn_deep_model = OverwrittenSequentialClassifier()
+                nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
+                nn_deep_model.add(Dense(144, activation='relu'))
+                nn_deep_model.add(Dropout(0.5))
+                nn_deep_model.add(Dense(12, activation='relu'))
+                nn_deep_model.add(Dense(num_classes, activation='softmax'))
+                return nn_deep_model
+
     
     def _nn_deep_classifier_model(self, num_classes, input_dim):
         nn_deep_model = OverwrittenSequentialClassifier()
@@ -81,6 +92,8 @@ class Deep_NN_Classifier(mlautEstimator):
         
         #TODO implement cross validation and hyperameters
         # https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
+        
+        #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
         model = KerasClassifier(build_fn=self._nn_deep_classifier_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim,
