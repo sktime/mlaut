@@ -3,6 +3,7 @@ from mlaut.data import Data
 import pandas as pd
 from sklearn import preprocessing
 import os
+import sys
 
 apikey = 'd2b1d13981d4abfb22895337baca924c'
 openml.config.apikey = apikey
@@ -12,17 +13,22 @@ classification_tasks = openml.tasks.list_tasks(task_type_id=1)
 regression_tasks = openml.tasks.list_tasks(task_type_id=2)
 
 data = Data()
-input_io = data.open_hdf5('openml.h5', mode='a')
+input_io = data.open_hdf5('data/openml.h5', mode='a')
 
 for id in classification_tasks.keys():
     try:
-        print(f'saving dataset: {id}')
         dataset = openml.datasets.get_dataset(id)
         X, names = dataset.get_data(return_attribute_names=True)
 
-        #ignore datasets with empty values
-        num_missing_values = dataset.__dict__['qualities']['NumberOfMissingValues']
-        if num_missing_values is not 0:
+        #ignore datasets with empty values 
+        num_missing_values = float(dataset.__dict__['qualities']['NumberOfMissingValues'])
+        if num_missing_values > 0:
+            print(f'skipping dataset {id}. Missing values')
+            continue
+
+        #ignore too big datasets
+        if classification_tasks[id]['NumberOfInstances'] > 10000:
+            print('skipping dataset {id}. It is too big')
             continue
 
         metadata = {
@@ -44,6 +50,9 @@ for id in classification_tasks.keys():
         result[metadata['class_name']] =  result[metadata['class_name']].astype(int)
 
         #save to hdf5
-        input_io.save_datasets(dataset=[result], save_loc=['/openml'], metadata=[metadata])
+        input_io.save_pandas_dataset(dataset=result, save_loc='/openml', metadata=metadata)
+        print(f'dataset {id} saved.')
+    except KeyboardInterrupt:
+        sys.exit()
     except:
-        print(f'dataset {id} could not be downloaded')
+        print(f'Cannot save dataset {id}')
