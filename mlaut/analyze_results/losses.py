@@ -56,6 +56,7 @@ class Losses(object):
 
             #evaluate errors per dataset per estimator
             errors = (estimator_predictions - true_labels)**2
+            errors = np.where(errors > 0, 1, 0)
             n = len(errors)
 
             std_score = np.std(errors)/np.sqrt(n) 

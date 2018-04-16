@@ -76,7 +76,7 @@ class Random_Forest_Regressor(mlautEstimator):
     """
     Wrapper for `sklearn Random Forest Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html>`_.
     """
-        def __init__(self):
+    def __init__(self):
         super().__init__()
         self._hyperparameters = {
                 'n_estimators': [10, 20, 30],
