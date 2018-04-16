@@ -140,7 +140,7 @@ class Lasso_Lars(mlautEstimator):
                                 dataset_name=dataset_name)
 
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
-            tasks=[CLASSIFICATION,REGRESSION], 
+            tasks=[REGRESSION], 
             name='LogisticRegression')
 class Logistic_Regression(mlautEstimator):
     """
