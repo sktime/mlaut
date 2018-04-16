@@ -16,6 +16,13 @@ data = Data()
 input_io = data.open_hdf5('data/openml.h5', mode='a')
 
 for id in classification_tasks.keys():
+    print(f"Trying to download dataset {id}, {classification_tasks[id]['name']}")
+
+     #ignore too big datasets
+    if float(classification_tasks[id]['NumberOfInstances']) > 10000:
+        print(f"skipping dataset {id}, {classification_tasks[id]['name']}. It is too big")
+        continue
+
     try:
         dataset = openml.datasets.get_dataset(id)
         X, names = dataset.get_data(return_attribute_names=True)
@@ -23,18 +30,14 @@ for id in classification_tasks.keys():
         #ignore datasets with empty values 
         num_missing_values = float(dataset.__dict__['qualities']['NumberOfMissingValues'])
         if num_missing_values > 0:
-            print(f'skipping dataset {id}. Missing values')
-            continue
-
-        #ignore too big datasets
-        if classification_tasks[id]['NumberOfInstances'] > 10000:
-            print('skipping dataset {id}. It is too big')
+            print(f"skipping dataset {id}, {dataset.__dict__['name']} Missing values")
             continue
 
         metadata = {
             'class_name': dataset.__dict__['default_target_attribute'],
             'source': 'OpenML',
-            'dataset_name':dataset.__dict__['name']
+            'dataset_name':dataset.__dict__['name'],
+            'dataset_id': id
         }
         class_name_index = names.index(metadata['class_name'])
 
@@ -51,7 +54,7 @@ for id in classification_tasks.keys():
 
         #save to hdf5
         input_io.save_pandas_dataset(dataset=result, save_loc='/openml', metadata=metadata)
-        print(f'dataset {id} saved.')
+        print(f"dataset {id}, {dataset.__dict__['name']} saved.")
     except KeyboardInterrupt:
         sys.exit()
     except:
