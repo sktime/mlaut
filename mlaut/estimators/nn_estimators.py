@@ -34,7 +34,6 @@ class Deep_NN_Classifier(mlautEstimator):
                                 'learning_rate':0.001,
                                 'loss': 'mean_squared_error',
                                 'optimizer': 'Adam',
-<<<<<<< HEAD
                                 'metrics' : ['accuracy']}
         if keras_model is None:
             #default keras model for classification tasks
@@ -47,10 +46,6 @@ class Deep_NN_Classifier(mlautEstimator):
                 nn_deep_model.add(Dense(num_classes, activation='softmax'))
                 return nn_deep_model
 
-=======
-                                'metrics' : ['accuracy'],
-                                'verbose':0}
->>>>>>> baf9af0389d0e68a0a0a74a6c2d49b6fc559ec59
     
     def _nn_deep_classifier_model(self, num_classes, input_dim):
         nn_deep_model = OverwrittenSequentialClassifier()
@@ -97,12 +92,8 @@ class Deep_NN_Classifier(mlautEstimator):
         
         #TODO implement cross validation and hyperameters
         # https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
-<<<<<<< HEAD
         
         #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
-=======
-        loss = self._hyperparameters['loss']
->>>>>>> baf9af0389d0e68a0a0a74a6c2d49b6fc559ec59
         model = KerasClassifier(build_fn=self._nn_deep_classifier_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim,
