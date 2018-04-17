@@ -3,7 +3,8 @@ from mlaut.shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 import pickle
 from mlaut.shared.static_variables import PICKLE_EXTENTION
 import wrapt
-class mlautEstimator(ABC):
+from mlaut.shared.files_io import DiskOperations
+class MlautEstimator(ABC):
     """
     Abstact base class that all mlaut estimators should inherit from.
     """
@@ -36,12 +37,20 @@ class mlautEstimator(ABC):
         It should return an estimator object.
         """
     
-    @abstractmethod
-    def save(self):
-        """ 
-        Abstract method that needs to be implemented by all estimators.
-        Saves the trained model to disk.
+    
+    def save(self, dataset_name):
         """
+        Saves estimator on disk.
+
+        :type dataset_name: string
+        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+        """
+        #set trained model method is implemented in the base class
+        trained_model = self._trained_model
+        disk_op = DiskOperations()
+        disk_op.save_to_pickle(trained_model=trained_model,
+                             model_name=self.properties()['name'],
+                             dataset_name=dataset_name)
     
     def get_params(self):
         """

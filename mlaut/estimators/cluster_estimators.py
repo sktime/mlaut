@@ -2,7 +2,7 @@
 from sklearn import cluster
 from sklearn.model_selection import GridSearchCV
 from mlaut.estimators.mlaut_estimator import properties
-from mlaut.estimators.mlaut_estimator import mlautEstimator
+from mlaut.estimators.mlaut_estimator import MlautEstimator
 
 from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import (CLUSTER, 
@@ -15,7 +15,7 @@ from mlaut.shared.static_variables import (CLUSTER,
 @properties(estimator_family=[CLUSTER], 
             tasks=[CLASSIFICATION], 
             name='K_Means')
-class K_Means(mlautEstimator):
+class K_Means(MlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
     """
@@ -27,20 +27,20 @@ class K_Means(mlautEstimator):
                                 'tol':[1e-4],
                                 'n_jobs':[1] #parallelization done on GridSearchCV level
                         }
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
         
-        Parameters
-        ----------
-        dataset_name (string): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.properties()['name'],
-                             dataset_name=dataset_name)
+    #     Parameters
+    #     ----------
+    #     dataset_name (string): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     #set trained model method is implemented in the base class
+    #     trained_model = self._trained_model
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=trained_model,
+    #                          model_name=self.properties()['name'],
+    #                          dataset_name=dataset_name)
     def build(self, **kwargs):
         """
         Builds and returns estimator class.

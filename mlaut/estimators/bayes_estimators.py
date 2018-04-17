@@ -1,5 +1,5 @@
 from mlaut.estimators.mlaut_estimator import properties
-from mlaut.estimators.mlaut_estimator import mlautEstimator
+from mlaut.estimators.mlaut_estimator import MlautEstimator
 
 from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
@@ -17,7 +17,7 @@ from sklearn.naive_bayes import BernoulliNB
 @properties(estimator_family=[NAIVE_BAYES], 
             tasks=[CLASSIFICATION], 
             name='GaussianNaiveBayes')
-class Gaussian_Naive_Bayes(mlautEstimator):
+class Gaussian_Naive_Bayes(MlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html>`_.
     """
@@ -25,19 +25,19 @@ class Gaussian_Naive_Bayes(mlautEstimator):
         super().__init__()
         self._hyperparameters = None
 
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.properties()['name'],
-                             dataset_name=dataset_name)
+    #     :type dataset_name: string
+    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     #set trained model method is implemented in the base class
+    #     trained_model = self._trained_model
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=trained_model,
+    #                          model_name=self.properties()['name'],
+    #                          dataset_name=dataset_name)
     def build(self, **kwargs):
         """
         Builds and returns estimator class.
@@ -57,7 +57,7 @@ class Gaussian_Naive_Bayes(mlautEstimator):
 @properties(estimator_family=[NAIVE_BAYES], 
             tasks=[CLASSIFICATION], 
             name='BernoulliNaiveBayes')
-class Bernoulli_Naive_Bayes(mlautEstimator):
+class Bernoulli_Naive_Bayes(MlautEstimator):
     """
     Wrapper for `sklearn Bernoulli Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html>`_.
     """
@@ -66,19 +66,19 @@ class Bernoulli_Naive_Bayes(mlautEstimator):
         self._hyperparameters = None
     
 
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.properties()['name'],
-                             dataset_name=dataset_name)
+    #     :type dataset_name: string
+    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     #set trained model method is implemented in the base class
+    #     trained_model = self._trained_model
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=trained_model,
+    #                          model_name=self.properties()['name'],
+    #                          dataset_name=dataset_name)
     def build(self, **kwargs):
         """
         Builds and returns estimator class.

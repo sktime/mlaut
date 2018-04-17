@@ -1,5 +1,5 @@
 from mlaut.estimators.mlaut_estimator import properties
-from mlaut.estimators.mlaut_estimator import mlautEstimator
+from mlaut.estimators.mlaut_estimator import MlautEstimator
 
 from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
@@ -14,7 +14,7 @@ from sklearn.model_selection import GridSearchCV
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[REGRESSION], 
             name='RidgeRegression')
-class Ridge_Regression(mlautEstimator):
+class Ridge_Regression(MlautEstimator):
     """
     Wrapper for `sklearn Ridge Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html>`_.
     """
@@ -44,21 +44,21 @@ class Ridge_Regression(mlautEstimator):
         
         return linear_model.RidgeCV(alphas=self._hyperparameters['alphas'],
                                 cv=self._num_cv_folds)
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=self._trained_model,
-                                model_name=self.properties()['name'],
-                                dataset_name=dataset_name)
+    #     :type dataset_name: string
+    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=self._trained_model,
+    #                             model_name=self.properties()['name'],
+    #                             dataset_name=dataset_name)
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[REGRESSION], 
             name='Lasso')
-class Lasso(mlautEstimator):
+class Lasso(MlautEstimator):
     """
     Wrapper for `sklearn Lasso <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html>`_.
     """
@@ -85,21 +85,21 @@ class Lasso(mlautEstimator):
 
         return linear_model.LassoCV(alphas= self._hyperparameters['alphas'],
                                     cv=self._num_cv_folds)
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=self._trained_model,
-                                model_name=self.properties()['name'],
-                                dataset_name=dataset_name)
+    #     :type dataset_name: string
+    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=self._trained_model,
+    #                             model_name=self.properties()['name'],
+    #                             dataset_name=dataset_name)
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[REGRESSION], 
             name='LassoLars')
-class Lasso_Lars(mlautEstimator):
+class Lasso_Lars(MlautEstimator):
     """
     Wrapper for `sklearn Lasso Lars <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoLars.html>`_.
     """
@@ -127,22 +127,22 @@ class Lasso_Lars(mlautEstimator):
 
         return linear_model.LassoLarsCV(max_n_alphas=self._hyperparameters['max_n_alphas'],
                                     cv=self._num_cv_folds)
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=self._trained_model,
-                                model_name=self.properties()['name'],
-                                dataset_name=dataset_name)
+    #     :type dataset_name: string
+    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=self._trained_model,
+    #                             model_name=self.properties()['name'],
+    #                             dataset_name=dataset_name)
 
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[REGRESSION], 
             name='LogisticRegression')
-class Logistic_Regression(mlautEstimator):
+class Logistic_Regression(MlautEstimator):
     """
     Wrapper for `sklearn Logistic Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`_.
     """
@@ -175,24 +175,24 @@ class Logistic_Regression(mlautEstimator):
                             n_jobs=self._n_jobs,
                             refit=self._refit)
     
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.properties()['name'],
-                             dataset_name=dataset_name)
+    #     :type dataset_name: string
+    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     #set trained model method is implemented in the base class
+    #     trained_model = self._trained_model
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=trained_model,
+    #                          model_name=self.properties()['name'],
+    #                          dataset_name=dataset_name)
 
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS],
             tasks=[CLASSIFICATION],
             name='PassiveAggressiveClassifier')
-class Passive_Aggressive_Classifier(mlautEstimator):
+class Passive_Aggressive_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Passive Aggressive Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.PassiveAggressiveClassifier.html>`_.
     """
@@ -226,15 +226,15 @@ class Passive_Aggressive_Classifier(mlautEstimator):
                             )
 
     
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.properties()['name'],
-                             dataset_name=dataset_name)
+    #     :type dataset_name: string
+    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     trained_model = self._trained_model
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=trained_model,
+    #                          model_name=self.properties()['name'],
+    #                          dataset_name=dataset_name)

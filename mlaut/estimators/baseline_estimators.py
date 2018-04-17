@@ -1,5 +1,5 @@
 from mlaut.estimators.mlaut_estimator import properties
-from mlaut.estimators.mlaut_estimator import mlautEstimator
+from mlaut.estimators.mlaut_estimator import MlautEstimator
 from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(BASELINE,
                                       REGRESSION, 
@@ -10,7 +10,7 @@ from sklearn.dummy import DummyClassifier, DummyRegressor
 @properties(estimator_family=[BASELINE],
             tasks=[REGRESSION],
             name='BaselineRegressor')
-class Baseline_Regressor(mlautEstimator):
+class Baseline_Regressor(MlautEstimator):
     """
     Wrapper for sklearn dummy regressor
     """
@@ -36,25 +36,25 @@ class Baseline_Regressor(mlautEstimator):
         """
         return DummyRegressor(strategy=strategy)
 
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.properties()['name'],
-                             dataset_name=dataset_name)
+    #     :type dataset_name: string
+    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     #set trained model method is implemented in the base class
+    #     trained_model = self._trained_model
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=trained_model,
+    #                          model_name=self.properties()['name'],
+    #                          dataset_name=dataset_name)
 
 
 @properties(estimator_family=[BASELINE],
             tasks=[CLASSIFICATION],
             name='BaselineClassifier')
-class Baseline_Classifier(mlautEstimator):
+class Baseline_Classifier(MlautEstimator):
     """
     Wrapper for sklearn dummy classifier class.
     """
@@ -81,16 +81,16 @@ class Baseline_Classifier(mlautEstimator):
         """
         return DummyClassifier(strategy=strategy)
 
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+    # def save(self, dataset_name):
+    #     """
+    #     Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.properties()['name'],
-                             dataset_name=dataset_name)
+    #     :type dataset_name: string
+    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+    #     """
+    #     #set trained model method is implemented in the base class
+    #     trained_model = self._trained_model
+    #     disk_op = DiskOperations()
+    #     disk_op.save_to_pickle(trained_model=trained_model,
+    #                          model_name=self.properties()['name'],
+    #                          dataset_name=dataset_name)

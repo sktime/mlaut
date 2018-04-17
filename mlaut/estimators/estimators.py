@@ -21,7 +21,7 @@ from mlaut.estimators.cluster_estimators import K_Means
 
 """
 Each estimator is contained it its own class.
-Each estimator inherits from the abstract class mlautEstimator.
+Each estimator inherits from the abstract class MlautEstimator.
 Each estimator must implement the following methods:
     1. get_estimator_name
     2. build
@@ -31,7 +31,7 @@ Each estimator is built for a specific dataset. This is particularly necessary
 for Neural Network classification models where the number of nodes in the last
 layer depends on the number of classes.
 
-The following methods are implemented in the mlautEstimator Abstract class and 
+The following methods are implemented in the MlautEstimator Abstract class and 
 are inherited by all estimators:
     1. __init__
     2. set_trained_model

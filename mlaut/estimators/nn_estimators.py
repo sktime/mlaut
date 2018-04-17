@@ -1,5 +1,5 @@
 from mlaut.estimators.mlaut_estimator import properties
-from mlaut.estimators.mlaut_estimator import mlautEstimator
+from mlaut.estimators.mlaut_estimator import MlautEstimator
 
 from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
@@ -23,7 +23,7 @@ import numpy as np
 @properties(estimator_family=[NEURAL_NETWORKS], 
             tasks=[CLASSIFICATION], 
             name='NeuralNetworkDeepClassifier')
-class Deep_NN_Classifier(mlautEstimator):
+class Deep_NN_Classifier(MlautEstimator):
     """
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
@@ -135,7 +135,7 @@ class Deep_NN_Classifier(mlautEstimator):
 @properties(estimator_family=[NEURAL_NETWORKS], 
             tasks=[REGRESSION], 
             name='NeuralNetworkDeepRegressor')
-class Deep_NN_Regressor(mlautEstimator):
+class Deep_NN_Regressor(MlautEstimator):
     """
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
