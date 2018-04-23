@@ -27,6 +27,24 @@ class Deep_NN_Classifier(MlautEstimator):
     """
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
+    def classification_decorator(self, architecture_function):
+        def wrapper(num_classes, input_dim):
+            learning_rate = self._hyperparameters['learning_rate']
+            loss=self._hyperparameters['loss'], 
+            metrics=self._hyperparameters['metrics']
+            optimizer = self._hyperparameters['optimizer']
+            if optimizer is 'Adam':
+                model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
+            loss = 'mean_squared_error'
+            if optimizer is 'Adam':
+                model_optimizer = optimizers.Adam(lr=learning_rate)
+            
+            model = architecture_function(num_classes, input_dim)
+            model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=metrics)
+            return model
+        
+        return wrapper
+        
     def __init__(self, keras_model=None):
         super().__init__()
         self._hyperparameters = {'epochs': [50,100], 
@@ -37,7 +55,7 @@ class Deep_NN_Classifier(MlautEstimator):
                                 'metrics' : ['accuracy']}
         if keras_model is None:
             #default keras model for classification tasks
-            def _keras_model(self, num_classes, input_dim):
+            def keras_model(self, num_classes, input_dim):
                 nn_deep_model = OverwrittenSequentialClassifier()
                 nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
                 nn_deep_model.add(Dense(144, activation='relu'))
@@ -45,7 +63,9 @@ class Deep_NN_Classifier(MlautEstimator):
                 nn_deep_model.add(Dense(12, activation='relu'))
                 nn_deep_model.add(Dense(num_classes, activation='softmax'))
                 return nn_deep_model
-
+            self._keras_model = self.classification_decorator(keras_model)
+        else:
+            self._keras_model = self.classification_decorator(keras_model)
     
     def _nn_deep_classifier_model(self, num_classes, input_dim):
         nn_deep_model = OverwrittenSequentialClassifier()
@@ -130,6 +150,7 @@ class Deep_NN_Classifier(MlautEstimator):
         #path_to_load = split_path[0] + HDF5_EXTENTION 
         model = load_model(path_to_model)
         self.set_trained_model(model)
+    
 
 
 @properties(estimator_family=[NEURAL_NETWORKS], 
@@ -231,7 +252,6 @@ class Deep_NN_Regressor(MlautEstimator):
         path_to_load = split_path[0] + HDF5_EXTENTION 
         model = load_model(path_to_load)
         self.set_trained_model(model)
-
 
 class OverwrittenSequentialClassifier(Sequential):
     """
