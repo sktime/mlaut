@@ -67,23 +67,23 @@ class Deep_NN_Classifier(MlautEstimator):
         else:
             self._keras_model = self.classification_decorator(keras_model)
     
-    def _nn_deep_classifier_model(self, num_classes, input_dim):
-        nn_deep_model = OverwrittenSequentialClassifier()
-        nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
-        nn_deep_model.add(Dense(144, activation='relu'))
-        nn_deep_model.add(Dropout(0.5))
-        nn_deep_model.add(Dense(12, activation='relu'))
-        nn_deep_model.add(Dense(num_classes, activation='softmax'))
+    # def _nn_deep_classifier_model(self, num_classes, input_dim):
+    #     nn_deep_model = OverwrittenSequentialClassifier()
+    #     nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
+    #     nn_deep_model.add(Dense(144, activation='relu'))
+    #     nn_deep_model.add(Dropout(0.5))
+    #     nn_deep_model.add(Dense(12, activation='relu'))
+    #     nn_deep_model.add(Dense(num_classes, activation='softmax'))
         
-        optimizer = self._hyperparameters['optimizer']
-        metrics = self._hyperparameters['metrics']
-        learning_rate = self._hyperparameters['learning_rate']
-        loss = self._hyperparameters['loss']
-        if optimizer is 'Adam':
-            model_optimizer = optimizers.Adam(lr=learning_rate)
+    #     optimizer = self._hyperparameters['optimizer']
+    #     metrics = self._hyperparameters['metrics']
+    #     learning_rate = self._hyperparameters['learning_rate']
+    #     loss = self._hyperparameters['loss']
+    #     if optimizer is 'Adam':
+    #         model_optimizer = optimizers.Adam(lr=learning_rate)
         
-        nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
-        return nn_deep_model
+    #     nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
+    #     return nn_deep_model
     
     def build(self, **kwargs):
         """
@@ -114,7 +114,7 @@ class Deep_NN_Classifier(MlautEstimator):
         # https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
         
         #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
-        model = KerasClassifier(build_fn=self._nn_deep_classifier_model, 
+        model = KerasClassifier(build_fn=self._keras_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim,
                                 verbose=self._verbose)
