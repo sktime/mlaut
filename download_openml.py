@@ -33,9 +33,7 @@ for id in all_datasets.keys():
     try:
         dataset = openml.datasets.get_dataset(id)
         X, names = dataset.get_data(return_attribute_names=True)
-
-        #ignore datasets with empty values 
-        
+      
 
         metadata = {
             'class_name': dataset.__dict__['default_target_attribute'],
