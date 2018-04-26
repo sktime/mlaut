@@ -9,6 +9,7 @@ from mlaut.shared.static_variables import (X_TRAIN_DIR,
                                        LOG_ERROR_FILE, set_logging_defaults)
 import sys
 import os
+from sklearn import preprocessing
 from mlaut.shared.files_io import FilesIO
 #from mlaut.experiments.experiments import Experiments
 from mlaut.data import Data
@@ -95,6 +96,7 @@ class Orchestrator:
                 for modelling_strategy in modelling_strategies:
                     ml_strategy_name = modelling_strategy.properties()['name']
                     ml_strategy_family = modelling_strategy.properties()['estimator_family']
+                    data_preprocessing = modelling_strategy.properties()['data_preprocessing']
                     begin_timestamp = datetime.now()
 
                     #check whether the model was already trained
@@ -104,7 +106,12 @@ class Orchestrator:
                         logging.warning(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
                         #modelling_strategy.load(path_to_check)
                     else:
-                    
+                        #preprocess data
+                        X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
+                                                                                    X_train=X_train, 
+                                                                                    X_test=X_test, 
+                                                                                    y_train=y_train, 
+                                                                                    y_test=y_test)
                         num_samples, input_dim = X_train.shape
                         num_classes = np.max(y_train + 1)
                         built_model = modelling_strategy.build(num_classes=num_classes, 
@@ -163,12 +170,17 @@ class Orchestrator:
                 try:
                     idx_estimator = names_all_estimators.index(name_estimator)
                     estimator = estimators[idx_estimator]
+                    #preprocess data as per what was done during training
+                    data_preprocessing = estimator.properties()['data_preprocessing']
+                    X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
+                                                                                    X_train=X_train, 
+                                                                                    X_test=X_test, 
+                                                                                    y_train=y_train, 
+                                                                                    y_test=y_test)
+                    
                     estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
                     trained_estimator = estimator.get_trained_model()
-                    if name_estimator == 'NeuralNetworkDeepClassifier':
-                        predictions = trained_estimator.predict_classes(X_test)
-                    else:
-                        predictions = trained_estimator.predict(X_test)
+                    predictions = trained_estimator.predict(X_test)
               
                     self._output_io.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dts, 
@@ -176,4 +188,49 @@ class Orchestrator:
                     print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
                 except:
                     print(f'Skipping trained estimator {name_estimator}. Saved on disk but not instantiated.')
-                
+    
+    def _preprocess_dataset(self, data_preprocessing, X_train, X_test, y_train, y_test):
+        """
+        Preprocesses the raw dataset according to the metadata attached to the estimator class.
+
+        Parameters
+        ----------
+        data_preprocessing: dictionary
+            dictionary with operations that need to be performed. The available values include:
+            `normalize_features` and `normalize_labels`.
+        X_train: array
+            training array with the dataset features
+        y_train: array
+            training array with the dataset labels
+        X_test: array
+            test array with the dataset features
+        y_test: array
+            test array with the dataset labels
+
+        Returns
+        -------
+            x_train_transformed(array): array with transformed features of the train set.
+            y_train_transformed(array): array with transformed labels of the train set.
+            x_test_transformed(array): array with transformed features on the test set.
+            y_test_transformed(array): array with transformed labels on the test set.
+        """
+        if data_preprocessing['normalize_features'] is True:
+            scaler_features = preprocessing.StandardScaler(copy=True, 
+                                                           with_mean=True, 
+                                                           with_std=True)
+            scaler_features.fit(X_train)
+            x_train_transformed  = scaler_features.transform(X_train)
+            #apply the same transformation to the test set
+            x_test_transformed = scaler_features.transform(X_test)
+        
+        if data_preprocessing['normalize_labels'] is True:
+            scaler_labels = preprocessing.StandardScaler(copy=True, 
+                                                           with_mean=True, 
+                                                           with_std=True)
+            scaler_labels.fit(y_train)
+            y_train_transformed = scaler_labels.transform(y_train)
+            #apply the same transformation to the test set
+            y_test_transformed = scaler_labels.transform(y_test)
+
+        return x_train_transformed, x_test_transformed, y_train_transformed, y_test_transformed
+        

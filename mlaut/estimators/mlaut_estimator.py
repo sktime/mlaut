@@ -122,20 +122,29 @@ class properties(object):
     """
     Decorator class used for adding properties to mlaut estimator classes. The properties that all mlaut estimator objects must have are: estimator family, task (classification, regression), name of estimator. 
     """
-    def __init__(self, estimator_family, tasks, name):
+    def __init__(self, 
+        estimator_family, 
+        tasks, 
+        name, 
+        data_preprocessing={'normalize_features': True,
+                            'normalize_labels': False}):
         """
-        :type estimator_family: array of strings
-        :param estimator_family: family of machine learning algorithms that the estimator belongs to.
-
-        :type tasks: array of strings
-        :param tasks: array of tasks (classification and/or regression) that the estimator can be applied to.
-
-        :type name: string
-        :param name: name of estimator.
+        Parameters
+        ----------
+        estimator_family: array of strings
+            family of machine learning algorithms that the estimator belongs to.
+        tasks: array of strings
+            array of tasks (classification and/or regression) that the estimator can be applied to.
+        name: string
+            name of estimator.
+        data_preprocessing: dictionary
+            dictionary with data preprocessing operations to be performed on datasets before they are used in training.
         """
         self._estimator_family = estimator_family
         self._tasks = tasks
         self._name = name
+        self._data_preprocessing = data_preprocessing
+
 
     def _properties(self):
         """
@@ -150,29 +159,16 @@ class properties(object):
         properties_dict = {
             'estimator_family': self._estimator_family,
             'tasks': self._tasks,
-            'name': self._name
+            'name': self._name,
+            'data_preprocessing': self._data_preprocessing
         }
         return properties_dict
 
     @wrapt.decorator
     def __call__(self, wrapped, instance, args, kwargs):
-        #add properties to class
+        #add/attach properties to class
         wrapped.properties = self._properties
         return wrapped(*args, **kwargs)
         
-        # class Wrapped(cls):
- 
-        #     def properties(cls):
-                
-        #         #check whether the inputs are right
-        #         if not isinstance(self._estimator_family, list) or \
-        #             not isinstance(self._tasks, list):
-        #             raise ValueError('Arguments to property_decorator must be provided as an array')
-        #         properties_dict = {
-        #             'estimator_family': self._estimator_family,
-        #             'tasks': self._tasks,
-        #             'name': self._name
-        #         }
-        #         return properties_dict
-        # return Wrapped
+        
 
