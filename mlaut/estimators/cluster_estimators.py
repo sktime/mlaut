@@ -19,8 +19,14 @@ class K_Means(MlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = {
                                 'n_init': [10], 
                                 'max_iter': [300],

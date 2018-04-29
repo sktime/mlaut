@@ -16,8 +16,14 @@ class SVC_mlaut(MlautEstimator):
     """
     Wrapper for `sklearn SVC estimator <http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`_.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = {
                             'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6], #[1e-6, 1]
                             'gamma': [1e-3, 1], #[1e-3, 1e-2, 1e-1, 1]

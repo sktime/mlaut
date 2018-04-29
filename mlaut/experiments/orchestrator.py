@@ -5,6 +5,7 @@ from mlaut.shared.static_variables import (X_TRAIN_DIR,
                                        TRAIN_IDX, 
                                        TEST_IDX, 
                                        EXPERIMENTS_PREDICTIONS_GROUP,
+                                       SPLIT_DTS_GROUP,
                                        EXPERIMENTS_TRAINED_MODELS_DIR, 
                                        LOG_ERROR_FILE, set_logging_defaults)
 import sys
@@ -23,20 +24,28 @@ class Orchestrator:
     """
     Orchestrates the sequencing of running the machine learning experiments.
 
-    :type hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
-    :param hdf5_input_io: instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the input file
+    Parameters
+    ------------
+    hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
+        instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the input file
 
-    :type hdf5_output_io: :func:`~mlaut.shared.files_io.FilesIO`
-    :param hdf5_output_io: instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the output file
+    hdf5_output_io: :func:`~mlaut.shared.files_io.FilesIO`
+        instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the output file
 
-    :type dts_names: array of strings
-    :param dts_names: array with the names of the datasets on which experiments will be run.
+    dts_names: array of strings
+        array with the names of the datasets on which experiments will be run.
 
-    :type experiments_predictions_group: string
-    :param experiments_predictions_group: path in HDF5 database where predictions will be saved
+    experiments_predictions_group: string
+        path in HDF5 database where predictions will be saved.
 
-    :type experiments_trained_models_dir: string
-    :param experiments_trained_models_dir: folder on disk where trained estimators will be saved.
+    experiments_trained_models_dir: string
+        folder on disk where trained estimators will be saved.
+    split_datasets_group : string
+        path in HDF5 database where the splits are saved.
+    train_idx : string
+        folder in HDF5 database which holds the train index splits.
+    test_idx : string
+        folder in HDF5 database which holds the test index splits.
     """
     def __init__(self, 
                  hdf5_input_io, 
@@ -44,7 +53,10 @@ class Orchestrator:
                  dts_names,
                  original_datasets_group_h5_path, 
                  experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP,
-                 experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
+                 experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR,
+                 split_datasets_group=SPLIT_DTS_GROUP,
+                 train_idx=TRAIN_IDX,
+                 test_idx=TEST_IDX):
         self.experiments_predictions_group=experiments_predictions_group
         self._experiments_trained_models_dir=experiments_trained_models_dir
         self._input_io = hdf5_input_io
@@ -53,7 +65,10 @@ class Orchestrator:
         self._original_datasets_group_h5_path = original_datasets_group_h5_path
         #self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
-        self._data = Data() #TODO need to implement a way to change the defaults.
+        self._data = Data(experiments_predictions_group, 
+                          split_datasets_group,
+                          train_idx,
+                          test_idx) 
         set_logging_defaults()
 
     def run(self, modelling_strategies):
@@ -214,6 +229,12 @@ class Orchestrator:
             x_test_transformed(array): array with transformed features on the test set.
             y_test_transformed(array): array with transformed labels on the test set.
         """
+        
+        x_train_transformed = X_train
+        x_test_transformed = X_test
+        y_train_transformed = y_train
+        y_test_transformed = y_train
+
         if data_preprocessing['normalize_features'] is True:
             scaler_features = preprocessing.StandardScaler(copy=True, 
                                                            with_mean=True, 

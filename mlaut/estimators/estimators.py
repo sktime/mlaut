@@ -98,7 +98,6 @@ def instantiate_default_estimators(estimators, verbose=0):
             if input_estimator in mlaut_estimator_prop['estimator_family'] or \
                 input_estimator in mlaut_estimator_prop['tasks'] or \
                 input_estimator in mlaut_estimator_prop['name']:
-                
                 estimators_array.append(mlaut_estimator(verbose=verbose))
     if len(estimators_array) > 0:             
         return estimators_array

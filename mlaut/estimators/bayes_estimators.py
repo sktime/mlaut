@@ -21,8 +21,14 @@ class Gaussian_Naive_Bayes(MlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html>`_.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = None
 
     # def save(self, dataset_name):
@@ -61,8 +67,14 @@ class Bernoulli_Naive_Bayes(MlautEstimator):
     """
     Wrapper for `sklearn Bernoulli Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html>`_.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = None
     
 

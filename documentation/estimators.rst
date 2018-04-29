@@ -62,3 +62,9 @@ mlaut_estimator
 .. automodule:: mlaut.estimators.mlaut_estimator
     :members: 
     :show-inheritance:
+
+generic_estimator
+----------------------------------------------
+.. automodule:: mlaut.estimators.generic_estimator
+    :members:
+    :show-inheritance:

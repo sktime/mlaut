@@ -19,6 +19,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 
 import numpy as np
+import wrapt
 
 @properties(estimator_family=[NEURAL_NETWORKS], 
             tasks=[CLASSIFICATION], 
@@ -27,35 +28,61 @@ class Deep_NN_Classifier(MlautEstimator):
     """
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
-    def classification_decorator(self, architecture_function):
-        def wrapper(num_classes, input_dim):
-            learning_rate = self._hyperparameters['learning_rate']
-            loss=self._hyperparameters['loss'], 
-            metrics=self._hyperparameters['metrics']
-            optimizer = self._hyperparameters['optimizer']
-            if optimizer is 'Adam':
-                model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
-            loss = 'mean_squared_error'
-            if optimizer is 'Adam':
-                model_optimizer = optimizers.Adam(lr=learning_rate)
-            
-            model = architecture_function(num_classes, input_dim)
-            model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=metrics)
-            return model
+    @wrapt.decorator
+    def classification_decorator(self, keras_model, instance, args, kwargs):
+        learning_rate = self._hyperparameters['learning_rate']
+        loss=self._hyperparameters['loss'] 
+        metrics=self._hyperparameters['metrics']
+        optimizer = self._hyperparameters['optimizer']
+        if optimizer is 'Adam':
+            model_optimizer = optimizers.Adam(lr=learning_rate)
+        model = keras_model(num_classes=kwargs['num_classes'], input_dim=kwargs['input_dim'])
+        model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
+        return model
+
+
+    # def classification_decorator(self, keras_model, num_classes, input_dim):
+    #     def wrapper(wrapped, instance, args, kwargs):
+    #         learning_rate = self._hyperparameters['learning_rate']
+    #         loss=self._hyperparameters['loss'], 
+    #         metrics=self._hyperparameters['metrics']
+    #         optimizer = self._hyperparameters['optimizer']
+    #         if optimizer is 'Adam':
+    #             model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
+    #         loss = 'mean_squared_error'
+    #         if optimizer is 'Adam':
+    #             model_optimizer = optimizers.Adam(lr=learning_rate)
+    #         model = keras_model(num_classes=num_classes, 
+    #                             input_dim=input_dim)
+    #         model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=metrics)
+    #         return model
         
-        return wrapper
+    #     return wrapper
         
-    def __init__(self, keras_model=None):
-        super().__init__()
-        self._hyperparameters = {'epochs': [50,100], 
-                                'batch_size': 0,  
-                                'learning_rate':0.001,
-                                'loss': 'mean_squared_error',
-                                'optimizer': 'Adam',
-                                'metrics' : ['accuracy']}
+    def __init__(self,
+                hyperparameters=None, 
+                keras_model=None, 
+                verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
+        if hyperparameters is None:
+            self._hyperparameters = {'epochs': [50,100], 
+                                    'batch_size': 0,  
+                                    'learning_rate':0.001,
+                                    'loss': 'mean_squared_error',
+                                    'optimizer': 'Adam',
+                                    'metrics' : ['accuracy']}
+        else:
+            self._hyperparameters = hyperparameters
+
         if keras_model is None:
             #default keras model for classification tasks
-            def keras_model(self, num_classes, input_dim):
+            def keras_model(num_classes, input_dim):
                 nn_deep_model = OverwrittenSequentialClassifier()
                 nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
                 nn_deep_model.add(Dense(144, activation='relu'))
@@ -116,8 +143,7 @@ class Deep_NN_Classifier(MlautEstimator):
         #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
         model = KerasClassifier(build_fn=self._keras_model, 
                                 num_classes=num_classes, 
-                                input_dim=input_dim,
-                                verbose=self._verbose)
+                                input_dim=input_dim)#TODO include flag for verbosity
 
         return model
 
@@ -161,8 +187,14 @@ class Deep_NN_Regressor(MlautEstimator):
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = {'loss':'mean_squared_error', 
                                  'learning_rate':0.001,
                                  'optimizer': 'Adam',
@@ -213,6 +245,7 @@ class Deep_NN_Regressor(MlautEstimator):
             raise ValueError('You need to specify num_samples when building the keras model.')
         input_dim=kwargs['input_dim']
         num_samples = kwargs['num_samples']
+
         model = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
                                 input_dim=input_dim,
                                 verbose=self._verbose)

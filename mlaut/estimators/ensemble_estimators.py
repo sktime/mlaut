@@ -22,8 +22,15 @@ class Random_Forest_Classifier(MlautEstimator):
     Wrapper for `sklearn Random Forest Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html>`_.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self,  
+                verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__( verbose=verbose, 
+                n_jobs=n_jobs,
+                num_cv_folds=num_cv_folds, 
+                refit=refit)
         self._hyperparameters = {
                     'n_estimators': [10, 20, 30],
                     'max_features': ['auto', 'sqrt','log2', None],
@@ -76,8 +83,15 @@ class Random_Forest_Regressor(MlautEstimator):
     """
     Wrapper for `sklearn Random Forest Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html>`_.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, 
+                verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 20, 30],
                 'max_features': ['auto', 'sqrt','log2', None],
@@ -131,8 +145,14 @@ class Bagging_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Bagging Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html>`_.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 100, 1000, 2000]
             }
@@ -182,8 +202,14 @@ class Bagging_Regressor(MlautEstimator):
     """
     Wrapper for `sklearn Bagging Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html>`_.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 100, 1000, 2000]
             }
@@ -236,8 +262,14 @@ class Gradient_Boosting_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Gradient Boosting Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html>`_.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 100, 1000, 2000],
                 'max_depth':[10,100]
@@ -290,8 +322,14 @@ class Gradient_Boosting_Regressor(MlautEstimator):
     Wrapper for `sklearn Gradient Boosting Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html>`_.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, verbose=0, 
+                n_jobs=-1,
+                num_cv_folds=3, 
+                refit=True):
+        super().__init__(verbose=verbose, 
+                         n_jobs=n_jobs, 
+                        num_cv_folds=num_cv_folds, 
+                        refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 100, 500],
                 'max_depth':[10,100]
