@@ -15,6 +15,8 @@ all_datasets = openml.datasets.list_datasets()
 data = Data()
 input_io = data.open_hdf5('data/openml.h5', mode='a')
 
+num_saved_datasets = 0
+
 for id in all_datasets.keys():
     #regression datasets have a value of -1. Classification datasets specify the number of classes
     if all_datasets[id]['NumberOfClasses'] == -1:
@@ -23,7 +25,6 @@ for id in all_datasets.keys():
     if all_datasets[id]['NumberOfMissingValues'] > 0:
         print(f"Skipping dataset {id}, {all_datasets[id]['name']} due to missing values.")
         continue
-
     if all_datasets[id]['NumberOfInstances'] > NUMBER_OF_INSTANCES_CUTOFF_NUMBER:
         print(f"Skipping dataset {id}, {all_datasets[id]['name']}. It has more than {NUMBER_OF_INSTANCES_CUTOFF_NUMBER} instances.")
         continue
@@ -57,7 +58,10 @@ for id in all_datasets.keys():
         #save to hdf5
         input_io.save_pandas_dataset(dataset=result, save_loc='/openml', metadata=metadata)
         print(f"dataset {id}, {dataset.__dict__['name']} saved.")
+        num_saved_datasets +=1
     except KeyboardInterrupt:
         sys.exit()
     except:
         print(f"Cannot save dataset {id}, {all_datasets[id]['name']}")
+
+print(f'**Saved a total of {num_saved_datasets} datasets.**')
