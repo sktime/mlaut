@@ -113,4 +113,6 @@ documentation/_build/**
 documentation/_static/**
 documentation/_templates/**
 
+#virutal Environments
+py36/**
 
