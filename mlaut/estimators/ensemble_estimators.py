@@ -32,7 +32,7 @@ class Random_Forest_Classifier(MlautEstimator):
                 num_cv_folds=num_cv_folds, 
                 refit=refit)
         self._hyperparameters = {
-                    'n_estimators': [10, 20, 30],
+                    'n_estimators': [10, 50, 100],
                     'max_features': ['auto', 'sqrt','log2', None],
                     'max_depth': [5, 15, None]
                 }
@@ -93,7 +93,7 @@ class Random_Forest_Regressor(MlautEstimator):
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = {
-                'n_estimators': [10, 20, 30],
+                'n_estimators': [10, 50, 100],
                 'max_features': ['auto', 'sqrt','log2', None],
                 'max_depth': [5, 15, None]
             }
@@ -211,7 +211,7 @@ class Bagging_Regressor(MlautEstimator):
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = {
-                'n_estimators': [10, 100, 1000, 2000]
+                'n_estimators': [10, 50, 100]
             }
 
     def build(self, **kwargs):
@@ -271,7 +271,7 @@ class Gradient_Boosting_Classifier(MlautEstimator):
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = {
-                'n_estimators': [10, 100, 1000, 2000],
+                'n_estimators': [10, 50, 100],
                 'max_depth':[10,100]
             }
 
@@ -331,7 +331,7 @@ class Gradient_Boosting_Regressor(MlautEstimator):
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = {
-                'n_estimators': [10, 100, 500],
+                'n_estimators': [10, 50, 100],
                 'max_depth':[10,100]
             }
     def build(self, **kwargs):
