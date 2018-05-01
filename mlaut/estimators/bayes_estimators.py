@@ -31,19 +31,7 @@ class Gaussian_Naive_Bayes(MlautEstimator):
                         refit=refit)
         self._hyperparameters = None
 
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
+   
     def build(self, **kwargs):
         """
         Builds and returns estimator class.

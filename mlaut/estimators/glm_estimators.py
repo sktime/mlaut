@@ -95,8 +95,9 @@ class Lasso(MlautEstimator):
             Instantiated estimator object.
         """
 
-        return linear_model.LassoCV(alphas= self._hyperparameters['alphas'],
-                                    cv=self._num_cv_folds)
+        return linear_model.LassoCV(alphas=self._hyperparameters['alphas'],
+                                    cv=self._num_cv_folds,
+                                    n_jobs=self._n_jobs)
     # def save(self, dataset_name):
     #     """
     #     Saves estimator on disk.
@@ -144,7 +145,8 @@ class Lasso_Lars(MlautEstimator):
         """
 
         return linear_model.LassoLarsCV(max_n_alphas=self._hyperparameters['max_n_alphas'],
-                                    cv=self._num_cv_folds)
+                                    cv=self._num_cv_folds,
+                                    n_jobs=self._n_jobs)
     # def save(self, dataset_name):
     #     """
     #     Saves estimator on disk.
@@ -252,7 +254,9 @@ class Passive_Aggressive_Classifier(MlautEstimator):
  
         return GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
                             self._hyperparameters, 
-                            verbose=self._verbose
+                            verbose=self._verbose,
+                            n_jobs=self._n_jobs,
+                            refit=self._refit
                             )
 
     
