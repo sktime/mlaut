@@ -154,7 +154,7 @@ class Bagging_Classifier(MlautEstimator):
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = {
-                'n_estimators': [10, 100, 1000, 2000]
+                'n_estimators': [10, 50, 100]
             }
     def build(self, **kwargs):
         """
