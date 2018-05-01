@@ -128,7 +128,8 @@ class Orchestrator:
                                                                                     y_train=y_train, 
                                                                                     y_test=y_test)
                         num_samples, input_dim = X_train.shape
-                        num_classes = np.max(y_train + 1)
+                        unique_labels = np.unique(y_train)
+                        num_classes = len(unique_labels) 
                         built_model = modelling_strategy.build(num_classes=num_classes, 
                                                                 input_dim=input_dim,
                                                                 num_samples=num_samples)
