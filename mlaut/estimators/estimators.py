@@ -44,7 +44,11 @@ of the trined models. The pipeline is the following:
     3. The Experiments class evokes get_trained_model and makes predictions 
     on the test set. 
 """
-def instantiate_default_estimators(estimators, verbose=0):
+def instantiate_default_estimators(estimators, 
+                                   verbose=0, 
+                                   n_jobs=-1,
+                                   num_cv_folds=3, 
+                                   refit=True):
     """
     instatiates default estimators.
 
@@ -98,7 +102,10 @@ def instantiate_default_estimators(estimators, verbose=0):
             if input_estimator in mlaut_estimator_prop['estimator_family'] or \
                 input_estimator in mlaut_estimator_prop['tasks'] or \
                 input_estimator in mlaut_estimator_prop['name']:
-                estimators_array.append(mlaut_estimator(verbose=verbose))
+                estimators_array.append(mlaut_estimator(verbose=verbose, 
+                                                        n_jobs=n_jobs,
+                                                        num_cv_folds=num_cv_folds, 
+                                                        refit=refit))
     if len(estimators_array) > 0:             
         return estimators_array
     else:
