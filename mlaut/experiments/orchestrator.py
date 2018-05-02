@@ -136,7 +136,7 @@ class Orchestrator:
                         print(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
                         try:
                             trained_model = built_model.fit(X_train, y_train)
-                        except Exception e:
+                        except Exception as e:
                             print(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
                             logging.error(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
                             logging.error(f'*****Stack trace: {e}')
