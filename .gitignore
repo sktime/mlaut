@@ -107,6 +107,7 @@ venv.bak/
 # project specific data files
 # data 
 data/**
+data-original/**
 Delgado_data/**
 tests/data/**
 documentation/_build/**

@@ -90,8 +90,7 @@ class AnalyseResults(object):
         for dts in dts_predictions_list:
             predictions = self._output_io.load_predictions_for_dataset(dts)
             train, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
-            idx_orig_dts = dts_predictions_list.index(dts)
-            path_orig_dts = dts_names_list_full_path[idx_orig_dts]
+            path_orig_dts = f'{self._input_h5_original_datasets_group}/{dts}'
             true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
             true_labels = np.array(true_labels)
             losses.evaluate(predictions=predictions, 
@@ -165,9 +164,9 @@ class AnalyseResults(object):
     #     return result, result_df
 
 
-    def calculate_average_std(self, scores_dict):
+    def average_and_std_error(self, scores_dict):
         """
-        Calculates simple average and standard deviation.
+        Calculates simple average and standard error.
 
         :type scores_dict: dictionary
         :param scores_dict: Dictionary with estimators (keys) and corresponding 
@@ -178,12 +177,13 @@ class AnalyseResults(object):
         result = {}
         for k in scores_dict.keys():
             average = np.average(scores_dict[k])
-            std = np.std(scores_dict[k])
-            result[k]=[average,std]
+            n = len(scores_dict[k])
+            std_error = np.std(scores_dict[k])/np.sqrt(n)
+            result[k]=[average,std_error]
         
         res_df = pd.DataFrame.from_dict(result, orient='index')
-        res_df.columns=['avg','std']
-        res_df = res_df.sort_values(['avg','std'], ascending=[1,1])
+        res_df.columns=['avg','std_error']
+        res_df = res_df.sort_values(['avg','std_error'], ascending=[1,1])
 
         return res_df
 
@@ -272,7 +272,7 @@ class AnalyseResults(object):
         """
         Non-parametric test for testing consistent differences between pairs of obeservations.
         The test counts the number of observations that are greater, smaller and equal to the mean
-        `<https://en.wikipedia.org/wiki/Sign_test>`_.
+        `<http://en.wikipedia.org/wiki/Wilcoxon_rank-sum_test>`_.
 
 
         :type observations: dictionary
@@ -318,7 +318,7 @@ class AnalyseResults(object):
         return t_test_bonferoni, values_df
         
     def wilcoxon_test(self, observations):
-        """
+        """http://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test
         `Wilcoxon signed-rank test <https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test>`_.
         Tests whether two  related paired samples come from the same distribution. 
         In particular, it tests whether the distribution of the differences x-y is symmetric about zero

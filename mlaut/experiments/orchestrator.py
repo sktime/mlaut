@@ -198,17 +198,19 @@ class Orchestrator:
                                                                                     X_test=X_test, 
                                                                                     y_train=y_train, 
                                                                                     y_test=y_test)
-                    
+
                     estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
+
                     trained_estimator = estimator.get_trained_model()
+                    print('********************* Trying to predict')
                     predictions = trained_estimator.predict(X_test)
               
                     self._output_io.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dts, 
                                                         strategy_name=name_estimator)
                     print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
-                except:
-                    print(f'Skipping trained estimator {name_estimator}. Saved on disk but not instantiated.')
+                except Exception as e:
+                    print(f'Skipping trained estimator {name_estimator}. Stack trace: {e}')
     
     def _preprocess_dataset(self, data_preprocessing, X_train, X_test, y_train, y_test):
         """
