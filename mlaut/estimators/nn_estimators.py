@@ -41,23 +41,6 @@ class Deep_NN_Classifier(MlautEstimator):
         return model
 
 
-    # def classification_decorator(self, keras_model, num_classes, input_dim):
-    #     def wrapper(wrapped, instance, args, kwargs):
-    #         learning_rate = self._hyperparameters['learning_rate']
-    #         loss=self._hyperparameters['loss'], 
-    #         metrics=self._hyperparameters['metrics']
-    #         optimizer = self._hyperparameters['optimizer']
-    #         if optimizer is 'Adam':
-    #             model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
-    #         loss = 'mean_squared_error'
-    #         if optimizer is 'Adam':
-    #             model_optimizer = optimizers.Adam(lr=learning_rate)
-    #         model = keras_model(num_classes=num_classes, 
-    #                             input_dim=input_dim)
-    #         model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=metrics)
-    #         return model
-        
-    #     return wrapper
         
     def __init__(self,
                 hyperparameters=None, 
@@ -94,24 +77,7 @@ class Deep_NN_Classifier(MlautEstimator):
         else:
             self._keras_model = self.classification_decorator(keras_model)
     
-    # def _nn_deep_classifier_model(self, num_classes, input_dim):
-    #     nn_deep_model = OverwrittenSequentialClassifier()
-    #     nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
-    #     nn_deep_model.add(Dense(144, activation='relu'))
-    #     nn_deep_model.add(Dropout(0.5))
-    #     nn_deep_model.add(Dense(12, activation='relu'))
-    #     nn_deep_model.add(Dense(num_classes, activation='softmax'))
-        
-    #     optimizer = self._hyperparameters['optimizer']
-    #     metrics = self._hyperparameters['metrics']
-    #     learning_rate = self._hyperparameters['learning_rate']
-    #     loss = self._hyperparameters['loss']
-    #     if optimizer is 'Adam':
-    #         model_optimizer = optimizers.Adam(lr=learning_rate)
-        
-    #     nn_deep_model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
-    #     return nn_deep_model
-    
+
     def build(self, **kwargs):
         """
         builds and returns estimator
@@ -165,6 +131,7 @@ class Deep_NN_Classifier(MlautEstimator):
     
     #overloading method from parent class
     def load(self, path_to_model):
+        #TODO this does not seem to work
         """
         Loads saved keras model from disk.
 
@@ -174,7 +141,10 @@ class Deep_NN_Classifier(MlautEstimator):
         #file name could be passed with .* as extention. 
         #split_path = path_to_model.split('.')
         #path_to_load = split_path[0] + HDF5_EXTENTION 
-        model = load_model(path_to_model)
+        model = load_model(path_to_model,
+                           custom_objects={
+                               'OverwrittenSequentialClassifier':OverwrittenSequentialClassifier
+                               })
         self.set_trained_model(model)
     
 
