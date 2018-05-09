@@ -98,70 +98,6 @@ class AnalyseResults(object):
                             dataset_name=dts)
         return losses.get_losses()
 
-    # def calculate_error_all_datasets(self, metric):
-    #     """
-    #     Calculates the prediction error for each estimator on all test splits.
-
-    #     :type metric: string
-    #     :param metric: Loss metric. Supported values are: ``accuracy``,  ``mean_squared_error``
-
-    #     :rtype: dictionary with keys representing the name of the estimator 
-    #         and values representing the loss achieved on each dataset. 
-    #     """
-    #     #load all datasets
-    #     dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
-
-    #     #load all predictions
-    #     dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(self._output_h5_predictions_group, self._output_io)
-    #     losses = Losses(metric)
-    #     for dts in dts_predictions_list:
-    #         predictions = self._output_io.load_predictions_for_dataset(dts)
-    #         train, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
-    #         idx_orig_dts = dts_predictions_list.index(dts)
-    #         path_orig_dts = dts_names_list_full_path[idx_orig_dts]
-    #         true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
-    #         true_labels = np.array(true_labels)
-    #         losses.evaluate(predictions=predictions, 
-    #                         true_labels=true_labels,
-    #                         dataset_name=dts)
-
-    #     return losses.get_losses()
-
-    
-    # def calculate_error_per_dataset(self, metric):
-    #     """
-    #     Calculates the prediction error for each estimator on each datapoint for each dataset.
-
-    #     Paremeters
-    #     -----------
-    #     metric (string) : Loss metric. Supported values are: ``accuracy``,  ``mean_squared_error``
-
-    #     Returns
-    #     -------
-    #         pickle: Returns the average score and standard deviation per dataset and per estimator. Returns two variables with the same results (dictionary and in a pandas DataFrame). 
-    #     """
-    #     orig_dts_names_list, orig_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
-    #     pred_dts_names_list, pred_dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._output_h5_predictions_group, hdf5_io=self._output_io)
-    #     # result = {}
-    #     losses = Losses(metric=metric)
-    #     for dts in pred_dts_names_list:
-    #         # result[dts] = []
-    #         predictions_all_estimators = self._output_io.load_predictions_for_dataset(dts)
-    #         _, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
-    #         idx_orig_dts = orig_dts_names_list.index(dts)
-    #         path_orig_dts = orig_dts_names_list_full_path[idx_orig_dts]
-    #         true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
-    #         true_labels = np.array(true_labels)
-
-            
-    #         for pred in predictions_all_estimators:
-    #             losses.evaluate_per_dataset(true_labels=true_labels, 
-    #                                         predictions=pred, 
-    #                                         dataset_name=dts)
-               
-    #     result = losses.get_losses()
-    #     result_df = losses.losses_to_dataframe(result)
-    #     return result, result_df
 
 
     def average_and_std_error(self, scores_dict):
@@ -186,17 +122,37 @@ class AnalyseResults(object):
         res_df = res_df.sort_values(['avg','std_error'], ascending=[1,1])
 
         return res_df
+    
+    def ranks(self, estimator_dict, ascending):
+        """
+        Calculates the average ranks based on the performance of each estimator on each dataset
+
+        Parameters
+        ----------
+        estimator_dict (dictionary): dictionay with keys `names of estimators` and values `errors achieved by estimators on test datasets`.
+        ascending (boolean): Rank the values in ascending (True) or descending (False) order
+
+        Returns
+        -------
+            ranks(DataFrame): Returns the mean peformance rank for each estimator
+        """
+        if not isinstance(ascending, bool):
+            raise ValueError('Variable ascending needs to be boolean')
+        
+        df = pd.DataFrame(estimator_dict)
+        ranked = df.rank(axis=1, ascending=ascending)
+        mean_r = pd.DataFrame(ranked.mean(axis=0))
+        mean_r.columns=['avg_rank']
+        mean_r = mean_r.sort_values('avg_rank', ascending=1)
+        return mean_r
+
 
     def cohens_d(self, estimator_dict):
         """
-        Cohen's d is an effect size used to indicate the standardised difference
-        between two means. The calculation is implemented natively (without the 
-        use of third-party libraries). More information can be found here:
-        `Cohen\'s d <https://en.wikiversity.org/wiki/Cohen%27s_d>`_.
+        Cohen's d is an effect size used to indicate the standardised difference between two means. The calculation is implemented natively (without the use of third-party libraries). More information can be found here: `Cohen\'s d <https://en.wikiversity.org/wiki/Cohen%27s_d>`_.
 
         :type estimator_dict: dictionary
-        :param estimator_dict: dictionay with keys `names of estimators` and 
-            values `errors achieved by estimators on test datasets`.
+        :param estimator_dict: dictionay with keys `names of estimators` and values `errors achieved by estimators on test datasets`.
         :rtype: pandas DataFrame.
         """
         cohens_d = {}
