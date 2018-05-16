@@ -71,7 +71,7 @@ class Orchestrator:
                           test_idx) 
         set_logging_defaults()
 
-    def run(self, modelling_strategies):
+    def run(self, modelling_strategies, override_saved_models=False):
         """ 
         Main module for training the estimators. 
         The inputs of the function are: 
@@ -117,7 +117,7 @@ class Orchestrator:
                     #check whether the model was already trained
                     path_to_check = self._experiments_trained_models_dir + os.sep + dts_name + os.sep + ml_strategy_name + '.*'
                     model_exists = self._disk_op.check_path_exists(path_to_check)
-                    if model_exists is True:
+                    if model_exists is True and override_saved_models is False:
                         logging.warning(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
                         #modelling_strategy.load(path_to_check)
                     else:
@@ -170,7 +170,7 @@ class Orchestrator:
 
     def predict_all(self, trained_models_dir, estimators):
         """
-        Make predictions on test sets
+        Make predictions on test sets. The algorithm opens all saved estimators in the output directory and checks whether their names are specified in the estimators array. If they are it fetches the dataset splits and tries to make the predictions.
 
         :type trained_models_dir: string
         :param trained_models_dir: directory where the trained models are saved
@@ -188,7 +188,8 @@ class Orchestrator:
             saved_estimators = os.listdir(f'{trained_models_dir}/{dts}')
             for saved_estimator in saved_estimators:
                 name_estimator = saved_estimator.split('.')[0]
-                try:
+                # try:
+                if name_estimator in names_all_estimators:
                     idx_estimator = names_all_estimators.index(name_estimator)
                     estimator = estimators[idx_estimator]
                     #preprocess data as per what was done during training
@@ -198,19 +199,15 @@ class Orchestrator:
                                                                                     X_test=X_test, 
                                                                                     y_train=y_train, 
                                                                                     y_test=y_test)
-
                     estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
-
                     trained_estimator = estimator.get_trained_model()
-                    print('********************* Trying to predict')
                     predictions = trained_estimator.predict(X_test)
-              
                     self._output_io.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dts, 
                                                         strategy_name=name_estimator)
                     print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
-                except Exception as e:
-                    print(f'Skipping trained estimator {name_estimator}. Stack trace: {e}')
+                # except Exception as e:
+                #     print(f'Skipping estimator {name_estimator}. Error message: {e}')
     
     def _preprocess_dataset(self, data_preprocessing, X_train, X_test, y_train, y_test):
         """

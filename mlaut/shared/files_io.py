@@ -67,8 +67,6 @@ class DiskOperations(object):
             os.makedirs(root_dir + os.sep + dataset_name)
         
         trained_model.model.save(root_dir + os.sep + dataset_name + os.sep + model_name + HDF5_EXTENTION)
-        #for saving GridsearchCV models
-        #trained_model.best_estimator_.model.save(root_dir + os.sep + dataset_name + os.sep + model_name + HDF5_EXTENTION)
     
     def check_path_exists(self, path_to_file):
         """

@@ -11,15 +11,16 @@ from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       CLASSIFICATION)
 from mlaut.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 
-from tensorflow.python.keras.models import Sequential, load_model
+from tensorflow.python.keras.models import Sequential, load_model, model_from_json
 from tensorflow.python.keras.layers import Dense, Activation, Dropout
 from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor, KerasClassifier
 from tensorflow.python.keras import optimizers
 from sklearn.preprocessing import OneHotEncoder
 
-
 import numpy as np
 import wrapt
+
+import tensorflow as tf
 
 @properties(estimator_family=[NEURAL_NETWORKS], 
             tasks=[CLASSIFICATION], 
@@ -114,6 +115,8 @@ class Deep_NN_Classifier(MlautEstimator):
         return model
 
 
+    
+
         
     def save(self, dataset_name):
         """
@@ -146,6 +149,7 @@ class Deep_NN_Classifier(MlautEstimator):
                                'OverwrittenSequentialClassifier':OverwrittenSequentialClassifier
                                })
         self.set_trained_model(model)
+
     
 
 
@@ -215,7 +219,7 @@ class Deep_NN_Regressor(MlautEstimator):
             raise ValueError('You need to specify num_samples when building the keras model.')
         input_dim=kwargs['input_dim']
         num_samples = kwargs['num_samples']
-
+        
         model = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
                                 input_dim=input_dim,
                                 verbose=self._verbose)
@@ -251,10 +255,16 @@ class Deep_NN_Regressor(MlautEstimator):
         :param path_to_model: path on disk where the object is saved.
         """
         #file name could be passed with .* as extention. 
+
         split_path = path_to_model.split('.')
-        path_to_load = split_path[0] + HDF5_EXTENTION 
-        model = load_model(path_to_load)
-        self.set_trained_model(model)
+        path_to_json = split_path[0] + JSON_EXTENTION
+        path_to_weights = split_path[0] + HDF5_EXTENTION
+        json_file = open(path_to_json, 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        loaded_model = model_from_json(loaded_model_json)
+        loaded_model.load_weights(path_to_weights)
+        self.set_trained_model(loaded_model)
 
 class OverwrittenSequentialClassifier(Sequential):
     """
@@ -287,7 +297,7 @@ class OverwrittenSequentialClassifier(Sequential):
         
         return super().fit(X_train, y_train_onehot_encoded)
 
-    def predict(self, X_test):
+    def predict(self, X_test, batch_size=None, verbose=0):
         """
         Overrides the default :func:`tensorflow.python.keras.models.predict` by replacing it with a :func:`tensorflow.python.keras.models.predict_classes`  
 
@@ -295,4 +305,6 @@ class OverwrittenSequentialClassifier(Sequential):
         --------
         :func:`tensorflow.python.keras.models.predict_classes`
         """
-        return super().predict_classes(X_test)
+        predictions = Sequential.predict(self, X_test, batch_size=batch_size, verbose=verbose)
+        return predictions.argmax(axis=1)
+        # return super().predict_classes(X_test)
