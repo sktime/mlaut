@@ -4,6 +4,11 @@ import pickle
 from mlaut.shared.static_variables import PICKLE_EXTENTION
 import wrapt
 from mlaut.shared.files_io import DiskOperations
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn import preprocessing
+
 class MlautEstimator(ABC):
     """
     Abstact base class that all mlaut estimators should inherit from.
@@ -114,6 +119,38 @@ class MlautEstimator(ABC):
     # def predict(self, X):
     #     estimator = self.get_trained_model()
     #     return estimator.predict(X)
+
+    def _create_pipeline(self, estimator):
+        """
+        Creates a pipeline for transforming the features of the dataset and training the selected estimator.
+
+        Parameters
+        ----------
+        estimator(sklearn estimator): Reference of sklearn estimator that will be used at the end of the pipeline.
+
+        Returns
+        -------
+            estimator(sklearn pipeline or GridSerachCV): `sklearn` pipeline object. If no preprocessing was set 
+        """
+        #gridsearch instance
+        grid = GridSearchCV(estimator(), 
+                                self._hyperparameters, 
+                                verbose=self._verbose, 
+                                n_jobs=self._n_jobs,
+                                refit=self._refit)
+
+        data_preprocessing = self.properties()['data_preprocessing']
+        if data_preprocessing['normalize_labels'] is True:
+            pipe = Pipeline(
+                memory=None,
+                steps=[
+                    ('standardscaler', preprocessing.StandardScaler(copy=True, with_mean=True, with_std=True) ),
+                    ('estimator', grid)
+                    ]
+            )
+            return pipe
+        else:
+            return grid
 
 
 #decorator for adding properties to estimator classes

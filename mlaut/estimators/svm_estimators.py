@@ -46,12 +46,13 @@ class SVC_mlaut(MlautEstimator):
             Instantiated estimator object.
         
         """
+        return self._create_pipeline(estimator=SVC)
 
-        return GridSearchCV(SVC(), 
-                            self._hyperparameters, 
-                            verbose = self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit)
+        # return GridSearchCV(SVC(), 
+        #                     self._hyperparameters, 
+        #                     verbose = self._verbose,
+        #                     n_jobs=self._n_jobs,
+        #                     refit=self._refit)
 
 
     # def save(self, dataset_name):
