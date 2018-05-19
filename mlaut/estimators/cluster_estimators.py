@@ -58,7 +58,8 @@ class K_Means(MlautEstimator):
 
         Returns
         -------
-            KMeans: `sklearn object`
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
         # input_dim=kwargs['input_dim']
         # num_samples = kwargs['num_samples']
@@ -66,8 +67,10 @@ class K_Means(MlautEstimator):
         k_means = cluster.KMeans(n_clusters=num_classes)
         
 
-        return GridSearchCV(k_means, 
+        estimator = GridSearchCV(k_means, 
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
+        return self._create_pipeline(estimator=estimator)        
+

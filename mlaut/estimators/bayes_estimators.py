@@ -43,10 +43,12 @@ class Gaussian_Naive_Bayes(MlautEstimator):
         
         Returns
         -------
-        `sklearn object`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
-        return GaussianNB()
+        return self._create_pipeline(estimator=GaussianNB())        
+
+         
 
 @properties(estimator_family=[NAIVE_BAYES], 
             tasks=[CLASSIFICATION], 
@@ -90,7 +92,7 @@ class Bernoulli_Naive_Bayes(MlautEstimator):
         
         Returns
         -------
-        `sklearn object`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
-        return BernoulliNB()
+        return self._create_pipeline(estimator=BernoulliNB())

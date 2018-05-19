@@ -148,7 +148,7 @@ class FilesIO:
     #     with open(EXPERIMENTS_TRAINED_MODELS_DIR + dataset_name + PICKLE_EXTENTION,'wb') as f:
     #         pickle.dump(trained_models,f)
     
-    def save_prediction_to_db(self, predictions, dataset_name, strategy_name):
+    def save_prediction_to_db(self, predictions, dataset_name, strategy_name, override=False):
         """
         Saves the prediction of a single trained estimator in HDF5 database.
 
@@ -164,9 +164,12 @@ class FilesIO:
         f = h5py.File(self.hdf5_filename, self._mode)
         save_path = f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}'
         try:
+            save_path_exists = save_path in f
+            if save_path_exists and override is True:
+                del f[save_path]
             f[save_path] = np.array(predictions) 
-        except:
-            raise ValueError('Save path already exists')
+        except Exception as e:
+            raise ValueError(f'Exception occurred: {e}')
         f.close()
 
     def save_predictions_to_db(self, predictions, dataset_name):
@@ -187,8 +190,8 @@ class FilesIO:
             save_path = f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}'
             try:
                 f[save_path] = strategy_predictions
-            except:
-                raise ValueError('Save path already exists')
+            except Exception as e:
+                raise ValueError(f'Exception while saving: {e}')
         f.close()
     def save_array_hdf5(self, group, datasets, array_names, array_meta):
         """

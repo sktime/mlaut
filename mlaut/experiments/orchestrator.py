@@ -34,6 +34,9 @@ class Orchestrator:
 
     dts_names: array of strings
         array with the names of the datasets on which experiments will be run.
+    
+    original_datasets_group_h5_path :sting
+        root path where the raw datasets are stored
 
     experiments_predictions_group: string
         path in HDF5 database where predictions will be saved.
@@ -57,6 +60,8 @@ class Orchestrator:
                  split_datasets_group=SPLIT_DTS_GROUP,
                  train_idx=TRAIN_IDX,
                  test_idx=TEST_IDX):
+        if not isinstance(dts_names, list):
+            raise ValueError('dts_names must be an array')
         self.experiments_predictions_group=experiments_predictions_group
         self._experiments_trained_models_dir=experiments_trained_models_dir
         self._input_io = hdf5_input_io
@@ -122,11 +127,11 @@ class Orchestrator:
                         #modelling_strategy.load(path_to_check)
                     else:
                         #preprocess data
-                        X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
-                                                                                    X_train=X_train, 
-                                                                                    X_test=X_test, 
-                                                                                    y_train=y_train, 
-                                                                                    y_test=y_test)
+                        # X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
+                        #                                                             X_train=X_train, 
+                        #                                                             X_test=X_test, 
+                        #                                                             y_train=y_train, 
+                        #                                                             y_test=y_test)
                         num_samples, input_dim = X_train.shape
                         unique_labels = np.unique(y_train)
                         num_classes = len(unique_labels) 
@@ -168,15 +173,19 @@ class Orchestrator:
         
         return timestamps_df
 
-    def predict_all(self, trained_models_dir, estimators):
+    def predict_all(self, trained_models_dir, estimators, override=False):
         """
         Make predictions on test sets. The algorithm opens all saved estimators in the output directory and checks whether their names are specified in the estimators array. If they are it fetches the dataset splits and tries to make the predictions.
 
-        :type trained_models_dir: string
-        :param trained_models_dir: directory where the trained models are saved
+        Parameters
+        ----------
+        trained_models_dir: string
+            trained_models_dir: directory where the trained models are saved
 
-        :type estimators: array of :ref:`mlaut_estimator-label` objects
-        :param estimators: :ref:`mlaut_estimator-label` objects. The trained models are set as a property to the object.
+        estimators: array of :ref:`mlaut_estimator-label` objects
+            estimators: :ref:`mlaut_estimator-label` objects. The trained models are set as a property to the object.
+        override: boolean
+            If True overrides predictions in HDF5 database 
         """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties()['name'] for estimator in estimators]
@@ -193,18 +202,19 @@ class Orchestrator:
                     idx_estimator = names_all_estimators.index(name_estimator)
                     estimator = estimators[idx_estimator]
                     #preprocess data as per what was done during training
-                    data_preprocessing = estimator.properties()['data_preprocessing']
-                    X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
-                                                                                    X_train=X_train, 
-                                                                                    X_test=X_test, 
-                                                                                    y_train=y_train, 
-                                                                                    y_test=y_test)
+                    # data_preprocessing = estimator.properties()['data_preprocessing']
+                    # X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
+                    #                                                                 X_train=X_train, 
+                    #                                                                 X_test=X_test, 
+                    #                                                                 y_train=y_train, 
+                    #                                                                 y_test=y_test)
                     estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
                     trained_estimator = estimator.get_trained_model()
                     predictions = trained_estimator.predict(X_test)
                     self._output_io.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dts, 
-                                                        strategy_name=name_estimator)
+                                                        strategy_name=name_estimator,
+                                                        override=override)
                     print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
                 # except Exception as e:
                 #     print(f'Skipping estimator {name_estimator}. Error message: {e}')

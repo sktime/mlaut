@@ -19,7 +19,8 @@ class Generic_Estimator(MlautEstimator):
     estimator: scikit learn or other estimator
         An instance of an estimator object. 
     """
-    def __init__(self, properties_dict, estimator, verbose=0, 
+    def __init__(self, properties_dict, 
+                estimator, verbose=0, 
                 n_jobs=-1,
                 num_cv_folds=3, 
                 refit=True):

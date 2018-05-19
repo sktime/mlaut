@@ -49,32 +49,22 @@ class Random_Forest_Classifier(MlautEstimator):
         
         Returns
         -------
-        `GridsearchCV object`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
 
         """
-
-        return GridSearchCV(RandomForestClassifier(), 
+        estimator = GridSearchCV(RandomForestClassifier(), 
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
-    
+        return self._create_pipeline(estimator=estimator)  
+        # return GridSearchCV(RandomForestClassifier(), 
+        #                     self._hyperparameters, 
+        #                     verbose = self._verbose,
+        #                     n_jobs=self._n_jobs,
+        #                     refit=self._refit)
 
-
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
         
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[REGRESSION], 
@@ -111,32 +101,22 @@ class Random_Forest_Regressor(MlautEstimator):
         
         Returns
         -------
-        `GridsearchCV object`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
 
-        """           
-        return GridSearchCV(RandomForestRegressor(), 
+        """   
+        estimator = GridSearchCV(RandomForestRegressor(), 
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
+        return self._create_pipeline(estimator=estimator)        
+        # return GridSearchCV(RandomForestRegressor(), 
+        #                     self._hyperparameters, 
+        #                     verbose = self._verbose,
+        #                     n_jobs=self._n_jobs,
+        #                     refit=self._refit)
     
-
-
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
-
 
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[CLASSIFICATION], 
@@ -169,32 +149,23 @@ class Bagging_Classifier(MlautEstimator):
         
         Returns
         -------
-        `GridsearchCV object`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
-        model = BaggingClassifier(base_estimator=DecisionTreeClassifier())    
-        return GridSearchCV(model, 
+        estimator = BaggingClassifier(base_estimator=DecisionTreeClassifier())
+        estimator = GridSearchCV(estimator, 
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
+        return self._create_pipeline(estimator=estimator)        
+
+        # return GridSearchCV(model, 
+        #                     self._hyperparameters, 
+        #                     verbose = self._verbose,
+        #                     n_jobs=self._n_jobs,
+        #                     refit=self._refit)
     
-
-
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
-
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[REGRESSION], 
             name='BaggingRegressor')
@@ -227,32 +198,24 @@ class Bagging_Regressor(MlautEstimator):
         
         Returns
         -------
-        `GridSearchCV` object
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
        
-        model = BaggingRegressor(base_estimator=DecisionTreeClassifier())
-        return GridSearchCV(model, 
+        estimator = BaggingRegressor(base_estimator=DecisionTreeClassifier())
+        estimator = GridSearchCV(estimator, 
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
+        return self._create_pipeline(estimator=estimator)        
+
+        # return GridSearchCV(model, 
+        #                     self._hyperparameters, 
+        #                     verbose = self._verbose,
+        #                     n_jobs=self._n_jobs,
+        #                     refit=self._refit)
     
-
-
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
 
 
 @properties(estimator_family=[ENSEMBLE_METHODS], 
@@ -272,7 +235,7 @@ class Gradient_Boosting_Classifier(MlautEstimator):
                         refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 50, 100],
-                'max_depth':[10,100]
+                'max_depth':[10,100, None]
             }
 
     def build(self, **kwargs):
@@ -288,31 +251,17 @@ class Gradient_Boosting_Classifier(MlautEstimator):
         
         Returns
         -------
-        `GridsearchCV` object
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
 
         """
-        return GridSearchCV(GradientBoostingClassifier(), 
+        estimator = GridSearchCV(GradientBoostingClassifier(), 
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
-    
+        return self._create_pipeline(estimator=estimator)        
 
-
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
 
 @properties(estimator_family=[ENSEMBLE_METHODS], 
             tasks=[REGRESSION], 
@@ -332,7 +281,7 @@ class Gradient_Boosting_Regressor(MlautEstimator):
                         refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 50, 100],
-                'max_depth':[10,100]
+                'max_depth':[10,100, None]
             }
     def build(self, **kwargs):
         """
@@ -347,29 +296,15 @@ class Gradient_Boosting_Regressor(MlautEstimator):
         
         Returns
         -------
-        `GridsearchCV object`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
 
         """
 
-        return GridSearchCV(GradientBoostingRegressor(), 
+        estimator = GridSearchCV(GradientBoostingRegressor(), 
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
     
-
-
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
+        return self._create_pipeline(estimator=estimator)        

@@ -9,7 +9,7 @@ from mlaut.shared.static_variables import PICKLE_EXTENTION
 
 from sklearn import linear_model
 from sklearn.model_selection import GridSearchCV
-
+import numpy as np
 
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[REGRESSION], 
@@ -43,13 +43,16 @@ class Ridge_Regression(MlautEstimator):
         
         Returns
         -------
-        `sklearn object with built-in cross-validation`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
         
         
-        return linear_model.RidgeCV(alphas=self._hyperparameters['alphas'],
+        estimator = linear_model.RidgeCV(alphas=self._hyperparameters['alphas'],
                                 cv=self._num_cv_folds)
+
+        return self._create_pipeline(estimator=estimator)
+        
     # def save(self, dataset_name):
     #     """
     #     Saves estimator on disk.
@@ -91,13 +94,17 @@ class Lasso(MlautEstimator):
         
         Returns
         -------
-        `sklearn object with built-in cross-validation`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
 
-        return linear_model.LassoCV(alphas=self._hyperparameters['alphas'],
+
+        estimator = linear_model.LassoCV(alphas=self._hyperparameters['alphas'],
                                     cv=self._num_cv_folds,
                                     n_jobs=self._n_jobs)
+
+        return self._create_pipeline(estimator=estimator)
+
     # def save(self, dataset_name):
     #     """
     #     Saves estimator on disk.
@@ -140,13 +147,17 @@ class Lasso_Lars(MlautEstimator):
         
         Returns
         -------
-        `sklearn object with built-in cross-validation`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
 
-        return linear_model.LassoLarsCV(max_n_alphas=self._hyperparameters['max_n_alphas'],
+
+
+        estimator = linear_model.LassoLarsCV(max_n_alphas=self._hyperparameters['max_n_alphas'],
                                     cv=self._num_cv_folds,
                                     n_jobs=self._n_jobs)
+
+        return self._create_pipeline(estimator=estimator)
     # def save(self, dataset_name):
     #     """
     #     Saves estimator on disk.
@@ -175,7 +186,7 @@ class Logistic_Regression(MlautEstimator):
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = {
-                'C': [1e-6, 1] #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6]
+                'C': np.logspace(2, 10, 13)
             }
     def build(self, **kwargs):
         """
@@ -190,16 +201,22 @@ class Logistic_Regression(MlautEstimator):
         
         Returns
         -------
-        `GridsearchCV` object
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
 
         """
-
-        return GridSearchCV(linear_model.LogisticRegression(), 
+        estimator = GridSearchCV(linear_model.LogisticRegression(), 
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit)
+        return self._create_pipeline(estimator=estimator)
+
+        # return GridSearchCV(linear_model.LogisticRegression(), 
+        #                     self._hyperparameters, 
+        #                     verbose = self._verbose,
+        #                     n_jobs=self._n_jobs,
+        #                     refit=self._refit)
     
     # def save(self, dataset_name):
     #     """
@@ -231,8 +248,9 @@ class Passive_Aggressive_Classifier(MlautEstimator):
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
+                        
         self._hyperparameters = {
-                'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6],
+                'C': np.logspace(2, 10, 13),
                 'max_iter':[1000]
             }
     def build(self, **kwargs):
@@ -248,27 +266,19 @@ class Passive_Aggressive_Classifier(MlautEstimator):
         
         Returns
         -------
-        `GridsearchCV object`
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
- 
-        return GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
+        estimator = GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
                             self._hyperparameters, 
                             verbose=self._verbose,
                             n_jobs=self._n_jobs,
                             refit=self._refit
                             )
-
-    
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
+        return self._create_pipeline(estimator=estimator)
+        # return GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
+        #                     self._hyperparameters, 
+        #                     verbose=self._verbose,
+        #                     n_jobs=self._n_jobs,
+        #                     refit=self._refit
+        #                     )

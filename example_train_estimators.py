@@ -9,11 +9,11 @@ if __name__ == "__main__":
     input_io = data.open_hdf5('data/openml.h5', mode='r')
     out_io = data.open_hdf5('data/openml-classification.h5', mode='a')
     dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, hdf5_group='openml/')
-    split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_paths=dts_names_list_full_path[0:1])
-    instantiated_models = instantiate_default_estimators(estimators=['SVC'], verbose=1, n_jobs=-1)
+    split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_paths=[dts_names_list_full_path[-1]])
+    instantiated_models = instantiate_default_estimators(estimators=['all'], verbose=1, n_jobs=-1)
     orchest = Orchestrator(hdf5_input_io=input_io, 
                            hdf5_output_io=out_io, 
-                           dts_names=dts_names_list[0:1],
+                           dts_names=[dts_names_list[-1]],
                            original_datasets_group_h5_path='openml/')
     orchest.run(modelling_strategies=instantiated_models, override_saved_models=True)
 

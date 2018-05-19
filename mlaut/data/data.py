@@ -117,6 +117,9 @@ class Data(object):
         """
         split_dts_list = []
         
+        if not isinstance(dataset_paths, list):
+            raise ValueError('dataset_paths must be an array')
+
         for dts_loc in dataset_paths:
             #check if split exists in h5
             dts, metadata = hdf5_in.load_dataset_pd(dts_loc)

@@ -8,6 +8,8 @@ from mlaut.shared.files_io import DiskOperations
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn import preprocessing
+import logging
+
 
 class MlautEstimator(ABC):
     """
@@ -112,9 +114,10 @@ class MlautEstimator(ABC):
         """
         Getter method.
 
-        :rtype: `estimator object`
+        :rtype: `sklearn pipline object`
         """
-        return self._trained_model
+
+        return self._create_pipeline(self._trained_model)
 
     # def predict(self, X):
     #     estimator = self.get_trained_model()
@@ -126,31 +129,29 @@ class MlautEstimator(ABC):
 
         Parameters
         ----------
-        estimator(sklearn estimator): Reference of sklearn estimator that will be used at the end of the pipeline.
+        estimator: sklearn estimator
+            Reference of sklearn estimator that will be used at the end of the pipeline.
+
 
         Returns
         -------
             estimator(sklearn pipeline or GridSerachCV): `sklearn` pipeline object. If no preprocessing was set 
         """
-        #gridsearch instance
-        grid = GridSearchCV(estimator(), 
-                                self._hyperparameters, 
-                                verbose=self._verbose, 
-                                n_jobs=self._n_jobs,
-                                refit=self._refit)
+
 
         data_preprocessing = self.properties()['data_preprocessing']
+
         if data_preprocessing['normalize_labels'] is True:
             pipe = Pipeline(
                 memory=None,
                 steps=[
                     ('standardscaler', preprocessing.StandardScaler(copy=True, with_mean=True, with_std=True) ),
-                    ('estimator', grid)
+                    ('estimator', estimator)
                     ]
             )
             return pipe
         else:
-            return grid
+            return estimator
 
 
 #decorator for adding properties to estimator classes

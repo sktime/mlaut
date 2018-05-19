@@ -150,7 +150,14 @@ class Deep_NN_Classifier(MlautEstimator):
                                })
         self.set_trained_model(model)
 
-    
+    def get_trained_model(self):
+        """
+        Getter method.
+
+        :rtype: `keras object`
+        """
+
+        return self._trained_model
 
 
 @properties(estimator_family=[NEURAL_NETWORKS], 
@@ -255,16 +262,12 @@ class Deep_NN_Regressor(MlautEstimator):
         :param path_to_model: path on disk where the object is saved.
         """
         #file name could be passed with .* as extention. 
-
-        split_path = path_to_model.split('.')
-        path_to_json = split_path[0] + JSON_EXTENTION
-        path_to_weights = split_path[0] + HDF5_EXTENTION
-        json_file = open(path_to_json, 'r')
-        loaded_model_json = json_file.read()
-        json_file.close()
-        loaded_model = model_from_json(loaded_model_json)
-        loaded_model.load_weights(path_to_weights)
-        self.set_trained_model(loaded_model)
+        model = load_model(path_to_model,
+                           custom_objects={
+                               'OverwrittenSequentialClassifier':OverwrittenSequentialClassifier
+                               })
+        self.set_trained_model(model)
+        
 
 class OverwrittenSequentialClassifier(Sequential):
     """

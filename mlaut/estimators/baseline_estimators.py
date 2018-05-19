@@ -6,6 +6,7 @@ from mlaut.shared.static_variables import(BASELINE,
                                       CLASSIFICATION)
 
 from sklearn.dummy import DummyClassifier, DummyRegressor
+from mlaut.estimators.generic_estimator import Generic_Estimator
 
 @properties(estimator_family=[BASELINE],
             tasks=[REGRESSION],
@@ -41,6 +42,7 @@ class Baseline_Regressor(MlautEstimator):
             Instantiated estimator object.
         """
         return DummyRegressor(strategy=strategy)
+        return self._create_pipeline(estimator=DummyRegressor(strategy=strategy))
 
     # def save(self, dataset_name):
     #     """
@@ -55,6 +57,8 @@ class Baseline_Regressor(MlautEstimator):
     #     disk_op.save_to_pickle(trained_model=trained_model,
     #                          model_name=self.properties()['name'],
     #                          dataset_name=dataset_name)
+
+
 
 
 @properties(estimator_family=[BASELINE],
@@ -88,21 +92,7 @@ class Baseline_Classifier(MlautEstimator):
         
         Returns
         -------
-        `sklearn.dummy.DummyClassifier` 
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
-        return DummyClassifier(strategy=strategy)
-
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
+        return self._create_pipeline(estimator=DummyClassifier(strategy=strategy))

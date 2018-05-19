@@ -8,7 +8,7 @@ from mlaut.shared.static_variables import(SVM,
                                       CLASSIFICATION)
 
 from sklearn.svm import SVC
-
+import numpy as np
 @properties(estimator_family=[SVM], 
             tasks=[CLASSIFICATION], 
             name='SVC')
@@ -24,9 +24,11 @@ class SVC_mlaut(MlautEstimator):
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
+        c_range = np.logspace(2, 10, 13)
+        gamma_range = np.logspace(-9, 3, 13)
         self._hyperparameters = {
-                            'C': [1e-6, 1], #[1e-6, 1e-5, 1e-4,1e-3, 1e-2, 1, 1e2,1e3,1e4,1e5,1e6], #[1e-6, 1]
-                            'gamma': [1e-3, 1], #[1e-3, 1e-2, 1e-1, 1]
+                            'C': c_range,
+                            'gamma': gamma_range
                         }
 
     def build(self, **kwargs):
@@ -42,11 +44,16 @@ class SVC_mlaut(MlautEstimator):
         
         Returns
         -------
-        `GridsearchCV` object
-            Instantiated estimator object.
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         
         """
-        return self._create_pipeline(estimator=SVC)
+        estimator = GridSearchCV(SVC(), 
+                            self._hyperparameters, 
+                            verbose = self._verbose,
+                            n_jobs=self._n_jobs,
+                            refit=self._refit)
+        return self._create_pipeline(estimator=estimator)
 
         # return GridSearchCV(SVC(), 
         #                     self._hyperparameters, 
