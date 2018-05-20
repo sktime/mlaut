@@ -81,15 +81,17 @@ class Deep_NN_Classifier(MlautEstimator):
 
     def build(self, **kwargs):
         """
-        builds and returns estimator
+        Builds and returns estimator.
+        
+        Parameters
+        -----------
+        kwargs: key-value(integer)
+            The user must specify ``input_dim`` and ``num_samples``.
 
-
-        :type loss: string
-        :param loss: loss metric as per `keras documentation <https://keras.io/losses/>`_.
-
-        :type kwargs: key-value
-        :param kwargs: At a minimum the user must specify ``input_dim``, ``num_samples`` and ``num_classes``.
-        :rtype: `keras object`
+        Returns
+        -------
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
 
 
@@ -108,12 +110,11 @@ class Deep_NN_Classifier(MlautEstimator):
         # https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
         
         #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
-        model = KerasClassifier(build_fn=self._keras_model, 
+        estimator = KerasClassifier(build_fn=self._keras_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim)#TODO include flag for verbosity
 
-        return model
-
+        return self._create_pipeline(estimator=estimator)
 
     
 
@@ -134,7 +135,6 @@ class Deep_NN_Classifier(MlautEstimator):
     
     #overloading method from parent class
     def load(self, path_to_model):
-        #TODO this does not seem to work
         """
         Loads saved keras model from disk.
 
@@ -202,23 +202,17 @@ class Deep_NN_Regressor(MlautEstimator):
     
     def build(self, **kwargs):
         """
-        builds and returns estimator
-
+        Builds and returns estimator.
         
+        Parameters
+        -----------
+        kwargs: key-value(integer)
+            The user must specify ``input_dim`` and ``num_samples``.
 
-        :type loss: string
-        :param loss: loss metric as per `keras documentation <https://keras.io/losses/>`_.
-
-        :type learning_rate: float
-        :param learning_rate: learning rate for training the neural network.
-
-        :type hypehyperparameters: dictionary
-        :param hypehyperparameters: dictionary used for tuning the network if Gridsearch is used.
-
-        :type kwargs: key-value(integer)
-        :param kwargs: The user must specify ``input_dim`` and ``num_samples``.
-
-        :rtype: `keras object`
+        Returns
+        -------
+        `sklearn pipeline` object
+            pipeline for transforming the features and training the estimator
         """
         if 'input_dim' not in kwargs:
             raise ValueError('You need to specify input dimentions when building the model')
@@ -227,11 +221,12 @@ class Deep_NN_Regressor(MlautEstimator):
         input_dim=kwargs['input_dim']
         num_samples = kwargs['num_samples']
         
-        model = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
+        estimator = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
                                 input_dim=input_dim,
                                 verbose=self._verbose)
 
-        return model
+        
+        return self._create_pipeline(estimator=estimator)
         # return GridSearchCV(model, 
         #                     hyperparameters, 
         #                     verbose = self._verbose,
