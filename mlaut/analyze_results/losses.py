@@ -43,14 +43,16 @@ class Losses(object):
                 estimator_predictions = np.rint(estimator_predictions)
             
             loss=0
-            if self._metric is 'accuracy':
-                loss = accuracy_score(true_labels, estimator_predictions)
-                # self._losses[estimator_name].append( loss )
-            elif self._metric is 'mean_squared_error':
-                loss = mean_squared_error(true_labels, estimator_predictions)
-                # self._losses[estimator_name].append(loss)   
-            else:
-                raise ValueError(f'metric {self._metric} is not supported.')
+            loss_function = self._get_loss_function()
+            loss = loss_function(true_labels, estimator_predictions)
+            # if self._metric is 'accuracy':
+            #     loss = accuracy_score(true_labels, estimator_predictions)
+            #     # self._losses[estimator_name].append( loss )
+            # elif self._metric is 'mean_squared_error':
+            #     loss = mean_squared_error(true_labels, estimator_predictions)
+            #     # self._losses[estimator_name].append(loss)   
+            # else:
+            #     raise ValueError(f'metric {self._metric} is not supported.')
             
             self._errors_per_estimator[estimator_name].append(loss)
 
@@ -63,6 +65,8 @@ class Losses(object):
             sum_score = np.sum(errors)
             avg_score = sum_score/n
             self._errors_per_dataset_per_estimator[dataset_name].append([estimator_name, avg_score, std_score])
+    
+    
     def evaluate_per_dataset(self, 
                             predictions, 
                             true_labels, 
@@ -100,6 +104,18 @@ class Losses(object):
                 self._errors_per_dataset_per_estimator, 
                 self._losses_to_dataframe(self._errors_per_dataset_per_estimator))
 
+    def _get_loss_function(self):
+        """
+        This function returns a loss function depending on the `metric` that was provided.
+        """
+        if self._metric is 'accuracy':
+            loss = accuracy_score
+        elif self._metric is 'mean_squared_error':
+            loss = mean_squared_error
+        else:
+            raise ValueError(f'metric {self._metric} is not supported.')
+        
+        return loss
     def _losses_to_dataframe(self, losses):
         """
         Reformats the output of the dictionary returned by the :func:`mlaut.analyze_results.losses.Losses.get_losses` to a pandas DataFrame. This method can only be applied to reformat the output produced by :func:`mlaut.analyze_results.Losses.evaluate_per_dataset`.

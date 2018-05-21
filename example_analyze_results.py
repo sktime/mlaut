@@ -4,14 +4,19 @@ from mlaut.data import Data
 import pickle
 
 data = Data()
-input_io = data.open_hdf5('data/delgado.hdf5', mode='r')
-out_io = data.open_hdf5('data/experiments.hdf5', mode='a')
+input_io = data.open_hdf5('data/openml.h5', mode='r')
+out_io = data.open_hdf5('data/openml-classification.h5', mode='a')
 analyze = AnalyseResults(hdf5_output_io=out_io, 
                         hdf5_input_io=input_io, 
-                        input_h5_original_datasets_group='delgado_datasets/', 
+                        input_h5_original_datasets_group='openml/', 
                         output_h5_predictions_group='experiments/predictions/')
-observations = analyze.calculate_error_per_dataset(metric='mean_squared_error')
-print(observations)
+(errors_per_estimator, 
+ errors_per_dataset_per_estimator, 
+ errors_per_dataset_per_estimator_df) = analyze.prediction_errors(metric='accuracy')
+
+
+print(f'Errors per estimator: {errors_per_estimator}')
+print(f'Errors per dataset and per estimator: {errors_per_dataset_per_estimator}')
 
 # t_test, t_test_df = analyze.t_test(observations)
 # print('******t-test******')
