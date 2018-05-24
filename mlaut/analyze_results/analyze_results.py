@@ -75,7 +75,7 @@ class AnalyseResults(object):
 
         Parameters
         ----------
-        metric(string): Error metric. Supported values are: ``accuracy``,  ``mean_squared_error``
+        metric(`mlaut.Losses`): Error function. 
 
         Returns
         -------
@@ -89,13 +89,14 @@ class AnalyseResults(object):
         losses = Losses(metric)
         for dts in dts_predictions_list:
             predictions = self._output_io.load_predictions_for_dataset(dts)
-            train, test, _, _ = self._data.load_train_test_split(self._output_io, dts)
+            X_train, X_test, y_train, y_test = self._data.load_train_test_split(self._output_io, dts)
             path_orig_dts = f'{self._input_h5_original_datasets_group}/{dts}'
-            true_labels = self._data.load_true_labels(hdf5_in=self._input_io, dataset_loc=path_orig_dts, lables_idx=test)
-            true_labels = np.array(true_labels)
+            labels = np.append(y_train, y_test)
+            num_classes = len(np.unique(labels))
             losses.evaluate(predictions=predictions, 
-                            true_labels=true_labels,
-                            dataset_name=dts)
+                            true_labels=y_test,
+                            dataset_name=dts,
+                            num_classes=num_classes)
         return losses.get_losses()
 
 

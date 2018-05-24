@@ -1,14 +1,18 @@
 from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import average_precision_score
+
 import collections
 import numpy as np
 import pandas as pd
+
 class Losses(object):
     """
     Calculates prediction losses on test datasets achieved by the trained estimators. When the class is instantiated it creates a dictionary that stores the losses.
 
     Parameters
     ----------
-    metric(string): loss metric that will be calculated.
+    metric(function): loss function that will be used for the estimation. Must be `mlaut.Losses` object.
     round_round_predictions(Boolean): Sets whether the predictions of the estimators should be rounded to the nearest integer. This is useful when calculating the accuracy scores of the outputs of estimators that produce regression results as opposed to classification results. The default behaviour is to round the predictions if the ``accuracy`` metric is used.   
 
     """
@@ -25,7 +29,7 @@ class Losses(object):
         else:
             self._round_predictions = round_predictions
 
-    def evaluate(self, predictions, true_labels, dataset_name):
+    def evaluate(self, predictions, true_labels, dataset_name, num_classes):
         """
         Calculates the loss metrics on the test sets.
 
@@ -77,8 +81,8 @@ class Losses(object):
         
         Parameters
         ----------
-        predictions : 2d array-like in the form [estimator name, [estimator_predictions]].
-        true_labels : 1d array-like
+        predictions (array): 2d array-like in the form [estimator name, [estimator_predictions]].
+        true_labels (array): 1d array-like
         
         """
         estimator_name = predictions[0]
@@ -145,3 +149,73 @@ class Losses(object):
         df.index = pd.MultiIndex.from_product([dts, estimators_list])
 
         return df
+
+
+"""
+Loss functions available to the user
+"""
+
+def loss_accuracy(y_true, y_pred, **kwargs):
+    """
+    Calculates the accuracy between the true and predicted lables.
+
+    Parameters
+    ----------
+    y_true(array): True dataset labels.
+    y_pred(array): predicted labels.
+    **kwargs(dictionary): unused.
+
+    Returns
+    -------
+        accuracy_score (float): The accuracy of the prediction.
+    """
+    return accuracy_score(y_true, y_pred)
+
+def loss_mse(y_true, y_pred, **kwargs):
+    """
+    Calculates the mean squared error between the true and predicted lables.
+
+    Parameters
+    ----------
+    y_true(array): True dataset labels.
+    y_pred(array): predicted labels.
+    **kwargs(dictionary): unused.
+
+    Returns
+    -------
+        mean_squared_error (float): The mean squared error of the prediction.
+    """
+    return mean_squared_error(y_true, y_pred)
+
+def loss_precision_recall(y_true, y_pred, **kwargs):
+    """
+    Calculates the precision-recall metrics in a multiclass setting.
+
+    Parameters
+    ----------
+    y_true(array): True dataset labels.
+    y_pred(array): predicted labels.
+    **kwargs(dictionary): must include `num_classes` variable.
+
+    Returns
+    -------
+        precision (dict), recall(dict), average_precision(dict): Returns the precision, recall and average precision metrics.
+    """
+
+    n_classes = kwargs['num_classes']
+    precision = dict()
+    recall = dict()
+    average_precision = dict()
+
+    for i in range(n_classes):
+        precision[i], recall[i], _ = precision_recall_curve(y_true[:, i],
+                                                            y_pred[:, i])
+        average_precision[i] = average_precision_score(y_true[:, i], y_pred[:, i])
+
+        # A "micro-average": quantifying score on all classes jointly
+        precision["micro"], recall["micro"], _ = precision_recall_curve(y_true.ravel(),
+            y_pred.ravel())
+        average_precision["micro"] = average_precision_score(y_true, y_pred,
+                                                            average="micro")
+    
+    return precision, recall, average_precision
