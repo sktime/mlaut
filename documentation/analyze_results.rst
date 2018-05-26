@@ -20,3 +20,13 @@ losses
     :members:
     :undoc-members:
     :show-inheritance:
+
+scores
+------
+
+.. automodule:: mlaut.analyze_results.scores
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
