@@ -104,7 +104,7 @@ class Orchestrator:
                 logging.log(1,f'Training estimators on {dts_name}')
 
                 dts_trained +=1
-                X_train, X_test, y_train, y_test = self._data.load_test_train_dts(hdf5_out=self._output_io, 
+                X_train, _, y_train, _ = self._data.load_test_train_dts(hdf5_out=self._output_io, 
                                                                               hdf5_in=self._input_io, 
                                                                               dts_name=dts_name, 
                                                                               dts_grp_path=self._original_datasets_group_h5_path)
@@ -115,8 +115,6 @@ class Orchestrator:
                 timestamps_df = pd.DataFrame()
                 for modelling_strategy in modelling_strategies:
                     ml_strategy_name = modelling_strategy.properties()['name']
-                    ml_strategy_family = modelling_strategy.properties()['estimator_family']
-                    data_preprocessing = modelling_strategy.properties()['data_preprocessing']
                     begin_timestamp = datetime.now()
 
                     #check whether the model was already trained
@@ -146,6 +144,9 @@ class Orchestrator:
                             modelling_strategy.save(dts_name)
                         
                             self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
+
+                            trained_model = None
+                            modelling_strategy = None
                         except Exception as e:
                             print(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
                             logging.error(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
