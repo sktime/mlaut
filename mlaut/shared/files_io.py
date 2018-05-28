@@ -1,16 +1,21 @@
 import os
 import glob
 import pickle
-from .static_variables import EXPERIMENTS_TRAINED_MODELS_DIR, EXPERIMENTS_PREDICTIONS_GROUP, EXPERIMENTS_MODEL_ACCURACY_DIR
-from .static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
-from .static_variables import REFORMATTED_DATASETS_DIR
-from .static_variables import RUNTIMES_GROUP
-from .static_variables import RESULTS_DIR
+from .static_variables import (EXPERIMENTS_TRAINED_MODELS_DIR, 
+                               EXPERIMENTS_PREDICTIONS_GROUP, 
+                               EXPERIMENTS_MODEL_ACCURACY_DIR, 
+                               PICKLE_EXTENTION, 
+                               HDF5_EXTENTION, 
+                               REFORMATTED_DATASETS_DIR,
+                               RUNTIMES_GROUP,
+                               RESULTS_DIR)
+
 import h5py
 import tables
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import logging
 
 class DiskOperations(object):
     """
@@ -110,7 +115,6 @@ class FilesIO:
         self._mode = mode
         self._experiments_predictions_group=experiments_predictions_group
 
-    
 
     def check_h5_path_exists(self, path_to_check):
         """
@@ -148,29 +152,28 @@ class FilesIO:
     #     with open(EXPERIMENTS_TRAINED_MODELS_DIR + dataset_name + PICKLE_EXTENTION,'wb') as f:
     #         pickle.dump(trained_models,f)
     
-    def save_prediction_to_db(self, predictions, dataset_name, strategy_name, override=False):
+    def save_prediction_to_db(self, predictions, dataset_name, strategy_name):
         """
         Saves the prediction of a single trained estimator in HDF5 database.
 
-        :type predictions: numpy array
-        :param predictions: array with predictions
-        
-        :type dataset_name: string
-        :param dataset_name: name of dataset on which the estimator was trained
-
-        :type strategy_name: string
-        :param strategy_name: name of estimator/strategy 
+        Args:
+            predictions(numpy array): array with predictions.
+            dataset_name(string): dataset_name: name of dataset on which the estimator was trained.
+            strategy_name(string):strategy_name: name of estimator/strategy.
         """
         f = h5py.File(self.hdf5_filename, self._mode)
         save_path = f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}'
         try:
             save_path_exists = save_path in f
-            if save_path_exists and override is True:
+            if save_path_exists:
                 del f[save_path]
-            f[save_path] = np.array(predictions) 
+                logging.info(f'Overriding prediction for {strategy_name} on {dataset_name}.')
+            f[save_path] = np.array(predictions)
+            logging.info(f'Prediction of {strategy_name} on {dataset_name} stored in database.') 
         except Exception as e:
             raise ValueError(f'Exception occurred: {e}')
-        f.close()
+        finally:
+            f.close()
 
     def save_predictions_to_db(self, predictions, dataset_name):
         """
@@ -190,6 +193,7 @@ class FilesIO:
             save_path = f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}'
             try:
                 f[save_path] = strategy_predictions
+                logging.info(f'Predictions of {strategy_name} on {dataset_name} stored in database.')
             except Exception as e:
                 raise ValueError(f'Exception while saving: {e}')
         f.close()

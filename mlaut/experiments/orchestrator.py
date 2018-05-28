@@ -24,31 +24,16 @@ class Orchestrator:
     """
     Orchestrates the sequencing of running the machine learning experiments.
 
-    Parameters
-    ------------
-    hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
-        instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the input file
-
-    hdf5_output_io: :func:`~mlaut.shared.files_io.FilesIO`
-        instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the output file
-
-    dts_names: array of strings
-        array with the names of the datasets on which experiments will be run.
-    
-    original_datasets_group_h5_path :sting
-        root path where the raw datasets are stored
-
-    experiments_predictions_group: string
-        path in HDF5 database where predictions will be saved.
-
-    experiments_trained_models_dir: string
-        folder on disk where trained estimators will be saved.
-    split_datasets_group : string
-        path in HDF5 database where the splits are saved.
-    train_idx : string
-        folder in HDF5 database which holds the train index splits.
-    test_idx : string
-        folder in HDF5 database which holds the test index splits.
+    Args:
+        hdf5_input_io (:func:`~mlaut.shared.files_io.FilesIO`): instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the input file.
+        hdf5_output_io (:func:`~mlaut.shared.files_io.FilesIO`): instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the output file.
+        dts_names (array of strings): array with the names of the datasets on which experiments will be run.
+        original_datasets_group_h5_path (sting): root path where the raw datasets are stored
+        experiments_predictions_group (string): path in HDF5 database where predictions will be saved.
+        experiments_trained_models_dir (string): folder on disk where trained estimators will be saved.
+        split_datasets_group (string): path in HDF5 database where the splits are saved.
+        train_idx (string): folder in HDF5 database which holds the train index splits.
+        test_idx (string): folder in HDF5 database which holds the test index splits.
     """
     def __init__(self, 
                  hdf5_input_io, 
@@ -62,7 +47,7 @@ class Orchestrator:
                  test_idx=TEST_IDX):
         if not isinstance(dts_names, list):
             raise ValueError('dts_names must be an array')
-        self.experiments_predictions_group=experiments_predictions_group
+        self._experiments_predictions_group=experiments_predictions_group
         self._experiments_trained_models_dir=experiments_trained_models_dir
         self._input_io = hdf5_input_io
         self._output_io = hdf5_output_io
@@ -91,8 +76,9 @@ class Orchestrator:
 
         The class uses helper methods in the experiments class to avoid too many nested loops.
 
-        :type modelling_strategies: array of :ref:`mlaut_estimator-label` objects
-        :param modelling_strategies: array of estimators that will be used for training
+        Args:
+            odelling_strategies (array of :ref:`mlaut_estimator-label` objects): Array of estimators that will be used for training
+            override_saved_models (Boolean): Flag whether the trained models should be overriden if they already exist on the disk.
         """ 
 
         try:
@@ -121,7 +107,7 @@ class Orchestrator:
                     path_to_check = self._experiments_trained_models_dir + os.sep + dts_name + os.sep + ml_strategy_name + '.*'
                     model_exists = self._disk_op.check_path_exists(path_to_check)
                     if model_exists is True and override_saved_models is False:
-                        logging.warning(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
+                        logging.info(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
                         #modelling_strategy.load(path_to_check)
                     else:
                         #preprocess data
@@ -178,19 +164,14 @@ class Orchestrator:
         """
         Make predictions on test sets. The algorithm opens all saved estimators in the output directory and checks whether their names are specified in the estimators array. If they are it fetches the dataset splits and tries to make the predictions.
 
-        Parameters
-        ----------
-        trained_models_dir: string
-            trained_models_dir: directory where the trained models are saved
-
-        estimators: array of :ref:`mlaut_estimator-label` objects
-            estimators: :ref:`mlaut_estimator-label` objects. The trained models are set as a property to the object.
-        override: boolean
-            If True overrides predictions in HDF5 database 
+        Args:
+            trained_models_dir (string): directory where the trained models are saved.
+            estimators (array of :ref:`mlaut_estimator-label` objects): The trained models are set as a property to the object.
+            override (boolean): If True overrides predictions in HDF5 database.
         """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties()['name'] for estimator in estimators]
-        for dts in datasets:
+        for dts in self._dts_names:
             X_train, X_test, y_train, y_test = self._data.load_test_train_dts(hdf5_out=self._output_io, 
                                                                               hdf5_in=self._input_io, 
                                                                               dts_name=dts, 
@@ -200,74 +181,76 @@ class Orchestrator:
                 name_estimator = saved_estimator.split('.')[0]
                 # try:
                 if name_estimator in names_all_estimators:
+                    #check whether predictions exist in the database before continuing
+                    if override is False:
+                        path_h5_predictions = f'{self._experiments_predictions_group}/{dts}/{name_estimator}'
+                        predictions_exist = self._output_io.check_h5_path_exists(path_h5_predictions)
+                        if predictions_exist is True:
+                            logging.info(f'Predictions for {name_estimator} on {dts} already exist in the database. Set override to True if you wish replace them.')
+                            continue
+                    
+                    #if override is set to True make the predictions without checking
                     idx_estimator = names_all_estimators.index(name_estimator)
                     estimator = estimators[idx_estimator]
-                    #preprocess data as per what was done during training
-                    # data_preprocessing = estimator.properties()['data_preprocessing']
-                    # X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
-                    #                                                                 X_train=X_train, 
-                    #                                                                 X_test=X_test, 
-                    #                                                                 y_train=y_train, 
-                    #                                                                 y_test=y_test)
+
                     estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
                     trained_estimator = estimator.get_trained_model()
                     predictions = trained_estimator.predict(X_test)
                     self._output_io.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dts, 
-                                                        strategy_name=name_estimator,
-                                                        override=override)
-                    print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
+                                                        strategy_name=name_estimator)
+                    #print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
                 # except Exception as e:
                 #     print(f'Skipping estimator {name_estimator}. Error message: {e}')
     
-    def _preprocess_dataset(self, data_preprocessing, X_train, X_test, y_train, y_test):
-        """
-        Preprocesses the raw dataset according to the metadata attached to the estimator class.
+    # def _preprocess_dataset(self, data_preprocessing, X_train, X_test, y_train, y_test):
+    #     """
+    #     Preprocesses the raw dataset according to the metadata attached to the estimator class.
 
-        Parameters
-        ----------
-        data_preprocessing: dictionary
-            dictionary with operations that need to be performed. The available values include:
-            `normalize_features` and `normalize_labels`.
-        X_train: array
-            training array with the dataset features
-        y_train: array
-            training array with the dataset labels
-        X_test: array
-            test array with the dataset features
-        y_test: array
-            test array with the dataset labels
+    #     Parameters
+    #     ----------
+    #     data_preprocessing: dictionary
+    #         dictionary with operations that need to be performed. The available values include:
+    #         `normalize_features` and `normalize_labels`.
+    #     X_train: array
+    #         training array with the dataset features
+    #     y_train: array
+    #         training array with the dataset labels
+    #     X_test: array
+    #         test array with the dataset features
+    #     y_test: array
+    #         test array with the dataset labels
 
-        Returns
-        -------
-            x_train_transformed(array): array with transformed features of the train set.
-            y_train_transformed(array): array with transformed labels of the train set.
-            x_test_transformed(array): array with transformed features on the test set.
-            y_test_transformed(array): array with transformed labels on the test set.
-        """
+    #     Returns
+    #     -------
+    #         x_train_transformed(array): array with transformed features of the train set.
+    #         y_train_transformed(array): array with transformed labels of the train set.
+    #         x_test_transformed(array): array with transformed features on the test set.
+    #         y_test_transformed(array): array with transformed labels on the test set.
+    #     """
         
-        x_train_transformed = X_train
-        x_test_transformed = X_test
-        y_train_transformed = y_train
-        y_test_transformed = y_train
+    #     x_train_transformed = X_train
+    #     x_test_transformed = X_test
+    #     y_train_transformed = y_train
+    #     y_test_transformed = y_train
 
-        if data_preprocessing['normalize_features'] is True:
-            scaler_features = preprocessing.StandardScaler(copy=True, 
-                                                           with_mean=True, 
-                                                           with_std=True)
-            scaler_features.fit(X_train)
-            x_train_transformed  = scaler_features.transform(X_train)
-            #apply the same transformation to the test set
-            x_test_transformed = scaler_features.transform(X_test)
+    #     if data_preprocessing['normalize_features'] is True:
+    #         scaler_features = preprocessing.StandardScaler(copy=True, 
+    #                                                        with_mean=True, 
+    #                                                        with_std=True)
+    #         scaler_features.fit(X_train)
+    #         x_train_transformed  = scaler_features.transform(X_train)
+    #         #apply the same transformation to the test set
+    #         x_test_transformed = scaler_features.transform(X_test)
         
-        if data_preprocessing['normalize_labels'] is True:
-            scaler_labels = preprocessing.StandardScaler(copy=True, 
-                                                           with_mean=True, 
-                                                           with_std=True)
-            scaler_labels.fit(y_train)
-            y_train_transformed = scaler_labels.transform(y_train)
-            #apply the same transformation to the test set
-            y_test_transformed = scaler_labels.transform(y_test)
+    #     if data_preprocessing['normalize_labels'] is True:
+    #         scaler_labels = preprocessing.StandardScaler(copy=True, 
+    #                                                        with_mean=True, 
+    #                                                        with_std=True)
+    #         scaler_labels.fit(y_train)
+    #         y_train_transformed = scaler_labels.transform(y_train)
+    #         #apply the same transformation to the test set
+    #         y_test_transformed = scaler_labels.transform(y_test)
 
-        return x_train_transformed, x_test_transformed, y_train_transformed, y_test_transformed
+    #     return x_train_transformed, x_test_transformed, y_train_transformed, y_test_transformed
         

@@ -73,21 +73,23 @@ class AnalyseResults(object):
         """
         Calculates the average prediction error per estimator as well as the prediction error achieved by each estimator on individual datasets.
 
-        Parameters
-        ----------
-        metric(`mlaut.Losses`): Error function. 
+        Args:
+            metric(`mlaut.analyse_results.scores`): Error function. 
 
-        Returns
-        -------
+        Returns:
             estimator_avg_error, estimator_avg_error_per_dataset (pickle of pandas DataFrame): ``estimator_avg_error`` represents the average error and standard deviation achieved by each estimator. ``estimator_avg_error_per_dataset`` represents the average error and standard deviation achieved by each estimator on each dataset.
         """
-        #load all datasets
-        dts_names_list, dts_names_list_full_path = self._data.list_datasets(hdf5_group=self._input_h5_original_datasets_group, hdf5_io=self._input_io)
-
         #load all predictions
         dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(self._output_h5_predictions_group, self._output_io)
         losses = Losses(metric)
+        dts_processed = []
+        
+        #TODO temporary fix!!!!!
+        # !!!! error in code if multiple predictions for the same dataset are stored
         for dts in dts_predictions_list:
+            if dts in dts_processed:
+                continue
+            dts_processed.append(dts)
             predictions = self._output_io.load_predictions_for_dataset(dts)
             _, _, _, y_test = self._data.load_test_train_dts(hdf5_out=self._output_io, 
                                                                               hdf5_in=self._input_io, 

@@ -71,7 +71,7 @@ CLUSTER='Cluster'
 def set_logging_defaults():
     logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
     rootLogger = logging.getLogger()
-
+    rootLogger.setLevel(logging.INFO)
     fileHandler = logging.FileHandler(LOG_ERROR_FILE)
     fileHandler.setFormatter(logFormatter)
     rootLogger.addHandler(fileHandler)
@@ -79,3 +79,4 @@ def set_logging_defaults():
     consoleHandler = logging.StreamHandler()
     consoleHandler.setFormatter(logFormatter)
     rootLogger.addHandler(consoleHandler)
+

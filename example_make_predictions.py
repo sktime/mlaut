@@ -13,5 +13,5 @@ orchest = Orchestrator(hdf5_input_io=input_io,
                            dts_names=dts_names,
                            original_datasets_group_h5_path='/openml')
 
-instantiated_models = instantiate_default_estimators(estimators=['all'], verbose=1)
-orchest.predict_all(trained_models_dir='data/trained_models', estimators=instantiated_models, override=True)
+instantiated_models = instantiate_default_estimators(estimators=['Classification'], verbose=1)
+orchest.predict_all(trained_models_dir='data/trained_models', estimators=instantiated_models, override=False)
