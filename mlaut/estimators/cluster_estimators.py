@@ -29,8 +29,7 @@ class K_Neighbours(MlautEstimator):
                         refit=refit)
         self._hyperparameters = {
                                 'n_neighbors': np.arange(1,31),
-                                'weights': ['uniform', 'distance'],
-                                'n_jobs':[-1]
+                                'weights': ['uniform', 'distance']
                         }
 
     def build(self, **kwargs):
