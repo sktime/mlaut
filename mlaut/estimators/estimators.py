@@ -17,7 +17,7 @@ from mlaut.estimators.ensemble_estimators import (Random_Forest_Classifier,
 from mlaut.estimators.svm_estimators import SVC_mlaut
 from mlaut.estimators.baseline_estimators import (Baseline_Regressor,
                                             Baseline_Classifier)
-from mlaut.estimators.cluster_estimators import K_Means
+from mlaut.estimators.cluster_estimators import K_Neighbours
 
 """
 Each estimator is contained it its own class.
@@ -83,7 +83,7 @@ def instantiate_default_estimators(estimators,
         Passive_Aggressive_Classifier,
         Baseline_Classifier,
         Baseline_Regressor,
-        K_Means
+        K_Neighbours
     ]
     estimators_array = []
 
