@@ -2,6 +2,7 @@ from mlaut.analyze_results import AnalyseResults
 from mlaut.data import Data
 from mlaut.analyze_results.scores import ScoreAccuracy
 import pickle
+from mlaut.estimators.estimators import instantiate_default_estimators
 
 data = Data()
 input_io = data.open_hdf5('data/openml.h5', mode='r')
@@ -12,9 +13,10 @@ analyze = AnalyseResults(hdf5_output_io=out_io,
                         output_h5_predictions_group='experiments/predictions/')
                     
 score_accuracy = ScoreAccuracy()
+estimators = instantiate_default_estimators(['Classification'])
 (errors_per_estimator, 
  errors_per_dataset_per_estimator, 
- errors_per_dataset_per_estimator_df) = analyze.prediction_errors(score_accuracy)
+ errors_per_dataset_per_estimator_df) = analyze.prediction_errors(metric=score_accuracy, estimators=estimators)
 
 
 print(f'Errors per estimator: {errors_per_estimator}')

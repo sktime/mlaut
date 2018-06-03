@@ -69,19 +69,19 @@ class AnalyseResults(object):
                           train_idx=self._train_idx,
                           test_idx=self._test_idx)
     
-    def prediction_errors(self, metric):
+    def prediction_errors(self, metric, estimators, exact_match=True):
         """
         Calculates the average prediction error per estimator as well as the prediction error achieved by each estimator on individual datasets.
 
         Args:
             metric(`mlaut.analyse_results.scores`): Error function. 
-
+            exact_match(Boolean): 
         Returns:
             estimator_avg_error, estimator_avg_error_per_dataset (pickle of pandas DataFrame): ``estimator_avg_error`` represents the average error and standard deviation achieved by each estimator. ``estimator_avg_error_per_dataset`` represents the average error and standard deviation achieved by each estimator on each dataset.
         """
         #load all predictions
         dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(self._output_h5_predictions_group, self._output_io)
-        losses = Losses(metric)
+        losses = Losses(metric, estimators, exact_match)
         dts_processed = []
         
         #TODO temporary fix!!!!!
@@ -90,19 +90,16 @@ class AnalyseResults(object):
             if dts in dts_processed:
                 continue
             dts_processed.append(dts)
-            predictions = self._output_io.load_predictions_for_dataset(dts)
+            predictions = self._output_io.load_predictions_for_dataset(dataset_name=dts)
             _, _, _, y_test = self._data.load_test_train_dts(hdf5_out=self._output_io, 
                                                                               hdf5_in=self._input_io, 
                                                                               dts_name=dts, 
                                                                               dts_grp_path=self._input_h5_original_datasets_group)
-            # path_orig_dts = f'{self._input_h5_original_datasets_group}/{dts}'
-            # labels = np.append(y_train, y_test)
-            # num_classes = len(np.unique(labels))
+
             losses.evaluate(predictions=predictions, 
                             true_labels=y_test,
                             dataset_name=dts)
         return losses.get_losses()
-
 
 
     def average_and_std_error(self, scores_dict):
@@ -156,12 +153,14 @@ class AnalyseResults(object):
         """
         Cohen's d is an effect size used to indicate the standardised difference between two means. The calculation is implemented natively (without the use of third-party libraries). More information can be found here: `Cohen\'s d <https://en.wikiversity.org/wiki/Cohen%27s_d>`_.
 
-        :type estimator_dict: dictionary
-        :param estimator_dict: dictionay with keys `names of estimators` and values `errors achieved by estimators on test datasets`.
-        :rtype: pandas DataFrame.
+        Args:
+            estimator_dict(dictionary): dictionay with keys `names of estimators` and values `errors achieved by estimators on test datasets`.
+        Returns:
+            pandas DataFrame.
         """
-        cohens_d = {}
+        
         comb = itertools.combinations(estimator_dict.keys(), r=2)
+        cohens_d_df = pd.DataFrame(columns=['estimator_1', 'extimator_2','value'])
         for c in comb:
             pair=f'{c[0]}-{c[1]}'
             val1 = estimator_dict[c[0]]
@@ -178,15 +177,20 @@ class AnalyseResults(object):
 
             SDpooled = np.sqrt(((n1-1)*v1 + (n2-1)*v2)/(n1+n2-2))
             ef = (m2-m1)/SDpooled
-            cohens_d[pair] = ef
-        cohens_d_df = pd.DataFrame.from_dict(cohens_d, orient='index')
-        cohens_d_df.columns = ['Cohen\'s d']
+            cohens_d = {
+                'estimator_1': c[0],
+                'estimator_2': c[1],
+                'value': ef
+            }
+            cohens_d_df = cohens_d_df.append(cohens_d, ignore_index=True)
 
-        #sort by absolute value
-        cohens_d_df['sort']= cohens_d_df['Cohen\'s d'].abs()
-        cohens_d_df = cohens_d_df.sort_values(['sort'], ascending=[0])
-        cohens_d_df = cohens_d_df.drop(['sort'], axis=1)
-        return cohens_d_df
+
+        table = pd.pivot_table(cohens_d_df, 
+                               index='estimator_1', 
+                               columns='estimator_2', 
+                               values='value', 
+                               fill_value='')
+        return table\
 
     # def _convert_from_array_to_dict(self, observations):
     #     observations = np.array(observations)
@@ -209,25 +213,39 @@ class AnalyseResults(object):
         """
         Runs t-test on all possible combinations between the estimators.
 
-        :type observations: dictionary
-        :param observations: Dictionary with errors on test sets achieved by estimators.
-        :rtype: tuple of dictionary, pandas DataFrame
+        Args:
+            observations(dictionary): Dictionary with errors on test sets achieved by estimators.
+        Returns:
+            tuple of pandas DataFrame (db style and Multiindex)
         """
         t_test = {}
-        perms = itertools.combinations(observations.keys(), r=2)
+        t_df = pd.DataFrame()
+        perms = itertools.product(observations.keys(), repeat=2)
+        values = np.array([])
         for perm in perms:
-            comb  = perm[0] + ' - ' + perm[1]
             x = np.array(observations[perm[0]])
             y = np.array(observations[perm[1]])
             t_stat, p_val = ttest_ind(x,y)
-            t_test[comb] = [t_stat, p_val ]
 
-        values = []
-        for pair in t_test.keys():        
-            values.append( [pair, t_test[pair][0], t_test[pair][1]  ])
-        values_df = pd.DataFrame(values, columns=['pair','t_statistic','p_value'])
+            t_test = {
+                'estimator_1': perm[0],
+                'estimator_2': perm[1],
+                't_stat': t_stat,
+                'p_val': p_val
+            }
 
-        return t_test, values_df
+            t_df = t_df.append(t_test, ignore_index=True)
+            values = np.append(values,t_stat)
+            values = np.append(values,p_val)
+            
+        index=t_df['estimator_1'].unique()
+        values_names = ['t_stat','p_val']
+        col_idx = pd.MultiIndex.from_product([index,values_names])
+        values_reshaped = values.reshape(len(index), len(values_names)*len(index))
+
+        values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
+
+        return t_df, values_df_multiindex
                         
     def sign_test(self, observations):
         """

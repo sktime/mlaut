@@ -133,13 +133,15 @@ class FilesIO:
         """
         Loads predictions generated my trained estimator models.
 
-        :type dataset_name: string
-        :param dataset_name: Name of dataset on which estimators were trained
-        :rtype: `numpy array in the form [[strategy name][predictions]]`
+        Args:
+            dataset_name(string): Name of dataset on which estimators were trained
+        Retuns:
+            predictions_for_dataset(`array): Array in the form [[strategy name][predictions]]`.
         """
         f = h5py.File(self.hdf5_filename, self._mode)
         load_path = f'/{self._experiments_predictions_group}/{dataset_name}'
         predictions = f[load_path]
+        
         
         predictions_for_dataset = []
         for strategy in list(predictions):
