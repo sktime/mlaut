@@ -16,7 +16,6 @@ from mlaut.data.data import Data
 from scipy import stats
 from scipy.stats import ttest_ind
 from scipy.stats import ranksums
-from statsmodels.sandbox.stats.multicomp import multipletests
 
 from sklearn.metrics import accuracy_score, mean_squared_error
 import scikit_posthocs as sp
@@ -192,21 +191,6 @@ class AnalyseResults(object):
                                fill_value='')
         return table\
 
-    # def _convert_from_array_to_dict(self, observations):
-    #     observations = np.array(observations)
-    #     num_datasets = observations.shape[0]
-    #     num_strategies = observations.shape[1]
-    #     num_key_value_pairs = observations.shape[2]
-    
-    #     resh = observations.ravel().reshape(num_datasets * num_strategies,num_key_value_pairs)
-    #     df = pd.DataFrame(resh, columns=['strategy', 'accuracy'])
-    #     list_strategies = df['strategy'].unique()
-    
-    #     acc_per_strat = {}
-    #     for strat in list_strategies:
-    #         acc_per_strat[strat] = df[df['strategy']==strat]['accuracy'].values.astype(np.float32)
-    #     return acc_per_strat
-
    
 
     def t_test(self, observations):
@@ -216,9 +200,8 @@ class AnalyseResults(object):
         Args:
             observations(dictionary): Dictionary with errors on test sets achieved by estimators.
         Returns:
-            tuple of pandas DataFrame (db style and Multiindex)
+            tuple of pandas DataFrame (Database style and MultiIndex)
         """
-        t_test = {}
         t_df = pd.DataFrame()
         perms = itertools.product(observations.keys(), repeat=2)
         values = np.array([])
@@ -253,48 +236,63 @@ class AnalyseResults(object):
         The test counts the number of observations that are greater, smaller and equal to the mean
         `<http://en.wikipedia.org/wiki/Wilcoxon_rank-sum_test>`_.
 
-
-        :type observations: dictionary
-        :param observations: Dictionary with errors on test sets achieved by estimators.
-        :rtype: tuple of dictionary, pandas DataFrame
+        Args:
+            observations(dictionary): Dictionary with errors on test sets achieved by estimators.
+        Returns:
+            tuple of pandas DataFrame (Database style and MultiIndex)
         """
-        sign_test = {}
-        perms = itertools.combinations(observations.keys(), r=2)
+        sign_df = pd.DataFrame()
+        perms = itertools.product(observations.keys(), repeat=2)
+        values = np.array([])
         for perm in perms:
             comb  = perm[0] + ' - ' + perm[1]
             x = observations[perm[0]]
             y = observations[perm[1]]
             t_stat, p_val = ranksums(x,y)
-            sign_test[comb] = [t_stat, p_val]
-        
-        values = []
-        for pair in sign_test.keys():        
-            values.append( [pair, sign_test[pair][0], sign_test[pair][1] ])
-        values_df = pd.DataFrame(values, columns=['pair','t_statistic','p_value'])
+            sign_test = {
+                'estimator_1': perm[0],
+                'estimator_2': perm[1],
+                't_stat': t_stat,
+                'p_val': p_val
+            }
+            sign_df = sign_df.append(sign_test, ignore_index=True)
+            values = np.append(values,t_stat)
+            values = np.append(values,p_val)
 
-        return sign_test, values_df
+        index=sign_df['estimator_1'].unique()
+        values_names = ['t_stat','p_val']
+        col_idx = pd.MultiIndex.from_product([index,values_names])
+        values_reshaped = values.reshape(len(index), len(values_names)*len(index))
+
+        values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
+
+        return sign_df, values_df_multiindex
         
     def t_test_with_bonferroni_correction(self, observations, alpha=0.05):
         """
         correction used to counteract multiple comparissons
         https://en.wikipedia.org/wiki/Bonferroni_correction
 
-
-        :type observations: dictionary
-        :param observations: Dictionary with errors on test sets achieved by estimators.
-
-        :type alpha: float
-        :param alpha: confidence level.
-        :rtype: tuple of dictionary, pandas DataFrame
+        Args:
+            observations(dictionary): Dictionary with errors on test sets achieved by estimators.
+            alpha(float): confidence level.
+        Returns:
+            tuple of pandas DataFrame
         """
-        t_test, df_t_test = self.t_test(observations)
+        df_t_test, _ = self.t_test(observations)
+        idx_estim_1 = df_t_test['estimator_1'].unique()
+        idx_estim_2 = df_t_test['estimator_2'].unique()
+        estim_1 = len(idx_estim_1)
+        estim_2 = len(idx_estim_2)
+        critical_value = alpha/(estim_1*estim_2)
+
+        bonfer_test = df_t_test['p_val'] <= critical_value
         
-        unadjusted_p_vals = np.array(df_t_test['p_value'])
-        reject, p_adjusted, alphacSidak, alphacBonf = multipletests(unadjusted_p_vals, alpha=alpha, method='bonferroni')
-        
-        values_df = pd.concat([df_t_test['pair'], pd.Series(p_adjusted, name='p_value')], axis=1)
-        t_test_bonferoni = np.array(values_df)
-        return t_test_bonferoni, values_df
+        bonfer_test_reshaped = bonfer_test.values.reshape(estim_1, estim_2)
+
+        bonfer_df = pd.DataFrame(bonfer_test_reshaped, index=idx_estim_1, columns=idx_estim_2)
+
+        return bonfer_df
         
     def wilcoxon_test(self, observations):
         """http://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test
@@ -302,23 +300,39 @@ class AnalyseResults(object):
         Tests whether two  related paired samples come from the same distribution. 
         In particular, it tests whether the distribution of the differences x-y is symmetric about zero
 
-        :type observations: dictionary
-        :param observations: Dictionary with errors on test sets achieved by estimators.
-        :rtype: tuple of dictionary, pandas DataFrame.
+        Args:
+            observations(dictionary): Dictionary with errors on test sets achieved by estimators.
+        Returns:
+            tuple of pandas DataFrame (Database style and MultiIndex)
         """
-        wilcoxon_test ={}
-        perms = itertools.combinations(observations.keys(), r=2)
-        for perm in perms:
-            comb  = perm[0] + ' - ' + perm[1]
-            wilcoxon_test[comb] = stats.wilcoxon(observations[perm[0]],
-                         observations[perm[1]])
-        
-        values = []
-        for pair in wilcoxon_test.keys():        
-            values.append( [pair, wilcoxon_test[pair][0], wilcoxon_test[pair][1] ])
-        values_df = pd.DataFrame(values, columns=['pair','statistic','p_value'])
+        wilcoxon_df = pd.DataFrame()
+        values = np.array([])
+        prod = itertools.product(observations.keys(), repeat=2)
+        for p in prod:
+            estim_1 = p[0]
+            estim_2 = p[1]
+            w, p_val = stats.wilcoxon(observations[p[0]],
+                         observations[p[1]])
 
-        return wilcoxon_test, values_df
+            w_test = {
+                'estimator_1': estim_1,
+                'estimator_2': estim_2,
+                'statistic': w,
+                'p_val': p_val
+            }
+
+            wilcoxon_df = wilcoxon_df.append(w_test, ignore_index=True)
+            values = np.append(values, w)
+            values = np.append(values, p_val)
+
+        index=wilcoxon_df['estimator_1'].unique()
+        values_names = ['statistic','p_val']
+        col_idx = pd.MultiIndex.from_product([index,values_names])
+        values_reshaped = values.reshape(len(index), len(values_names)*len(index))
+
+        values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
+
+        return wilcoxon_df, values_df_multiindex
                         
     def friedman_test(self, observations):
         """
