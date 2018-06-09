@@ -25,26 +25,14 @@ class AnalyseResults(object):
     """
     Analyze results of machine learning experiments.
 
-    :type hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
-    :param hdf5_input_io: Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
-
-    :type hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
-    :param hdf5_input_io: Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
-
-    :type input_h5_original_datasets_group: string
-    :param input_h5_original_datasets_group: location in HDF5 database where the original datasets are stored.
-
-    :type output_h5_predictions_group: string
-    :param output_h5_predictions_group: location in HDF5 where the prediction of the estimators will be saved.
-
-    :type split_datasets_group: string
-    :param split_datasets_group: location in HDF5 database where the test/train splits are saved.
-
-    :type train_idx: string
-    :param train_idx: name of group where the train split index will be stored.
-
-    :type test_idx: string
-    :param test_idx: name of group where the test split index will be stored.
+    Args:
+        hdf5_input_io(:func:`~mlaut.shared.files_io.FilesIO`): Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
+        hdf5_input_io(:func:`~mlaut.shared.files_io.FilesIO`): Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
+        input_h5_original_datasets_group(string): location in HDF5 database where the original datasets are stored.
+        output_h5_predictions_group(string): location in HDF5 where the prediction of the estimators will be saved.
+        split_datasets_group(string): location in HDF5 database where the test/train splits are saved.
+        train_idx(string): name of group where the train split index will be stored.
+        test_idx(string): name of group where the test split index will be stored.
     """
 
     def __init__(self, 
@@ -105,11 +93,11 @@ class AnalyseResults(object):
         """
         Calculates simple average and standard error.
 
-        :type scores_dict: dictionary
-        :param scores_dict: Dictionary with estimators (keys) and corresponding 
-            prediction accuracies on different datasets.
+        Args:
+            scores_dict(dictionary): Dictionary with estimators (keys) and corresponding prediction accuracies on different datasets.
         
-        :rtype: pandas DataFrame
+        Returns:
+            pandas DataFrame
         """
         result = {}
         for k in scores_dict.keys():
@@ -119,8 +107,8 @@ class AnalyseResults(object):
             result[k]=[average,std_error]
         
         res_df = pd.DataFrame.from_dict(result, orient='index')
-        res_df.columns=['avg','std_error']
-        res_df = res_df.sort_values(['avg','std_error'], ascending=[1,1])
+        res_df.columns=['avg_score','std_error']
+        res_df = res_df.sort_values(['avg_score','std_error'], ascending=[1,1])
 
         return res_df
     

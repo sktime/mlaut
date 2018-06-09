@@ -28,9 +28,7 @@ for id in all_datasets.keys():
     if all_datasets[id]['NumberOfInstances'] > NUMBER_OF_INSTANCES_CUTOFF_NUMBER:
         print(f"Skipping dataset {id}, {all_datasets[id]['name']}. It has more than {NUMBER_OF_INSTANCES_CUTOFF_NUMBER} instances.")
         continue
-    if all_datasets[id]['NumberOfClasses'] > all_datasets[id]['NumberOfInstances'] * 5:
-        print(f'Skipping dataset {id}. Num classes > 5 * num instances.')
-        continue
+
 
     print(f"Trying to download dataset {id}, {all_datasets[id]['name']}")
 
