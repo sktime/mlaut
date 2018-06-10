@@ -18,9 +18,9 @@ estimators = instantiate_default_estimators(['Classification'])
  errors_per_dataset_per_estimator, 
  errors_per_dataset_per_estimator_df) = analyze.prediction_errors(metric=score_accuracy, estimators=estimators)
 
-
-print(f'Errors per estimator: {errors_per_estimator}')
-print(f'Errors per dataset and per estimator: {errors_per_dataset_per_estimator}')
+training_time = analyze.average_training_time(estimators)
+# print(f'Errors per estimator: {errors_per_estimator}')
+# print(f'Errors per dataset and per estimator: {errors_per_dataset_per_estimator}')
 
 # t_test, t_test_df = analyze.t_test(observations)
 # print('******t-test******')

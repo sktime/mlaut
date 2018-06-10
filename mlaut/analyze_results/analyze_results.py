@@ -1,12 +1,21 @@
-from mlaut.shared.static_variables import T_TEST_FILENAME,FRIEDMAN_TEST_FILENAME, WILCOXON_TEST_FILENAME, SIGN_TEST_FILENAME, BONFERRONI_TEST_FILENAME
-from mlaut.shared.static_variables import RESULTS_DIR, T_TEST_DATASET, SIGN_TEST_DATASET, BONFERRONI_CORRECTION_DATASET, WILCOXON_DATASET, FRIEDMAN_DATASET
-
 from mlaut.shared.static_variables import (DATA_DIR, 
                                            HDF5_DATA_FILENAME, 
                                            EXPERIMENTS_PREDICTIONS_GROUP,
                                            SPLIT_DTS_GROUP,
                                            TRAIN_IDX,
-                                           TEST_IDX)
+                                           TEST_IDX, 
+                                           RUNTIMES_GROUP, 
+                                           RESULTS_DIR, 
+                                           T_TEST_DATASET, 
+                                           SIGN_TEST_DATASET, 
+                                           BONFERRONI_CORRECTION_DATASET, 
+                                           WILCOXON_DATASET, 
+                                           FRIEDMAN_DATASET, 
+                                           T_TEST_FILENAME,
+                                           FRIEDMAN_TEST_FILENAME, 
+                                           WILCOXON_TEST_FILENAME, 
+                                           SIGN_TEST_FILENAME, 
+                                           BONFERRONI_TEST_FILENAME)
 import pandas as pd
 import numpy as np
 import itertools
@@ -31,6 +40,7 @@ class AnalyseResults(object):
         input_h5_original_datasets_group(string): location in HDF5 database where the original datasets are stored.
         output_h5_predictions_group(string): location in HDF5 where the prediction of the estimators will be saved.
         split_datasets_group(string): location in HDF5 database where the test/train splits are saved.
+        run_times_group(string): location where the run times are saved in the HDF5 database.
         train_idx(string): name of group where the train split index will be stored.
         test_idx(string): name of group where the test split index will be stored.
     """
@@ -41,6 +51,7 @@ class AnalyseResults(object):
                  input_h5_original_datasets_group, 
                  output_h5_predictions_group,
                  split_datasets_group=SPLIT_DTS_GROUP,
+                 run_times_group=RUNTIMES_GROUP,
                  train_idx=TRAIN_IDX,
                  test_idx=TEST_IDX):
 
@@ -49,6 +60,7 @@ class AnalyseResults(object):
         self._input_h5_original_datasets_group = input_h5_original_datasets_group
         self._output_h5_predictions_group = output_h5_predictions_group
         self._split_datasets_group = split_datasets_group
+        self._run_times_group=run_times_group
         self._train_idx = test_idx
         self._test_idx = test_idx
         self._data = Data(experiments_predictions_group=self._output_h5_predictions_group,
@@ -62,7 +74,8 @@ class AnalyseResults(object):
 
         Args:
             metric(`mlaut.analyse_results.scores`): Error function. 
-            exact_match(Boolean): 
+            estimators(`mlaut_estimator` array): Estimator objects.
+            exact_match(Boolean): If `True` when predictions for all estimators in the estimators array is not available no evaluation is performed on the remaining estimators. 
         Returns:
             estimator_avg_error, estimator_avg_error_per_dataset (pickle of pandas DataFrame): ``estimator_avg_error`` represents the average error and standard deviation achieved by each estimator. ``estimator_avg_error_per_dataset`` represents the average error and standard deviation achieved by each estimator on each dataset.
         """
@@ -111,7 +124,40 @@ class AnalyseResults(object):
         res_df = res_df.sort_values(['avg_score','std_error'], ascending=[1,1])
 
         return res_df
-    
+    def average_training_time(self, estimators, exact_match=True):
+        """
+        Average training time for each estimator.
+
+        Args:
+            estimators(`mlaut_estimator` array): Estimator objects.
+            exact_match(Boolean): If `True` when predictions for all estimators in the estimators array is not available no evaluation is performed on the remaining estimators. 
+
+        Returns:
+            tuple of pandas DataFrame (avg_training_time, trainig_time_per_dataset)
+        """
+        _, dts_run_times_full_path = self._data.list_datasets(self._run_times_group, self._output_io)
+        estimator_dict = {estimator.properties()['name']: [] for estimator in estimators}
+
+        for dts in dts_run_times_full_path:
+            run_times_per_estimator,_ = self._output_io.load_dataset_pd(dataset_path=dts, return_metadata=False)
+            run_times_estimator_names = run_times_per_estimator['strategy_name'].tolist()
+            #check whether we have data on all estimators that were passed as an argument
+            run_times_all_estimators_exist = (set(run_times_estimator_names) == set(estimator_dict.keys()))
+            if exact_match and not run_times_all_estimators_exist:
+                continue
+            #TODO come up with a more efficient solution to avoid loop
+            for i in range(run_times_per_estimator.shape[0]):
+
+                strategy_name = run_times_per_estimator.iloc[i]['strategy_name']
+                total_seconds = run_times_per_estimator.iloc[i]['total_seconds']
+                estimator_dict[strategy_name].append(total_seconds)
+        #the long notation is necessary to handle situations when there are unequal number of obeservations per estimator
+        training_time_per_dataset = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in estimator_dict.items() ]))
+        avg_training_time = pd.DataFrame(training_time_per_dataset.mean(axis=0))
+        avg_training_time.columns = ['avg training time (in sec)']
+        return avg_training_time, training_time_per_dataset
+
+
     def ranks(self, estimator_dict, ascending):
         """
         Calculates the average ranks based on the performance of each estimator on each dataset
@@ -177,7 +223,7 @@ class AnalyseResults(object):
                                columns='estimator_2', 
                                values='value', 
                                fill_value='')
-        return table\
+        return table
 
    
 

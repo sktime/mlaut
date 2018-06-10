@@ -72,7 +72,7 @@ class Data(object):
         :rtype: tuple with array with dataset names and array with full path to datasets.
         """
         dts_names_list = hdf5_io.list_datasets(hdf5_group)
-        dts_names_list_full_path = [hdf5_group  + dts for dts in dts_names_list]
+        dts_names_list_full_path = [hdf5_group  +'/'+ dts for dts in dts_names_list]
         return dts_names_list, dts_names_list_full_path
     
     def open_hdf5(self, hdf5_path, mode='a'):

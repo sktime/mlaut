@@ -30,17 +30,11 @@ class DiskOperations(object):
         """
         Saves sklearn estimator to disk as pickle file.
 
-        :type trained_model: sklearn estimator object.
-        :param trained_model: trained sklearn object to be saved on disk.
-
-        :type model_name: string
-        :param model_name: name of sklearn estimator.
-
-        :type dataset_name: string
-        :param dataset_name: name of dataset that the estimator was trained on.
-
-        :type root_dir: string
-        :param root_dir: root dir where the trained estimators will be saved. 
+        Args:
+            trained_model(sklearn estimator object): trained sklearn object to be saved on disk.
+            model_name(string): name of sklearn estimator.
+            dataset_name(string): name of dataset that the estimator was trained on.
+            root_dir(string): root dir where the trained estimators will be saved. 
         """
         if not os.path.exists(root_dir + os.sep + dataset_name):
             os.makedirs(root_dir + os.sep + dataset_name)
@@ -292,8 +286,7 @@ class FilesIO:
 
     def load_dataset_h5(self, dataset_path):
         """
-        Loads dataset from HDF5 database. 
-        The dataset needs to have been saved as a numpy array originally
+        Loads dataset from HDF5 database. The dataset needs to have been saved as a numpy array originally
 
         :type dataset_path: string
         :param dataset_path: path to dataset.
@@ -310,19 +303,22 @@ class FilesIO:
         f.close()
         return idx, meta_dict
         
-    def load_dataset_pd(self, dataset_path):
+    def load_dataset_pd(self, dataset_path, return_metadata=True):
         """
-        Loads dataset from HDF5 database. 
-        The dataset needs to have been saved as a pandas Datafram originally
+        Loads dataset from HDF5 database. The dataset needs to have been saved as a pandas Datafram originally
 
-        :type dataset_path: string
-        :param dataset_path: path to dataset.
-
-        :rtype: `pandas DataFrame, metadata dictionary`
+        Args:
+            dataset_path(string): path to dataset.
+            return_metadata(Boolean): Flag whether the metadata should be returned
+        Returns:
+            `pandas DataFrame, metadata dictionary`
         """
         store = pd.HDFStore(self.hdf5_filename, self._mode)
         dataset = store[dataset_path]
-        metadata = store.get_storer(dataset_path).attrs.metadata
+        if return_metadata:
+            metadata = store.get_storer(dataset_path).attrs.metadata
+        else:
+            metadata = None
         store.close()
         return dataset, metadata
     def save_pandas_dataset(self, dataset, save_loc, metadata, verbose=False):
