@@ -164,7 +164,7 @@ class properties(object):
         estimator_family, 
         tasks, 
         name, 
-        data_preprocessing={'normalize_features': True,
+        data_preprocessing={'normalize_features': False,
                             'normalize_labels': False}):
         """
         Parameters
