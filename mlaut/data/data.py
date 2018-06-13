@@ -31,7 +31,7 @@ class Data(object):
         self._train_idx=train_idx
         self._test_idx=test_idx
 
-        set_logging_defaults()
+
 
 
     def pandas_to_db(self, save_loc_hdf5, datasets, dts_metadata, input_io):

@@ -105,7 +105,7 @@ class FilesIO:
     """
     def __init__(self, hdf5_filename, mode='a', 
                  experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP):
-        self.hdf5_filename = hdf5_filename
+        self._hdf5_filename = hdf5_filename
         self._mode = mode
         self._experiments_predictions_group=experiments_predictions_group
 
@@ -118,7 +118,7 @@ class FilesIO:
         :param path_to_check: path of group that will be checked.
         :rtype: `boolean`
         """
-        f = h5py.File(self.hdf5_filename, self._mode)
+        f = h5py.File(self._hdf5_filename, self._mode)
         is_present = path_to_check in f
         f.close()
         return is_present 
@@ -132,7 +132,7 @@ class FilesIO:
         Retuns:
             predictions_for_dataset(`array): Array in the form [[strategy name][predictions]]`.
         """
-        f = h5py.File(self.hdf5_filename, self._mode)
+        f = h5py.File(self._hdf5_filename, self._mode)
         load_path = f'/{self._experiments_predictions_group}/{dataset_name}'
         predictions = f[load_path]
         
@@ -157,7 +157,7 @@ class FilesIO:
             dataset_name(string): dataset_name: name of dataset on which the estimator was trained.
             strategy_name(string):strategy_name: name of estimator/strategy.
         """
-        f = h5py.File(self.hdf5_filename, self._mode)
+        f = h5py.File(self._hdf5_filename, self._mode)
         save_path = f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}'
         try:
             save_path_exists = save_path in f
@@ -182,7 +182,7 @@ class FilesIO:
         :param dataset_name: Name of dataset on which the estimator was trained.
         """
         # TODO this seems a duplicate to def save_numpy_array_hdf5
-        f = h5py.File(self.hdf5_filename, self._mode)
+        f = h5py.File(self._hdf5_filename, self._mode)
         for prediction in predictions:
             strategy_name = prediction[0]
             strategy_predictions = np.array(prediction[1])
@@ -211,7 +211,7 @@ class FilesIO:
         """
         #TODO metadata not saved
         #create groups
-        f = h5py.File(self.hdf5_filename, self._mode)
+        f = h5py.File(self._hdf5_filename, self._mode)
         f.create_group(group)
         for dts in zip(datasets, array_names, array_meta):
             data = dts[0]
@@ -263,7 +263,7 @@ class FilesIO:
         :type dataset_name: string
         :param dataset_name: name of dataset on which the estimator was trained.
         """
-        store = pd.HDFStore(self.hdf5_filename, self._mode)
+        store = pd.HDFStore(self._hdf5_filename, self._mode)
         store[RUNTIMES_GROUP + '/' + dataset_name ] = timestamps_df
         store.close()
     
@@ -272,13 +272,15 @@ class FilesIO:
         """
         Lists all datasets/sub-groups in an HDF5 group
 
-        :type hdf5_group: string
-        :param hdf5_group: path to HDf5 group
-
-        :rtype: `array of strings`
+        Args:
+            hdf5_group(string): hdf5_group: path to HDf5 group
+        Returns:
+            `array of strings`
         """
         datasets = []
-        f = h5py.File(self.hdf5_filename, self._mode)
+        f = h5py.File(self._hdf5_filename, self._mode)
+        if hdf5_group not in f:
+            raise ValueError(f'Group {hdf5_group} does not exist in {self._hdf5_filename,}')
         for i in f[hdf5_group].items():
             datasets.append(i[0])
         f.close()
@@ -293,7 +295,7 @@ class FilesIO:
 
         :rtype: `numpy array, metadata dictionary`
         """
-        f = h5py.File(self.hdf5_filename, self._mode)
+        f = h5py.File(self._hdf5_filename, self._mode)
         idx = f[dataset_path][...]
         #load metadata
         meta = f[dataset_path].attrs.items()
@@ -313,7 +315,7 @@ class FilesIO:
         Returns:
             `pandas DataFrame, metadata dictionary`
         """
-        store = pd.HDFStore(self.hdf5_filename, self._mode)
+        store = pd.HDFStore(self._hdf5_filename, self._mode)
         dataset = store[dataset_path]
         if return_metadata:
             metadata = store.get_storer(dataset_path).attrs.metadata
@@ -332,7 +334,7 @@ class FilesIO:
         metadata(JSON): Must contain ``class_name``, and ``dataset_name`` key-value pairs
         """
 
-        store = pd.HDFStore(self.hdf5_filename, self._mode)
+        store = pd.HDFStore(self._hdf5_filename, self._mode)
         dts_name = metadata['dataset_name']
         save_path = f'{save_loc}/{dts_name}'
         store[save_path] = dataset
@@ -357,7 +359,7 @@ class FilesIO:
         :type verbose: boolean
         :param verbose: Display or not progress with saving the datasets.
         '''
-        store = pd.HDFStore(self.hdf5_filename, self._mode)
+        store = pd.HDFStore(self._hdf5_filename, self._mode)
         for dts in zip(datasets, dts_metadata, datasets_save_paths):
             
             dts_name = dts[1]['dataset_name']     
