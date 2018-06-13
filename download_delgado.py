@@ -1,0 +1,5 @@
+from download_delgado.delgado_datasets import DownloadAndConvertDelgadoDatasets
+
+delgado = DownloadAndConvertDelgadoDatasets()
+
+delgado.download_and_extract_datasets()
