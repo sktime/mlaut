@@ -122,17 +122,17 @@ class Losses(object):
         df = df.melt(var_name='dts', value_name='values')
         df['classifier'] = df.apply(lambda raw: raw.values[1][0], axis=1)
         df['loss'] = df.apply(lambda raw: raw.values[1][1], axis=1)
-        df['std'] = df.apply(lambda raw: raw.values[1][2], axis=1)
+        df['std_error'] = df.apply(lambda raw: raw.values[1][2], axis=1)
         df = df.drop('values', axis=1)
         #create multilevel index dataframe
         dts = df['dts'].unique()
         estimators_list = df['classifier'].unique()
         score = df['loss'].values
-        std = df['std'].values
+        std = df['std_error'].values
         
         df = df.drop('dts', axis=1)
         df=df.drop('classifier', axis=1)
         
         df.index = pd.MultiIndex.from_product([dts, estimators_list])
 
-        return df
+        return df.round(3)

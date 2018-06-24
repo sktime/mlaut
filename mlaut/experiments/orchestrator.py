@@ -122,7 +122,7 @@ class Orchestrator:
                         built_model = modelling_strategy.build(num_classes=num_classes, 
                                                                 input_dim=input_dim,
                                                                 num_samples=num_samples)
-                        print(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
+                        logging.info(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
                         try:
                             trained_model = built_model.fit(X_train, y_train)
                             timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)

@@ -123,7 +123,7 @@ class AnalyseResults(object):
         res_df.columns=['avg_score','std_error']
         res_df = res_df.sort_values(['avg_score','std_error'], ascending=[1,1])
 
-        return res_df
+        return res_df.round(3)
     def average_training_time(self, estimators, exact_match=True):
         """
         Average training time for each estimator.
@@ -153,8 +153,10 @@ class AnalyseResults(object):
                 estimator_dict[strategy_name].append(total_seconds)
         #the long notation is necessary to handle situations when there are unequal number of obeservations per estimator
         training_time_per_dataset = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in estimator_dict.items() ]))
+        training_time_per_dataset = training_time_per_dataset.round(3)
         avg_training_time = pd.DataFrame(training_time_per_dataset.mean(axis=0))
         avg_training_time.columns = ['avg training time (in sec)']
+        avg_training_time = avg_training_time.sort_values('avg training time (in sec)',ascending=True).round(3)
         return avg_training_time, training_time_per_dataset
 
 
@@ -179,7 +181,7 @@ class AnalyseResults(object):
         mean_r = pd.DataFrame(ranked.mean(axis=0))
         mean_r.columns=['avg_rank']
         mean_r = mean_r.sort_values('avg_rank', ascending=1)
-        return mean_r
+        return mean_r.round(1)
 
 
     def cohens_d(self, estimator_dict):
@@ -216,6 +218,7 @@ class AnalyseResults(object):
                 'value': ef
             }
             cohens_d_df = cohens_d_df.append(cohens_d, ignore_index=True)
+            cohens_d_df = cohens_d_df.round(3)
 
 
         table = pd.pivot_table(cohens_d_df, 
@@ -262,7 +265,7 @@ class AnalyseResults(object):
 
         values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
 
-        return t_df, values_df_multiindex
+        return t_df.round(3), values_df_multiindex.round(3)
                         
     def sign_test(self, observations):
         """
@@ -300,7 +303,7 @@ class AnalyseResults(object):
 
         values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
 
-        return sign_df, values_df_multiindex
+        return sign_df.round(3), values_df_multiindex.round(3)
         
     def t_test_with_bonferroni_correction(self, observations, alpha=0.05):
         """
@@ -366,7 +369,7 @@ class AnalyseResults(object):
 
         values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
 
-        return wilcoxon_df, values_df_multiindex
+        return wilcoxon_df.round(3), values_df_multiindex.round(3)
                         
     def friedman_test(self, observations):
         """
@@ -389,7 +392,7 @@ class AnalyseResults(object):
         values = [friedman_test[0], friedman_test[1]]
         values_df = pd.DataFrame([values], columns=['statistic','p_value'])
 
-        return friedman_test, values_df
+        return friedman_test, values_df.round(3)
     
     def nemenyi(self, obeservations):
         """
@@ -404,5 +407,5 @@ class AnalyseResults(object):
 
         obeservations = pd.DataFrame(obeservations)
         obeservations = obeservations.melt(var_name='groups', value_name='values')
-
-        return sp.posthoc_nemenyi(obeservations, val_col='values', group_col='groups')
+        nemenyi =sp.posthoc_nemenyi(obeservations, val_col='values', group_col='groups')
+        return nemenyi.round(3)
