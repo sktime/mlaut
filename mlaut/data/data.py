@@ -31,7 +31,7 @@ class Data(object):
         self._train_idx=train_idx
         self._test_idx=test_idx
 
-        set_logging_defaults()
+
 
 
     def pandas_to_db(self, save_loc_hdf5, datasets, dts_metadata, input_io):
@@ -72,7 +72,7 @@ class Data(object):
         :rtype: tuple with array with dataset names and array with full path to datasets.
         """
         dts_names_list = hdf5_io.list_datasets(hdf5_group)
-        dts_names_list_full_path = [hdf5_group  + dts for dts in dts_names_list]
+        dts_names_list_full_path = [hdf5_group  +'/'+ dts for dts in dts_names_list]
         return dts_names_list, dts_names_list_full_path
     
     def open_hdf5(self, hdf5_path, mode='a'):

@@ -186,7 +186,8 @@ class Logistic_Regression(MlautEstimator):
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = {
-                'C': np.logspace(2, 10, 13)
+                'C': np.linspace(2**(-5), 2**(15), 13)
+
             }
     def build(self, **kwargs):
         """
@@ -250,7 +251,7 @@ class Passive_Aggressive_Classifier(MlautEstimator):
                         refit=refit)
                         
         self._hyperparameters = {
-                'C': np.logspace(2, 10, 13),
+                'C': np.linspace(2**(-5), 2**(15), 13),
                 'max_iter':[1000]
             }
     def build(self, **kwargs):

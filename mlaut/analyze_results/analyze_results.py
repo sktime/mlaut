@@ -1,12 +1,21 @@
-from mlaut.shared.static_variables import T_TEST_FILENAME,FRIEDMAN_TEST_FILENAME, WILCOXON_TEST_FILENAME, SIGN_TEST_FILENAME, BONFERRONI_TEST_FILENAME
-from mlaut.shared.static_variables import RESULTS_DIR, T_TEST_DATASET, SIGN_TEST_DATASET, BONFERRONI_CORRECTION_DATASET, WILCOXON_DATASET, FRIEDMAN_DATASET
-
 from mlaut.shared.static_variables import (DATA_DIR, 
                                            HDF5_DATA_FILENAME, 
                                            EXPERIMENTS_PREDICTIONS_GROUP,
                                            SPLIT_DTS_GROUP,
                                            TRAIN_IDX,
-                                           TEST_IDX)
+                                           TEST_IDX, 
+                                           RUNTIMES_GROUP, 
+                                           RESULTS_DIR, 
+                                           T_TEST_DATASET, 
+                                           SIGN_TEST_DATASET, 
+                                           BONFERRONI_CORRECTION_DATASET, 
+                                           WILCOXON_DATASET, 
+                                           FRIEDMAN_DATASET, 
+                                           T_TEST_FILENAME,
+                                           FRIEDMAN_TEST_FILENAME, 
+                                           WILCOXON_TEST_FILENAME, 
+                                           SIGN_TEST_FILENAME, 
+                                           BONFERRONI_TEST_FILENAME)
 import pandas as pd
 import numpy as np
 import itertools
@@ -25,26 +34,15 @@ class AnalyseResults(object):
     """
     Analyze results of machine learning experiments.
 
-    :type hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
-    :param hdf5_input_io: Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
-
-    :type hdf5_input_io: :func:`~mlaut.shared.files_io.FilesIO`
-    :param hdf5_input_io: Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
-
-    :type input_h5_original_datasets_group: string
-    :param input_h5_original_datasets_group: location in HDF5 database where the original datasets are stored.
-
-    :type output_h5_predictions_group: string
-    :param output_h5_predictions_group: location in HDF5 where the prediction of the estimators will be saved.
-
-    :type split_datasets_group: string
-    :param split_datasets_group: location in HDF5 database where the test/train splits are saved.
-
-    :type train_idx: string
-    :param train_idx: name of group where the train split index will be stored.
-
-    :type test_idx: string
-    :param test_idx: name of group where the test split index will be stored.
+    Args:
+        hdf5_input_io(:func:`~mlaut.shared.files_io.FilesIO`): Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
+        hdf5_input_io(:func:`~mlaut.shared.files_io.FilesIO`): Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
+        input_h5_original_datasets_group(string): location in HDF5 database where the original datasets are stored.
+        output_h5_predictions_group(string): location in HDF5 where the prediction of the estimators will be saved.
+        split_datasets_group(string): location in HDF5 database where the test/train splits are saved.
+        run_times_group(string): location where the run times are saved in the HDF5 database.
+        train_idx(string): name of group where the train split index will be stored.
+        test_idx(string): name of group where the test split index will be stored.
     """
 
     def __init__(self, 
@@ -53,6 +51,7 @@ class AnalyseResults(object):
                  input_h5_original_datasets_group, 
                  output_h5_predictions_group,
                  split_datasets_group=SPLIT_DTS_GROUP,
+                 run_times_group=RUNTIMES_GROUP,
                  train_idx=TRAIN_IDX,
                  test_idx=TEST_IDX):
 
@@ -61,6 +60,7 @@ class AnalyseResults(object):
         self._input_h5_original_datasets_group = input_h5_original_datasets_group
         self._output_h5_predictions_group = output_h5_predictions_group
         self._split_datasets_group = split_datasets_group
+        self._run_times_group=run_times_group
         self._train_idx = test_idx
         self._test_idx = test_idx
         self._data = Data(experiments_predictions_group=self._output_h5_predictions_group,
@@ -74,7 +74,8 @@ class AnalyseResults(object):
 
         Args:
             metric(`mlaut.analyse_results.scores`): Error function. 
-            exact_match(Boolean): 
+            estimators(`mlaut_estimator` array): Estimator objects.
+            exact_match(Boolean): If `True` when predictions for all estimators in the estimators array is not available no evaluation is performed on the remaining estimators. 
         Returns:
             estimator_avg_error, estimator_avg_error_per_dataset (pickle of pandas DataFrame): ``estimator_avg_error`` represents the average error and standard deviation achieved by each estimator. ``estimator_avg_error_per_dataset`` represents the average error and standard deviation achieved by each estimator on each dataset.
         """
@@ -105,11 +106,11 @@ class AnalyseResults(object):
         """
         Calculates simple average and standard error.
 
-        :type scores_dict: dictionary
-        :param scores_dict: Dictionary with estimators (keys) and corresponding 
-            prediction accuracies on different datasets.
+        Args:
+            scores_dict(dictionary): Dictionary with estimators (keys) and corresponding prediction accuracies on different datasets.
         
-        :rtype: pandas DataFrame
+        Returns:
+            pandas DataFrame
         """
         result = {}
         for k in scores_dict.keys():
@@ -119,11 +120,46 @@ class AnalyseResults(object):
             result[k]=[average,std_error]
         
         res_df = pd.DataFrame.from_dict(result, orient='index')
-        res_df.columns=['avg','std_error']
-        res_df = res_df.sort_values(['avg','std_error'], ascending=[1,1])
+        res_df.columns=['avg_score','std_error']
+        res_df = res_df.sort_values(['avg_score','std_error'], ascending=[1,1])
 
-        return res_df
-    
+        return res_df.round(3)
+    def average_training_time(self, estimators, exact_match=True):
+        """
+        Average training time for each estimator.
+
+        Args:
+            estimators(`mlaut_estimator` array): Estimator objects.
+            exact_match(Boolean): If `True` when predictions for all estimators in the estimators array is not available no evaluation is performed on the remaining estimators. 
+
+        Returns:
+            tuple of pandas DataFrame (avg_training_time, trainig_time_per_dataset)
+        """
+        _, dts_run_times_full_path = self._data.list_datasets(self._run_times_group, self._output_io)
+        estimator_dict = {estimator.properties()['name']: [] for estimator in estimators}
+
+        for dts in dts_run_times_full_path:
+            run_times_per_estimator,_ = self._output_io.load_dataset_pd(dataset_path=dts, return_metadata=False)
+            run_times_estimator_names = run_times_per_estimator['strategy_name'].tolist()
+            #check whether we have data on all estimators that were passed as an argument
+            run_times_all_estimators_exist = (set(run_times_estimator_names) == set(estimator_dict.keys()))
+            if exact_match and not run_times_all_estimators_exist:
+                continue
+            #TODO come up with a more efficient solution to avoid loop
+            for i in range(run_times_per_estimator.shape[0]):
+
+                strategy_name = run_times_per_estimator.iloc[i]['strategy_name']
+                total_seconds = run_times_per_estimator.iloc[i]['total_seconds']
+                estimator_dict[strategy_name].append(total_seconds)
+        #the long notation is necessary to handle situations when there are unequal number of obeservations per estimator
+        training_time_per_dataset = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in estimator_dict.items() ]))
+        training_time_per_dataset = training_time_per_dataset.round(3)
+        avg_training_time = pd.DataFrame(training_time_per_dataset.mean(axis=0))
+        avg_training_time.columns = ['avg training time (in sec)']
+        avg_training_time = avg_training_time.sort_values('avg training time (in sec)',ascending=True).round(3)
+        return avg_training_time, training_time_per_dataset
+
+
     def ranks(self, estimator_dict, ascending):
         """
         Calculates the average ranks based on the performance of each estimator on each dataset
@@ -145,7 +181,7 @@ class AnalyseResults(object):
         mean_r = pd.DataFrame(ranked.mean(axis=0))
         mean_r.columns=['avg_rank']
         mean_r = mean_r.sort_values('avg_rank', ascending=1)
-        return mean_r
+        return mean_r.round(1)
 
 
     def cohens_d(self, estimator_dict):
@@ -182,6 +218,7 @@ class AnalyseResults(object):
                 'value': ef
             }
             cohens_d_df = cohens_d_df.append(cohens_d, ignore_index=True)
+            cohens_d_df = cohens_d_df.round(3)
 
 
         table = pd.pivot_table(cohens_d_df, 
@@ -189,7 +226,7 @@ class AnalyseResults(object):
                                columns='estimator_2', 
                                values='value', 
                                fill_value='')
-        return table\
+        return table
 
    
 
@@ -228,7 +265,7 @@ class AnalyseResults(object):
 
         values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
 
-        return t_df, values_df_multiindex
+        return t_df.round(3), values_df_multiindex.round(3)
                         
     def sign_test(self, observations):
         """
@@ -266,7 +303,7 @@ class AnalyseResults(object):
 
         values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
 
-        return sign_df, values_df_multiindex
+        return sign_df.round(3), values_df_multiindex.round(3)
         
     def t_test_with_bonferroni_correction(self, observations, alpha=0.05):
         """
@@ -332,7 +369,7 @@ class AnalyseResults(object):
 
         values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
 
-        return wilcoxon_df, values_df_multiindex
+        return wilcoxon_df.round(3), values_df_multiindex.round(3)
                         
     def friedman_test(self, observations):
         """
@@ -355,7 +392,7 @@ class AnalyseResults(object):
         values = [friedman_test[0], friedman_test[1]]
         values_df = pd.DataFrame([values], columns=['statistic','p_value'])
 
-        return friedman_test, values_df
+        return friedman_test, values_df.round(3)
     
     def nemenyi(self, obeservations):
         """
@@ -370,5 +407,5 @@ class AnalyseResults(object):
 
         obeservations = pd.DataFrame(obeservations)
         obeservations = obeservations.melt(var_name='groups', value_name='values')
-
-        return sp.posthoc_nemenyi(obeservations, val_col='values', group_col='groups')
+        nemenyi =sp.posthoc_nemenyi(obeservations, val_col='values', group_col='groups')
+        return nemenyi.round(3)

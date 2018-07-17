@@ -122,7 +122,7 @@ class Orchestrator:
                         built_model = modelling_strategy.build(num_classes=num_classes, 
                                                                 input_dim=input_dim,
                                                                 num_samples=num_samples)
-                        print(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
+                        logging.info(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
                         try:
                             trained_model = built_model.fit(X_train, y_train)
                             timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
@@ -199,58 +199,5 @@ class Orchestrator:
                     self._output_io.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dts, 
                                                         strategy_name=name_estimator)
-                    #print(f'Predictions of estimator {name_estimator} on {dts} stored in database')
-                # except Exception as e:
-                #     print(f'Skipping estimator {name_estimator}. Error message: {e}')
-    
-    # def _preprocess_dataset(self, data_preprocessing, X_train, X_test, y_train, y_test):
-    #     """
-    #     Preprocesses the raw dataset according to the metadata attached to the estimator class.
-
-    #     Parameters
-    #     ----------
-    #     data_preprocessing: dictionary
-    #         dictionary with operations that need to be performed. The available values include:
-    #         `normalize_features` and `normalize_labels`.
-    #     X_train: array
-    #         training array with the dataset features
-    #     y_train: array
-    #         training array with the dataset labels
-    #     X_test: array
-    #         test array with the dataset features
-    #     y_test: array
-    #         test array with the dataset labels
-
-    #     Returns
-    #     -------
-    #         x_train_transformed(array): array with transformed features of the train set.
-    #         y_train_transformed(array): array with transformed labels of the train set.
-    #         x_test_transformed(array): array with transformed features on the test set.
-    #         y_test_transformed(array): array with transformed labels on the test set.
-    #     """
-        
-    #     x_train_transformed = X_train
-    #     x_test_transformed = X_test
-    #     y_train_transformed = y_train
-    #     y_test_transformed = y_train
-
-    #     if data_preprocessing['normalize_features'] is True:
-    #         scaler_features = preprocessing.StandardScaler(copy=True, 
-    #                                                        with_mean=True, 
-    #                                                        with_std=True)
-    #         scaler_features.fit(X_train)
-    #         x_train_transformed  = scaler_features.transform(X_train)
-    #         #apply the same transformation to the test set
-    #         x_test_transformed = scaler_features.transform(X_test)
-        
-    #     if data_preprocessing['normalize_labels'] is True:
-    #         scaler_labels = preprocessing.StandardScaler(copy=True, 
-    #                                                        with_mean=True, 
-    #                                                        with_std=True)
-    #         scaler_labels.fit(y_train)
-    #         y_train_transformed = scaler_labels.transform(y_train)
-    #         #apply the same transformation to the test set
-    #         y_test_transformed = scaler_labels.transform(y_test)
-
-    #     return x_train_transformed, x_test_transformed, y_train_transformed, y_test_transformed
+                   
         

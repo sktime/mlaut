@@ -24,8 +24,8 @@ class SVC_mlaut(MlautEstimator):
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
-        c_range = np.logspace(2, 10, 13)
-        gamma_range = np.logspace(-9, 3, 13)
+        c_range = np.linspace(2**(-5), 2**(15), 13)
+        gamma_range = np.linspace(2**(-15), 2**3, 13)
         self._hyperparameters = {
                             'C': c_range,
                             'gamma': gamma_range
@@ -55,25 +55,4 @@ class SVC_mlaut(MlautEstimator):
                             refit=self._refit)
         return self._create_pipeline(estimator=estimator)
 
-        # return GridSearchCV(SVC(), 
-        #                     self._hyperparameters, 
-        #                     verbose = self._verbose,
-        #                     n_jobs=self._n_jobs,
-        #                     refit=self._refit)
-
-
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
-
-
+       
