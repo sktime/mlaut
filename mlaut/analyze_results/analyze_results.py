@@ -164,13 +164,11 @@ class AnalyseResults(object):
         """
         Calculates the average ranks based on the performance of each estimator on each dataset
 
-        Parameters
-        ----------
-        estimator_dict (dictionary): dictionay with keys `names of estimators` and values `errors achieved by estimators on test datasets`.
-        ascending (boolean): Rank the values in ascending (True) or descending (False) order
+        Args:
+            estimator_dict (dictionary): dictionay with keys `names of estimators` and values `errors achieved by estimators on test datasets`.
+            ascending (boolean): Rank the values in ascending (True) or descending (False) order
 
-        Returns
-        -------
+        Returns:
             ranks(DataFrame): Returns the mean peformance rank for each estimator
         """
         if not isinstance(ascending, bool):
@@ -377,10 +375,11 @@ class AnalyseResults(object):
         in treatments across multiple test attempts. The procedure involves ranking each row (or block) together, 
         then considering the values of ranks by columns.
         Implementation used: `scipy.stats <https://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.stats.friedmanchisquare.html>`_. 
-
-        :type observations: dictionary
-        :param observations: Dictionary with errors on test sets achieved by estimators.
-        :rtype: tuple of dictionary, pandas DataFrame.
+        
+        Args:
+            observations(dictionary): Dictionary with errors on test sets achieved by estimators.
+        Returns:
+            tuple of dictionary, pandas DataFrame.
         
         """
 
@@ -399,10 +398,11 @@ class AnalyseResults(object):
         Post-hoc test run if the `friedman_test` reveals statistical significance.
         For more information see `Nemenyi test <https://en.wikipedia.org/wiki/Nemenyi_test>`_.
         Implementation used `scikit-posthocs <https://github.com/maximtrp/scikit-posthocs>`_.
-
-        :type observations: dictionary
-        :param observations: Dictionary with errors on test sets achieved by estimators.
-        :rtype: pandas DataFrame.
+        
+        Args:
+            observations(dictionary): Dictionary with errors on test sets achieved by estimators.
+        Returns:
+            pandas DataFrame.
         """
 
         obeservations = pd.DataFrame(obeservations)
