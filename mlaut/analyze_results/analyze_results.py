@@ -27,7 +27,7 @@ from scipy.stats import ttest_ind
 from scipy.stats import ranksums
 
 from sklearn.metrics import accuracy_score, mean_squared_error
-import scikit_posthocs as sp
+#import scikit_posthocs as sp
 
 from mlaut.analyze_results.losses import Losses
 class AnalyseResults(object):

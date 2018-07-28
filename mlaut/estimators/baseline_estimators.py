@@ -79,14 +79,14 @@ class Baseline_Classifier(MlautEstimator):
         self._hyperparameters = None
 
 
-    def build(self, strategy='stratified', **kwargs):
+    def build(self, strategy='most_frequent', **kwargs):
         """
         Builds and returns estimator class.
 
         Parameters
         -----------
         strategy : string
-            Name of strategy of baseline classifier. Default is ``stratified``. See `sklean.dummy.DummyClasifier <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html>`_ for additional information.
+            Name of strategy of baseline classifier. Default is ``most_frequent``. See `sklean.dummy.DummyClasifier <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html>`_ for additional information.
         **kwargs : key-value arguments.
             Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
