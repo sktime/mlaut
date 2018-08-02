@@ -18,7 +18,7 @@ class MlautEstimator(ABC):
     Abstact base class that all mlaut estimators should inherit from.
     """
     def __init__(self, 
-                verbose=0, 
+                verbose=VERBOSE, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
