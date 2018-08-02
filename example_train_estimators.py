@@ -16,16 +16,9 @@ if __name__ == '__main__':
     split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_paths=dts_names_list_full_path)
     instantiated_models = instantiate_default_estimators(estimators=['Classification'], verbose=1, n_jobs=-1)
     orchest = Orchestrator(hdf5_input_io=input_io, 
-<<<<<<< HEAD
-                           hdf5_output_io=out_io, 
-                           dts_names=dts_names_list[0:3],
-                           original_datasets_group_h5_path='openml/')
-    orchest.run(modelling_strategies=instantiated_models, override_saved_models=True)
-=======
                             hdf5_output_io=out_io, 
                             dts_names=dts_names_list,
                             original_datasets_group_h5_path='openml/')
     orchest.run(modelling_strategies=instantiated_models, override_saved_models=False)
->>>>>>> 823d3622406cffdc0b8e7b9ab9685af947151513
 
 

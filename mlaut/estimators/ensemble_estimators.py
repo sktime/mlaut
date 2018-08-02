@@ -6,7 +6,10 @@ from mlaut.shared.files_io import DiskOperations
 from sklearn.model_selection import GridSearchCV
 from mlaut.shared.static_variables import(ENSEMBLE_METHODS, 
                                       REGRESSION, 
-                                      CLASSIFICATION)
+                                      CLASSIFICATION,
+                                      GRIDSEARCH_NUM_CV_FOLDS,
+                                      GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                                      VERBOSE)
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import BaggingClassifier
@@ -23,9 +26,9 @@ class Random_Forest_Classifier(MlautEstimator):
     """
 
     def __init__(self,  
-                verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+                verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__( verbose=verbose, 
                 n_jobs=n_jobs,
@@ -74,8 +77,8 @@ class Random_Forest_Regressor(MlautEstimator):
     Wrapper for `sklearn Random Forest Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html>`_.
     """
     def __init__(self, 
-                verbose=0, 
-                n_jobs=-1,
+                verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=3, 
                 refit=True):
         super().__init__(verbose=verbose, 
@@ -125,9 +128,9 @@ class Bagging_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Bagging Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -173,9 +176,9 @@ class Bagging_Regressor(MlautEstimator):
     """
     Wrapper for `sklearn Bagging Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -225,9 +228,9 @@ class Gradient_Boosting_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Gradient Boosting Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -271,9 +274,9 @@ class Gradient_Boosting_Regressor(MlautEstimator):
     Wrapper for `sklearn Gradient Boosting Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html>`_.
     """
 
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 

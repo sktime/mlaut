@@ -18,7 +18,9 @@ from mlaut.estimators.svm_estimators import SVC_mlaut
 from mlaut.estimators.baseline_estimators import (Baseline_Regressor,
                                             Baseline_Classifier)
 from mlaut.estimators.cluster_estimators import K_Neighbours
-
+from mlaut.shared.static_variables import (GRIDSEARCH_NUM_CV_FOLDS, 
+                                           GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                                           VERBOSE)
 """
 Each estimator is contained it its own class.
 Each estimator inherits from the abstract class MlautEstimator.
@@ -45,20 +47,18 @@ of the trined models. The pipeline is the following:
     on the test set. 
 """
 def instantiate_default_estimators(estimators, 
-                                   verbose=0, 
-                                   n_jobs=-1,
-                                   num_cv_folds=3, 
+                                   verbose=VERBOSE, 
+                                   n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                                   num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                                    refit=True):
     """
     instatiates default estimators.
-
-    :type estimators: array of strings
-    :param estimators: Estimator names, family class or type of task.
-
-    :type verbose: integer
-    :param verbose: The level of output displayed in the terminal. Default is 0  
-                    or no  output. Higher number means more messages will be printed.
-    :rtype: `array of sklearn objects`
+    Args:
+        estimators(array of strings): Estimator names, family class or type of task.
+        verbose(integer): The level of output displayed in the terminal. Default is 0 or no  output. Higher number means more messages will be printed.
+    
+    Returns:
+        `array of sklearn objects`: An array of instantiated estimators that are ready to be fitted on data.
     """
 
     if not isinstance(estimators, list):

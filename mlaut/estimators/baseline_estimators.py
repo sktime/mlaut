@@ -3,7 +3,10 @@ from mlaut.estimators.mlaut_estimator import MlautEstimator
 from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(BASELINE,
                                       REGRESSION, 
-                                      CLASSIFICATION)
+                                      CLASSIFICATION,
+                                      GRIDSEARCH_NUM_CV_FOLDS,
+                                      GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                                      VERBOSE)
 
 from sklearn.dummy import DummyClassifier, DummyRegressor
 from mlaut.estimators.generic_estimator import Generic_Estimator
@@ -15,9 +18,9 @@ class Baseline_Regressor(MlautEstimator):
     """
     Wrapper for sklearn dummy regressor
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -68,9 +71,9 @@ class Baseline_Classifier(MlautEstimator):
     """
     Wrapper for sklearn dummy classifier class.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
