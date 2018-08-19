@@ -8,7 +8,10 @@ from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       NEURAL_NETWORKS,
                                       NAIVE_BAYES,
                                       REGRESSION, 
-                                      CLASSIFICATION)
+                                      CLASSIFICATION,
+                                      GRIDSEARCH_NUM_CV_FOLDS,
+                                      GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                                      VERBOSE)
 from mlaut.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 
 from sklearn.naive_bayes import GaussianNB
@@ -21,9 +24,9 @@ class Gaussian_Naive_Bayes(MlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -57,9 +60,9 @@ class Bernoulli_Naive_Bayes(MlautEstimator):
     """
     Wrapper for `sklearn Bernoulli Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 

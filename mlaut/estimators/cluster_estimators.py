@@ -8,7 +8,10 @@ from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import (CLUSTER, 
                                            CLASSIFICATION,
                                            PICKLE_EXTENTION, 
-                                           HDF5_EXTENTION)
+                                           HDF5_EXTENTION,
+                                           GRIDSEARCH_NUM_CV_FOLDS,
+                                           GRIDSEARCH_CV_NUM_PARALLEL_JOBS
+                                           VERBOSE)
 import numpy as np
 
 
@@ -19,9 +22,9 @@ class K_Neighbours(MlautEstimator):
     """
     Wrapper for `sklearn KNeighbours classifier <http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html#sklearn.neighbors.KNeighborsClassifier>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 

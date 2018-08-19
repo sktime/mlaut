@@ -4,7 +4,10 @@ from mlaut.estimators.mlaut_estimator import MlautEstimator
 from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       REGRESSION, 
-                                      CLASSIFICATION)
+                                      CLASSIFICATION,
+                                      GRIDSEARCH_NUM_CV_FOLDS,
+                                      GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                                      VERBOSE)
 from mlaut.shared.static_variables import PICKLE_EXTENTION
 
 from sklearn import linear_model
@@ -18,9 +21,9 @@ class Ridge_Regression(MlautEstimator):
     """
     Wrapper for `sklearn Ridge Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -34,17 +37,12 @@ class Ridge_Regression(MlautEstimator):
         """
         builds and returns estimator
 
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+        Args:
+            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
+        **kwargs(key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
+        Returns:
+            (`sklearn pipeline` object): pipeline for transforming the features and training the estimator
         """
         
         
@@ -71,9 +69,9 @@ class Lasso(MlautEstimator):
     """
     Wrapper for `sklearn Lasso <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -85,17 +83,12 @@ class Lasso(MlautEstimator):
         """
         builds and returns estimator
 
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+        Args:
+            hyperparameters(dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
+            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
         """
 
 
@@ -125,9 +118,9 @@ class Lasso_Lars(MlautEstimator):
     """
 
     
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -138,17 +131,12 @@ class Lasso_Lars(MlautEstimator):
         """
         builds and returns estimator
 
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+        Args:
+            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
+            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
         """
 
 
@@ -177,9 +165,9 @@ class Logistic_Regression(MlautEstimator):
     """
     Wrapper for `sklearn Logistic Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -193,17 +181,12 @@ class Logistic_Regression(MlautEstimator):
         """
         builds and returns estimator
 
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+        Args:
+            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
+            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
 
         """
         estimator = GridSearchCV(linear_model.LogisticRegression(), 
@@ -241,9 +224,9 @@ class Passive_Aggressive_Classifier(MlautEstimator):
     Wrapper for `sklearn Passive Aggressive Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.PassiveAggressiveClassifier.html>`_.
     """
 
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -258,17 +241,12 @@ class Passive_Aggressive_Classifier(MlautEstimator):
         """
         builds and returns estimator
 
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+        Args:
+            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
+            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
         """
         estimator = GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
                             self._hyperparameters, 

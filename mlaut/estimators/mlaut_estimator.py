@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from mlaut.shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS
+from mlaut.shared.static_variables import (GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
+                                            GRIDSEARCH_NUM_CV_FOLDS,
+                                            VERBOSE)
 import pickle
 from mlaut.shared.static_variables import PICKLE_EXTENTION
 import wrapt
@@ -16,26 +18,20 @@ class MlautEstimator(ABC):
     Abstact base class that all mlaut estimators should inherit from.
     """
     def __init__(self, 
-                verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+                verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         self._num_cv_folds=num_cv_folds
         self._verbose=verbose
         self._n_jobs=n_jobs
         self._refit=refit
     """
-    :type verbose: int
-    :param verbose: Sets the amount of output in the terminal. Higher numbers mean more output.
-
-    :type n_jobs: number
-    :param n_jobs: number of CPU cores used for training the estimators. If set to -1 all available cores are used.
-
-    :type num_cv_folds: int
-    :param num_cv_folds: number of cross validation folds used by GridsearchCV.
-
-    :type refit: Boolean
-    :param refit: Refit an estimator using the best found parameters on the whole dataset.
+    Args:
+        verbose(int): Sets the amount of output in the terminal. Higher numbers mean more output.
+        n_jobs(number): number of CPU cores used for training the estimators. If set to -1 all available cores are used.
+        num_cv_folds(int): number of cross validation folds used by GridsearchCV.
+        refit(Boolean): Refit an estimator using the best found parameters on the whole dataset.
     """
     @abstractmethod
     def build(self):
@@ -49,8 +45,8 @@ class MlautEstimator(ABC):
         """
         Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+        Args:
+            dataset_name(string): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
         """
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
@@ -63,9 +59,8 @@ class MlautEstimator(ABC):
         """
         Gets the hyperparaments of the estimator.
 
-        Returns
-        -------
-            hyperparaments(dictionary): Dictionary with the hyperparaments of the estimator
+        Returns:
+            dictionary: Dictionary with the hyperparaments of the estimator
         """
         return self._hyperparameters
     
@@ -73,9 +68,8 @@ class MlautEstimator(ABC):
         """
         Set the hyper-parameters of the estimator.
 
-        Parameters
-        ----------
-        hyperparameters(dictionary): Dictionary with the hyperarameters of each model.
+        Args:
+            hyperparameters(dictionary): Dictionary with the hyperarameters of each model.
         """
         self._hyperparameters = hyperparameters
 
@@ -92,8 +86,8 @@ class MlautEstimator(ABC):
         This method needs to be overwritten in the child estimator class if another 
         framework/procedure for saving/loading is used. 
 
-        :type path_to_model: string
-        :param path_to_model: Location of the trained estimator.
+        Args:
+            path_to_model (str): Location of the trained estimator.
         """
         #file name could be passed with .* as extention. 
         # split_path = path_to_model.split('.')
@@ -104,9 +98,9 @@ class MlautEstimator(ABC):
     def set_trained_model(self, trained_model):
         """
         setter method for storing trained estimator in memory
-
-        :type trained_model: estimator object
-        :param trained_model: Trained sklearn, keras, etc. estimator object.
+        
+        Args:
+            trained_model (estimator object): Trained sklearn, keras, etc. estimator object.
         """
         self._trained_model = trained_model
     
@@ -114,7 +108,8 @@ class MlautEstimator(ABC):
         """
         Getter method.
 
-        :rtype: `sklearn pipline object`
+        Returns:
+            `sklearn pipline object`: Trained sklearn model
         """
 
         return self._create_pipeline(self._trained_model)
@@ -127,15 +122,12 @@ class MlautEstimator(ABC):
         """
         Creates a pipeline for transforming the features of the dataset and training the selected estimator.
 
-        Parameters
-        ----------
-        estimator: sklearn estimator
-            Reference of sklearn estimator that will be used at the end of the pipeline.
+        Args:
+            estimator (sklearn estimator): Reference of sklearn estimator that will be used at the end of the pipeline.
 
 
-        Returns
-        -------
-            estimator(sklearn pipeline or GridSerachCV): `sklearn` pipeline object. If no preprocessing was set 
+        Returns:
+            `estimator(sklearn pipeline or GridSerachCV)`: `sklearn` pipeline object. If no preprocessing was set 
         """
 
 
@@ -167,16 +159,14 @@ class properties(object):
         data_preprocessing={'normalize_features': False,
                             'normalize_labels': False}):
         """
-        Parameters
-        ----------
-        estimator_family: array of strings
-            family of machine learning algorithms that the estimator belongs to.
-        tasks: array of strings
-            array of tasks (classification and/or regression) that the estimator can be applied to.
-        name: string
-            name of estimator.
-        data_preprocessing: dictionary
-            dictionary with data preprocessing operations to be performed on datasets before they are used in training.
+        Args:
+            estimator_family (array of strings): family of machine learning algorithms that the estimator belongs to.
+            
+            tasks (array of strings): array of tasks (classification and/or regression) that the estimator can be applied to.
+            
+            name (str): name of estimator.
+            
+            data_preprocessing (dictionary): dictionary with data preprocessing operations to be performed on datasets before they are used in training.
         """
         self._estimator_family = estimator_family
         self._tasks = tasks
@@ -187,7 +177,9 @@ class properties(object):
     def _properties(self):
         """
         Method attached by the decorator to the mlaut estimator object.
-        :rtype: `dictionary`
+
+        Returns:
+            `dictionary`: Dictionary with the propoperties of the estimator.
 
         """            
         #check whether the inputs are right

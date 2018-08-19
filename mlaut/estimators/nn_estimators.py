@@ -8,7 +8,10 @@ from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       NEURAL_NETWORKS,
                                       NAIVE_BAYES,
                                       REGRESSION, 
-                                      CLASSIFICATION)
+                                      CLASSIFICATION,
+                                      GRIDSEARCH_NUM_CV_FOLDS,
+                                      GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                                      VERBOSE)
 from mlaut.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 
 from tensorflow.python.keras.models import Sequential, load_model, model_from_json
@@ -16,7 +19,6 @@ from tensorflow.python.keras.layers import Dense, Activation, Dropout
 from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor, KerasClassifier
 from tensorflow.python.keras import optimizers
 from sklearn.preprocessing import OneHotEncoder
-
 import numpy as np
 import wrapt
 
@@ -46,9 +48,9 @@ class Deep_NN_Classifier(MlautEstimator):
     def __init__(self,
                 hyperparameters=None, 
                 keras_model=None, 
-                verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+                verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -83,15 +85,11 @@ class Deep_NN_Classifier(MlautEstimator):
         """
         Builds and returns estimator.
         
-        Parameters
-        -----------
-        kwargs: key-value(integer)
-            The user must specify ``input_dim`` and ``num_samples``.
+        Args:
+            kwargs (key-value(int)): The user must specify ``input_dim`` and ``num_samples``.
 
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
         """
 
 
@@ -105,16 +103,13 @@ class Deep_NN_Classifier(MlautEstimator):
         input_dim=kwargs['input_dim']
         num_samples = kwargs['num_samples']
         num_classes = kwargs['num_classes']
-        
-        #TODO implement cross validation and hyperameters
-        # https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
-        
+             
         #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
         estimator = KerasClassifier(build_fn=self._keras_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim)#TODO include flag for verbosity
-
-        return self._create_pipeline(estimator=estimator)
+        grid = GridSearchCV(estimator=estimator, param_grid=self._hyperparameters)
+        return self._create_pipeline(estimator=grid)
 
     
 
@@ -123,8 +118,8 @@ class Deep_NN_Classifier(MlautEstimator):
         """
         Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+        Args:
+            dataset_name (str): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
         """
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
@@ -138,8 +133,8 @@ class Deep_NN_Classifier(MlautEstimator):
         """
         Loads saved keras model from disk.
 
-        :type path_to_model: string
-        :param path_to_model: path on disk where the object is saved.
+        Args:
+            path_to_model (str): path on disk where the object is saved.
         """
         #file name could be passed with .* as extention. 
         #split_path = path_to_model.split('.')
@@ -154,7 +149,8 @@ class Deep_NN_Classifier(MlautEstimator):
         """
         Getter method.
 
-        :rtype: `keras object`
+        Returns:
+            `keras object`: Trained keras model.
         """
 
         return self._trained_model
@@ -168,9 +164,9 @@ class Deep_NN_Regressor(MlautEstimator):
     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     """
 
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -204,15 +200,11 @@ class Deep_NN_Regressor(MlautEstimator):
         """
         Builds and returns estimator.
         
-        Parameters
-        -----------
-        kwargs: key-value(integer)
-            The user must specify ``input_dim`` and ``num_samples``.
+        Args:
+            kwargs (key-value(int)): The user must specify ``input_dim`` and ``num_samples``.
 
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
         """
         if 'input_dim' not in kwargs:
             raise ValueError('You need to specify input dimentions when building the model')
@@ -238,8 +230,8 @@ class Deep_NN_Regressor(MlautEstimator):
         """
         Saves estimator on disk.
 
-        :type dataset_name: string
-        :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+        Args:
+            dataset_name (str): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
         """
         #set trained model method is implemented in the base class
         trained_model = self._trained_model
@@ -253,8 +245,8 @@ class Deep_NN_Regressor(MlautEstimator):
         """
         Loads saved keras model from disk.
 
-        :type path_to_model: string
-        :param path_to_model: path on disk where the object is saved.
+        Args:
+            path_to_model (string): path on disk where the object is saved.
         """
         #file name could be passed with .* as extention. 
         model = load_model(path_to_model,
@@ -276,15 +268,13 @@ class OverwrittenSequentialClassifier(Sequential):
         """
         Overrides the default :func:`tensorflow.python.keras.models.fit` and reshapes the `y_train` in one hot array. 
 
-        Paremeters
-        ----------
-        X_train: training data
-        y_train: Labels that will be converted to onehot array.
+        Args:
+            X_train: training data
+            y_train: Labels that will be converted to onehot array.
 
 
-        Returns
-        -------
-        :func:`tensorflow.python.keras.models.fit` object
+        Returns:
+            :func:`tensorflow.python.keras.models.fit` object
 
         """
         onehot_encoder = OneHotEncoder(sparse=False)
@@ -295,13 +285,12 @@ class OverwrittenSequentialClassifier(Sequential):
         
         return super().fit(X_train, y_train_onehot_encoded)
 
-    def predict(self, X_test, batch_size=None, verbose=0):
+    def predict(self, X_test, batch_size=None, verbose=VERBOSE):
         """
         Overrides the default :func:`tensorflow.python.keras.models.predict` by replacing it with a :func:`tensorflow.python.keras.models.predict_classes`  
 
-        Returns
-        --------
-        :func:`tensorflow.python.keras.models.predict_classes`
+        Returns:
+            :func:`tensorflow.python.keras.models.predict_classes`
         """
         predictions = Sequential.predict(self, X_test, batch_size=batch_size, verbose=verbose)
         return predictions.argmax(axis=1)

@@ -5,7 +5,10 @@ from mlaut.shared.files_io import DiskOperations
 from sklearn.model_selection import GridSearchCV
 from mlaut.shared.static_variables import(SVM,
                                       REGRESSION, 
-                                      CLASSIFICATION)
+                                      CLASSIFICATION,
+                                      GRIDSEARCH_NUM_CV_FOLDS,
+                                      GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                                      VERBOSE)
 
 from sklearn.svm import SVC
 import numpy as np
@@ -16,9 +19,9 @@ class SVC_mlaut(MlautEstimator):
     """
     Wrapper for `sklearn SVC estimator <http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`_.
     """
-    def __init__(self, verbose=0, 
-                n_jobs=-1,
-                num_cv_folds=3, 
+    def __init__(self, verbose=VERBOSE, 
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
                          n_jobs=n_jobs, 
@@ -35,17 +38,12 @@ class SVC_mlaut(MlautEstimator):
         """
         builds and returns estimator
         
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+        Args:
+            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
+            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
         
         """
         estimator = GridSearchCV(SVC(), 
