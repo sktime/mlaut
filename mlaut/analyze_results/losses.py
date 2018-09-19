@@ -135,4 +135,4 @@ class Losses(object):
         
         df.index = pd.MultiIndex.from_product([dts, estimators_list])
 
-        return df.round(3)
+        return df.round(5)
