@@ -10,7 +10,7 @@ from mlaut.shared.static_variables import (CLUSTER,
                                            PICKLE_EXTENTION, 
                                            HDF5_EXTENTION,
                                            GRIDSEARCH_NUM_CV_FOLDS,
-                                           GRIDSEARCH_CV_NUM_PARALLEL_JOBS
+                                           GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                                            VERBOSE)
 import numpy as np
 
