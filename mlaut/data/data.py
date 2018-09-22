@@ -91,7 +91,7 @@ class Data(object):
                        dataset_paths, 
                        test_size=0.33, 
                        random_state=1, 
-                       verbose=False):
+                       verbose=True):
         """
         Splits datasets in test and train sets.
 
@@ -126,7 +126,8 @@ class Data(object):
             dataset_name = metadata['dataset_name']
             split_exists = hdf5_out.check_h5_path_exists(self._split_datasets_group + '/'+ dataset_name)
             if split_exists is True:
-                logging.warning(f'Skipping {dataset_name} as test/train split already exists in output h5 file.')
+                if verbose is True:
+                    logging.warning(f'Skipping {dataset_name} as test/train split already exists in output h5 file.')
             else:  
                 #split
                 idx_dts_rows = dts.shape[0]
@@ -139,7 +140,7 @@ class Data(object):
                 names = [self._train_idx, self._test_idx]
 
                 if verbose is True:
-                    print(f'Saving split for: {dataset_name}')
+                    logging.info(f'Saving split for: {dataset_name}')
                 hdf5_out.save_array_hdf5(datasets=[train_idx, test_idx],
                                     group=self._split_datasets_group + '/' + dataset_name,
                                     array_names=names,

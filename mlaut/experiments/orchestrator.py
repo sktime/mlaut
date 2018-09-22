@@ -61,7 +61,7 @@ class Orchestrator:
                           test_idx) 
         set_logging_defaults()
 
-    def run(self, modelling_strategies, override_saved_models=False):
+    def run(self, modelling_strategies, override_saved_models=False, verbose=True):
         """ 
         Main module for training the estimators. 
         The inputs of the function are: 
@@ -79,6 +79,7 @@ class Orchestrator:
         Args:
             odelling_strategies (array of :ref:`mlaut_estimator-label` objects): Array of estimators that will be used for training
             override_saved_models (Boolean): Flag whether the trained models should be overriden if they already exist on the disk.
+            verbose (Boolean): If True prints info and warning messages.
         """ 
 
         try:
@@ -107,7 +108,8 @@ class Orchestrator:
                     path_to_check = self._experiments_trained_models_dir + os.sep + dts_name + os.sep + ml_strategy_name + '.*'
                     model_exists = self._disk_op.check_path_exists(path_to_check)
                     if model_exists is True and override_saved_models is False:
-                        logging.info(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
+                        if verbose is True:
+                            logging.info(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
                         #modelling_strategy.load(path_to_check)
                     else:
                         #preprocess data
@@ -122,7 +124,8 @@ class Orchestrator:
                         built_model = modelling_strategy.build(num_classes=num_classes, 
                                                                 input_dim=input_dim,
                                                                 num_samples=num_samples)
-                        logging.info(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
+                        if verbose is True:
+                            logging.info(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
                         try:
                             trained_model = built_model.fit(X_train, y_train)
                             timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
@@ -160,7 +163,7 @@ class Orchestrator:
         
         return timestamps_df
 
-    def predict_all(self, trained_models_dir, estimators, override=False):
+    def predict_all(self, trained_models_dir, estimators, override=False, verbose=True):
         """
         Make predictions on test sets. The algorithm opens all saved estimators in the output directory and checks whether their names are specified in the estimators array. If they are it fetches the dataset splits and tries to make the predictions.
 
@@ -168,6 +171,8 @@ class Orchestrator:
             trained_models_dir (string): directory where the trained models are saved.
             estimators (array of :ref:`mlaut_estimator-label` objects): The trained models are set as a property to the object.
             override (boolean): If True overrides predictions in HDF5 database.
+            verbose (Boolean): If True prints info and warning messages.
+
         """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties()['name'] for estimator in estimators]
@@ -186,7 +191,8 @@ class Orchestrator:
                         path_h5_predictions = f'{self._experiments_predictions_group}/{dts}/{name_estimator}'
                         predictions_exist = self._output_io.check_h5_path_exists(path_h5_predictions)
                         if predictions_exist is True:
-                            logging.info(f'Predictions for {name_estimator} on {dts} already exist in the database. Set override to True if you wish replace them.')
+                            if verbose is True:
+                                logging.info(f'Predictions for {name_estimator} on {dts} already exist in the database. Set override to True if you wish replace them.')
                             continue
                     
                     #if override is set to True make the predictions without checking
