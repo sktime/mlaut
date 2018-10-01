@@ -61,7 +61,12 @@ class Orchestrator:
                           test_idx) 
         set_logging_defaults()
 
-    def run(self, modelling_strategies, override_saved_models=False, verbose=True):
+    def run(self, 
+            modelling_strategies, 
+            override_saved_models=False, 
+            verbose=True, 
+            predict_on_runtime=True,
+            override_predictions=False):
         """ 
         Main module for training the estimators. 
         The inputs of the function are: 
@@ -80,6 +85,8 @@ class Orchestrator:
             odelling_strategies (array of :ref:`mlaut_estimator-label` objects): Array of estimators that will be used for training
             override_saved_models (Boolean): Flag whether the trained models should be overriden if they already exist on the disk.
             verbose (Boolean): If True prints info and warning messages.
+            predict_on_runtime(Boolean): Make predictions immediately after the estimators are trained.
+            override_predictions(Boolean): Override predictions in database if they exist already.
         """ 
 
         try:
@@ -91,7 +98,7 @@ class Orchestrator:
                 logging.log(1,f'Training estimators on {dts_name}')
 
                 dts_trained +=1
-                X_train, _, y_train, _ = self._data.load_test_train_dts(hdf5_out=self._output_io, 
+                X_train, X_test, y_train, _ = self._data.load_test_train_dts(hdf5_out=self._output_io, 
                                                                               hdf5_in=self._input_io, 
                                                                               dts_name=dts_name, 
                                                                               dts_grp_path=self._original_datasets_group_h5_path)
@@ -134,6 +141,13 @@ class Orchestrator:
                         
                             self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
 
+                            if predict_on_runtime is True:
+                                self._predict(modelling_strategy, 
+                                              X_test, 
+                                              dataset_name=dts_name, 
+                                              override=override_predictions, 
+                                              verbose=verbose)
+                            
                             trained_model = None
                             modelling_strategy = None
                         except Exception as e:
@@ -163,6 +177,39 @@ class Orchestrator:
         
         return timestamps_df
 
+    def _predict(self, modelling_strategy, X_test, dataset_name, override=False, verbose=True):
+        """
+        Make predictions on test sets. The algorithm opens all saved estimators in the output directory and checks whether their names are specified in the estimators array. If they are it fetches the dataset splits and tries to make the predictions.
+
+        Args:
+            modelling_strategy (:ref:`mlaut_estimator-label` object): The trained estimator object.
+            X_test(numpy array): Test dataset.
+            dataset_name(string): name of the dataset on which the estimator was trained.
+            override (boolean): If True overrides predictions in HDF5 database.
+            verbose (Boolean): If True prints info and warning messages.
+        """
+        trained_estimator = modelling_strategy.get_trained_model()
+        predictions = trained_estimator.predict(X_test)
+        name_estimator = trained_estimator.properties()['name']
+        if override is True:
+            self._output_io.save_prediction_to_db(predictions=predictions, 
+                                                        dataset_name=dataset_name, 
+                                                        strategy_name=name_estimator)
+            logging.info(f'Predictions for {name_estimator} on {dataset_name} Saved in database.')
+        
+        else:
+            #check whether the prediction exists before proceeding
+            path_h5_predictions = f'{self._experiments_predictions_group}/{dataset_name}/{name_estimator}'
+            predictions_exist = self._output_io.check_h5_path_exists(path_h5_predictions)
+
+            if predictions_exist is True:
+                logging.info(f'Predictions for {name_estimator} on {dataset_name} already exist in the database. Set override to True if you wish replace them.')
+            else:
+                self._output_io.save_prediction_to_db(predictions=predictions, 
+                                                      dataset_name=dataset_name, 
+                                                      strategy_name=name_estimator)
+                logging.info(f'Predictions for {name_estimator} on {dataset_name} Saved in database.')
+
     def predict_all(self, trained_models_dir, estimators, override=False, verbose=True):
         """
         Make predictions on test sets. The algorithm opens all saved estimators in the output directory and checks whether their names are specified in the estimators array. If they are it fetches the dataset splits and tries to make the predictions.
@@ -172,7 +219,6 @@ class Orchestrator:
             estimators (array of :ref:`mlaut_estimator-label` objects): The trained models are set as a property to the object.
             override (boolean): If True overrides predictions in HDF5 database.
             verbose (Boolean): If True prints info and warning messages.
-
         """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties()['name'] for estimator in estimators]
