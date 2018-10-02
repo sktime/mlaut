@@ -117,7 +117,14 @@ class Orchestrator:
                     if model_exists is True and override_saved_models is False:
                         if verbose is True:
                             logging.info(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
-                        #modelling_strategy.load(path_to_check)
+                        if predict_on_runtime is True:
+                            #!!! TODO!!!!!!!!!! Load the estimators properly
+                            modelling_strategy.load()
+                            self._predict(modelling_strategy, 
+                                            X_test, 
+                                            dataset_name=dts_name, 
+                                            override=override_predictions, 
+                                            verbose=verbose)
                     else:
                         #preprocess data
                         # X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
