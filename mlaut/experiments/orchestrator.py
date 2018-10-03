@@ -196,7 +196,7 @@ class Orchestrator:
         """
         trained_estimator = modelling_strategy.get_trained_model()
         predictions = trained_estimator.predict(X_test)
-        name_estimator = trained_estimator.properties()['name']
+        name_estimator = modelling_strategy.properties()['name']
         if override is True:
             self._output_io.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dataset_name, 
