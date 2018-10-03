@@ -70,17 +70,18 @@ class DiskOperations(object):
     def check_path_exists(self, path_to_file):
         """
         Checks whether path exists on disk
-
-        :type path_to_file: string.
-        :param path_to_file: path to check whether exists or not 
-
-        :rtype: `Boolean`
+        Args:
+            path_to_file (string): path to check whether exists or not 
+        Returns:
+            (Bolean, String): A pickle the first element indicates whether the path exists and the second element returns the actual file path.
         """
         path_exists = glob.glob(path_to_file)
-        if len(path_exists) > 0:
-            return True
+        if len(path_exists) == 1:
+            return (True, path_exists[0])
+        elif len(path_exists) > 1:
+            raise ValueError(f'Multiple files found: {path_to_file}.')
         else:
-            return False
+            return (False, None)
 
     def create_directory_on_hdd(self, directory_path):
         """

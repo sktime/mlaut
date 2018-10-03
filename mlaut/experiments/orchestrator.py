@@ -113,13 +113,12 @@ class Orchestrator:
 
                     #check whether the model was already trained
                     path_to_check = self._experiments_trained_models_dir + os.sep + dts_name + os.sep + ml_strategy_name + '.*'
-                    model_exists = self._disk_op.check_path_exists(path_to_check)
+                    model_exists, path_to_model = self._disk_op.check_path_exists(path_to_check)
                     if model_exists is True and override_saved_models is False:
                         if verbose is True:
                             logging.info(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
                         if predict_on_runtime is True:
-                            #!!! TODO!!!!!!!!!! Load the estimators properly
-                            modelling_strategy.load()
+                            modelling_strategy.load(path_to_model)
                             self._predict(modelling_strategy, 
                                             X_test, 
                                             dataset_name=dts_name, 
