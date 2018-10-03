@@ -117,13 +117,15 @@ class Orchestrator:
                     if model_exists is True and override_saved_models is False:
                         if verbose is True:
                             logging.info(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
-                        if predict_on_runtime is True:
-                            modelling_strategy.load(path_to_model)
-                            self._predict(modelling_strategy, 
-                                            X_test, 
-                                            dataset_name=dts_name, 
-                                            override=override_predictions, 
-                                            verbose=verbose)
+                    
+
+                    if predict_on_runtime is True:
+                        modelling_strategy.load(path_to_model)
+                        self._predict(modelling_strategy, 
+                                        X_test, 
+                                        dataset_name=dts_name, 
+                                        override=override_predictions, 
+                                        verbose=verbose)
                     else:
                         #preprocess data
                         # X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
@@ -195,9 +197,9 @@ class Orchestrator:
             verbose (Boolean): If True prints info and warning messages.
         """
         trained_estimator = modelling_strategy.get_trained_model()
-        predictions = trained_estimator.predict(X_test)
         name_estimator = modelling_strategy.properties()['name']
         if override is True:
+            predictions = trained_estimator.predict(X_test)
             self._output_io.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dataset_name, 
                                                         strategy_name=name_estimator)
@@ -211,6 +213,7 @@ class Orchestrator:
             if predictions_exist is True:
                 logging.info(f'Predictions for {name_estimator} on {dataset_name} already exist in the database. Set override to True if you wish replace them.')
             else:
+                predictions = trained_estimator.predict(X_test)
                 self._output_io.save_prediction_to_db(predictions=predictions, 
                                                       dataset_name=dataset_name, 
                                                       strategy_name=name_estimator)
