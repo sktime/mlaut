@@ -102,10 +102,7 @@ class Orchestrator:
                                                                               hdf5_in=self._input_io, 
                                                                               dts_name=dts_name, 
                                                                               dts_grp_path=self._original_datasets_group_h5_path)
-                # timestamps_df = self._experiments.run_experiments(X_train, 
-                #                                                                   y_train, 
-                #                                                                   modelling_strategies, 
-                #                                                                   dts_name)
+
                 timestamps_df = pd.DataFrame()
                 for modelling_strategy in modelling_strategies:
                     ml_strategy_name = modelling_strategy.properties()['name']
@@ -115,24 +112,12 @@ class Orchestrator:
                     path_to_check = self._experiments_trained_models_dir + os.sep + dts_name + os.sep + ml_strategy_name + '.*'
                     model_exists, path_to_model = self._disk_op.check_path_exists(path_to_check)
                     if model_exists is True and override_saved_models is False:
+                        modelling_strategy.load(path_to_model)
                         if verbose is True:
                             logging.info(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
                     
-
-                    if predict_on_runtime is True:
-                        modelling_strategy.load(path_to_model)
-                        self._predict(modelling_strategy, 
-                                        X_test, 
-                                        dataset_name=dts_name, 
-                                        override=override_predictions, 
-                                        verbose=verbose)
-                    else:
-                        #preprocess data
-                        # X_train, X_test, y_train, y_test = self._preprocess_dataset(data_preprocessing,
-                        #                                                             X_train=X_train, 
-                        #                                                             X_test=X_test, 
-                        #                                                             y_train=y_train, 
-                        #                                                             y_test=y_test)
+                    else: #modelling strategy does not exist
+           
                         num_samples, input_dim = X_train.shape
                         unique_labels = np.unique(y_train)
                         num_classes = len(unique_labels) 
@@ -143,26 +128,29 @@ class Orchestrator:
                             logging.info(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
                         try:
                             trained_model = built_model.fit(X_train, y_train)
-                            timestamps_df = self.record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
+                            timestamps_df = self._record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
                             modelling_strategy.set_trained_model(trained_model)
                             modelling_strategy.save(dts_name)
                         
                             self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
-
-                            if predict_on_runtime is True:
-                                self._predict(modelling_strategy, 
-                                              X_test, 
-                                              dataset_name=dts_name, 
-                                              override=override_predictions, 
-                                              verbose=verbose)
+                                
                             
                             trained_model = None
                             modelling_strategy = None
+                    
+                    
                         except Exception as e:
                             print(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
                             logging.error(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
                             logging.error(f'*****Stack trace: {e}')
-                        
+                    
+                    #make predictions
+                    if predict_on_runtime is True:
+                        self._predict(modelling_strategy, 
+                                        X_test, 
+                                        dataset_name=dts_name, 
+                                        override=override_predictions, 
+                                        verbose=verbose)
 
 
 
@@ -174,7 +162,7 @@ class Orchestrator:
 
             sys.exit()
 
-    def record_timestamp(self, strategy_name, begin_timestamp, timestamps_df):
+    def _record_timestamp(self, strategy_name, begin_timestamp, timestamps_df):
         """ Timestamp used to record the duration of training for each of the estimators"""
         STF = '%Y-%m-%d %H:%M:%S'
         end_timestamp = datetime.now()
