@@ -134,13 +134,13 @@ class Orchestrator:
                         
                             self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
                         
-                        #make predictions
-                        if predict_on_runtime is True:
-                            self._predict(modelling_strategy, 
-                                    X_test, 
-                                    dataset_name=dts_name, 
-                                    override=override_predictions, 
-                                    verbose=verbose)
+                            #make predictions
+                            if predict_on_runtime is True:
+                                self._predict(modelling_strategy, 
+                                        X_test, 
+                                        dataset_name=dts_name, 
+                                        override=override_predictions, 
+                                        verbose=verbose)
                         
                         trained_model = None
                         modelling_strategy = None
