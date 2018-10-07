@@ -142,8 +142,8 @@ class Orchestrator:
                                         override=override_predictions, 
                                         verbose=verbose)
                         
-                        trained_model = None
-                        modelling_strategy = None
+                            trained_model = None
+                            modelling_strategy = None
                 
                     
                         except Exception as e:
