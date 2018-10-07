@@ -18,6 +18,7 @@ class MlautEstimator(ABC):
     Abstact base class that all mlaut estimators should inherit from.
     """
     def __init__(self, 
+                properties,
                 verbose=VERBOSE, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
@@ -26,6 +27,7 @@ class MlautEstimator(ABC):
         self._verbose=verbose
         self._n_jobs=n_jobs
         self._refit=refit
+        self._properties = properties
     """
     Args:
         verbose(int): Sets the amount of output in the terminal. Higher numbers mean more output.
@@ -72,12 +74,6 @@ class MlautEstimator(ABC):
             hyperparameters(dictionary): Dictionary with the hyperarameters of each model.
         """
         self._hyperparameters = hyperparameters
-
-    # def _set_params(self, hyperparameters):
-    #     """
-    #     Private method for setting the hyperparaments of the estimator. It is used by the build(). If the user specified hyperparaments the default values are overwritten. 
-    #     """
-    #     self._hyperparameters = hyperparameters
     
     def load(self, path_to_model):
         """
@@ -114,9 +110,8 @@ class MlautEstimator(ABC):
 
         return self._create_pipeline(self._trained_model)
 
-    # def predict(self, X):
-    #     estimator = self.get_trained_model()
-    #     return estimator.predict(X)
+    def properties(self):
+        return self._properties
 
     def _create_pipeline(self, estimator):
         """
@@ -130,18 +125,18 @@ class MlautEstimator(ABC):
             `estimator(sklearn pipeline or GridSerachCV)`: `sklearn` pipeline object. If no preprocessing was set 
         """
 
+        if 'data_preprocessing' in self.properties():
+            data_preprocessing = self.properties()['data_preprocessing']
 
-        data_preprocessing = self.properties()['data_preprocessing']
-
-        if data_preprocessing['normalize_labels'] is True:
-            pipe = Pipeline(
-                memory=None,
-                steps=[
-                    ('standardscaler', preprocessing.StandardScaler(copy=True, with_mean=True, with_std=True) ),
-                    ('estimator', estimator)
-                    ]
-            )
-            return pipe
+            if data_preprocessing['normalize_labels'] is True:
+                pipe = Pipeline(
+                    memory=None,
+                    steps=[
+                        ('standardscaler', preprocessing.StandardScaler(copy=True, with_mean=True, with_std=True) ),
+                        ('estimator', estimator)
+                        ]
+                )
+                return pipe
         else:
             return estimator
 
@@ -151,6 +146,8 @@ class MlautEstimator(ABC):
 class properties(object):
     """
     Decorator class used for adding properties to mlaut estimator classes. The properties that all mlaut estimator objects must have are: estimator family, task (classification, regression), name of estimator. 
+
+    The decorator attached a `properties()` method to the class which invokes it 
     """
     def __init__(self, 
         estimator_family, 
@@ -194,10 +191,29 @@ class properties(object):
         }
         return properties_dict
 
+    def _set_properties(self,
+                        estimator_family=None, 
+                        tasks=None, 
+                        name=None, 
+                        data_preprocessing=None):
+        """
+        Alternative method for setting the properties of the estimator. Used when creating a generic estimator by inehriting from an already created class.
+
+        """
+        if estimator_family is not None:
+            self._estimator_family = estimator_family
+        if tasks is not None:
+            self._tasks = tasks
+        if name is not None:
+            self._name = name
+        if data_preprocessing is not None:
+            self._data_preprocessing = data_preprocessing
+        
     @wrapt.decorator
     def __call__(self, wrapped, instance, args, kwargs):
         #add/attach properties to class
         wrapped.properties = self._properties
+        # wrapped.set_properties = self._set_properties
         return wrapped(*args, **kwargs)
         
         

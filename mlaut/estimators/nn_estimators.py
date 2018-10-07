@@ -19,68 +19,74 @@ from tensorflow.python.keras.layers import Dense, Activation, Dropout
 from tensorflow.python.keras.wrappers.scikit_learn import KerasRegressor, KerasClassifier
 from tensorflow.python.keras import optimizers
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.model_selection import GridSearchCV
 import numpy as np
 import wrapt
 
 import tensorflow as tf
 
-@properties(estimator_family=[NEURAL_NETWORKS], 
-            tasks=[CLASSIFICATION], 
-            name='NeuralNetworkDeepClassifier')
-class Deep_NN_Classifier(MlautEstimator):
-    """
-    Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
-    """
-    @wrapt.decorator
-    def classification_decorator(self, keras_model, instance, args, kwargs):
-        learning_rate = self._hyperparameters['learning_rate']
-        loss=self._hyperparameters['loss'] 
-        metrics=self._hyperparameters['metrics']
-        optimizer = self._hyperparameters['optimizer']
-        if optimizer is 'Adam':
-            model_optimizer = optimizers.Adam(lr=learning_rate)
-        model = keras_model(num_classes=kwargs['num_classes'], input_dim=kwargs['input_dim'])
-        model.compile(loss=loss, optimizer=model_optimizer, metrics=metrics)
-        return model
+properties = {'estimator_family':[NEURAL_NETWORKS], 
+            'tasks':[CLASSIFICATION], 
+            'name':'NeuralNetworkDeepClassifier'}
+hyperparameters = {'epochs': [50,100], 
+                    'batch_size': [0]}
+def keras_model(num_classes, input_dim):
+    nn_deep_model = OverwrittenSequentialClassifier()
+    nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
+    nn_deep_model.add(Dense(144, activation='relu'))
+    nn_deep_model.add(Dropout(0.5))
+    nn_deep_model.add(Dense(12, activation='relu'))
+    nn_deep_model.add(Dense(num_classes, activation='softmax'))
 
+    model_optimizer = optimizers.Adam(lr=0.001)
+    nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['accuracy'])
+
+    return nn_deep_model
+
+class Deep_NN_Classifier(MlautEstimator):
+    # """
+    # Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
+    # """
 
         
     def __init__(self,
-                hyperparameters=None, 
-                keras_model=None, 
+                properties=properties,
+                hyperparameters=hyperparameters, 
+                keras_model=keras_model, 
                 verbose=VERBOSE, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
-        if hyperparameters is None:
-            self._hyperparameters = {'epochs': [50,100], 
-                                    'batch_size': 0,  
-                                    'learning_rate':0.001,
-                                    'loss': 'mean_squared_error',
-                                    'optimizer': 'Adam',
-                                    'metrics' : ['accuracy']}
-        else:
-            self._hyperparameters = hyperparameters
-
-        if keras_model is None:
-            #default keras model for classification tasks
-            def keras_model(num_classes, input_dim):
-                nn_deep_model = OverwrittenSequentialClassifier()
-                nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
-                nn_deep_model.add(Dense(144, activation='relu'))
-                nn_deep_model.add(Dropout(0.5))
-                nn_deep_model.add(Dense(12, activation='relu'))
-                nn_deep_model.add(Dense(num_classes, activation='softmax'))
-                return nn_deep_model
-            self._keras_model = self.classification_decorator(keras_model)
-        else:
-            self._keras_model = self.classification_decorator(keras_model)
+        
+        self._hyperparameters = hyperparameters
+        self._keras_model = keras_model
     
+    def set_properties(self,
+                        estimator_family=None, 
+                        tasks=None, 
+                        name=None, 
+                        data_preprocessing=None):
+        """
+        Alternative method for setting the properties of the estimator. Used when creating a generic estimator by inehriting from an already created class.
 
+        """
+        if estimator_family is not None:
+            self._estimator_family = estimator_family
+        if tasks is not None:
+            self._tasks = tasks
+        if name is not None:
+            self._name = name
+            print('GOODD')
+        if data_preprocessing is not None:
+            self._data_preprocessing = data_preprocessing
+        
+    def get_name(self):
+        return self._name
     def build(self, **kwargs):
         """
         Builds and returns estimator.
@@ -103,13 +109,14 @@ class Deep_NN_Classifier(MlautEstimator):
         input_dim=kwargs['input_dim']
         num_samples = kwargs['num_samples']
         num_classes = kwargs['num_classes']
-             
+        
+        
         #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
         estimator = KerasClassifier(build_fn=self._keras_model, 
                                 num_classes=num_classes, 
                                 input_dim=input_dim)#TODO include flag for verbosity
-        grid = GridSearchCV(estimator=estimator, param_grid=self._hyperparameters)
-        return self._create_pipeline(estimator=grid)
+        grid = GridSearchCV(estimator=estimator, param_grid=self._hyperparameters, cv=self._num_cv_folds)
+        return self._create_pipeline(estimator=estimator)
 
     
 
@@ -153,114 +160,113 @@ class Deep_NN_Classifier(MlautEstimator):
             `keras object`: Trained keras model.
         """
 
-        return self._trained_model
+        return self._trained_model.model
 
 
-@properties(estimator_family=[NEURAL_NETWORKS], 
-            tasks=[REGRESSION], 
-            name='NeuralNetworkDeepRegressor')
-class Deep_NN_Regressor(MlautEstimator):
-    """
-    Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
-    """
+# @properties(estimator_family=[NEURAL_NETWORKS], 
+#             tasks=[REGRESSION], 
+#             name='NeuralNetworkDeepRegressor')
+# class Deep_NN_Regressor(MlautEstimator):
+#     """
+#     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
+#     """
 
-    def __init__(self, verbose=VERBOSE, 
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
-        super().__init__(verbose=verbose, 
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
-        self._hyperparameters = {'loss':'mean_squared_error', 
-                                 'learning_rate':0.001,
-                                 'optimizer': 'Adam',
-                                 'metrics': ['accuracy'],
-                                 'epochs': [50,100], 
-                                 'batch_size': 0 }
+#     def __init__(self, verbose=VERBOSE, 
+#                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+#                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
+#                 refit=True):
+#         super().__init__(verbose=verbose, 
+#                          n_jobs=n_jobs, 
+#                         num_cv_folds=num_cv_folds, 
+#                         refit=refit)
+#         self._hyperparameters = {'loss':'mean_squared_error', 
+#                                  'learning_rate':0.001,
+#                                  'optimizer': 'Adam',
+#                                  'metrics': ['accuracy'],
+#                                  'epochs': [50,100], 
+#                                  'batch_size': 0 }
 
-    def _nn_deep_classifier_model(self, input_dim):
-        nn_deep_model = Sequential()
-        nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
-        nn_deep_model.add(Dense(144, activation='relu'))
-        nn_deep_model.add(Dropout(0.5))
-        nn_deep_model.add(Dense(12, activation='relu'))
-        nn_deep_model.add(Dense(1, activation='sigmoid'))
+#     def _nn_deep_classifier_model(self, input_dim):
+#         nn_deep_model = Sequential()
+#         nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
+#         nn_deep_model.add(Dense(144, activation='relu'))
+#         nn_deep_model.add(Dropout(0.5))
+#         nn_deep_model.add(Dense(12, activation='relu'))
+#         nn_deep_model.add(Dense(1, activation='sigmoid'))
         
-        optimizer = self._hyperparameters['optimizer']
-        if optimizer is 'Adam':
-            model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
+#         optimizer = self._hyperparameters['optimizer']
+#         if optimizer is 'Adam':
+#             model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
         
-        nn_deep_model.compile(loss=self._hyperparameters['loss'], 
-                              optimizer=model_optimizer, 
-                              metrics=self._hyperparameters['metrics'])
-        return nn_deep_model
+#         nn_deep_model.compile(loss=self._hyperparameters['loss'], 
+#                               optimizer=model_optimizer, 
+#                               metrics=self._hyperparameters['metrics'])
+#         return nn_deep_model
     
-    def build(self, **kwargs):
-        """
-        Builds and returns estimator.
+#     def build(self, **kwargs):
+#         """
+#         Builds and returns estimator.
         
-        Args:
-            kwargs (key-value(int)): The user must specify ``input_dim`` and ``num_samples``.
+#         Args:
+#             kwargs (key-value(int)): The user must specify ``input_dim`` and ``num_samples``.
 
-        Returns:
-            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
-        """
-        if 'input_dim' not in kwargs:
-            raise ValueError('You need to specify input dimentions when building the model')
-        if 'num_samples' not in kwargs:
-            raise ValueError('You need to specify num_samples when building the keras model.')
-        input_dim=kwargs['input_dim']
-        num_samples = kwargs['num_samples']
+#         Returns:
+#             `sklearn pipeline` object: pipeline for transforming the features and training the estimator
+#         """
+#         if 'input_dim' not in kwargs:
+#             raise ValueError('You need to specify input dimentions when building the model')
+#         if 'num_samples' not in kwargs:
+#             raise ValueError('You need to specify num_samples when building the keras model.')
+#         input_dim=kwargs['input_dim']
+#         num_samples = kwargs['num_samples']
         
-        estimator = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
-                                input_dim=input_dim,
-                                verbose=self._verbose)
+#         estimator = KerasRegressor(build_fn=self._nn_deep_classifier_model, 
+#                                 input_dim=input_dim,
+#                                 verbose=self._verbose)
 
         
-        return self._create_pipeline(estimator=estimator)
-        # return GridSearchCV(model, 
-        #                     hyperparameters, 
-        #                     verbose = self._verbose,
-        #                     n_jobs=self._n_jobs,
-        #                     refit=self._refit)
+#         return self._create_pipeline(estimator=estimator)
+#         # return GridSearchCV(model, 
+#         #                     hyperparameters, 
+#         #                     verbose = self._verbose,
+#         #                     n_jobs=self._n_jobs,
+#         #                     refit=self._refit)
 
 
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+#     def save(self, dataset_name):
+#         """
+#         Saves estimator on disk.
 
-        Args:
-            dataset_name (str): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_keras_model(trained_model=trained_model,
-                                 model_name=self.properties()['name'],
-                                 dataset_name=dataset_name)
+#         Args:
+#             dataset_name (str): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+#         """
+#         #set trained model method is implemented in the base class
+#         trained_model = self._trained_model
+#         disk_op = DiskOperations()
+#         disk_op.save_keras_model(trained_model=trained_model,
+#                                  model_name=self.properties()['name'],
+#                                  dataset_name=dataset_name)
     
-    #overloading method from parent class
-    def load(self, path_to_model):
-        """
-        Loads saved keras model from disk.
+#     #overloading method from parent class
+#     def load(self, path_to_model):
+#         """
+#         Loads saved keras model from disk.
 
-        Args:
-            path_to_model (string): path on disk where the object is saved.
-        """
-        #file name could be passed with .* as extention. 
-        model = load_model(path_to_model,
-                           custom_objects={
-                               'OverwrittenSequentialClassifier':OverwrittenSequentialClassifier
-                               })
-        self.set_trained_model(model)
+#         Args:
+#             path_to_model (string): path on disk where the object is saved.
+#         """
+#         #file name could be passed with .* as extention. 
+#         model = load_model(path_to_model,
+#                            custom_objects={
+#                                'OverwrittenSequentialClassifier':OverwrittenSequentialClassifier
+#                                })
+#         self.set_trained_model(model)
         
 
 class OverwrittenSequentialClassifier(Sequential):
     """
     Keras sequential model that overrides the default :func:`tensorflow.python.keras.models.fit` and :func:`tensorflow.python.keras.models.predict` methods.
     """
-
 
 
     def fit(self, X_train, y_train):
@@ -282,8 +288,9 @@ class OverwrittenSequentialClassifier(Sequential):
         reshaped_y = y_train.reshape(len_y, 1)
         y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
         
-        
         return super().fit(X_train, y_train_onehot_encoded)
+
+        
 
     def predict(self, X_test, batch_size=None, verbose=VERBOSE):
         """

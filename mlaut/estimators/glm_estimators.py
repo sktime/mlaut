@@ -51,17 +51,7 @@ class Ridge_Regression(MlautEstimator):
 
         return self._create_pipeline(estimator=estimator)
         
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
 
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=self._trained_model,
-    #                             model_name=self.properties()['name'],
-    #                             dataset_name=dataset_name)
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
             tasks=[REGRESSION], 
             name='Lasso')
@@ -193,28 +183,11 @@ class Logistic_Regression(MlautEstimator):
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
-                            refit=self._refit)
+                            refit=self._refit,
+                            cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)
 
-        # return GridSearchCV(linear_model.LogisticRegression(), 
-        #                     self._hyperparameters, 
-        #                     verbose = self._verbose,
-        #                     n_jobs=self._n_jobs,
-        #                     refit=self._refit)
-    
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
-    #                          dataset_name=dataset_name)
+ 
 
 @properties(estimator_family=[GENERALIZED_LINEAR_MODELS],
             tasks=[CLASSIFICATION],
@@ -252,12 +225,8 @@ class Passive_Aggressive_Classifier(MlautEstimator):
                             self._hyperparameters, 
                             verbose=self._verbose,
                             n_jobs=self._n_jobs,
-                            refit=self._refit
+                            refit=self._refit,
+                            cv=self._num_cv_folds
                             )
         return self._create_pipeline(estimator=estimator)
-        # return GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
-        #                     self._hyperparameters, 
-        #                     verbose=self._verbose,
-        #                     n_jobs=self._n_jobs,
-        #                     refit=self._refit
-        #                     )
+

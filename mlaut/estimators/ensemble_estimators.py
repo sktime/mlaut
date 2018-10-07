@@ -60,7 +60,8 @@ class Random_Forest_Classifier(MlautEstimator):
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
-                            refit=self._refit)
+                            refit=self._refit,
+                            cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)  
         # return GridSearchCV(RandomForestClassifier(), 
         #                     self._hyperparameters, 
@@ -112,7 +113,8 @@ class Random_Forest_Regressor(MlautEstimator):
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
-                            refit=self._refit)
+                            refit=self._refit,
+                            cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)        
         # return GridSearchCV(RandomForestRegressor(), 
         #                     self._hyperparameters, 
@@ -160,7 +162,8 @@ class Bagging_Classifier(MlautEstimator):
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
-                            refit=self._refit)
+                            refit=self._refit,
+                            cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)        
 
         # return GridSearchCV(model, 
@@ -210,7 +213,8 @@ class Bagging_Regressor(MlautEstimator):
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
-                            refit=self._refit)
+                            refit=self._refit,
+                            cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)        
 
         # return GridSearchCV(model, 
@@ -262,7 +266,8 @@ class Gradient_Boosting_Classifier(MlautEstimator):
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
-                            refit=self._refit)
+                            refit=self._refit,
+                            cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)        
 
 
@@ -308,6 +313,7 @@ class Gradient_Boosting_Regressor(MlautEstimator):
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
-                            refit=self._refit)
+                            refit=self._refit,
+                            cv=self._num_cv_folds)
     
         return self._create_pipeline(estimator=estimator)        

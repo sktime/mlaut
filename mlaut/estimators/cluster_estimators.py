@@ -64,6 +64,7 @@ class K_Neighbours(MlautEstimator):
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,
-                            refit=self._refit)
+                            refit=self._refit,
+                            cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)        
 

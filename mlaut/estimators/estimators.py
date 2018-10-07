@@ -5,8 +5,8 @@ from mlaut.estimators.glm_estimators import (Ridge_Regression,
                                        Lasso_Lars, 
                                        Logistic_Regression, 
                                        Passive_Aggressive_Classifier)
-from mlaut.estimators.nn_estimators import  (Deep_NN_Classifier, 
-                                       Deep_NN_Regressor)
+from mlaut.estimators.nn_estimators import  Deep_NN_Classifier
+
 from mlaut.estimators.bayes_estimators import Gaussian_Naive_Bayes, Bernoulli_Naive_Bayes
 from mlaut.estimators.ensemble_estimators import (Random_Forest_Classifier,
                                             Random_Forest_Regressor,
