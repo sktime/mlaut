@@ -125,7 +125,7 @@ if __name__ == '__main__':
                 deep_nn_4_layer_wide_with_dropout,
                 deep_nn_12_layer_wide_with_dropout]
 
-    orchest = Orchestrator(hdf5_input_io=input_io, hdf5_output_io=out_io, dts_names=dts_names_list[0:1],
+    orchest = Orchestrator(hdf5_input_io=input_io, hdf5_output_io=out_io, dts_names=dts_names_list,
                     original_datasets_group_h5_path='delgado_datasets/')
     orchest.run(modelling_strategies=estimators, verbose=True)
 
