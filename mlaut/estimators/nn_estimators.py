@@ -1,4 +1,3 @@
-from mlaut.estimators.mlaut_estimator import properties
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 
 from mlaut.shared.files_io import DiskOperations

@@ -75,7 +75,7 @@ class Baseline_Classifier(MlautEstimator):
     """
     properties = {'estimator_family':[BASELINE],
             'tasks':[CLASSIFICATION],
-            'name':'BaselineClassifier')
+            'name':'BaselineClassifier'}
     def __init__(self, verbose=VERBOSE,
                 properties=properties, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,

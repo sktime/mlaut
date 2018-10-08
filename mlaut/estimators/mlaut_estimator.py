@@ -125,8 +125,8 @@ class MlautEstimator(ABC):
             `estimator(sklearn pipeline or GridSerachCV)`: `sklearn` pipeline object. If no preprocessing was set 
         """
 
-        if 'data_preprocessing' in self.properties():
-            data_preprocessing = self.properties()['data_preprocessing']
+        if 'data_preprocessing' in self.properties:
+            data_preprocessing = self.properties['data_preprocessing']
 
             if data_preprocessing['normalize_labels'] is True:
                 pipe = Pipeline(
