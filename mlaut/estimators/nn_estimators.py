@@ -25,29 +25,29 @@ import wrapt
 
 import tensorflow as tf
 
-properties = {'estimator_family':[NEURAL_NETWORKS], 
-            'tasks':[CLASSIFICATION], 
-            'name':'NeuralNetworkDeepClassifier'}
-hyperparameters = {'epochs': [50,100], 
-                    'batch_size': [0]}
-def keras_model(num_classes, input_dim):
-    nn_deep_model = OverwrittenSequentialClassifier()
-    nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
-    nn_deep_model.add(Dense(144, activation='relu'))
-    nn_deep_model.add(Dropout(0.5))
-    nn_deep_model.add(Dense(12, activation='relu'))
-    nn_deep_model.add(Dense(num_classes, activation='softmax'))
 
-    model_optimizer = optimizers.Adam(lr=0.001)
-    nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['accuracy'])
-
-    return nn_deep_model
 
 class Deep_NN_Classifier(MlautEstimator):
     # """
     # Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
     # """
+    properties = {'estimator_family':[NEURAL_NETWORKS], 
+                'tasks':[CLASSIFICATION], 
+                'name':'NeuralNetworkDeepClassifier'}
+    hyperparameters = {'epochs': [50,100], 
+                        'batch_size': [0]}
+    def keras_model(num_classes, input_dim):
+        nn_deep_model = OverwrittenSequentialClassifier()
+        nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
+        nn_deep_model.add(Dense(144, activation='relu'))
+        nn_deep_model.add(Dropout(0.5))
+        nn_deep_model.add(Dense(12, activation='relu'))
+        nn_deep_model.add(Dense(num_classes, activation='softmax'))
 
+        model_optimizer = optimizers.Adam(lr=0.001)
+        nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['accuracy'])
+
+        return nn_deep_model
         
     def __init__(self,
                 properties=properties,
@@ -81,7 +81,6 @@ class Deep_NN_Classifier(MlautEstimator):
             self._tasks = tasks
         if name is not None:
             self._name = name
-            print('GOODD')
         if data_preprocessing is not None:
             self._data_preprocessing = data_preprocessing
         
@@ -163,14 +162,62 @@ class Deep_NN_Classifier(MlautEstimator):
         return self._trained_model.model
 
 
-# @properties(estimator_family=[NEURAL_NETWORKS], 
-#             tasks=[REGRESSION], 
-#             name='NeuralNetworkDeepRegressor')
-# class Deep_NN_Regressor(MlautEstimator):
-#     """
-#     Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
-#     """
 
+
+
+class Deep_NN_Regressor(Deep_NN_Classifier):
+    """
+    Wrapper for a `keras sequential model <https://keras.io/getting-started/sequential-model-guide/>`_. 
+    """
+    properties = {'estimator_family':[NEURAL_NETWORKS], 
+                'tasks':[REGRESSION], 
+                'name':'NeuralNetworkDeepRegressor'}
+
+    def nn_deep_classifier_model(self, input_dim):
+        nn_deep_model = Sequential()
+        nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
+        nn_deep_model.add(Dense(144, activation='relu'))
+        nn_deep_model.add(Dropout(0.5))
+        nn_deep_model.add(Dense(12, activation='relu'))
+        nn_deep_model.add(Dense(1, activation='sigmoid'))
+        
+
+        model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
+        nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['accuracy'])
+
+
+        return nn_deep_model
+
+    def build(self, **kwargs):
+        """
+        Builds and returns estimator.
+        
+        Args:
+            kwargs (key-value(int)): The user must specify ``input_dim`` and ``num_samples``.
+
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
+        """
+
+
+        if 'input_dim' not in kwargs:
+            raise ValueError('You need to specify input dimensions when building the model.')
+        if 'num_samples' not in kwargs:
+            raise ValueError('You need to specify num_samples when building the keras model.')
+        if 'num_classes' not in kwargs:
+            raise ValueError('You need to specify num_classes when building the keras model.')
+
+        input_dim=kwargs['input_dim']
+        num_samples = kwargs['num_samples']
+        num_classes = kwargs['num_classes']
+        
+        
+        #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
+        estimator = KerasRegressor(build_fn=self._keras_model, 
+                                input_dim=input_dim)#TODO include flag for verbosity
+        grid = GridSearchCV(estimator=estimator, param_grid=self._hyperparameters, cv=self._num_cv_folds)
+        return self._create_pipeline(estimator=estimator)
+        
 #     def __init__(self, verbose=VERBOSE, 
 #                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
 #                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 

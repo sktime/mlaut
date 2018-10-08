@@ -1,4 +1,3 @@
-from mlaut.estimators.mlaut_estimator import properties
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(BASELINE,
@@ -11,18 +10,23 @@ from mlaut.shared.static_variables import(BASELINE,
 from sklearn.dummy import DummyClassifier, DummyRegressor
 from mlaut.estimators.generic_estimator import Generic_Estimator
 
-@properties(estimator_family=[BASELINE],
-            tasks=[REGRESSION],
-            name='BaselineRegressor')
+
+
 class Baseline_Regressor(MlautEstimator):
     """
     Wrapper for sklearn dummy regressor
     """
-    def __init__(self, verbose=VERBOSE, 
+    properties = {'estimator_family':[BASELINE],
+            'tasks':[REGRESSION],
+            'name':'BaselineRegressor'}
+
+    def __init__(self, verbose=VERBOSE,
+                properties=properties,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -64,19 +68,22 @@ class Baseline_Regressor(MlautEstimator):
 
 
 
-@properties(estimator_family=[BASELINE],
-            tasks=[CLASSIFICATION],
-            name='BaselineClassifier')
+
 class Baseline_Classifier(MlautEstimator):
     """
     Wrapper for sklearn dummy classifier class.
     """
-    def __init__(self, verbose=VERBOSE, 
+    properties = {'estimator_family':[BASELINE],
+            'tasks':[CLASSIFICATION],
+            'name':'BaselineClassifier')
+    def __init__(self, verbose=VERBOSE,
+                properties=properties, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose, 
-                         n_jobs=n_jobs, 
+                        properties=properties,
+                        n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = None

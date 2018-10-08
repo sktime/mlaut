@@ -1,4 +1,3 @@
-from mlaut.estimators.mlaut_estimator import properties
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 
 from mlaut.shared.files_io import DiskOperations
@@ -14,18 +13,22 @@ from sklearn import linear_model
 from sklearn.model_selection import GridSearchCV
 import numpy as np
 
-@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
-            tasks=[REGRESSION], 
-            name='RidgeRegression')
+
 class Ridge_Regression(MlautEstimator):
     """
     Wrapper for `sklearn Ridge Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html>`_.
     """
-    def __init__(self, verbose=VERBOSE, 
+    properties= {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+            'tasks':[REGRESSION], 
+            'name':'RidgeRegression'}
+
+    def __init__(self, verbose=VERBOSE,
+                properties=properties, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties,  
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -52,18 +55,22 @@ class Ridge_Regression(MlautEstimator):
         return self._create_pipeline(estimator=estimator)
         
 
-@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
-            tasks=[REGRESSION], 
-            name='Lasso')
+
 class Lasso(MlautEstimator):
     """
     Wrapper for `sklearn Lasso <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html>`_.
     """
+    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+            'tasks':[REGRESSION], 
+            'name':'Lasso'}
+
     def __init__(self, verbose=VERBOSE, 
+                properties=properties,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -88,31 +95,23 @@ class Lasso(MlautEstimator):
 
         return self._create_pipeline(estimator=estimator)
 
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
 
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=self._trained_model,
-    #                             model_name=self.properties()['name'],
-    #                             dataset_name=dataset_name)
-@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
-            tasks=[REGRESSION], 
-            name='LassoLars')
 class Lasso_Lars(MlautEstimator):
     """
     Wrapper for `sklearn Lasso Lars <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoLars.html>`_.
     """
 
+    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+                'tasks':[REGRESSION], 
+                'name':'LassoLars'}
     
-    def __init__(self, verbose=VERBOSE, 
+    def __init__(self, verbose=VERBOSE,
+                properties=properties, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -148,18 +147,22 @@ class Lasso_Lars(MlautEstimator):
     #                             model_name=self.properties()['name'],
     #                             dataset_name=dataset_name)
 
-@properties(estimator_family=[GENERALIZED_LINEAR_MODELS], 
-            tasks=[REGRESSION], 
-            name='LogisticRegression')
+
 class Logistic_Regression(MlautEstimator):
     """
     Wrapper for `sklearn Logistic Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`_.
     """
-    def __init__(self, verbose=VERBOSE, 
+    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+            'tasks':[REGRESSION], 
+            'name':'LogisticRegression'}
+
+    def __init__(self, verbose=VERBOSE,
+                properties=properties, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties,  
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -189,19 +192,22 @@ class Logistic_Regression(MlautEstimator):
 
  
 
-@properties(estimator_family=[GENERALIZED_LINEAR_MODELS],
-            tasks=[CLASSIFICATION],
-            name='PassiveAggressiveClassifier')
+
 class Passive_Aggressive_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Passive Aggressive Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.PassiveAggressiveClassifier.html>`_.
     """
-
+    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS],
+            'tasks':[CLASSIFICATION],
+            'name':'PassiveAggressiveClassifier'}
+            
     def __init__(self, verbose=VERBOSE, 
+                properties=properties,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)

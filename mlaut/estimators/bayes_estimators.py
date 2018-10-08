@@ -1,4 +1,3 @@
-from mlaut.estimators.mlaut_estimator import properties
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 
 from mlaut.shared.files_io import DiskOperations
@@ -17,18 +16,21 @@ from mlaut.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import BernoulliNB
 
-@properties(estimator_family=[NAIVE_BAYES], 
-            tasks=[CLASSIFICATION], 
-            name='GaussianNaiveBayes')
+
 class Gaussian_Naive_Bayes(MlautEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html>`_.
     """
-    def __init__(self, verbose=VERBOSE, 
+    properties = {'estimator_family':[NAIVE_BAYES], 
+            'tasks':[CLASSIFICATION], 
+            'name':'GaussianNaiveBayes'}
+    def __init__(self, verbose=VERBOSE,
+                properties=properties, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -53,18 +55,22 @@ class Gaussian_Naive_Bayes(MlautEstimator):
 
          
 
-@properties(estimator_family=[NAIVE_BAYES], 
-            tasks=[CLASSIFICATION], 
-            name='BernoulliNaiveBayes')
+
 class Bernoulli_Naive_Bayes(MlautEstimator):
     """
     Wrapper for `sklearn Bernoulli Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html>`_.
     """
-    def __init__(self, verbose=VERBOSE, 
+    properties = {'estimator_family':[NAIVE_BAYES], 
+            'tasks':[CLASSIFICATION], 
+            'name':'BernoulliNaiveBayes'}
+            
+    def __init__(self, verbose=VERBOSE,
+                properties=properties, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)

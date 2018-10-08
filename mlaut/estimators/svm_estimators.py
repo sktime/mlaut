@@ -1,4 +1,3 @@
-from mlaut.estimators.mlaut_estimator import properties
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 
 from mlaut.shared.files_io import DiskOperations
@@ -12,18 +11,23 @@ from mlaut.shared.static_variables import(SVM,
 
 from sklearn.svm import SVC
 import numpy as np
-@properties(estimator_family=[SVM], 
-            tasks=[CLASSIFICATION], 
-            name='SVC')
+
+
 class SVC_mlaut(MlautEstimator):
     """
     Wrapper for `sklearn SVC estimator <http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`_.
     """
-    def __init__(self, verbose=VERBOSE, 
+    properties = {'estimator_family':[SVM], 
+            'tasks':[CLASSIFICATION], 
+            'name':'SVC'}
+            
+    def __init__(self, verbose=VERBOSE,
+                properties=properties, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
+        super().__init__(verbose=verbose,
+                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)

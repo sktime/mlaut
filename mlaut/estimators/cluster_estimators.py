@@ -1,7 +1,6 @@
 
 from sklearn import neighbors
 from sklearn.model_selection import GridSearchCV
-from mlaut.estimators.mlaut_estimator import properties
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 
 from mlaut.shared.files_io import DiskOperations
@@ -15,14 +14,16 @@ from mlaut.shared.static_variables import (CLUSTER,
 import numpy as np
 
 
-@properties(estimator_family=[CLUSTER], 
-            tasks=[CLASSIFICATION], 
-            name='K_Neighbours')
+
 class K_Neighbours(MlautEstimator):
     """
     Wrapper for `sklearn KNeighbours classifier <http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html#sklearn.neighbors.KNeighborsClassifier>`_.
     """
-    def __init__(self, verbose=VERBOSE, 
+    properties = {'estimator_family':[CLUSTER], 
+            'tasks':[CLASSIFICATION], 
+            'name':'K_Neighbours'}
+    def __init__(self, verbose=VERBOSE,
+                properties=properties, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
