@@ -120,11 +120,20 @@ if __name__ == '__main__':
                                 properties={'name':'NN-12-layer_wide_with_dropout'})
 
 
-    estimators = [deep_nn_4_layer_thin_dropout,
-                deep_nn_4_layer_wide_no_dropout, 
-                deep_nn_4_layer_wide_with_dropout,
-                deep_nn_12_layer_wide_with_dropout]
+    # estimators = [deep_nn_4_layer_thin_dropout,
+    #             deep_nn_4_layer_wide_no_dropout, 
+    #             deep_nn_4_layer_wide_with_dropout,
+    #             deep_nn_12_layer_wide_with_dropout]
 
+
+
+    estim = instantiate_default_estimators(['Classification'])
+
+    estimators = []
+    for e in estim:
+        if e.properties['name'] is not 'NeuralNetworkDeepClassifier':
+            estimators.append(e)
+            
     orchest = Orchestrator(hdf5_input_io=input_io, hdf5_output_io=out_io, dts_names=dts_names_list,
                     original_datasets_group_h5_path='delgado_datasets/')
     orchest.run(modelling_strategies=estimators, verbose=True)

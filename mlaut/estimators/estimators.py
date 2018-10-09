@@ -79,7 +79,7 @@ def instantiate_default_estimators(estimators,
         Gaussian_Naive_Bayes,
         Bernoulli_Naive_Bayes,
         Deep_NN_Classifier,
-        Deep_NN_Regressor,
+        # Deep_NN_Regressor,
         Passive_Aggressive_Classifier,
         Baseline_Classifier,
         Baseline_Regressor,
@@ -97,7 +97,7 @@ def instantiate_default_estimators(estimators,
         for p in perms:
             input_estimator = p[0]
             mlaut_estimator = p[1]
-            mlaut_estimator_prop = mlaut_estimator().properties()
+            mlaut_estimator_prop = mlaut_estimator().properties
 
             if input_estimator in mlaut_estimator_prop['estimator_family'] or \
                 input_estimator in mlaut_estimator_prop['tasks'] or \

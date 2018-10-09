@@ -32,7 +32,6 @@ class Random_Forest_Classifier(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__( verbose=verbose,
-                properties=properties, 
                 n_jobs=n_jobs,
                 num_cv_folds=num_cv_folds, 
                 refit=refit)
@@ -41,6 +40,8 @@ class Random_Forest_Classifier(MlautEstimator):
                     'max_features': ['auto', 'sqrt','log2', None],
                     'max_depth': [5, 15, None]
                 }
+        self.properties = properties
+
     def build(self, **kwargs):
         """
         builds and returns estimator
@@ -88,7 +89,6 @@ class Random_Forest_Regressor(MlautEstimator):
                 num_cv_folds=3, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -97,6 +97,7 @@ class Random_Forest_Regressor(MlautEstimator):
                 'max_features': ['auto', 'sqrt','log2', None],
                 'max_depth': [5, 15, None]
             }
+        self.properties = properties
 
     def build(self, **kwargs):
         """
@@ -144,13 +145,14 @@ class Bagging_Classifier(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 50, 100]
             }
+        self.properties = properties
+
     def build(self, **kwargs):
         """
         builds and returns estimator
@@ -197,13 +199,13 @@ class Bagging_Regressor(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 50, 100]
             }
+        self.properties = properties
 
     def build(self, **kwargs):
         """
@@ -254,7 +256,6 @@ class Gradient_Boosting_Classifier(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -262,6 +263,7 @@ class Gradient_Boosting_Classifier(MlautEstimator):
                 'n_estimators': [10, 50, 100],
                 'max_depth':[10,100, None]
             }
+        self.properties = properties
 
     def build(self, **kwargs):
         """
@@ -305,7 +307,6 @@ class Gradient_Boosting_Regressor(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties,
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -313,6 +314,8 @@ class Gradient_Boosting_Regressor(MlautEstimator):
                 'n_estimators': [10, 50, 100],
                 'max_depth':[10,100, None]
             }
+        self.properties = properties
+
     def build(self, **kwargs):
         """
         builds and returns estimator

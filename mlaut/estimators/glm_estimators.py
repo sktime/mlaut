@@ -28,7 +28,6 @@ class Ridge_Regression(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties,  
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -70,7 +69,6 @@ class Lasso(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -111,7 +109,6 @@ class Lasso_Lars(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -162,7 +159,6 @@ class Logistic_Regression(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties,  
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -207,7 +203,6 @@ class Passive_Aggressive_Classifier(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
@@ -216,6 +211,8 @@ class Passive_Aggressive_Classifier(MlautEstimator):
                 'C': np.linspace(2**(-5), 2**(15), 13),
                 'max_iter':[1000]
             }
+        self.properties = properties
+
     def build(self, **kwargs):
         """
         builds and returns estimator

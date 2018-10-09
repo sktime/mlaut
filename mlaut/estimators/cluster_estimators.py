@@ -35,6 +35,7 @@ class K_Neighbours(MlautEstimator):
                                 'n_neighbors': np.arange(1,31),
                                 'weights': ['uniform', 'distance']
                         }
+        self.properties = properties
 
     def build(self, **kwargs):
         """

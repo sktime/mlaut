@@ -30,11 +30,11 @@ class Gaussian_Naive_Bayes(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         self._hyperparameters = None
+        self.properties = properties
 
    
     def build(self, **kwargs):
@@ -70,7 +70,6 @@ class Bernoulli_Naive_Bayes(MlautEstimator):
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
