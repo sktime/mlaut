@@ -52,7 +52,7 @@ class MlautEstimator(ABC):
         trained_model = self._trained_model
         disk_op = DiskOperations()
         disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.properties()['name'],
+                             model_name=self.properties['name'],
                              dataset_name=dataset_name)
     
     def get_params(self):

@@ -186,7 +186,7 @@ class Orchestrator:
             verbose (Boolean): If True prints info and warning messages.
         """
         trained_estimator = modelling_strategy.get_trained_model()
-        name_estimator = modelling_strategy.properties()['name']
+        name_estimator = modelling_strategy.properties['name']
         if override is True:
             predictions = trained_estimator.predict(X_test)
             self._output_io.save_prediction_to_db(predictions=predictions, 
