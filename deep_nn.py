@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     data = Data()
     input_io = data.open_hdf5('data/delgado.hdf5', mode='a')
-    out_io = data.open_hdf5('data/deep_nn_study.hdf5', mode='a')
+    out_io = data.open_hdf5('data/delgado-classification.h5.hdf5', mode='a')
     dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, hdf5_group='delgado_datasets/')
     split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_paths=dts_names_list_full_path)
 
@@ -120,20 +120,20 @@ if __name__ == '__main__':
                                 properties={'name':'NN-12-layer_wide_with_dropout'})
 
 
-    # estimators = [deep_nn_4_layer_thin_dropout,
-    #             deep_nn_4_layer_wide_no_dropout, 
-    #             deep_nn_4_layer_wide_with_dropout,
-    #             deep_nn_12_layer_wide_with_dropout]
+    estimators = [deep_nn_4_layer_thin_dropout,
+                deep_nn_4_layer_wide_no_dropout, 
+                deep_nn_4_layer_wide_with_dropout,
+                deep_nn_12_layer_wide_with_dropout]
 
 
 
-    estim = instantiate_default_estimators(['Classification'])
+    # estim = instantiate_default_estimators(['Classification'])
 
-    estimators = []
-    for e in estim:
-        if e.properties['name'] is not 'NeuralNetworkDeepClassifier':
-            estimators.append(e)
-            
+    # estimators = []
+    # for e in estim:
+    #     if e.properties['name'] is not 'NeuralNetworkDeepClassifier':
+    #         estimators.append(e)
+
     orchest = Orchestrator(hdf5_input_io=input_io, hdf5_output_io=out_io, dts_names=dts_names_list,
                     original_datasets_group_h5_path='delgado_datasets/')
     orchest.run(modelling_strategies=estimators, verbose=True)

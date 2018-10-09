@@ -136,7 +136,7 @@ class AnalyseResults(object):
             tuple of pandas DataFrame (avg_training_time, trainig_time_per_dataset)
         """
         _, dts_run_times_full_path = self._data.list_datasets(self._run_times_group, self._output_io)
-        estimator_dict = {estimator.properties()['name']: [] for estimator in estimators}
+        estimator_dict = {estimator.properties['name']: [] for estimator in estimators}
 
         for dts in dts_run_times_full_path:
             run_times_per_estimator,_ = self._output_io.load_dataset_pd(dataset_path=dts, return_metadata=False)

@@ -219,7 +219,7 @@ class Orchestrator:
             verbose (Boolean): If True prints info and warning messages.
         """
         datasets = os.listdir(trained_models_dir)
-        names_all_estimators = [estimator.properties()['name'] for estimator in estimators]
+        names_all_estimators = [estimator.properties['name'] for estimator in estimators]
         for dts in self._dts_names:
             X_train, X_test, y_train, y_test = self._data.load_test_train_dts(hdf5_out=self._output_io, 
                                                                               hdf5_in=self._input_io, 

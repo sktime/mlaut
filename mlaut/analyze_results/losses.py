@@ -22,7 +22,7 @@ class Losses(object):
         self._errors_per_estimator = collections.defaultdict(list)
         self._errors_per_dataset_per_estimator = collections.defaultdict(list)
         self._estimators = estimators
-        self._estimator_names = [estimator.properties()['name'] for estimator in estimators]
+        self._estimator_names = [estimator.properties['name'] for estimator in estimators]
         self._exact_match=exact_match
 
 
@@ -41,7 +41,7 @@ class Losses(object):
         if self._exact_match:
             estimators_predeictions_names = [name[0] for name in predictions]
             for e in self._estimators:
-                estimator_name = e.properties()['name']
+                estimator_name = e.properties['name']
                 
                 if estimator_name not in estimators_predeictions_names:
                     logging.warning(f'Predictions for estimator {estimator_name} unavailable for dataset: {dataset_name}. Analyse Results will skip {dataset_name}.')

@@ -292,7 +292,7 @@ class Deep_NN_Regressor(Deep_NN_Classifier):
 #         trained_model = self._trained_model
 #         disk_op = DiskOperations()
 #         disk_op.save_keras_model(trained_model=trained_model,
-#                                  model_name=self.properties()['name'],
+#                                  model_name=self.properties['name'],
 #                                  dataset_name=dataset_name)
     
 #     #overloading method from parent class

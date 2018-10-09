@@ -87,7 +87,7 @@ class Bernoulli_Naive_Bayes(MlautEstimator):
     #     trained_model = self._trained_model
     #     disk_op = DiskOperations()
     #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties()['name'],
+    #                          model_name=self.properties['name'],
     #                          dataset_name=dataset_name)
     def build(self, **kwargs):
         """
