@@ -126,30 +126,30 @@ class Orchestrator:
                                                                 num_samples=num_samples)
                         if verbose is True:
                             logging.info(f'** Training estimator: {ml_strategy_name} on dataset: {dts_name}. Datasets processed: {dts_trained}/{dts_total} **')
-                        # try:
-                        trained_model = built_model.fit(X_train, y_train)
-                        timestamps_df = self._record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
-                        modelling_strategy.set_trained_model(trained_model)
-                        modelling_strategy.save(dts_name)
-                    
-                        self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
-                    
-                        #make predictions
-                        if predict_on_runtime is True:
-                            self._predict(modelling_strategy, 
-                                    X_test, 
-                                    dataset_name=dts_name, 
-                                    override=override_predictions, 
-                                    verbose=verbose)
-                    
-                        trained_model = None
-                        modelling_strategy = None
+                        try:
+                            trained_model = built_model.fit(X_train, y_train)
+                            timestamps_df = self._record_timestamp(ml_strategy_name, begin_timestamp, timestamps_df)
+                            modelling_strategy.set_trained_model(trained_model)
+                            modelling_strategy.save(dts_name)
+                        
+                            self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name)
+                        
+                            #make predictions
+                            if predict_on_runtime is True:
+                                self._predict(modelling_strategy, 
+                                        X_test, 
+                                        dataset_name=dts_name, 
+                                        override=override_predictions, 
+                                        verbose=verbose)
+                        
+                            trained_model = None
+                            modelling_strategy = None
                 
                     
-                        # except Exception as e:
-                        #     print(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
-                        #     logging.error(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
-                        #     logging.error(f'*****Stack trace: {e}')
+                        except Exception as e:
+                            print(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
+                            logging.error(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
+                            logging.error(f'*****Stack trace: {e}')
                     
                    
 
