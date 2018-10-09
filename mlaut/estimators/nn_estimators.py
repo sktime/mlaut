@@ -56,14 +56,16 @@ class Deep_NN_Classifier(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
+        
+        self._hyperparameters = hyperparameters
+        self._keras_model = keras_model
+        self.properties = properties
         super().__init__(verbose=verbose,
-                        properties=properties, 
                          n_jobs=n_jobs, 
                         num_cv_folds=num_cv_folds, 
                         refit=refit)
         
-        self._hyperparameters = hyperparameters
-        self._keras_model = keras_model
+
     
     def set_properties(self,
                         estimator_family=None, 

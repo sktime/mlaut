@@ -18,7 +18,6 @@ class MlautEstimator(ABC):
     Abstact base class that all mlaut estimators should inherit from.
     """
     def __init__(self, 
-                properties,
                 verbose=VERBOSE, 
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
@@ -27,7 +26,6 @@ class MlautEstimator(ABC):
         self._verbose=verbose
         self._n_jobs=n_jobs
         self._refit=refit
-        self._properties = properties
     """
     Args:
         verbose(int): Sets the amount of output in the terminal. Higher numbers mean more output.
@@ -110,8 +108,8 @@ class MlautEstimator(ABC):
 
         return self._create_pipeline(self._trained_model)
 
-    def properties(self):
-        return self._properties
+    # def properties(self):
+    #     return self._properties
 
     def _create_pipeline(self, estimator):
         """
