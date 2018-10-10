@@ -27,10 +27,10 @@ class Ridge_Regression(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {'alphas':[0.1, 1, 10.0],
             
             } # this is the alpha hyperparam
@@ -68,10 +68,10 @@ class Lasso(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {'alphas':[0.1, 1, 10.0]}
     
     def build(self, **kwargs):
@@ -108,10 +108,10 @@ class Lasso_Lars(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {'max_n_alphas':1000}
     def build(self, **kwargs):
         """
@@ -158,10 +158,10 @@ class Logistic_Regression(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {
                 'C': np.linspace(2**(-5), 2**(15), 13)
 
@@ -202,10 +202,10 @@ class Passive_Aggressive_Classifier(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
                         
         self._hyperparameters = {
                 'C': np.linspace(2**(-5), 2**(15), 13),

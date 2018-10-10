@@ -26,10 +26,10 @@ class SVC_mlaut(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         c_range = np.linspace(2**(-5), 2**(15), 13)
         gamma_range = np.linspace(2**(-15), 2**3, 13)
         self._hyperparameters = {

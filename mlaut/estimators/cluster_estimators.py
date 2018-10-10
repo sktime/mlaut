@@ -27,10 +27,10 @@ class K_Neighbours(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose, 
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose, 
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {
                                 'n_neighbors': np.arange(1,31),
                                 'weights': ['uniform', 'distance']

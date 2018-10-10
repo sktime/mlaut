@@ -29,10 +29,10 @@ class Gaussian_Naive_Bayes(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = None
         self.properties = properties
 
@@ -69,10 +69,10 @@ class Bernoulli_Naive_Bayes(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = None
     
 

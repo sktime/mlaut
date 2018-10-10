@@ -115,7 +115,7 @@ class Orchestrator:
                         # modelling_strategy.load(path_to_model)
                         if verbose is True:
                             logging.info(f'Estimator {ml_strategy_name} already trained on {dts_name}. Skipping it.')
-                    
+
                     else: #modelling strategy does not exist
            
                         num_samples, input_dim = X_train.shape

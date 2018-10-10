@@ -31,10 +31,10 @@ class Random_Forest_Classifier(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__( verbose=verbose,
-                n_jobs=n_jobs,
-                num_cv_folds=num_cv_folds, 
-                refit=refit)
+        # super().__init__( verbose=verbose,
+        #         n_jobs=n_jobs,
+        #         num_cv_folds=num_cv_folds, 
+        #         refit=refit)
         self._hyperparameters = {
                     'n_estimators': [10, 50, 100],
                     'max_features': ['auto', 'sqrt','log2', None],
@@ -88,10 +88,10 @@ class Random_Forest_Regressor(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=3, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 50, 100],
                 'max_features': ['auto', 'sqrt','log2', None],
@@ -144,10 +144,10 @@ class Bagging_Classifier(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 50, 100]
             }
@@ -198,10 +198,10 @@ class Bagging_Regressor(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 50, 100]
             }
@@ -255,10 +255,10 @@ class Gradient_Boosting_Classifier(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 50, 100],
                 'max_depth':[10,100, None]
@@ -306,10 +306,10 @@ class Gradient_Boosting_Regressor(MlautEstimator):
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         self._hyperparameters = {
                 'n_estimators': [10, 50, 100],
                 'max_depth':[10,100, None]
