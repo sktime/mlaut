@@ -332,7 +332,7 @@ class OverwrittenSequentialClassifier(Sequential):
     """
 
 
-    def fit(self, X_train, y_train):
+    def fit(self, X_train, y_train, **kwargs):
             
         """
         Overrides the default :func:`tensorflow.python.keras.models.fit` and reshapes the `y_train` in one hot array. 
