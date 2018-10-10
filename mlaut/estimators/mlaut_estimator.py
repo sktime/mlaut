@@ -17,22 +17,22 @@ class MlautEstimator(ABC):
     """
     Abstact base class that all mlaut estimators should inherit from.
     """
-    def __init__(self, 
-                verbose=VERBOSE, 
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
-        self._num_cv_folds=num_cv_folds
-        self._verbose=verbose
-        self._n_jobs=n_jobs
-        self._refit=refit
-    """
-    Args:
-        verbose(int): Sets the amount of output in the terminal. Higher numbers mean more output.
-        n_jobs(number): number of CPU cores used for training the estimators. If set to -1 all available cores are used.
-        num_cv_folds(int): number of cross validation folds used by GridsearchCV.
-        refit(Boolean): Refit an estimator using the best found parameters on the whole dataset.
-    """
+    # def __init__(self, 
+    #             verbose=VERBOSE, 
+    #             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+    #             num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
+    #             refit=True):
+    #     self._num_cv_folds=num_cv_folds
+    #     self._verbose=verbose
+    #     self._n_jobs=n_jobs
+    #     self._refit=refit
+    # """
+    # Args:
+    #     verbose(int): Sets the amount of output in the terminal. Higher numbers mean more output.
+    #     n_jobs(number): number of CPU cores used for training the estimators. If set to -1 all available cores are used.
+    #     num_cv_folds(int): number of cross validation folds used by GridsearchCV.
+    #     refit(Boolean): Refit an estimator using the best found parameters on the whole dataset.
+    # """
     @abstractmethod
     def build(self):
         """ 

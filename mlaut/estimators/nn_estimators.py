@@ -60,10 +60,14 @@ class Deep_NN_Classifier(MlautEstimator):
         self._hyperparameters = hyperparameters
         self._keras_model = keras_model
         self.properties = properties
-        super().__init__(verbose=verbose,
-                         n_jobs=n_jobs, 
-                        num_cv_folds=num_cv_folds, 
-                        refit=refit)
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+        # super().__init__(verbose=verbose,
+        #                  n_jobs=n_jobs, 
+        #                 num_cv_folds=num_cv_folds, 
+        #                 refit=refit)
         
 
     
@@ -114,9 +118,14 @@ class Deep_NN_Classifier(MlautEstimator):
         #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
         estimator = KerasClassifier(build_fn=self._keras_model, 
                                 num_classes=num_classes, 
-                                input_dim=input_dim)#TODO include flag for verbosity
-        grid = GridSearchCV(estimator=estimator, param_grid=self._hyperparameters, cv=self._num_cv_folds)
-        return self._create_pipeline(estimator=estimator)
+                                input_dim=input_dim)
+
+        grid = GridSearchCV(estimator=estimator, 
+                            param_grid=self._hyperparameters, 
+                            cv=self._num_cv_folds, 
+                            refit=self._refit,
+                            verbose=self._verbose)
+        return self._create_pipeline(estimator=grid)
 
     
 
@@ -215,10 +224,16 @@ class Deep_NN_Regressor(Deep_NN_Classifier):
         
         #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
         estimator = KerasRegressor(build_fn=self._keras_model, 
-                                input_dim=input_dim)#TODO include flag for verbosity
-        grid = GridSearchCV(estimator=estimator, param_grid=self._hyperparameters, cv=self._num_cv_folds)
+                                input_dim=input_dim)
+        grid = GridSearchCV(estimator=estimator, 
+                            param_grid=self._hyperparameters, 
+                            cv=self._num_cv_folds, 
+                            refit=self._refit,
+                            verbose=self._verbose)
         return self._create_pipeline(estimator=estimator)
         
+
+
 #     def __init__(self, verbose=VERBOSE, 
 #                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
 #                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 

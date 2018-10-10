@@ -144,7 +144,7 @@ class Orchestrator:
                         
                             trained_model = None
                             modelling_strategy = None
-                
+                            built_model = None
                     
                         except Exception as e:
                             print(f'Failed to train dataset {ml_strategy_name} on dataset: {dts_name}')
@@ -206,7 +206,7 @@ class Orchestrator:
                 self._output_io.save_prediction_to_db(predictions=predictions, 
                                                       dataset_name=dataset_name, 
                                                       strategy_name=name_estimator)
-                logging.info(f'Predictions for {name_estimator} on {dataset_name} Saved in database.')
+                logging.info(f'Predictions for {name_estimator} on {dataset_name} saved in database.')
 
     def predict_all(self, trained_models_dir, estimators, override=False, verbose=True):
         """
