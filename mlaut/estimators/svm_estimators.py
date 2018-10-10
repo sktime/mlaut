@@ -30,8 +30,8 @@ class SVC_mlaut(MlautEstimator):
         #                  n_jobs=n_jobs, 
         #                 num_cv_folds=num_cv_folds, 
         #                 refit=refit)
-        c_range = np.linspace(2**(-5), 2**(15), 13)
-        gamma_range = np.linspace(2**(-15), 2**3, 13)
+        c_range = np.linspace(2**(-5), 2**(15), 5) #change last num to 13 for better search
+        gamma_range = np.linspace(2**(-15), 2**3, 5) #change last num to 13 for better search
         self._hyperparameters = {
                             'C': c_range,
                             'gamma': gamma_range
