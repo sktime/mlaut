@@ -15,6 +15,7 @@ from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import BaggingRegressor
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+from mlaut.estimators.generic_estimator import Generic_Estimator
 
 
 class Random_Forest_Classifier(MlautEstimator):
@@ -24,23 +25,26 @@ class Random_Forest_Classifier(MlautEstimator):
     properties = {'estimator_family':[ENSEMBLE_METHODS], 
             'tasks':[CLASSIFICATION], 
             'name':'RandomForestClassifier'}
-
-    def __init__(self,  
-                verbose=VERBOSE,
-                properties=properties, 
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
-        # super().__init__( verbose=verbose,
-        #         n_jobs=n_jobs,
-        #         num_cv_folds=num_cv_folds, 
-        #         refit=refit)
-        self._hyperparameters = {
+    hyperparameters = {
                     'n_estimators': [10, 50, 100],
                     'max_features': ['auto', 'sqrt','log2', None],
                     'max_depth': [5, 15, None]
                 }
+
+    def __init__(self,
+                hyperparameters=hyperparameters,
+                properties=properties, 
+                verbose=VERBOSE,
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
+                refit=True):
+
         self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
 
     def build(self, **kwargs):
         """
@@ -66,11 +70,7 @@ class Random_Forest_Classifier(MlautEstimator):
                             refit=self._refit,
                             cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)  
-        # return GridSearchCV(RandomForestClassifier(), 
-        #                     self._hyperparameters, 
-        #                     verbose = self._verbose,
-        #                     n_jobs=self._n_jobs,
-        #                     refit=self._refit)
+
 
         
 
@@ -81,23 +81,26 @@ class Random_Forest_Regressor(MlautEstimator):
     properties = {'estimator_family':[ENSEMBLE_METHODS], 
             'tasks':[REGRESSION], 
             'name':'RandomForestRegressor'}
-
-    def __init__(self,
-                properties=properties, 
-                verbose=VERBOSE, 
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=3, 
-                refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {
+    hyperparameters = {
                 'n_estimators': [10, 50, 100],
                 'max_features': ['auto', 'sqrt','log2', None],
                 'max_depth': [5, 15, None]
             }
+ 
+    def __init__(self,
+                hyperparameters=hyperparameters,
+                properties=properties, 
+                verbose=VERBOSE,
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
+                refit=True):
+
         self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
 
     def build(self, **kwargs):
         """
@@ -123,12 +126,6 @@ class Random_Forest_Regressor(MlautEstimator):
                             refit=self._refit,
                             cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)        
-        # return GridSearchCV(RandomForestRegressor(), 
-        #                     self._hyperparameters, 
-        #                     verbose = self._verbose,
-        #                     n_jobs=self._n_jobs,
-        #                     refit=self._refit)
-    
 
 
 class Bagging_Classifier(MlautEstimator):
@@ -138,20 +135,25 @@ class Bagging_Classifier(MlautEstimator):
     properties = {'estimator_family':[ENSEMBLE_METHODS], 
             'tasks':[CLASSIFICATION], 
             'name':'BaggingClassifier'}
+    hyperparameters = {
+            'n_estimators': [10, 50, 100]
+        }
 
-    def __init__(self, verbose=VERBOSE,
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {
-                'n_estimators': [10, 50, 100]
-            }
+
         self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+
 
     def build(self, **kwargs):
         """
@@ -178,12 +180,7 @@ class Bagging_Classifier(MlautEstimator):
                             cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)        
 
-        # return GridSearchCV(model, 
-        #                     self._hyperparameters, 
-        #                     verbose = self._verbose,
-        #                     n_jobs=self._n_jobs,
-        #                     refit=self._refit)
-    
+
 
 class Bagging_Regressor(MlautEstimator):
     """
@@ -192,20 +189,24 @@ class Bagging_Regressor(MlautEstimator):
     properties = {'estimator_family':[ENSEMBLE_METHODS], 
             'tasks':[REGRESSION], 
             'name':'BaggingRegressor'}
-
-    def __init__(self, verbose=VERBOSE,
+    hyperparameters = {
+                    'n_estimators': [10, 50, 100]
+                }
+ 
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {
-                'n_estimators': [10, 50, 100]
-            }
+
         self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
 
     def build(self, **kwargs):
         """
@@ -233,12 +234,7 @@ class Bagging_Regressor(MlautEstimator):
                             cv=self._num_cv_folds)
         return self._create_pipeline(estimator=estimator)        
 
-        # return GridSearchCV(model, 
-        #                     self._hyperparameters, 
-        #                     verbose = self._verbose,
-        #                     n_jobs=self._n_jobs,
-        #                     refit=self._refit)
-    
+
 
 
 
@@ -249,21 +245,27 @@ class Gradient_Boosting_Classifier(MlautEstimator):
     properties = {'estimator_family':[ENSEMBLE_METHODS], 
             'tasks':[CLASSIFICATION], 
             'name':'GradientBoostingClassifier'}
+    hyperparameters = {
+                    'n_estimators': [10, 50, 100],
+                    'max_depth':[10,100, None]
+                }
 
-    def __init__(self, verbose=VERBOSE,
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {
-                'n_estimators': [10, 50, 100],
-                'max_depth':[10,100, None]
-            }
+
         self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+
+
 
     def build(self, **kwargs):
         """
@@ -300,21 +302,25 @@ class Gradient_Boosting_Regressor(MlautEstimator):
     properties = {'estimator_family':[ENSEMBLE_METHODS], 
             'tasks':[REGRESSION], 
             'name':'GradientBoostingRegressor'}
-            
-    def __init__(self, verbose=VERBOSE, 
-                properties=properties,
+    hyperparameters = {
+                'n_estimators': [10, 50, 100],
+                'max_depth':[10,100, None]
+            }        
+
+    def __init__(self,
+                hyperparameters=hyperparameters,
+                properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {
-                'n_estimators': [10, 50, 100],
-                'max_depth':[10,100, None]
-            }
+
         self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
 
     def build(self, **kwargs):
         """

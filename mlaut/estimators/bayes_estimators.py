@@ -12,7 +12,7 @@ from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                                       VERBOSE)
 from mlaut.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
-
+from mlaut.estimators.generic_estimator import Generic_Estimator
 from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import BernoulliNB
 
@@ -24,19 +24,24 @@ class Gaussian_Naive_Bayes(MlautEstimator):
     properties = {'estimator_family':[NAIVE_BAYES], 
             'tasks':[CLASSIFICATION], 
             'name':'GaussianNaiveBayes'}
-    def __init__(self, verbose=VERBOSE,
+    hyperparameters = None
+
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = None
-        self.properties = properties
 
-   
+        self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+
+
     def build(self, **kwargs):
         """
         Builds and returns estimator class.
@@ -63,32 +68,25 @@ class Bernoulli_Naive_Bayes(MlautEstimator):
     properties = {'estimator_family':[NAIVE_BAYES], 
             'tasks':[CLASSIFICATION], 
             'name':'BernoulliNaiveBayes'}
-            
-    def __init__(self, verbose=VERBOSE,
+    hyperparameters = None        
+
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = None
-    
 
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
+        self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
 
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties['name'],
-    #                          dataset_name=dataset_name)
+        
+
     def build(self, **kwargs):
         """
         Builds and returns estimator class.

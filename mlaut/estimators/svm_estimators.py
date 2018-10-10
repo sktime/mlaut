@@ -11,6 +11,7 @@ from mlaut.shared.static_variables import(SVM,
 
 from sklearn.svm import SVC
 import numpy as np
+from mlaut.estimators.generic_estimator import Generic_Estimator
 
 
 class SVC_mlaut(MlautEstimator):
@@ -20,24 +21,28 @@ class SVC_mlaut(MlautEstimator):
     properties = {'estimator_family':[SVM], 
             'tasks':[CLASSIFICATION], 
             'name':'SVC'}
-            
-    def __init__(self, verbose=VERBOSE,
+    c_range = np.linspace(2**(-5), 2**(15), 5) #change last num to 13 for better search
+    gamma_range = np.linspace(2**(-15), 2**3, 5) #change last num to 13 for better search     
+    hyperparameters = {
+                        'C': c_range,
+                        'gamma': gamma_range
+                        }
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        c_range = np.linspace(2**(-5), 2**(15), 5) #change last num to 13 for better search
-        gamma_range = np.linspace(2**(-15), 2**3, 5) #change last num to 13 for better search
-        self._hyperparameters = {
-                            'C': c_range,
-                            'gamma': gamma_range
-                        }
-        self.properties = properties
 
+        self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+
+        
     def build(self, **kwargs):
         """
         builds and returns estimator

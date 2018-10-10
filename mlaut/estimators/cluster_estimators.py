@@ -13,6 +13,7 @@ from mlaut.shared.static_variables import (CLUSTER,
                                            VERBOSE)
 import numpy as np
 
+from mlaut.estimators.generic_estimator import Generic_Estimator
 
 
 class K_Neighbours(MlautEstimator):
@@ -22,20 +23,26 @@ class K_Neighbours(MlautEstimator):
     properties = {'estimator_family':[CLUSTER], 
             'tasks':[CLASSIFICATION], 
             'name':'K_Neighbours'}
-    def __init__(self, verbose=VERBOSE,
+
+    hyperparameters = {
+                    'n_neighbors': np.arange(1,31),
+                    'weights': ['uniform', 'distance']
+                    }
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose, 
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {
-                                'n_neighbors': np.arange(1,31),
-                                'weights': ['uniform', 'distance']
-                        }
+
         self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+
 
     def build(self, **kwargs):
         """

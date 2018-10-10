@@ -12,6 +12,7 @@ from mlaut.shared.static_variables import PICKLE_EXTENTION
 from sklearn import linear_model
 from sklearn.model_selection import GridSearchCV
 import numpy as np
+from mlaut.estimators.generic_estimator import Generic_Estimator
 
 
 class Ridge_Regression(MlautEstimator):
@@ -22,19 +23,25 @@ class Ridge_Regression(MlautEstimator):
             'tasks':[REGRESSION], 
             'name':'RidgeRegression'}
 
-    def __init__(self, verbose=VERBOSE,
+    hyperparameters = {'alphas':[0.1, 1, 10.0],
+            
+            } # this is the alpha hyperparam
+
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {'alphas':[0.1, 1, 10.0],
-            
-            } # this is the alpha hyperparam
-       
+
+        self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+
     def build(self, **kwargs):
         """
         builds and returns estimator
@@ -63,17 +70,23 @@ class Lasso(MlautEstimator):
             'tasks':[REGRESSION], 
             'name':'Lasso'}
 
-    def __init__(self, verbose=VERBOSE, 
-                properties=properties,
+    hyperparameters = {'alphas':[0.1, 1, 10.0]}
+
+    def __init__(self,
+                hyperparameters=hyperparameters,
+                properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {'alphas':[0.1, 1, 10.0]}
-    
+
+        self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+        
     def build(self, **kwargs):
         """
         builds and returns estimator
@@ -103,16 +116,23 @@ class Lasso_Lars(MlautEstimator):
                 'tasks':[REGRESSION], 
                 'name':'LassoLars'}
     
-    def __init__(self, verbose=VERBOSE,
+    hyperparameters = {'max_n_alphas':1000}
+
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {'max_n_alphas':1000}
+
+        self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+
     def build(self, **kwargs):
         """
         builds and returns estimator
@@ -132,18 +152,7 @@ class Lasso_Lars(MlautEstimator):
                                     n_jobs=self._n_jobs)
 
         return self._create_pipeline(estimator=estimator)
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=self._trained_model,
-    #                             model_name=self.properties['name'],
-    #                             dataset_name=dataset_name)
-
+   
 
 class Logistic_Regression(MlautEstimator):
     """
@@ -153,19 +162,25 @@ class Logistic_Regression(MlautEstimator):
             'tasks':[REGRESSION], 
             'name':'LogisticRegression'}
 
-    def __init__(self, verbose=VERBOSE,
-                properties=properties, 
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = {
+    hyperparameters = {
                 'C': np.linspace(2**(-5), 2**(15), 13)
 
             }
+    def __init__(self,
+                hyperparameters=hyperparameters,
+                properties=properties, 
+                verbose=VERBOSE,
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
+                refit=True):
+
+        self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+
     def build(self, **kwargs):
         """
         builds and returns estimator
@@ -196,22 +211,26 @@ class Passive_Aggressive_Classifier(MlautEstimator):
     properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS],
             'tasks':[CLASSIFICATION],
             'name':'PassiveAggressiveClassifier'}
-            
-    def __init__(self, verbose=VERBOSE, 
-                properties=properties,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-                        
-        self._hyperparameters = {
+    
+    hyperparameters = {
                 'C': np.linspace(2**(-5), 2**(15), 13),
                 'max_iter':[1000]
             }
+    
+    def __init__(self,
+                hyperparameters=hyperparameters,
+                properties=properties, 
+                verbose=VERBOSE,
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
+                refit=True):
+
         self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
 
     def build(self, **kwargs):
         """

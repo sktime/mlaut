@@ -8,8 +8,6 @@ from mlaut.shared.static_variables import(BASELINE,
                                       VERBOSE)
 
 from sklearn.dummy import DummyClassifier, DummyRegressor
-from mlaut.estimators.generic_estimator import Generic_Estimator
-
 
 
 class Baseline_Regressor(MlautEstimator):
@@ -19,18 +17,22 @@ class Baseline_Regressor(MlautEstimator):
     properties = {'estimator_family':[BASELINE],
             'tasks':[REGRESSION],
             'name':'BaselineRegressor'}
+    hyperparameters = None
 
-    def __init__(self, verbose=VERBOSE,
-                properties=properties,
+    def __init__(self,
+                hyperparameters=hyperparameters,
+                properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = None
+
         self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
 
     def build(self, strategy='median', **kwargs):
         """
@@ -51,22 +53,6 @@ class Baseline_Regressor(MlautEstimator):
         return DummyRegressor(strategy=strategy)
         return self._create_pipeline(estimator=DummyRegressor(strategy=strategy))
 
-    # def save(self, dataset_name):
-    #     """
-    #     Saves estimator on disk.
-
-    #     :type dataset_name: string
-    #     :param dataset_name: name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-    #     """
-    #     #set trained model method is implemented in the base class
-    #     trained_model = self._trained_model
-    #     disk_op = DiskOperations()
-    #     disk_op.save_to_pickle(trained_model=trained_model,
-    #                          model_name=self.properties['name'],
-    #                          dataset_name=dataset_name)
-
-
-
 
 
 class Baseline_Classifier(MlautEstimator):
@@ -76,18 +62,22 @@ class Baseline_Classifier(MlautEstimator):
     properties = {'estimator_family':[BASELINE],
             'tasks':[CLASSIFICATION],
             'name':'BaselineClassifier'}
-    def __init__(self, verbose=VERBOSE,
+    hyperparameters = None
+    
+    def __init__(self,
+                hyperparameters=hyperparameters,
                 properties=properties, 
+                verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-        # super().__init__(verbose=verbose, 
-        #                 n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
-        self._hyperparameters = None
-        self.properties = properties
 
+        self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
 
     def build(self, strategy='most_frequent', **kwargs):
         """
