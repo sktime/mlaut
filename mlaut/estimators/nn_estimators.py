@@ -125,7 +125,7 @@ class Deep_NN_Classifier(MlautEstimator):
                             cv=self._num_cv_folds, 
                             refit=self._refit,
                             verbose=self._verbose)
-        return self._create_pipeline(estimator=grid)
+        return self._create_pipeline(estimator=estimator)
 
     
 
