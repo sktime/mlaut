@@ -25,7 +25,7 @@ class SVC_mlaut(MlautEstimator):
     gamma_range = np.linspace(2**(-15), 2**3, 5) #change last num to 13 for better search     
     hyperparameters = {
                         'C': c_range,
-                        'gamma': gamma_range
+                        'gamma': ['auto']
                         }
     def __init__(self,
                 hyperparameters=hyperparameters,
@@ -42,7 +42,7 @@ class SVC_mlaut(MlautEstimator):
         self._num_cv_folds = num_cv_folds
         self._refit = refit
 
-        
+
     def build(self, **kwargs):
         """
         builds and returns estimator
