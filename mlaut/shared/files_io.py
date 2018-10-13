@@ -27,7 +27,7 @@ class DiskOperations(object):
                        model_name, 
                        dataset_name, 
                        root_dir=EXPERIMENTS_TRAINED_MODELS_DIR):
-        """
+        """load_dataset_pd
         Saves sklearn estimator to disk as pickle file.
 
         Args:

@@ -124,7 +124,7 @@ class AnalyseResults(object):
         res_df = res_df.sort_values(['avg_score','std_error'], ascending=[1,1])
 
         return res_df.round(3)
-    def average_training_time(self, estimators, exact_match=True):
+    def average_training_time(self, estimators):
         """
         Average training time for each estimator.
 
@@ -142,18 +142,28 @@ class AnalyseResults(object):
             run_times_per_estimator,_ = self._output_io.load_dataset_pd(dataset_path=dts, return_metadata=False)
             run_times_estimator_names = run_times_per_estimator['strategy_name'].tolist()
             #check whether we have data on all estimators that were passed as an argument
-            run_times_all_estimators_exist = (set(run_times_estimator_names) == set(estimator_dict.keys()))
-            if exact_match and not run_times_all_estimators_exist:
-                continue
-            #TODO come up with a more efficient solution to avoid loop
-            for i in range(run_times_per_estimator.shape[0]):
 
-                strategy_name = run_times_per_estimator.iloc[i]['strategy_name']
-                total_seconds = run_times_per_estimator.iloc[i]['total_seconds']
-                estimator_dict[strategy_name].append(total_seconds)
+            for strat in estimator_dict.keys():
+                index_estimator_run_time = run_times_per_estimator['strategy_name'] == strat
+                index_count = np.count_nonzero(index_estimator_run_time)
+                if index_count == 0:
+                    in_sec = np.nan
+                else:
+                    strat_run_time = run_times_per_estimator.loc[index_estimator_run_time]
+                    in_sec = np.float(strat_run_time['total_seconds'].mean(axis=0))
+               
+                estimator_dict[strat].append(in_sec)
+            # for i in range(run_times_per_estimator.shape[0]):
+
+            #     strategy_name = run_times_per_estimator.iloc[i]['strategy_name']
+            #     total_seconds = run_times_per_estimator.iloc[i]['total_seconds']
+            #     estimator_dict[strategy_name].append(total_seconds)
         #the long notation is necessary to handle situations when there are unequal number of obeservations per estimator
-        training_time_per_dataset = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in estimator_dict.items() ]))
-        training_time_per_dataset = training_time_per_dataset.round(3)
+        # training_time_per_dataset = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in estimator_dict.items() ]))
+        # training_time_per_dataset = training_time_per_dataset.round(3)
+        # avg_training_time = pd.DataFrame(training_time_per_dataset.mean(axis=0))
+
+        training_time_per_dataset = pd.DataFrame.from_dict(estimator_dict)
         avg_training_time = pd.DataFrame(training_time_per_dataset.mean(axis=0))
         avg_training_time.columns = ['avg training time (in sec)']
         avg_training_time = avg_training_time.sort_values('avg training time (in sec)',ascending=True).round(3)

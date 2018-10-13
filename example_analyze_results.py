@@ -108,7 +108,7 @@ for e in estim:
 
 data = Data()
 input_io = data.open_hdf5('data/delgado.h5', mode='r')
-out_io = data.open_hdf5('data/delgado-classification-copy.h5', mode='a')
+out_io = data.open_hdf5('data/delgado-classification-deep.h5', mode='a')
 analyze = AnalyseResults(hdf5_output_io=out_io, 
                         hdf5_input_io=input_io, 
                         input_h5_original_datasets_group='openml/', 
