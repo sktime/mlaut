@@ -267,12 +267,12 @@ estimators = [deep_nn_4_layer_thin_dropout_lr01,
 orchest = Orchestrator(hdf5_input_io=input_io, hdf5_output_io=out_io, dts_names=dts_names_list,
                 original_datasets_group_h5_path='delgado_datasets/')
 
-if __name__ == '__main__':
-    multiprocessing.set_start_method('forkserver', force=True)
+# if __name__ == '__main__':
+#     multiprocessing.set_start_method('forkserver', force=True)
 
 
 
-    orchest.run(modelling_strategies=estimators, verbose=True)
+orchest.run(modelling_strategies=estimators, verbose=True)
     # orchest.predict_all(trained_models_dir='data/trained_models', estimators=estimators)
 
 
