@@ -272,7 +272,7 @@ if __name__ == '__main__':
 
 
 
-    # orchest.run(modelling_strategies=estimators, verbose=True)
-    orchest.predict_all(trained_models_dir='data/trained_models', estimators=estimators)
+    orchest.run(modelling_strategies=estimators, verbose=True)
+    # orchest.predict_all(trained_models_dir='data/trained_models', estimators=estimators)
 
 
