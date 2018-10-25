@@ -120,11 +120,11 @@ class Deep_NN_Classifier(MlautEstimator):
                                 num_classes=num_classes, 
                                 input_dim=input_dim)
 
-        grid = GridSearchCV(estimator=estimator, 
-                            param_grid=self._hyperparameters, 
-                            cv=self._num_cv_folds, 
-                            refit=self._refit,
-                            verbose=self._verbose)
+        # grid = GridSearchCV(estimator=estimator, 
+        #                     param_grid=self._hyperparameters, 
+        #                     cv=self._num_cv_folds, 
+        #                     refit=self._refit,
+        #                     verbose=self._verbose)
         return self._create_pipeline(estimator=estimator)
 
     
@@ -354,7 +354,7 @@ class OverwrittenSequentialClassifier(Sequential):
             epochs = 1
         else:
             epochs = self._hyperparameters
-        print(f'******:{epochs}')
+
         return super().fit(X_train, y_train_onehot_encoded, epochs=epochs)
 
         
