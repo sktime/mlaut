@@ -242,6 +242,45 @@ deep_nn_4_layer_droput_each_layer_lr1 = Deep_NN_Classifier(keras_model=keras_mod
                                         properties={'name':'NN-4-layer-droput-each-layer_lr1'})
 
 
+def keras_model_6_lr001(num_classes, input_dim):
+    nn_deep_model = OverwrittenSequentialClassifier()
+    nn_deep_model.add(Dropout(0.7, input_dim=(input_dim,)))
+    nn_deep_model.add(Dense(1024, activation='relu'))
+    nn_deep_model.add(Dropout(0.5))
+    nn_deep_model.add(Dense(num_classes, activation='softmax'))
+
+    model_optimizer = optimizers.Adam(lr=0.001)
+    nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['accuracy'])
+    return nn_deep_model
+deep_nn_2_layer_droput_input_layer_lr001 = Deep_NN_Classifier(keras_model=keras_model_6_lr001,
+                                        properties={'name':'NN-2-layer-droput-input-layer_lr001'})
+
+def keras_model_6_lr01(num_classes, input_dim):
+    nn_deep_model = OverwrittenSequentialClassifier()
+    nn_deep_model.add(Dropout(0.7, input_dim=(input_dim,)))
+    nn_deep_model.add(Dense(1024, activation='relu'))
+    nn_deep_model.add(Dropout(0.5))
+    nn_deep_model.add(Dense(num_classes, activation='softmax'))
+
+    model_optimizer = optimizers.Adam(lr=0.1)
+    nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['accuracy'])
+    return nn_deep_model
+deep_nn_2_layer_droput_input_layer_lr01 = Deep_NN_Classifier(keras_model=keras_model_6_lr01,
+                                        properties={'name':'NN-2-layer-droput-input-layer_lr01'})
+
+def keras_model_6_lr1(num_classes, input_dim):
+    nn_deep_model = OverwrittenSequentialClassifier()
+    nn_deep_model.add(Dropout(0.7, input_dim=(input_dim,)))
+    nn_deep_model.add(Dense(1024, activation='relu'))
+    nn_deep_model.add(Dropout(0.5))
+    nn_deep_model.add(Dense(num_classes, activation='softmax'))
+
+    model_optimizer = optimizers.Adam(lr=1)
+    nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['accuracy'])
+    return nn_deep_model
+
+deep_nn_2_layer_droput_input_layer_lr1 = Deep_NN_Classifier(keras_model=keras_model_6_lr1,
+                                        properties={'name':'NN-2-layer-droput-input-layer_lr1'})
 
 estimators = [deep_nn_4_layer_thin_dropout_lr01,
             deep_nn_4_layer_thin_dropout_lr1, 
@@ -253,7 +292,10 @@ estimators = [deep_nn_4_layer_thin_dropout_lr01,
             deep_nn_12_layer_wide_with_dropout_lr1,
             deep_nn_4_layer_droput_each_layer_lr0001,
             deep_nn_4_layer_droput_each_layer_lr01,
-            deep_nn_4_layer_droput_each_layer_lr1]
+            deep_nn_4_layer_droput_each_layer_lr1,
+            deep_nn_2_layer_droput_input_layer_lr001,
+            deep_nn_2_layer_droput_input_layer_lr01,
+            deep_nn_2_layer_droput_input_layer_lr1]
 
 
 
