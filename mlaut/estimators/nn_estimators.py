@@ -326,7 +326,7 @@ class Deep_NN_Regressor(Deep_NN_Classifier):
 #         self.set_trained_model(model)
         
 
-class OverwrittenSequentialClassifier(Sequential):
+class OverwrittenSequentialClassifier(Sequential, MlautEstimator):
     """
     Keras sequential model that overrides the default :func:`tensorflow.python.keras.models.fit` and :func:`tensorflow.python.keras.models.predict` methods.
     """
