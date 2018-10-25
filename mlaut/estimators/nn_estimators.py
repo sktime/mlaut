@@ -326,7 +326,7 @@ class Deep_NN_Regressor(Deep_NN_Classifier):
 #         self.set_trained_model(model)
         
 
-class OverwrittenSequentialClassifier(Sequential, MlautEstimator):
+class OverwrittenSequentialClassifier(Sequential):
     """
     Keras sequential model that overrides the default :func:`tensorflow.python.keras.models.fit` and :func:`tensorflow.python.keras.models.predict` methods.
     """
@@ -350,12 +350,13 @@ class OverwrittenSequentialClassifier(Sequential, MlautEstimator):
         len_y = len(y_train)
         reshaped_y = y_train.reshape(len_y, 1)
         y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
-        if 'epochs' not in self._hyperparameters:
-            epochs = 1
-        else:
-            epochs = self._hyperparameters
+        
+        # if 'epochs' not in self._hyperparameters:
+        #     epochs = 1
+        # else:
+        #     epochs = self._hyperparameters
 
-        return super().fit(X_train, y_train_onehot_encoded, epochs=epochs)
+        return super().fit(X_train, y_train_onehot_encoded, epochs=10)
 
         
 
