@@ -354,7 +354,7 @@ class OverwrittenSequentialClassifier(Sequential):
             epochs = 1
         else:
             epochs = self._hyperparameters
-
+        print(f'******:{epochs}')
         return super().fit(X_train, y_train_onehot_encoded, epochs=epochs)
 
         
