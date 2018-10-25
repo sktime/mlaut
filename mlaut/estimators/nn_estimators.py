@@ -350,8 +350,12 @@ class OverwrittenSequentialClassifier(Sequential):
         len_y = len(y_train)
         reshaped_y = y_train.reshape(len_y, 1)
         y_train_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
-        
-        return super().fit(X_train, y_train_onehot_encoded)
+        if 'epochs' not in self._hyperparameters:
+            epochs = 1
+        else:
+            epochs = self._hyperparameters
+
+        return super().fit(X_train, y_train_onehot_encoded, epochs=epochs)
 
         
 

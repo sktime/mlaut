@@ -207,6 +207,8 @@ class Orchestrator:
                                                       dataset_name=dataset_name, 
                                                       strategy_name=name_estimator)
                 logging.info(f'Predictions for {name_estimator} on {dataset_name} saved in database.')
+        
+        trained_estimator = None
 
     def predict_all(self, trained_models_dir, estimators, override=False, verbose=True):
         """
