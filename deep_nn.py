@@ -28,6 +28,7 @@ out_io = data.open_hdf5('data/delgado-classification-deep.h5', mode='a')
 dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, hdf5_group='delgado_datasets/')
 split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_paths=dts_names_list_full_path)
 
+hyperparameters =  {'epochs':10}
 
 def keras_model_1_lr01(num_classes, input_dim):
     model = OverwrittenSequentialClassifier()
@@ -44,6 +45,7 @@ def keras_model_1_lr01(num_classes, input_dim):
 
 deep_nn_4_layer_thin_dropout_lr01 = Deep_NN_Classifier(keras_model=keras_model_1_lr01, 
                             properties={'name':'NN-4-layer_thin_dropout_lr01'})
+deep_nn_4_layer_thin_dropout_lr01.set_params(hyperparameters)
 
 def keras_model_1_lr1(num_classes, input_dim):
     model = OverwrittenSequentialClassifier()
@@ -60,7 +62,7 @@ def keras_model_1_lr1(num_classes, input_dim):
 
 deep_nn_4_layer_thin_dropout_lr1 = Deep_NN_Classifier(keras_model=keras_model_1_lr1, 
                             properties={'name':'NN-4-layer_thin_dropout_lr1'})
-
+deep_nn_4_layer_thin_dropout_lr1.set_params(hyperparameters)
 
 def keras_model_2_lr01(num_classes, input_dim):
     nn_deep_model = OverwrittenSequentialClassifier()
@@ -75,6 +77,7 @@ def keras_model_2_lr01(num_classes, input_dim):
 
 deep_nn_4_layer_wide_no_dropout_lr01 = Deep_NN_Classifier(keras_model=keras_model_2_lr01,
                             properties={'name':'NN-4-layer_wide_no_dropout_lr01'})
+deep_nn_4_layer_wide_no_dropout_lr01.set_params(hyperparameters)
 
 
 def keras_model_2_lr1(num_classes, input_dim):
@@ -90,6 +93,7 @@ def keras_model_2_lr1(num_classes, input_dim):
 
 deep_nn_4_layer_wide_no_dropout_lr1 = Deep_NN_Classifier(keras_model=keras_model_2_lr1,
                             properties={'name':'NN-4-layer_wide_no_dropout_lr1'})
+deep_nn_4_layer_wide_no_dropout_lr1.set_params(hyperparameters)
 
 
 
@@ -107,6 +111,7 @@ def keras_model_3_lr01(num_classes, input_dim):
 
 deep_nn_4_layer_wide_with_dropout_lr01 = Deep_NN_Classifier(keras_model=keras_model_3_lr01,
                             properties={'name':'NN-4-layer_wide_with_dropout_lr01'})
+deep_nn_4_layer_wide_with_dropout_lr01.set_params(hyperparameters)
 
 
 def keras_model_3_lr1(num_classes, input_dim):
@@ -123,6 +128,7 @@ def keras_model_3_lr1(num_classes, input_dim):
 
 deep_nn_4_layer_wide_with_dropout_lr1 = Deep_NN_Classifier(keras_model=keras_model_3_lr1,
                             properties={'name':'NN-4-layer_wide_with_dropout_lr1'})
+deep_nn_4_layer_wide_with_dropout_lr1.set_params(hyperparameters)
 
 
 
@@ -154,6 +160,7 @@ def keras_model_4_lr01(num_classes, input_dim):
 
 deep_nn_12_layer_wide_with_dropout_lr01 = Deep_NN_Classifier(keras_model=keras_model_4_lr01,
                             properties={'name':'NN-12-layer_wide_with_dropout_lr01'})
+deep_nn_12_layer_wide_with_dropout_lr01.set_params(hyperparameters)
 
 def keras_model_4_lr1(num_classes, input_dim):
     nn_deep_model = OverwrittenSequentialClassifier()
@@ -183,6 +190,7 @@ def keras_model_4_lr1(num_classes, input_dim):
 
 deep_nn_12_layer_wide_with_dropout_lr1 = Deep_NN_Classifier(keras_model=keras_model_4_lr1,
                             properties={'name':'NN-12-layer_wide_with_dropout_lr1'})
+deep_nn_12_layer_wide_with_dropout_lr1.set_params(hyperparameters)
 
 def keras_model_5_lr0001(num_classes, input_dim):
     nn_deep_model = OverwrittenSequentialClassifier()
@@ -202,6 +210,7 @@ def keras_model_5_lr0001(num_classes, input_dim):
     return nn_deep_model
 deep_nn_4_layer_droput_each_layer_lr0001 = Deep_NN_Classifier(keras_model=keras_model_5_lr0001,
                                         properties={'name':'NN-4-layer-droput-each-layer_lr0001'})
+deep_nn_4_layer_droput_each_layer_lr0001.set_params(hyperparameters)
 
 def keras_model_5_lr01(num_classes, input_dim):
     nn_deep_model = OverwrittenSequentialClassifier()
@@ -221,6 +230,7 @@ def keras_model_5_lr01(num_classes, input_dim):
     return nn_deep_model
 deep_nn_4_layer_droput_each_layer_lr01 = Deep_NN_Classifier(keras_model=keras_model_5_lr01,
                                         properties={'name':'NN-4-layer-droput-each-layer_lr01'})
+deep_nn_4_layer_droput_each_layer_lr01.set_params(hyperparameters)
 
 def keras_model_5_lr1(num_classes, input_dim):
     nn_deep_model = OverwrittenSequentialClassifier()
@@ -240,6 +250,7 @@ def keras_model_5_lr1(num_classes, input_dim):
     return nn_deep_model
 deep_nn_4_layer_droput_each_layer_lr1 = Deep_NN_Classifier(keras_model=keras_model_5_lr01,
                                         properties={'name':'NN-4-layer-droput-each-layer_lr1'})
+deep_nn_4_layer_droput_each_layer_lr1.set_params(hyperparameters)
 
 
 def keras_model_6_lr001(num_classes, input_dim):
@@ -254,6 +265,7 @@ def keras_model_6_lr001(num_classes, input_dim):
     return nn_deep_model
 deep_nn_2_layer_droput_input_layer_lr001 = Deep_NN_Classifier(keras_model=keras_model_6_lr001,
                                         properties={'name':'NN-2-layer-droput-input-layer_lr001'})
+deep_nn_2_layer_droput_input_layer_lr001.set_params(hyperparameters)
 
 def keras_model_6_lr01(num_classes, input_dim):
     nn_deep_model = OverwrittenSequentialClassifier()
@@ -267,6 +279,7 @@ def keras_model_6_lr01(num_classes, input_dim):
     return nn_deep_model
 deep_nn_2_layer_droput_input_layer_lr01 = Deep_NN_Classifier(keras_model=keras_model_6_lr01,
                                         properties={'name':'NN-2-layer-droput-input-layer_lr01'})
+deep_nn_2_layer_droput_input_layer_lr01.set_params(hyperparameters)
 
 def keras_model_6_lr1(num_classes, input_dim):
     nn_deep_model = OverwrittenSequentialClassifier()
@@ -281,6 +294,7 @@ def keras_model_6_lr1(num_classes, input_dim):
 
 deep_nn_2_layer_droput_input_layer_lr1 = Deep_NN_Classifier(keras_model=keras_model_6_lr1,
                                         properties={'name':'NN-2-layer-droput-input-layer_lr1'})
+deep_nn_2_layer_droput_input_layer_lr1.set_params(hyperparameters)
 
 estimators = [deep_nn_4_layer_thin_dropout_lr01,
             deep_nn_4_layer_thin_dropout_lr1, 
@@ -314,7 +328,11 @@ orchest = Orchestrator(hdf5_input_io=input_io, hdf5_output_io=out_io, dts_names=
 
 
 
-orchest.run(modelling_strategies=estimators, verbose=True)
+orchest.run(modelling_strategies=estimators, 
+            verbose=True,
+            override_saved_models=True, 
+            predict_on_runtime=True,
+            override_predictions=True)
     # orchest.predict_all(trained_models_dir='data/trained_models', estimators=estimators)
 
 
