@@ -33,8 +33,8 @@ class Deep_NN_Classifier(MlautEstimator):
     properties = {'estimator_family':[NEURAL_NETWORKS], 
                 'tasks':[CLASSIFICATION], 
                 'name':'NeuralNetworkDeepClassifier'}
-    hyperparameters = {'epochs': [50,100], 
-                        'batch_size': [0]}
+    hyperparameters = {'epochs': 1, 
+                        'batch_size': None}
     def keras_model(num_classes, input_dim):
         nn_deep_model = OverwrittenSequentialClassifier()
         nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
@@ -64,10 +64,11 @@ class Deep_NN_Classifier(MlautEstimator):
         self._n_jobs = n_jobs
         self._num_cv_folds = num_cv_folds
         self._refit = refit
-        # super().__init__(verbose=verbose,
-        #                  n_jobs=n_jobs, 
-        #                 num_cv_folds=num_cv_folds, 
-        #                 refit=refit)
+
+        if 'epochs' not in self._hyperparameters.keys():
+            raise ValueError('You need to specify number of epochs as hyperparameter to keras models')
+        if 'batch_size' not in self._hyperparameters.keys():
+            raise ValueError('You need to specify batch_size as hyperparameter to keras models')
         
 
     
@@ -110,6 +111,7 @@ class Deep_NN_Classifier(MlautEstimator):
         if 'num_classes' not in kwargs:
             raise ValueError('You need to specify num_classes when building the keras model.')
 
+         
         input_dim=kwargs['input_dim']
         num_samples = kwargs['num_samples']
         num_classes = kwargs['num_classes']
@@ -118,7 +120,9 @@ class Deep_NN_Classifier(MlautEstimator):
         #the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.
         estimator = KerasClassifier(build_fn=self._keras_model, 
                                 num_classes=num_classes, 
-                                input_dim=input_dim)
+                                input_dim=input_dim,
+                                batch_size=self._hyperparameters['batch_size'], 
+                                epochs=self._hyperparameters['epochs'])
 
         # grid = GridSearchCV(estimator=estimator, 
         #                     param_grid=self._hyperparameters, 
@@ -356,7 +360,10 @@ class OverwrittenSequentialClassifier(Sequential):
         # else:
         #     epochs = self._hyperparameters
 
-        return super().fit(X_train, y_train_onehot_encoded)
+        return super().fit(X_train, 
+                            y_train_onehot_encoded, 
+                            batch_size=kwargs['batch_size'],
+                            epochs=kwargs['epochs'])
 
         
 
