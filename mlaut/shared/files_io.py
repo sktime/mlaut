@@ -251,21 +251,27 @@ class FilesIO:
     #         pred_accuracies[strategy] = strategies[strategy][...]
     #     return pred_accuracies
     
-    def save_ml_strategy_timestamps(self, timestamps_df, dataset_name):
+    def save_ml_strategy_timestamps(self, timestamps_df, dataset_name, overwrite_timestamp=False):
         """
         Saves start and end times for training estimators.
-
-        :type timestamps_df: DataFrame
-        :param timestamps_df: Dataframe containing: [strategy_name, 
+        Args:
+            timestamps_df (DataFrame): Dataframe containing: [strategy_name, 
                                                     begin_timestamp, 
                                                     end_timestamp,
                                                     difference between start and end timestamp]
 
-        :type dataset_name: string
-        :param dataset_name: name of dataset on which the estimator was trained.
+            dataset_name(string): name of dataset on which the estimator was trained.
+            overwrite_timestamp(Boolean): overwrite timestamps if they exist already
         """
         store = pd.HDFStore(self._hdf5_filename, self._mode)
-        store[RUNTIMES_GROUP + '/' + dataset_name ] = timestamps_df
+        dts_path = f'{RUNTIMES_GROUP}/{dataset_name}'
+        timestamp_exits = self.check_h5_path_exists(dts_path)
+        if overwrite_timestamp is True or timestamp_exits is False:
+            store[dts_path] = timestamps_df
+        else:
+            prior_timestamp, meta = self.load_dataset_pd(dts_path, return_metadata=False)
+            timestamps_df = timestamps_df.append(prior_timestamp)
+            store[dts_path] = timestamps_df
         store.close()
     
   
