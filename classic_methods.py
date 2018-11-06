@@ -34,8 +34,9 @@ if __name__ == '__main__':
 
 
 
-    orchest.run(modelling_strategies=estimators[0:2], 
+    orchest.run(modelling_strategies=estimators, 
                 verbose=True,
                 overwrite_saved_models=True, 
                 predict_on_runtime=True,
-                overwrite_predictions=True)
+                overwrite_predictions=True,
+                overwrite_timestamp=True)
