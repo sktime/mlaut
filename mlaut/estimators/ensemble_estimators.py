@@ -33,7 +33,7 @@ class Random_Forest_Classifier(MlautEstimator):
     
     # source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html
     hyperparameters = {"max_depth": [3, None],
-                "max_features": [1, 3, 10],
+                # "max_features": [1, 3, 10],
                 "min_samples_split": [2, 3, 10],
                 "bootstrap": [True, False],
                 "criterion": ["gini", "entropy"]}
