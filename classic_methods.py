@@ -27,7 +27,7 @@ rf = Random_Forest_Classifier()
 
 estimators = [svm, rf]
 orchest = Orchestrator(hdf5_input_io=input_io, hdf5_output_io=out_io, dts_names=dts_names_list,
-                original_datasets_group_h5_path='openml/')
+                original_datasets_group_h5_path='delgado_datasets/')
 
 if __name__ == '__main__':
     multiprocessing.set_start_method('forkserver', force=True)
