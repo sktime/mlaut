@@ -21,12 +21,20 @@ class SVC_mlaut(MlautEstimator):
     properties = {'estimator_family':[SVM], 
             'tasks':[CLASSIFICATION], 
             'name':'SVC'}
-    c_range = np.linspace(2**(-5), 2**(15), 5) #change last num to 13 for better search
-    gamma_range = np.linspace(2**(-15), 2**3, 5) #change last num to 13 for better search     
-    hyperparameters = {
-                        'C': c_range,
-                        'gamma': ['auto']
-                        }
+    # c_range = np.linspace(2**(-5), 2**(15), 5) #change last num to 13 for better search
+    # gamma_range = np.linspace(2**(-15), 2**3, 5) #change last num to 13 for better search     
+    # hyperparameters = {
+    #                     'C': c_range,
+    #                     'gamma': ['auto']
+    #                     }
+
+    # Set the parameters by cross-validation
+
+    #inspired from http://scikit-learn.org/stable/auto_examples/model_selection/plot_grid_search_digits.html#sphx-glr-auto-examples-model-selection-plot-grid-search-digits-py
+    hyperparameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
+                     'C': [1, 10, 100, 1000]},
+                    {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+                    
     def __init__(self,
                 hyperparameters=hyperparameters,
                 properties=properties, 

@@ -25,11 +25,18 @@ class Random_Forest_Classifier(MlautEstimator):
     properties = {'estimator_family':[ENSEMBLE_METHODS], 
             'tasks':[CLASSIFICATION], 
             'name':'RandomForestClassifier'}
-    hyperparameters = {
-                    'n_estimators': [10, 50, 100],
-                    'max_features': ['auto', 'sqrt','log2', None],
-                    'max_depth': [5, 15, None]
-                }
+    # hyperparameters = {
+    #                 'n_estimators': [10, 50, 100],
+    #                 'max_features': ['auto', 'sqrt','log2', None],
+    #                 'max_depth': [5, 15, None]
+    #             }
+    
+    # source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html
+    hyperparameters = {"max_depth": [3, None],
+                "max_features": [1, 3, 10],
+                "min_samples_split": [2, 3, 10],
+                "bootstrap": [True, False],
+                "criterion": ["gini", "entropy"]}
 
     def __init__(self,
                 hyperparameters=hyperparameters,

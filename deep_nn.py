@@ -1,4 +1,3 @@
-from download_delgado.delgado_datasets import DownloadAndConvertDelgadoDatasets
 from mlaut.data import Data
 from mlaut.estimators.estimators import instantiate_default_estimators
 from mlaut.experiments import Orchestrator
@@ -23,12 +22,12 @@ import multiprocessing
 
 
 data = Data()
-input_io = data.open_hdf5('data/delgado.hdf5', mode='a')
-out_io = data.open_hdf5('data/delgado-classification-deep.h5', mode='a')
-dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, hdf5_group='delgado_datasets/')
+input_io = data.open_hdf5('data/openml.h5', mode='r')
+out_io = data.open_hdf5('data/test.h5', mode='a')
+dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, hdf5_group='openml/')
 split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_paths=dts_names_list_full_path)
 
-hyperparameters =  {'epochs':10}
+hyperparameters =  {'epochs':1, 'batch_size':None}
 
 def keras_model_1_lr01(num_classes, input_dim):
     model = OverwrittenSequentialClassifier()
@@ -321,18 +320,18 @@ estimators = [deep_nn_4_layer_thin_dropout_lr01,
 #         estimators.append(e)
 
 orchest = Orchestrator(hdf5_input_io=input_io, hdf5_output_io=out_io, dts_names=dts_names_list,
-                original_datasets_group_h5_path='delgado_datasets/')
+                original_datasets_group_h5_path='openml/')
 
 # if __name__ == '__main__':
 #     multiprocessing.set_start_method('forkserver', force=True)
 
 
 
-orchest.run(modelling_strategies=estimators, 
+orchest.run(modelling_strategies=estimators[0:2], 
             verbose=True,
-            override_saved_models=True, 
+            overwrite_saved_models=True, 
             predict_on_runtime=True,
-            override_predictions=True)
+            overwrite_predictions=True)
     # orchest.predict_all(trained_models_dir='data/trained_models', estimators=estimators)
 
 
