@@ -18,7 +18,7 @@ import multiprocessing
 data = Data()
 input_io = data.open_hdf5('data/delgado.hdf5', mode='r')
 out_io = data.open_hdf5('data/delgado-classification-deep.h5', mode='a')
-dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, hdf5_group='openml/')
+dts_names_list, dts_names_list_full_path = data.list_datasets(hdf5_io=input_io, hdf5_group='delgado_datasets/')
 split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_paths=dts_names_list_full_path)
 
 
