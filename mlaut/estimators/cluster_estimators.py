@@ -25,8 +25,8 @@ class K_Neighbours(MlautEstimator):
             'name':'K_Neighbours'}
 
     hyperparameters = {
-                    'n_neighbors': [5,10]#np.arange(1,31),
-                    #'weights': ['uniform', 'distance']
+                    'n_neighbors': np.arange(1,31),
+                    'p': [1, 2]
                     }
     def __init__(self,
                 hyperparameters=hyperparameters,
