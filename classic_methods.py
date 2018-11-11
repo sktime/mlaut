@@ -38,7 +38,7 @@ split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_
 
 
 estimators = [Random_Forest_Classifier(),
-            #   Bagging_Classifier(),
+              Bagging_Classifier(),
               Gradient_Boosting_Classifier(),
               K_Neighbours(),
               Bernoulli_Naive_Bayes(),
