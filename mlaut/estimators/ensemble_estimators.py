@@ -149,8 +149,8 @@ class Bagging_Classifier(MlautEstimator):
     hyperparameters = {
             'n_estimators': [10, 100, 200, 500],
             'max_samples':[0.5, 1],
-            'max_features': [0.5,1],
-            'base_estimator': [DecisionTreeClassifier(), KNeighborsClassifier(), SVC()]
+            'max_features': [0.5,1]
+            # 'base_estimator': [DecisionTreeClassifier(), KNeighborsClassifier(), SVC()]
         }
 
     def __init__(self,
