@@ -38,7 +38,7 @@ split_dts_list = data.split_datasets(hdf5_in=input_io, hdf5_out=out_io, dataset_
 
 
 estimators = [Random_Forest_Classifier(),
-              Bagging_Classifier(),
+            #   Bagging_Classifier(),
               Gradient_Boosting_Classifier(),
               K_Neighbours(),
               Bernoulli_Naive_Bayes(),
@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     orchest.run(modelling_strategies=estimators, 
                 verbose=True,
-                overwrite_saved_models=True, 
+                overwrite_saved_models=False, 
                 predict_on_runtime=True,
-                overwrite_predictions=True,
-                overwrite_timestamp=True)
+                overwrite_predictions=False,
+                overwrite_timestamp=False)
