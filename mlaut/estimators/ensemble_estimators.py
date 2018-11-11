@@ -16,7 +16,10 @@ from sklearn.ensemble import BaggingRegressor
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from mlaut.estimators.generic_estimator import Generic_Estimator
-
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+import numpy as np
 
 class Random_Forest_Classifier(MlautEstimator):
     """
@@ -32,11 +35,12 @@ class Random_Forest_Classifier(MlautEstimator):
     #             }
     
     # source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html
-    hyperparameters = {"max_depth": [3, None],
-                # "max_features": [1, 3, 10],
+    hyperparameters = {"max_depth": [10,100, None],
+                "max_features": ['auto', 'sqrt','log2', None],
                 "min_samples_split": [2, 3, 10],
                 "bootstrap": [True, False],
-                "criterion": ["gini", "entropy"]}
+                "criterion": ["gini", "entropy"],
+                "n_estimators": [10, 100, 200, 500]}
 
     def __init__(self,
                 hyperparameters=hyperparameters,
@@ -143,7 +147,10 @@ class Bagging_Classifier(MlautEstimator):
             'tasks':[CLASSIFICATION], 
             'name':'BaggingClassifier'}
     hyperparameters = {
-            'n_estimators': [10, 50, 100]
+            'n_estimators': [10, 100, 200, 500],
+            'max_samples':[0.5, 1],
+            'max_features': [0.5,1],
+            'base_estimator': [DecisionTreeClassifier(), KNeighborsClassifier(), SVC()]
         }
 
     def __init__(self,
@@ -253,8 +260,9 @@ class Gradient_Boosting_Classifier(MlautEstimator):
             'tasks':[CLASSIFICATION], 
             'name':'GradientBoostingClassifier'}
     hyperparameters = {
-                    'n_estimators': [10, 50, 100],
-                    'max_depth':[10,100, None]
+                    'n_estimators': [100, 200, 500],
+                    'max_depth': np.arange(1,11),
+                    'learning_rate': [0.01, 0.1, 1, 10, 100]
                 }
 
     def __init__(self,

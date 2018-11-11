@@ -31,9 +31,15 @@ class SVC_mlaut(MlautEstimator):
     # Set the parameters by cross-validation
 
     #inspired from http://scikit-learn.org/stable/auto_examples/model_selection/plot_grid_search_digits.html#sphx-glr-auto-examples-model-selection-plot-grid-search-digits-py
-    hyperparameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
-                     'C': [1, 10, 100, 1000]},
-                    {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+    # hyperparameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
+    #                  'C': [1, 10, 100, 1000]},
+    #                 {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+
+    C_range = np.logspace(-2, 10, 13)
+    gamma_range = np.logspace(-9, 3, 13)
+    hyperparameters = [{'kernel': ['rbf'], 'gamma': gamma_range,
+                     'C': C_range},
+                    {'kernel': ['linear'], 'C': C_range}]
                     
     def __init__(self,
                 hyperparameters=hyperparameters,

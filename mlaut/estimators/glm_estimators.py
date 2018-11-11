@@ -212,8 +212,9 @@ class Passive_Aggressive_Classifier(MlautEstimator):
             'tasks':[CLASSIFICATION],
             'name':'PassiveAggressiveClassifier'}
     
+    C_range = np.logspace(-2, 10, 13)
     hyperparameters = {
-                'C': np.linspace(2**(-5), 2**(15), 13),
+                'C': C_range,
                 'max_iter':[1000]
             }
     
