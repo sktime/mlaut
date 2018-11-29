@@ -1,0 +1,973 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Estimators &mdash; mlaut 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Experiments" href="experiments.html" />
+    <link rel="prev" title="Modules" href="modules.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> mlaut
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="project.html">Description of the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Estimators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">estimators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.estimators.baseline_estimators">baseline_estimators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.estimators.bayes_estimators">bayes_estimators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.estimators.ensemble_estimators">ensemble_estimators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.estimators.glm_estimators">glm_estimators (Generalized Linear Models)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.estimators.nn_estimators">nn_estimators (Neural Network)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.estimators.svm_estimators">svm_estimators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.estimators.mlaut_estimator">mlaut_estimator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.estimators.generic_estimator">generic_estimator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analyze_results.html">Analyze Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared.html">Shared</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mlaut</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+        
+      <li>Estimators</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/estimators.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="estimators">
+<span id="id1"></span><h1>Estimators<a class="headerlink" href="#estimators" title="Permalink to this headline">¶</a></h1>
+<p>This module contains the default estimators that come with mlaut.</p>
+<div class="section" id="id2">
+<h2>estimators<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-mlaut.estimators.estimators"></span><dl class="function">
+<dt id="mlaut.estimators.estimators.instantiate_default_estimators">
+<code class="descclassname">mlaut.estimators.estimators.</code><code class="descname">instantiate_default_estimators</code><span class="sig-paren">(</span><em>estimators</em>, <em>verbose=0</em>, <em>n_jobs=-1</em>, <em>num_cv_folds=5</em>, <em>refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/estimators.html#instantiate_default_estimators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.estimators.instantiate_default_estimators" title="Permalink to this definition">¶</a></dt>
+<dd><p>instatiates default estimators.
+:param estimators: Estimator names, family class or type of task.
+:type estimators: array of strings
+:param verbose: The level of output displayed in the terminal. Default is 0 or no  output. Higher number means more messages will be printed.
+:type verbose: integer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An array of instantiated estimators that are ready to be fitted on data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><cite>array of sklearn objects</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.estimators.baseline_estimators">
+<span id="baseline-estimators"></span><h2>baseline_estimators<a class="headerlink" href="#module-mlaut.estimators.baseline_estimators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlaut.estimators.baseline_estimators.Baseline_Classifier">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.baseline_estimators.</code><code class="descname">Baseline_Classifier</code><span class="sig-paren">(</span><em>hyperparameters=None, properties={'estimator_family': ['Baseline'], 'tasks': ['Classification'], 'name': 'BaselineClassifier'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/baseline_estimators.html#Baseline_Classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.baseline_estimators.Baseline_Classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for sklearn dummy classifier class.</p>
+<dl class="method">
+<dt id="mlaut.estimators.baseline_estimators.Baseline_Classifier.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>strategy='most_frequent'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/baseline_estimators.html#Baseline_Classifier.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.baseline_estimators.Baseline_Classifier.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns estimator class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>strategy</strong> (<em>string</em>) – Name of strategy of baseline classifier. Default is <code class="docutils literal"><span class="pre">most_frequent</span></code>. See <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html">sklean.dummy.DummyClasifier</a> for additional information.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.baseline_estimators.Baseline_Regressor">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.baseline_estimators.</code><code class="descname">Baseline_Regressor</code><span class="sig-paren">(</span><em>hyperparameters=None, properties={'estimator_family': ['Baseline'], 'tasks': ['Regression'], 'name': 'BaselineRegressor'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/baseline_estimators.html#Baseline_Regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.baseline_estimators.Baseline_Regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for sklearn dummy regressor</p>
+<dl class="method">
+<dt id="mlaut.estimators.baseline_estimators.Baseline_Regressor.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>strategy='median'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/baseline_estimators.html#Baseline_Regressor.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.baseline_estimators.Baseline_Regressor.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns estimator class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>strategy</strong> (<em>string</em>) – as per <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html">scikit-learn dummy regressor documentation</a>.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Instantiated estimator object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn.dummy.DummyRegressor</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.estimators.bayes_estimators">
+<span id="bayes-estimators"></span><h2>bayes_estimators<a class="headerlink" href="#module-mlaut.estimators.bayes_estimators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlaut.estimators.bayes_estimators.Bernoulli_Naive_Bayes">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.bayes_estimators.</code><code class="descname">Bernoulli_Naive_Bayes</code><span class="sig-paren">(</span><em>hyperparameters=None, properties={'estimator_family': ['Naive_Bayes'], 'tasks': ['Classification'], 'name': 'BernoulliNaiveBayes'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/bayes_estimators.html#Bernoulli_Naive_Bayes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.bayes_estimators.Bernoulli_Naive_Bayes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html">sklearn Bernoulli Naive Bayes estimator</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.bayes_estimators.Bernoulli_Naive_Bayes.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/bayes_estimators.html#Bernoulli_Naive_Bayes.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.bayes_estimators.Bernoulli_Naive_Bayes.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns estimator class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">pipeline for transforming the features and training the estimator</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><cite>sklearn pipeline</cite> object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.bayes_estimators.Gaussian_Naive_Bayes">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.bayes_estimators.</code><code class="descname">Gaussian_Naive_Bayes</code><span class="sig-paren">(</span><em>hyperparameters=None, properties={'estimator_family': ['Naive_Bayes'], 'tasks': ['Classification'], 'name': 'GaussianNaiveBayes'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/bayes_estimators.html#Gaussian_Naive_Bayes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.bayes_estimators.Gaussian_Naive_Bayes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html">sklearn Naive Bayes estimator</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.bayes_estimators.Gaussian_Naive_Bayes.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/bayes_estimators.html#Gaussian_Naive_Bayes.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.bayes_estimators.Gaussian_Naive_Bayes.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns estimator class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">pipeline for transforming the features and training the estimator</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><cite>sklearn pipeline</cite> object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.estimators.ensemble_estimators">
+<span id="ensemble-estimators"></span><h2>ensemble_estimators<a class="headerlink" href="#module-mlaut.estimators.ensemble_estimators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlaut.estimators.ensemble_estimators.Bagging_Classifier">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.ensemble_estimators.</code><code class="descname">Bagging_Classifier</code><span class="sig-paren">(</span><em>hyperparameters={'n_estimators': [10, 100, 200, 500], 'max_samples': [0.5, 1], 'max_features': [0.5, 1]}, properties={'estimator_family': ['Ensemble methods'], 'tasks': ['Classification'], 'name': 'BaggingClassifier'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Bagging_Classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Bagging_Classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html">sklearn Bagging Classifier</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.ensemble_estimators.Bagging_Classifier.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Bagging_Classifier.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Bagging_Classifier.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.ensemble_estimators.Bagging_Regressor">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.ensemble_estimators.</code><code class="descname">Bagging_Regressor</code><span class="sig-paren">(</span><em>hyperparameters={'n_estimators': [10, 50, 100]}, properties={'estimator_family': ['Ensemble methods'], 'tasks': ['Regression'], 'name': 'BaggingRegressor'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Bagging_Regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Bagging_Regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html">sklearn Bagging Regressor</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.ensemble_estimators.Bagging_Regressor.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Bagging_Regressor.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Bagging_Regressor.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.ensemble_estimators.Gradient_Boosting_Classifier">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.ensemble_estimators.</code><code class="descname">Gradient_Boosting_Classifier</code><span class="sig-paren">(</span><em>hyperparameters={'n_estimators': [100, 200, 500], 'max_depth': array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10]), 'learning_rate': [0.01, 0.1, 1, 10, 100]}, properties={'estimator_family': ['Ensemble methods'], 'tasks': ['Classification'], 'name': 'GradientBoostingClassifier'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Gradient_Boosting_Classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Gradient_Boosting_Classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html">sklearn Gradient Boosting Classifier</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.ensemble_estimators.Gradient_Boosting_Classifier.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Gradient_Boosting_Classifier.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Gradient_Boosting_Classifier.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.ensemble_estimators.Gradient_Boosting_Regressor">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.ensemble_estimators.</code><code class="descname">Gradient_Boosting_Regressor</code><span class="sig-paren">(</span><em>hyperparameters={'n_estimators': [10, 50, 100], 'max_depth': [10, 100, None]}, properties={'estimator_family': ['Ensemble methods'], 'tasks': ['Regression'], 'name': 'GradientBoostingRegressor'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Gradient_Boosting_Regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Gradient_Boosting_Regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html">sklearn Gradient Boosting Regressor</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.ensemble_estimators.Gradient_Boosting_Regressor.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Gradient_Boosting_Regressor.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Gradient_Boosting_Regressor.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.ensemble_estimators.Random_Forest_Classifier">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.ensemble_estimators.</code><code class="descname">Random_Forest_Classifier</code><span class="sig-paren">(</span><em>hyperparameters={'max_depth': [10, 100, None], 'max_features': ['auto', 'sqrt', 'log2', None], 'min_samples_split': [2, 3, 10], 'bootstrap': [True, False], 'criterion': ['gini', 'entropy'], 'n_estimators': [10, 100, 200, 500]}, properties={'estimator_family': ['Ensemble methods'], 'tasks': ['Classification'], 'name': 'RandomForestClassifier'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Random_Forest_Classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Random_Forest_Classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">sklearn Random Forest Classifier</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.ensemble_estimators.Random_Forest_Classifier.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Random_Forest_Classifier.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Random_Forest_Classifier.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.ensemble_estimators.Random_Forest_Regressor">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.ensemble_estimators.</code><code class="descname">Random_Forest_Regressor</code><span class="sig-paren">(</span><em>hyperparameters={'n_estimators': [10, 50, 100], 'max_features': ['auto', 'sqrt', 'log2', None], 'max_depth': [5, 15, None]}, properties={'estimator_family': ['Ensemble methods'], 'tasks': ['Regression'], 'name': 'RandomForestRegressor'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Random_Forest_Regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Random_Forest_Regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html">sklearn Random Forest Regressor</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.ensemble_estimators.Random_Forest_Regressor.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/ensemble_estimators.html#Random_Forest_Regressor.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.ensemble_estimators.Random_Forest_Regressor.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments.</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.estimators.glm_estimators">
+<span id="glm-estimators-generalized-linear-models"></span><h2>glm_estimators (Generalized Linear Models)<a class="headerlink" href="#module-mlaut.estimators.glm_estimators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlaut.estimators.glm_estimators.Lasso">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.glm_estimators.</code><code class="descname">Lasso</code><span class="sig-paren">(</span><em>hyperparameters={'alphas': [0.1, 1, 10.0]}, properties={'estimator_family': ['Generalized_Linear_Models'], 'tasks': ['Regression'], 'name': 'Lasso'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Lasso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Lasso" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html">sklearn Lasso</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.glm_estimators.Lasso.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Lasso.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Lasso.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.glm_estimators.Lasso_Lars">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.glm_estimators.</code><code class="descname">Lasso_Lars</code><span class="sig-paren">(</span><em>hyperparameters={'max_n_alphas': 1000}, properties={'estimator_family': ['Generalized_Linear_Models'], 'tasks': ['Regression'], 'name': 'LassoLars'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Lasso_Lars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Lasso_Lars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoLars.html">sklearn Lasso Lars</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.glm_estimators.Lasso_Lars.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Lasso_Lars.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Lasso_Lars.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.glm_estimators.Logistic_Regression">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.glm_estimators.</code><code class="descname">Logistic_Regression</code><span class="sig-paren">(</span><em>hyperparameters={'C': array([3.12500000e-02, 2.73069531e+03, 5.46135938e+03, 8.19202344e+03,        1.09226875e+04, 1.36533516e+04, 1.63840156e+04, 1.91146797e+04,        2.18453438e+04, 2.45760078e+04, 2.73066719e+04, 3.00373359e+04,        3.27680000e+04])}, properties={'estimator_family': ['Generalized_Linear_Models'], 'tasks': ['Regression'], 'name': 'LogisticRegression'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Logistic_Regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Logistic_Regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">sklearn Logistic Regression</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.glm_estimators.Logistic_Regression.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Logistic_Regression.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Logistic_Regression.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.glm_estimators.Passive_Aggressive_Classifier">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.glm_estimators.</code><code class="descname">Passive_Aggressive_Classifier</code><span class="sig-paren">(</span><em>hyperparameters={'C': array([1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02, 1.e+03, 1.e+04, 1.e+05,        1.e+06, 1.e+07, 1.e+08, 1.e+09, 1.e+10]), 'max_iter': [1000]}, properties={'estimator_family': ['Generalized_Linear_Models'], 'tasks': ['Classification'], 'name': 'PassiveAggressiveClassifier'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Passive_Aggressive_Classifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Passive_Aggressive_Classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.PassiveAggressiveClassifier.html">sklearn Passive Aggressive Classifier</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.glm_estimators.Passive_Aggressive_Classifier.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Passive_Aggressive_Classifier.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Passive_Aggressive_Classifier.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.glm_estimators.Ridge_Regression">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.glm_estimators.</code><code class="descname">Ridge_Regression</code><span class="sig-paren">(</span><em>hyperparameters={'alphas': [0.1, 1, 10.0]}, properties={'estimator_family': ['Generalized_Linear_Models'], 'tasks': ['Regression'], 'name': 'RidgeRegression'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Ridge_Regression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Ridge_Regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html">sklearn Ridge Regression</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.glm_estimators.Ridge_Regression.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/glm_estimators.html#Ridge_Regression.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.glm_estimators.Ridge_Regression.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**kwargs</strong> (<em>key-value arguments</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">pipeline for transforming the features and training the estimator</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(<cite>sklearn pipeline</cite> object)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.estimators.nn_estimators">
+<span id="nn-estimators-neural-network"></span><h2>nn_estimators (Neural Network)<a class="headerlink" href="#module-mlaut.estimators.nn_estimators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlaut.estimators.nn_estimators.Deep_NN_Regressor">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.nn_estimators.</code><code class="descname">Deep_NN_Regressor</code><span class="sig-paren">(</span><em>properties={'estimator_family': ['Neural_Networks'], 'tasks': ['Classification'], 'name': 'NeuralNetworkDeepClassifier'}, hyperparameters={'epochs': 1, 'batch_size': None}, keras_model=&lt;function Deep_NN_Classifier.keras_model&gt;, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/nn_estimators.html#Deep_NN_Regressor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.nn_estimators.Deep_NN_Regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier</span></code></p>
+<p>Wrapper for a <a class="reference external" href="https://keras.io/getting-started/sequential-model-guide/">keras sequential model</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.nn_estimators.Deep_NN_Regressor.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/nn_estimators.html#Deep_NN_Regressor.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.nn_estimators.Deep_NN_Regressor.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns estimator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> (<em>key-value</em><em>(</em><em>int</em><em>)</em>) – The user must specify <code class="docutils literal"><span class="pre">input_dim</span></code> and <code class="docutils literal"><span class="pre">num_samples</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">pipeline for transforming the features and training the estimator</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><cite>sklearn pipeline</cite> object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlaut.estimators.nn_estimators.OverwrittenSequentialClassifier">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.nn_estimators.</code><code class="descname">OverwrittenSequentialClassifier</code><span class="sig-paren">(</span><em>layers=None</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/nn_estimators.html#OverwrittenSequentialClassifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.nn_estimators.OverwrittenSequentialClassifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">tensorflow.python.keras._impl.keras.models.Sequential</span></code></p>
+<p>Keras sequential model that overrides the default <code class="xref py py-func docutils literal"><span class="pre">tensorflow.python.keras.models.fit()</span></code> and <code class="xref py py-func docutils literal"><span class="pre">tensorflow.python.keras.models.predict()</span></code> methods.</p>
+<dl class="method">
+<dt id="mlaut.estimators.nn_estimators.OverwrittenSequentialClassifier.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X_train</em>, <em>y_train</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/nn_estimators.html#OverwrittenSequentialClassifier.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.nn_estimators.OverwrittenSequentialClassifier.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides the default <code class="xref py py-func docutils literal"><span class="pre">tensorflow.python.keras.models.fit()</span></code> and reshapes the <cite>y_train</cite> in one hot array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X_train</strong> – training data</li>
+<li><strong>y_train</strong> – Labels that will be converted to onehot array.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-func docutils literal"><span class="pre">tensorflow.python.keras.models.fit()</span></code> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlaut.estimators.nn_estimators.OverwrittenSequentialClassifier.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X_test</em>, <em>batch_size=None</em>, <em>verbose=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/nn_estimators.html#OverwrittenSequentialClassifier.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.nn_estimators.OverwrittenSequentialClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides the default <code class="xref py py-func docutils literal"><span class="pre">tensorflow.python.keras.models.predict()</span></code> by replacing it with a <code class="xref py py-func docutils literal"><span class="pre">tensorflow.python.keras.models.predict_classes()</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-func docutils literal"><span class="pre">tensorflow.python.keras.models.predict_classes()</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.estimators.svm_estimators">
+<span id="svm-estimators"></span><h2>svm_estimators<a class="headerlink" href="#module-mlaut.estimators.svm_estimators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlaut.estimators.svm_estimators.SVC_mlaut">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.svm_estimators.</code><code class="descname">SVC_mlaut</code><span class="sig-paren">(</span><em>hyperparameters=[{'kernel': ['rbf'], 'gamma': array([1.e-09, 1.e-08, 1.e-07, 1.e-06, 1.e-05, 1.e-04, 1.e-03, 1.e-02,        1.e-01, 1.e+00, 1.e+01, 1.e+02, 1.e+03]), 'C': array([1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02, 1.e+03, 1.e+04, 1.e+05,        1.e+06, 1.e+07, 1.e+08, 1.e+09, 1.e+10])}, {'kernel': ['linear'], 'C': array([1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02, 1.e+03, 1.e+04, 1.e+05,        1.e+06, 1.e+07, 1.e+08, 1.e+09, 1.e+10])}], properties={'estimator_family': ['Support_Vector_Machines'], 'tasks': ['Classification'], 'name': 'SVC'}, verbose=0, n_jobs=-1, num_cv_folds=5, refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/svm_estimators.html#SVC_mlaut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.svm_estimators.SVC_mlaut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Wrapper for <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html">sklearn SVC estimator</a>.</p>
+<dl class="method">
+<dt id="mlaut.estimators.svm_estimators.SVC_mlaut.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/svm_estimators.html#SVC_mlaut.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.svm_estimators.SVC_mlaut.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>builds and returns estimator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary of hyperparameters to be used for tuning the estimator.</li>
+<li><strong>**kwargs</strong> (<em>key-value arguments</em>) – Ignored in this implementation. Added for compatibility with <code class="xref py py-func docutils literal"><span class="pre">mlaut.estimators.nn_estimators.Deep_NN_Classifier()</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">pipeline for transforming the features and training the estimator</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><cite>sklearn pipeline</cite> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.estimators.mlaut_estimator">
+<span id="mlaut-estimator"></span><span id="mlaut-estimator-label"></span><h2>mlaut_estimator<a class="headerlink" href="#module-mlaut.estimators.mlaut_estimator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlaut.estimators.mlaut_estimator.MlautEstimator">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.mlaut_estimator.</code><code class="descname">MlautEstimator</code><a class="reference internal" href="_modules/mlaut/estimators/mlaut_estimator.html#MlautEstimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">abc.ABC</span></code></p>
+<p>Abstact base class that all mlaut estimators should inherit from.</p>
+<dl class="method">
+<dt id="mlaut.estimators.mlaut_estimator.MlautEstimator.build">
+<code class="descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/mlaut_estimator.html#MlautEstimator.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.mlaut_estimator.MlautEstimator.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method that needs to be implemented by all estimators.
+It should return an estimator object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlaut.estimators.mlaut_estimator.MlautEstimator.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/mlaut_estimator.html#MlautEstimator.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.mlaut_estimator.MlautEstimator.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the hyperparaments of the estimator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary with the hyperparaments of the estimator</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlaut.estimators.mlaut_estimator.MlautEstimator.get_trained_model">
+<code class="descname">get_trained_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/mlaut_estimator.html#MlautEstimator.get_trained_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.mlaut_estimator.MlautEstimator.get_trained_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Trained sklearn model</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><cite>sklearn pipline object</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlaut.estimators.mlaut_estimator.MlautEstimator.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>path_to_model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/mlaut_estimator.html#MlautEstimator.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.mlaut_estimator.MlautEstimator.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads trained estimator from disk.
+The default implemented method loads a sklearn estimator from a pickle file.
+This method needs to be overwritten in the child estimator class if another
+framework/procedure for saving/loading is used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path_to_model</strong> (<em>str</em>) – Location of the trained estimator.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlaut.estimators.mlaut_estimator.MlautEstimator.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>dataset_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/mlaut_estimator.html#MlautEstimator.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.mlaut_estimator.MlautEstimator.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves estimator on disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dataset_name</strong> (<em>string</em>) – name of the dataset. Estimator will be saved under default folder structure <cite>/data/trained_models/&lt;dataset name&gt;/&lt;model name&gt;</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlaut.estimators.mlaut_estimator.MlautEstimator.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>hyperparameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/mlaut_estimator.html#MlautEstimator.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.mlaut_estimator.MlautEstimator.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the hyper-parameters of the estimator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hyperparameters</strong> (<em>dictionary</em>) – Dictionary with the hyperarameters of each model.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlaut.estimators.mlaut_estimator.MlautEstimator.set_trained_model">
+<code class="descname">set_trained_model</code><span class="sig-paren">(</span><em>trained_model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/mlaut_estimator.html#MlautEstimator.set_trained_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.mlaut_estimator.MlautEstimator.set_trained_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>setter method for storing trained estimator in memory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>trained_model</strong> (<em>estimator object</em>) – Trained sklearn, keras, etc. estimator object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.estimators.generic_estimator">
+<span id="generic-estimator"></span><h2>generic_estimator<a class="headerlink" href="#module-mlaut.estimators.generic_estimator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlaut.estimators.generic_estimator.Generic_Estimator">
+<em class="property">class </em><code class="descclassname">mlaut.estimators.generic_estimator.</code><code class="descname">Generic_Estimator</code><span class="sig-paren">(</span><em>hyperparameters</em>, <em>properties</em>, <em>verbose=0</em>, <em>n_jobs=-1</em>, <em>num_cv_folds=5</em>, <em>refit=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/estimators/generic_estimator.html#Generic_Estimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.estimators.generic_estimator.Generic_Estimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.estimators.mlaut_estimator.MlautEstimator" title="mlaut.estimators.mlaut_estimator.MlautEstimator"><code class="xref py py-class docutils literal"><span class="pre">mlaut.estimators.mlaut_estimator.MlautEstimator</span></code></a></p>
+<p>Generic implementation of <cite>mlaut</cite> estimator object. This class contains the minimum required to create an <cite>mlaut</cite> estimator. However, this implementation does not provide any checks and user needs to insure that sensible tuning strategies and hyperparameters are used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>properties_dict</strong> (<em>dictionary</em>) – <p>The dictionary needs to contain the following key-value pairs:</p>
+<div class="line-block">
+<div class="line"><cite>estimator_family</cite>: (array)</div>
+<div class="line"><cite>tasks</cite>: (array)</div>
+<div class="line"><cite>name</cite>: (string)</div>
+</div>
+<p><cite>data_preprocessing</cite>: (dictionary)  dictionary with data preprocessing operations to be performed on datasets before they are used in training. These include <cite>normalize_features</cite> and <cite>normalize_features</cite>.</p>
+</li>
+<li><strong>estimator</strong> (<em>scikit learn</em><em> or </em><em>other estimator</em>) – An instance of an estimator object.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="experiments.html" class="btn btn-neutral float-right" title="Experiments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Viktor Kazakov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

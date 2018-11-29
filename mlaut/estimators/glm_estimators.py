@@ -47,8 +47,7 @@ class Ridge_Regression(MlautEstimator):
         builds and returns estimator
 
         Args:
-            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs(key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+            **kwargs(key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
         
         Returns:
             (`sklearn pipeline` object): pipeline for transforming the features and training the estimator
