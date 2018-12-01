@@ -1,11 +1,16 @@
 # mlaut (Machine Learning Automation Toolbox)
 
-mlaut automates running machine learning experiments. 
+MLAUT is a modelling and workflow toolbox in python, written with the aim of simplifying large scale benchmarking of machine learning strategies, e.g., validation, evaluation and comparison with respect to predictive/task-specific performance or runtime. 
+
+### Documentation
+
+[<<<<<< Documentation available on viktorkaz.github.io >>>>>>](viktorkaz.github.io)
 
 ### Installing
 
 Requires Python 3.6.
 
+Clone the repository, create a virtual environment and install the dependencies in requirements.txt
 
 Create virtual environment:
 ```
