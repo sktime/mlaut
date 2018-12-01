@@ -4,7 +4,7 @@ MLAUT is a modelling and workflow toolbox in python, written with the aim of sim
 
 ### Documentation
 
-[<<<<<< Documentation available on viktorkaz.github.io >>>>>>](viktorkaz.github.io)
+[<<<<<< Documentation available on viktorkaz.github.io >>>>>>](https://viktorkaz.github.io)
 
 ### Installing
 
