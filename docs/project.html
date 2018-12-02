@@ -87,6 +87,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Description of the project</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#applications-and-use">Applications and use</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#workflow">Workflow</a></li>
 </ul>
 </li>
@@ -173,6 +174,17 @@
 <li><a class="reference internal" href="experiments.html#experiments"><span class="std std-ref">Experiments</span></a>. This module contains the logic for orchestration of the machine learning experiments. The main parameters in this module are the  datasets and the estimator models that will be trained on the data.</li>
 <li><a class="reference internal" href="analyze_results.html#analyze-results"><span class="std std-ref">Analyze Results</span></a>. This module includes the logic for performing the statistical tests for comparing the performance of the trained algorithms. The predictions of the trained estimators on the test sets for each dataset serve as input for the statistical tests.</li>
 <li><a class="reference internal" href="shared.html#shared"><span class="std std-ref">Shared</span></a>. This module includes classes and methods that are shared by the other modules in the package.</li>
+</ul>
+</div>
+<div class="section" id="applications-and-use">
+<h2>Applications and use<a class="headerlink" href="#applications-and-use" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">mlaut</span></code> can be used for running supervised classification and regression experiments. The package currently provides an interface to scikit-learn and keras models  but can easily be extended by the user to incorporate additional toolboxes.</p>
+<p><code class="docutils literal"><span class="pre">mlaut</span></code> is suitable for creating a begin-to-end pipeline for processing data, training machine learning experiments, making predictions and applying statistical tests to benchmark the performance of the different models.</p>
+<p>Specifically, MLAUT can be used to:</p>
+<ul class="simple">
+<li>Automate the entire workflow for large-scale machine learning experiments studies. This includes structuring and transforming the data, selecting the appropriate estimators for the task and data data at hand, tuning the estimators and finally comparing the results.</li>
+<li>Fit data and make predictions by using the prediction strategies as described in ref{subsection:estimators} or by implementing new prediction strategies.</li>
+<li>Evaluate the results of the prediction strategies in a uniform and statistically sound manner.</li>
 </ul>
 </div>
 <div class="section" id="workflow">

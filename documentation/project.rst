@@ -24,6 +24,23 @@ Overview
 
 * :ref:`shared`. This module includes classes and methods that are shared by the other modules in the package.
 
+Applications and use
+---------------------
+
+``mlaut`` can be used for running supervised classification and regression experiments. The package currently provides an interface to scikit-learn and keras models  but can easily be extended by the user to incorporate additional toolboxes.
+	
+``mlaut`` is suitable for creating a begin-to-end pipeline for processing data, training machine learning experiments, making predictions and applying statistical tests to benchmark the performance of the different models. 
+	
+Specifically, MLAUT can be used to:
+
+* Automate the entire workflow for large-scale machine learning experiments studies. This includes structuring and transforming the data, selecting the appropriate estimators for the task and data data at hand, tuning the estimators and finally comparing the results.
+
+* Fit data and make predictions by using the prediction strategies as described in \ref{subsection:estimators} or by implementing new prediction strategies.
+
+* Evaluate the results of the prediction strategies in a uniform and statistically sound manner.
+
+
+
 Workflow
 --------
 The graph below shows on a high level the workflow that ``mlaut`` facilitates.
