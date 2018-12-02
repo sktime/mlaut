@@ -25,10 +25,3 @@ source ./py36/bin/activate
 pip install -r requirements.txt
 ```
 
-### Using mlaut
-
-Check mlaut jupyter notebook for an example of using the package
-
-```
-jupyter notebook mlaut.ipynb
-```

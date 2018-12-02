@@ -254,6 +254,7 @@ class FilesIO:
     def save_ml_strategy_timestamps(self, timestamps_df, dataset_name, overwrite_timestamp=False):
         """
         Saves start and end times for training estimators.
+        
         Args:
             timestamps_df (DataFrame): Dataframe containing: [strategy_name, 
                                                     begin_timestamp, 

@@ -5,6 +5,10 @@
 
 Welcome to mlaut's documentation!
 =================================
+.. figure:: images/logo.png
+   :width: 60%
+   :align: center
+
 Welcome to ``mlaut`` (Machine Learning AUtomation Toolbox).
 
 MLAUT is a modelling and workflow toolbox in python, written with the aim of simplifying large scale benchmarking of machine learning strategies, e.g., validation, evaluation and comparison with respect to predictive/task-specific performance or runtime. Key features are:
