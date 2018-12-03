@@ -30,6 +30,9 @@ from sklearn.metrics import accuracy_score, mean_squared_error
 import scikit_posthocs as sp
 
 from mlaut.analyze_results.losses import Losses
+
+import matplotlib.pyplot as plt
+
 class AnalyseResults(object):
     """
     Analyze results of machine learning experiments.
@@ -124,6 +127,27 @@ class AnalyseResults(object):
         res_df = res_df.sort_values(['avg_score','std_error'], ascending=[1,1])
 
         return res_df.round(3)
+    
+    def plot_boxcharts(self, scores_dict):
+        data = []
+        labels = []
+        avg_error = []
+        for e in scores_dict.keys():
+            data.append(scores_dict[e])
+            avg_error.append(np.mean(scores_dict[e]))
+            labels.append(e)
+        #sort data and labels based on avg_error
+        idx_sort=np.array(avg_error).argsort()
+        data=[data[i] for i in idx_sort ]
+        labels=[labels[i] for i in idx_sort ]
+        #plot the results
+        fig, ax = plt.subplots()
+        ax.boxplot(data)
+        ax.set_xticklabels(labels, rotation=90)
+        plt.tight_layout()
+        plt.show()
+
+        return fig
     def average_training_time(self, estimators):
         """
         Average training time for each estimator.
