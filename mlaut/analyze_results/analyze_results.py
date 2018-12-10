@@ -298,8 +298,20 @@ class AnalyseResults(object):
         values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
 
         return t_df.round(3), values_df_multiindex.round(3)
-                        
+
     def sign_test(self, observations):
+        """
+        Non-parametric test for test for consistent differences between pairs of observations. See `<https://en.wikipedia.org/wiki/Sign_test>`_ for details about the test and `<https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.binom_test.html>`_ for details about the scipy implementation.
+
+        Args:
+            observations(dictionary): Dictionary with errors on test sets achieved by estimators.
+        Returns:
+            tuple of pandas DataFrame (Database style and MultiIndex)
+        """
+        sign_df = pd.DataFrame()
+
+
+    def ranksum_test(self, observations):
         """
         Non-parametric test for testing consistent differences between pairs of obeservations.
         The test counts the number of observations that are greater, smaller and equal to the mean
@@ -310,7 +322,7 @@ class AnalyseResults(object):
         Returns:
             tuple of pandas DataFrame (Database style and MultiIndex)
         """
-        sign_df = pd.DataFrame()
+        ranksum_df = pd.DataFrame()
         perms = itertools.product(observations.keys(), repeat=2)
         values = np.array([])
         for perm in perms:
@@ -318,24 +330,24 @@ class AnalyseResults(object):
             x = observations[perm[0]]
             y = observations[perm[1]]
             t_stat, p_val = ranksums(x,y)
-            sign_test = {
+            ranksum_df = {
                 'estimator_1': perm[0],
                 'estimator_2': perm[1],
                 't_stat': t_stat,
                 'p_val': p_val
             }
-            sign_df = sign_df.append(sign_test, ignore_index=True)
+            ranksum_df = ranksum_df.append(ranksum_df, ignore_index=True)
             values = np.append(values,t_stat)
             values = np.append(values,p_val)
 
-        index=sign_df['estimator_1'].unique()
+        index=ranksum_df['estimator_1'].unique()
         values_names = ['t_stat','p_val']
         col_idx = pd.MultiIndex.from_product([index,values_names])
         values_reshaped = values.reshape(len(index), len(values_names)*len(index))
 
         values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
 
-        return sign_df.round(3), values_df_multiindex.round(3)
+        return ranksum_df.round(3), values_df_multiindex.round(3)
         
     def t_test_with_bonferroni_correction(self, observations, alpha=0.05):
         """
