@@ -309,7 +309,33 @@ class AnalyseResults(object):
             tuple of pandas DataFrame (Database style and MultiIndex)
         """
         sign_df = pd.DataFrame()
+        perms = itertools.product(observations.keys(), repeat=2)
+        values = np.array([])
+        for perm in perms:
+            x = np.array(observations[perm[0]])
+            y = np.array(observations[perm[1]])
+            sign = np.sum([i[0] > i[1] for i in zip(x,y)])
+            
+            
+            sign_test = {
+                'estimator_1': perm[0],
+                'estimator_2': perm[1],
+                't_stat': t_stat,
+                'p_val': p_val
+            }
 
+            t_df = t_df.append(t_test, ignore_index=True)
+            values = np.append(values,t_stat)
+            values = np.append(values,p_val)
+            
+        index=t_df['estimator_1'].unique()
+        values_names = ['t_stat','p_val']
+        col_idx = pd.MultiIndex.from_product([index,values_names])
+        values_reshaped = values.reshape(len(index), len(values_names)*len(index))
+
+        values_df_multiindex = pd.DataFrame(values_reshaped, index=index, columns=col_idx)
+
+        return t_df.round(3), values_df_multiindex.round(3)
 
     def ranksum_test(self, observations):
         """
