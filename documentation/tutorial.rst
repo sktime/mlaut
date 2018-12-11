@@ -94,6 +94,7 @@ The `errors_per_estimator` result can be used as input to the following function
 * :meth:`mlaut.analyze_results.analyze_results.sign_test`
 * :meth:`mlaut.analyze_results.analyze_results.t_test_with_bonferroni_correction`
 * :meth:`mlaut.analyze_results.analyze_results.wilcoxon_test`
+* :meth:`mlaut.analyze_results.analyze_results.ranksum_test`
 * :meth:`mlaut.analyze_results.analyze_results.friedman_test`
 * :meth:`mlaut.analyze_results.analyze_results.nemenyi`
 
