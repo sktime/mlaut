@@ -85,10 +85,8 @@ class AnalyseResults(object):
         #load all predictions
         dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(self._output_h5_predictions_group, self._output_io)
         losses = Losses(metric, estimators, exact_match)
+        #code producess error if multiple predictions for the same dataset are stored in the databse. Therefore, we skip subsequent predictions. The files_io.save_prediction_to_db ovverrites predictions by default so this should not occur.
         dts_processed = []
-        
-        #TODO temporary fix!!!!!
-        # !!!! error in code if multiple predictions for the same dataset are stored
         for dts in dts_predictions_list:
             if dts in dts_processed:
                 continue
