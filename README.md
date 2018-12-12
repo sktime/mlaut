@@ -1,4 +1,8 @@
 ![skpro](/documentation/images/logo.png)
+<p align="center">
+  <a href="https://badge.fury.io/py/skpro"><img src="https://badge.fury.io/py/mlaut.svg" alt="PyPI version" height="18"></a>
+  <a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="License"></a>
+</p>
 
 
 # mlaut (Machine Learning AUtomation Toolbox)
@@ -11,17 +15,10 @@ MLAUT is a modelling and workflow toolbox in python, written with the aim of sim
 
 ### Installing
 
-Requires Python 3.6.
+Requires Python 3.6 or greater.
 
-Clone the repository, create a virtual environment and install the dependencies in requirements.txt
+```
+pip install mlaut
+```
 
-Create virtual environment:
-```
-virtualenv -p python3 py36
-```
-Activate virtual environment and install dependencies:
-```
-source ./py36/bin/activate
-pip install -r requirements.txt
-```
 
