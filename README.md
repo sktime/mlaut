@@ -1,6 +1,6 @@
 ![skpro](/documentation/images/logo.png)
 <p align="center">
-  <a href="https://badge.fury.io/py/skpro"><img src="https://badge.fury.io/py/mlaut.svg" alt="PyPI version" height="18"></a>
+  <a href="https://badge.fury.io/py/mlaut"><img src="https://badge.fury.io/py/mlaut.svg" alt="PyPI version" height="18"></a>
   <a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="License"></a>
 </p>
 
