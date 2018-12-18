@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -181,6 +180,9 @@
 <span class="kn">import</span> <span class="nn">scikit_posthocs</span> <span class="k">as</span> <span class="nn">sp</span>
 
 <span class="kn">from</span> <span class="nn">mlaut.analyze_results.losses</span> <span class="k">import</span> <span class="n">Losses</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
 <div class="viewcode-block" id="AnalyseResults"><a class="viewcode-back" href="../../../analyze_results.html#mlaut.analyze_results.analyze_results.AnalyseResults">[docs]</a><span class="k">class</span> <span class="nc">AnalyseResults</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Analyze results of machine learning experiments.</span>
@@ -233,10 +235,8 @@
         <span class="c1">#load all predictions</span>
         <span class="n">dts_predictions_list</span><span class="p">,</span> <span class="n">dts_predictions_list_full_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">list_datasets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_h5_predictions_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_io</span><span class="p">)</span>
         <span class="n">losses</span> <span class="o">=</span> <span class="n">Losses</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">estimators</span><span class="p">,</span> <span class="n">exact_match</span><span class="p">)</span>
+        <span class="c1">#code producess error if multiple predictions for the same dataset are stored in the databse. Therefore, we skip subsequent predictions. The files_io.save_prediction_to_db ovverrites predictions by default so this should not occur.</span>
         <span class="n">dts_processed</span> <span class="o">=</span> <span class="p">[]</span>
-        
-        <span class="c1">#TODO temporary fix!!!!!</span>
-        <span class="c1"># !!!! error in code if multiple predictions for the same dataset are stored</span>
         <span class="k">for</span> <span class="n">dts</span> <span class="ow">in</span> <span class="n">dts_predictions_list</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">dts</span> <span class="ow">in</span> <span class="n">dts_processed</span><span class="p">:</span>
                 <span class="k">continue</span>
@@ -275,6 +275,27 @@
         <span class="n">res_df</span> <span class="o">=</span> <span class="n">res_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;avg_score&#39;</span><span class="p">,</span><span class="s1">&#39;std_error&#39;</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">res_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="AnalyseResults.plot_boxcharts"><a class="viewcode-back" href="../../../analyze_results.html#mlaut.analyze_results.analyze_results.AnalyseResults.plot_boxcharts">[docs]</a>    <span class="k">def</span> <span class="nf">plot_boxcharts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scores_dict</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">avg_error</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">scores_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scores_dict</span><span class="p">[</span><span class="n">e</span><span class="p">])</span>
+            <span class="n">avg_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">scores_dict</span><span class="p">[</span><span class="n">e</span><span class="p">]))</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="c1">#sort data and labels based on avg_error</span>
+        <span class="n">idx_sort</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">avg_error</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx_sort</span> <span class="p">]</span>
+        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx_sort</span> <span class="p">]</span>
+        <span class="c1">#plot the results</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">fig</span></div>
 <div class="viewcode-block" id="AnalyseResults.average_training_time"><a class="viewcode-back" href="../../../analyze_results.html#mlaut.analyze_results.analyze_results.AnalyseResults.average_training_time">[docs]</a>    <span class="k">def</span> <span class="nf">average_training_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimators</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Average training time for each estimator.</span>
@@ -425,8 +446,37 @@
         <span class="n">values_df_multiindex</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">values_reshaped</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">col_idx</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">t_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">values_df_multiindex</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
-                        
+
 <div class="viewcode-block" id="AnalyseResults.sign_test"><a class="viewcode-back" href="../../../analyze_results.html#mlaut.analyze_results.analyze_results.AnalyseResults.sign_test">[docs]</a>    <span class="k">def</span> <span class="nf">sign_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Non-parametric test for test for consistent differences between pairs of observations. See `&lt;https://en.wikipedia.org/wiki/Sign_test&gt;`_ for details about the test and `&lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.binom_test.html&gt;`_ for details about the scipy implementation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            observations(dictionary): Dictionary with errors on test sets achieved by estimators.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple of dataframes (pandas DataFrame (Database style), pivot table)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sign_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">perms</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">observations</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">perm</span> <span class="ow">in</span> <span class="n">perms</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">observations</span><span class="p">[</span><span class="n">perm</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">observations</span><span class="p">[</span><span class="n">perm</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="n">signs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)])</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">p_val</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">binom_test</span><span class="p">(</span><span class="n">signs</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">sign_test</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;estimator_1&#39;</span><span class="p">:</span> <span class="n">perm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;estimator_2&#39;</span><span class="p">:</span> <span class="n">perm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s1">&#39;p_val&#39;</span><span class="p">:</span> <span class="n">p_val</span>
+            <span class="p">}</span>
+
+            <span class="n">sign_df</span> <span class="o">=</span> <span class="n">sign_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sign_test</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">sign_df_pivot</span> <span class="o">=</span> <span class="n">sign_df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;estimator_1&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;estimator_2&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;p_val&#39;</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">sign_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">sign_df_pivot</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AnalyseResults.ranksum_test"><a class="viewcode-back" href="../../../analyze_results.html#mlaut.analyze_results.analyze_results.AnalyseResults.ranksum_test">[docs]</a>    <span class="k">def</span> <span class="nf">ranksum_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Non-parametric test for testing consistent differences between pairs of obeservations.</span>
 <span class="sd">        The test counts the number of observations that are greater, smaller and equal to the mean</span>
@@ -437,7 +487,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            tuple of pandas DataFrame (Database style and MultiIndex)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sign_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">ranksum_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
         <span class="n">perms</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">observations</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
         <span class="k">for</span> <span class="n">perm</span> <span class="ow">in</span> <span class="n">perms</span><span class="p">:</span>
@@ -445,24 +495,24 @@
             <span class="n">x</span> <span class="o">=</span> <span class="n">observations</span><span class="p">[</span><span class="n">perm</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">observations</span><span class="p">[</span><span class="n">perm</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
             <span class="n">t_stat</span><span class="p">,</span> <span class="n">p_val</span> <span class="o">=</span> <span class="n">ranksums</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">sign_test</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">ranksum</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;estimator_1&#39;</span><span class="p">:</span> <span class="n">perm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="s1">&#39;estimator_2&#39;</span><span class="p">:</span> <span class="n">perm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                 <span class="s1">&#39;t_stat&#39;</span><span class="p">:</span> <span class="n">t_stat</span><span class="p">,</span>
                 <span class="s1">&#39;p_val&#39;</span><span class="p">:</span> <span class="n">p_val</span>
             <span class="p">}</span>
-            <span class="n">sign_df</span> <span class="o">=</span> <span class="n">sign_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sign_test</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">ranksum_df</span> <span class="o">=</span> <span class="n">ranksum_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ranksum</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">t_stat</span><span class="p">)</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="n">p_val</span><span class="p">)</span>
 
-        <span class="n">index</span><span class="o">=</span><span class="n">sign_df</span><span class="p">[</span><span class="s1">&#39;estimator_1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">ranksum_df</span><span class="p">[</span><span class="s1">&#39;estimator_1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
         <span class="n">values_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;t_stat&#39;</span><span class="p">,</span><span class="s1">&#39;p_val&#39;</span><span class="p">]</span>
         <span class="n">col_idx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">([</span><span class="n">index</span><span class="p">,</span><span class="n">values_names</span><span class="p">])</span>
         <span class="n">values_reshaped</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">values_names</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
 
         <span class="n">values_df_multiindex</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">values_reshaped</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">col_idx</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">sign_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">values_df_multiindex</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ranksum_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">values_df_multiindex</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="AnalyseResults.t_test_with_bonferroni_correction"><a class="viewcode-back" href="../../../analyze_results.html#mlaut.analyze_results.analyze_results.AnalyseResults.t_test_with_bonferroni_correction">[docs]</a>    <span class="k">def</span> <span class="nf">t_test_with_bonferroni_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -582,7 +632,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Viktor Kazakov.
+        &copy; Copyright 2018, Viktor Kazakov
 
     </p>
   </div>
@@ -601,33 +651,21 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'0.0.1',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script> 
 

@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -172,15 +171,15 @@
 <dl class="class">
 <dt id="mlaut.experiments.orchestrator.Orchestrator">
 <em class="property">class </em><code class="descclassname">mlaut.experiments.orchestrator.</code><code class="descname">Orchestrator</code><span class="sig-paren">(</span><em>hdf5_input_io</em>, <em>hdf5_output_io</em>, <em>dts_names</em>, <em>original_datasets_group_h5_path</em>, <em>experiments_predictions_group='experiments/predictions'</em>, <em>experiments_trained_models_dir='data/trained_models'</em>, <em>split_datasets_group='split_dts_idx'</em>, <em>train_idx='train_idx'</em>, <em>test_idx='test_idx'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/experiments/orchestrator.html#Orchestrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.experiments.orchestrator.Orchestrator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Orchestrates the sequencing of running the machine learning experiments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>hdf5_input_io</strong> (<a class="reference internal" href="shared.html#mlaut.shared.files_io.FilesIO" title="mlaut.shared.files_io.FilesIO"><code class="xref py py-func docutils literal"><span class="pre">FilesIO()</span></code></a>) – instance of <a class="reference internal" href="shared.html#mlaut.shared.files_io.FilesIO" title="mlaut.shared.files_io.FilesIO"><code class="xref py py-func docutils literal"><span class="pre">FilesIO()</span></code></a> with reference to the input file.</li>
-<li><strong>hdf5_output_io</strong> (<a class="reference internal" href="shared.html#mlaut.shared.files_io.FilesIO" title="mlaut.shared.files_io.FilesIO"><code class="xref py py-func docutils literal"><span class="pre">FilesIO()</span></code></a>) – instance of <a class="reference internal" href="shared.html#mlaut.shared.files_io.FilesIO" title="mlaut.shared.files_io.FilesIO"><code class="xref py py-func docutils literal"><span class="pre">FilesIO()</span></code></a> with reference to the output file.</li>
+<li><strong>hdf5_input_io</strong> (<a class="reference internal" href="shared.html#mlaut.shared.files_io.FilesIO" title="mlaut.shared.files_io.FilesIO"><code class="xref py py-func docutils literal notranslate"><span class="pre">FilesIO()</span></code></a>) – instance of <a class="reference internal" href="shared.html#mlaut.shared.files_io.FilesIO" title="mlaut.shared.files_io.FilesIO"><code class="xref py py-func docutils literal notranslate"><span class="pre">FilesIO()</span></code></a> with reference to the input file.</li>
+<li><strong>hdf5_output_io</strong> (<a class="reference internal" href="shared.html#mlaut.shared.files_io.FilesIO" title="mlaut.shared.files_io.FilesIO"><code class="xref py py-func docutils literal notranslate"><span class="pre">FilesIO()</span></code></a>) – instance of <a class="reference internal" href="shared.html#mlaut.shared.files_io.FilesIO" title="mlaut.shared.files_io.FilesIO"><code class="xref py py-func docutils literal notranslate"><span class="pre">FilesIO()</span></code></a> with reference to the output file.</li>
 <li><strong>dts_names</strong> (<em>array of strings</em>) – array with the names of the datasets on which experiments will be run.</li>
 <li><strong>original_datasets_group_h5_path</strong> (<em>sting</em>) – root path where the raw datasets are stored</li>
 <li><strong>experiments_predictions_group</strong> (<em>string</em>) – path in HDF5 database where predictions will be saved.</li>
@@ -268,7 +267,7 @@ we make predictions on the test sets and store them in the output database file.
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Viktor Kazakov.
+        &copy; Copyright 2018, Viktor Kazakov
 
     </p>
   </div>
@@ -287,33 +286,21 @@ we make predictions on the test sets and store them in the output database file.
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.1',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script> 
 

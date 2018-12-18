@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -156,10 +155,10 @@
 <h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
 <p>The code below will help you get started with mlaut.</p>
 <p>The following Jupyter Notebook contains the code used below.</p>
-<p><a class="reference download internal" href="_downloads/mlaut_Basic_Usage.ipynb" download=""><code class="xref download docutils literal"><span class="pre">mlaut_Basic_Usage.ipynb</span></code></a>.</p>
+<p><a class="reference download internal" download="" href="_downloads/095f4a8757ebcf11664cbc501447f7f7/mlaut_Basic_Usage.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">mlaut_Basic_Usage.ipynb</span></code></a>.</p>
 <p><strong>1. Establish hooks to the database that stores the data for the experiments.</strong></p>
 <p>The enclosed code can be used as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">()</span>
 <span class="n">input_io</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">open_hdf5</span><span class="p">(</span><span class="s1">&#39;data/delgado.hdf5&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -176,7 +175,7 @@
 <p><strong>2. Split the datasets in train and test.</strong></p>
 <p>After the hooks are created we can proceed to splitting the data in test and training.</p>
 <p>Unless otherwise specified we use <img class="math" src="_images/math/82eb6a8598f40a61ac1119381011ca68b107c28c.png" alt="\dfrac{2}{3}"/> of the data for training and <img class="math" src="_images/math/6585ee00746995b084974ed52ca69d62911ad801.png" alt="\dfrac{1}{3}"/> for testing. We do not change or move the original data in this process. Instead we store the train/test indices in a separate HDF5 database.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">dts_names_list</span><span class="p">,</span> <span class="n">dts_names_list_full_path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">list_datasets</span><span class="p">(</span><span class="n">hdf5_io</span><span class="o">=</span><span class="n">input_io</span><span class="p">,</span> <span class="n">hdf5_group</span><span class="o">=</span><span class="s1">&#39;delgado_datasets/&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dts_names_list</span><span class="p">,</span> <span class="n">dts_names_list_full_path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">list_datasets</span><span class="p">(</span><span class="n">hdf5_io</span><span class="o">=</span><span class="n">input_io</span><span class="p">,</span> <span class="n">hdf5_group</span><span class="o">=</span><span class="s1">&#39;delgado_datasets/&#39;</span><span class="p">)</span>
 <span class="n">split_dts_list</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split_datasets</span><span class="p">(</span><span class="n">hdf5_in</span><span class="o">=</span><span class="n">input_io</span><span class="p">,</span> <span class="n">hdf5_out</span><span class="o">=</span><span class="n">out_io</span><span class="p">,</span> <span class="n">dataset_paths</span><span class="o">=</span><span class="n">dts_names_list_full_path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -196,8 +195,8 @@
 <p><strong>3. Define the estimators.</strong></p>
 <p>For the puposes of the basic demo we show how the standard set of estimaots that come with MLAUT can be used for running the experiments.</p>
 <p>In the code example below we enumerate by name the estimators that we wish to use in the study. This will provide instances of MLAUT estimators with the built in defaults.</p>
-<p>For more advanced used cases pleaes refer to <a class="reference download internal" href="_downloads/mlaut-Advanced_Usage-generic_estimators.ipynb" download=""><code class="xref download docutils literal"><span class="pre">mlaut-Advanced_Usage-generic_estimators.ipynb</span></code></a> and <a class="reference download internal" href="_downloads/mlaut-Advanced_Usage-hyperparameters.ipynb" download=""><code class="xref download docutils literal"><span class="pre">mlaut-Advanced_Usage-hyperparameters.ipynb</span></code></a> which show how the user can easily change the hyper paramemeter defaults or define a completely new estimator object.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">est</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RandomForestClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;BaggingClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;GradientBoostingClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;SVC&#39;</span><span class="p">,</span><span class="s1">&#39;GaussianNaiveBayes&#39;</span><span class="p">,</span><span class="s1">&#39;BernoulliNaiveBayes&#39;</span><span class="p">,</span><span class="s1">&#39;NeuralNetworkDeepClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;PassiveAggressiveClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;BaselineClassifier&#39;</span><span class="p">]</span>
+<p>For more advanced used cases pleaes refer to <a class="reference download internal" download="" href="_downloads/4e0f9954c1608708df3961549676293a/mlaut-Advanced_Usage-generic_estimators.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">mlaut-Advanced_Usage-generic_estimators.ipynb</span></code></a> and <a class="reference download internal" download="" href="_downloads/070d181990844fd88713e5724147e92c/mlaut-Advanced_Usage-hyperparameters.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">mlaut-Advanced_Usage-hyperparameters.ipynb</span></code></a> which show how the user can easily change the hyper paramemeter defaults or define a completely new estimator object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">est</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RandomForestClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;BaggingClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;GradientBoostingClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;SVC&#39;</span><span class="p">,</span><span class="s1">&#39;GaussianNaiveBayes&#39;</span><span class="p">,</span><span class="s1">&#39;BernoulliNaiveBayes&#39;</span><span class="p">,</span><span class="s1">&#39;NeuralNetworkDeepClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;PassiveAggressiveClassifier&#39;</span><span class="p">,</span><span class="s1">&#39;BaselineClassifier&#39;</span><span class="p">]</span>
 <span class="n">estimators</span> <span class="o">=</span> <span class="n">instantiate_default_estimators</span><span class="p">(</span><span class="n">estimators</span><span class="o">=</span><span class="n">est</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -205,15 +204,15 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name"><cite>estimators</cite>:</th><td class="field-body">array of <code class="docutils literal"><span class="pre">mlaut</span></code> estimators</td>
+<tr class="field-odd field"><th class="field-name"><cite>estimators</cite>:</th><td class="field-body">array of <code class="docutils literal notranslate"><span class="pre">mlaut</span></code> estimators</td>
 </tr>
 </tbody>
 </table>
 <p><strong>4. Run the experiments.</strong></p>
-<p>The final step is to run the experiments by invoking the <code class="docutils literal"><span class="pre">run()</span></code> method.</p>
+<p>The final step is to run the experiments by invoking the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method.</p>
 <p>This step could take a substantial amount of time depending on the number and size of datasets and the number of estimators that we wish to train.</p>
 <p>All trained estimators are saved on the HDD.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">orchest</span> <span class="o">=</span> <span class="n">Orchestrator</span><span class="p">(</span><span class="n">hdf5_input_io</span><span class="o">=</span><span class="n">input_io</span><span class="p">,</span> <span class="n">hdf5_output_io</span><span class="o">=</span><span class="n">out_io</span><span class="p">,</span> <span class="n">dts_names</span><span class="o">=</span><span class="n">dts_names_list</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">orchest</span> <span class="o">=</span> <span class="n">Orchestrator</span><span class="p">(</span><span class="n">hdf5_input_io</span><span class="o">=</span><span class="n">input_io</span><span class="p">,</span> <span class="n">hdf5_output_io</span><span class="o">=</span><span class="n">out_io</span><span class="p">,</span> <span class="n">dts_names</span><span class="o">=</span><span class="n">dts_names_list</span><span class="p">,</span>
                  <span class="n">original_datasets_group_h5_path</span><span class="o">=</span><span class="s1">&#39;delgado_datasets/&#39;</span><span class="p">)</span>
 <span class="n">orchest</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">modelling_strategies</span><span class="o">=</span><span class="n">estimators</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
@@ -223,13 +222,13 @@
 <p>After the estimators are trained the user needs to use them in order to make predictions on the test sets which will be used subsequently for performing statistical tests.</p>
 <p>The predictions of the estimators are saved in the input HDF5 database file a hook to which was created earlier.</p>
 <p>Unless the <cite>override=False</cite> flag was set MLAUT will not override predictions that were previously stored in the database.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">orchest</span><span class="o">.</span><span class="n">predict_all</span><span class="p">(</span><span class="n">trained_models_dir</span><span class="o">=</span><span class="s1">&#39;data/trained_models&#39;</span><span class="p">,</span> <span class="n">estimators</span><span class="o">=</span><span class="n">estimators</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">orchest</span><span class="o">.</span><span class="n">predict_all</span><span class="p">(</span><span class="n">trained_models_dir</span><span class="o">=</span><span class="s1">&#39;data/trained_models&#39;</span><span class="p">,</span> <span class="n">estimators</span><span class="o">=</span><span class="n">estimators</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>6. Analyze results.</strong></p>
 <p>The last step in the pipeline is to analyze the results of the experiments.</p>
 <p>The <cite>AnalyseResults</cite> class takes as inputs the two database files and the loss metric that will be used to compute the prediction errors.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">analyze</span> <span class="o">=</span> <span class="n">AnalyseResults</span><span class="p">(</span><span class="n">hdf5_output_io</span><span class="o">=</span><span class="n">out_io</span><span class="p">,</span> 
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analyze</span> <span class="o">=</span> <span class="n">AnalyseResults</span><span class="p">(</span><span class="n">hdf5_output_io</span><span class="o">=</span><span class="n">out_io</span><span class="p">,</span> 
                          <span class="n">hdf5_input_io</span><span class="o">=</span><span class="n">input_io</span><span class="p">,</span>
                          <span class="n">input_h5_original_datasets_group</span><span class="o">=</span><span class="s1">&#39;delgado_datasets/&#39;</span><span class="p">,</span> 
                          <span class="n">output_h5_predictions_group</span><span class="o">=</span><span class="s1">&#39;experiments/predictions/&#39;</span><span class="p">)</span>
@@ -242,16 +241,17 @@
 </pre></div>
 </div>
 <p>The <cite>prediction_errors()</cite> method retuns two sets of results: <cite>errors_per_estimator</cite> dictionary which is used subsequently in further statistical tests and <cite>errors_per_dataset_per_estimator_df</cite> which is a dataframe with the loss of each estimator on each dataset which can be examined directly by the user.</p>
-<p>The <cite>errors_per_estimator</cite> result can be used as input to the following functions to perform the different statistical tests supported by <code class="docutils literal"><span class="pre">mlaut</span></code>.</p>
+<p>The <cite>errors_per_estimator</cite> result can be used as input to the following functions to perform the different statistical tests supported by <code class="docutils literal notranslate"><span class="pre">mlaut</span></code>.</p>
 <ul class="simple">
-<li><code class="xref py py-meth docutils literal"><span class="pre">mlaut.analyze_results.analyze_results.calculate_average_std()</span></code></li>
-<li><code class="xref py py-meth docutils literal"><span class="pre">mlaut.analyze_results.analyze_results.cohens_d()</span></code></li>
-<li><code class="xref py py-meth docutils literal"><span class="pre">mlaut.analyze_results.analyze_results.t_test()</span></code></li>
-<li><code class="xref py py-meth docutils literal"><span class="pre">mlaut.analyze_results.analyze_results.sign_test()</span></code></li>
-<li><code class="xref py py-meth docutils literal"><span class="pre">mlaut.analyze_results.analyze_results.t_test_with_bonferroni_correction()</span></code></li>
-<li><code class="xref py py-meth docutils literal"><span class="pre">mlaut.analyze_results.analyze_results.wilcoxon_test()</span></code></li>
-<li><code class="xref py py-meth docutils literal"><span class="pre">mlaut.analyze_results.analyze_results.friedman_test()</span></code></li>
-<li><code class="xref py py-meth docutils literal"><span class="pre">mlaut.analyze_results.analyze_results.nemenyi()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">mlaut.analyze_results.analyze_results.calculate_average_std()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">mlaut.analyze_results.analyze_results.cohens_d()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">mlaut.analyze_results.analyze_results.t_test()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">mlaut.analyze_results.analyze_results.sign_test()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">mlaut.analyze_results.analyze_results.t_test_with_bonferroni_correction()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">mlaut.analyze_results.analyze_results.wilcoxon_test()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">mlaut.analyze_results.analyze_results.ranksum_test()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">mlaut.analyze_results.analyze_results.friedman_test()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">mlaut.analyze_results.analyze_results.nemenyi()</span></code></li>
 </ul>
 <p>Please refer to <a class="reference internal" href="analyze_results.html#analyze-results"><span class="std std-ref">Analyze Results</span></a> for additional information about their use.</p>
 </div>
@@ -276,7 +276,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Viktor Kazakov.
+        &copy; Copyright 2018, Viktor Kazakov
 
     </p>
   </div>
@@ -295,33 +295,21 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.1',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script> 
 
