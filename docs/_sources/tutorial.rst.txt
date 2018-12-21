@@ -1,6 +1,9 @@
 Tutorial
 ========
 
+Basic Usage
+-----------
+
 The code below will help you get started with mlaut.
 
 The following Jupyter Notebook contains the code used below.
@@ -100,3 +103,12 @@ The `errors_per_estimator` result can be used as input to the following function
 
 Please refer to :ref:`analyze_results` for additional information about their use.
 
+MLAUT Large Scale ML Benchmarking Study
+---------------------------------
+
+We used ``mlaut`` to perform a large scale benchmarking study for a number of machine learning models. In doing so we recreated and expanded a previous paper (:cite:`fernandez-delgado_we_2014`).
+
+The code for our study can be downloaded from the following link :download:`mlaut_study <../examples/mlaut_study.zip>` and can also be used as an advanced tutorial and reference for using ``mlaut``.
+
+
+.. bibliography:: references.bib
