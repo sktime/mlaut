@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name='mlaut',
-      version='0.1.3',
+      version='0.1.4',
       description='Automation of large-scale training, evaluation and benchmarking of machine learning algorithms.',
       url='https://viktorkaz.github.io/',
       author='Viktor Kazakov',
@@ -25,6 +25,7 @@ setup(name='mlaut',
           'tables>=3.4.2', 
           'tensorflow>=1.12.0',
           'Orange3>=3.18.0',
-          'matplotlib>=2.1.0'
+          'matplotlib>=2.1.0',
+          'wrapt>=1.10.11'
       ],
       zip_safe=False)
