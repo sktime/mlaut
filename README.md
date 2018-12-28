@@ -21,7 +21,11 @@ MLAUT is a modelling and workflow toolbox in python, written with the aim of sim
 
 ### Documentation
 
-[<<<<<< Documentation available on kiraly-group.github.io/mlaut/ >>>>>>](https://kiraly-group.github.io/mlaut/)
+[<<<<<< Documentation available on alan-turing-institute.github.io/mlaut >>>>>>](https://alan-turing-institute.github.io/mlaut)
+
+An example with the basic usage of ``mlaut`` can be found in the following [Jupyter Notebook](https://github.com/alan-turing-institute/mlaut/blob/master/examples/mlaut%20-%20Basic%20Usage.ipynb)
+
+Please check the [examples directory](https://github.com/alan-turing-institute/mlaut/tree/master/examples) for more advanced use cases.
 
 ### Installing
 
