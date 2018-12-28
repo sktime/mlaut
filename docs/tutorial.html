@@ -88,6 +88,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mlaut-large-scale-ml-benchmarking-study">MLAUT Large Scale ML Benchmarking Study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-implementation">Docker Implementation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
@@ -272,6 +273,19 @@
 </tbody>
 </table>
 </p>
+</div>
+<div class="section" id="docker-implementation">
+<h2>Docker Implementation<a class="headerlink" href="#docker-implementation" title="Permalink to this headline">¶</a></h2>
+<p>Because the experiments can take quite a long time to complete we recommend running them inside a Docker container. To this end we have provided a Dockerfile that you can find <a class="reference external" href="../Docker/Dockerfile">here</a>.</p>
+<p>First you should build the image:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo docker build -t mlaut-train .
+</pre></div>
+</div>
+<p>In order to run the experiments the user should mount a local directory to the <cite>/mlaut</cite> directory inside the container and execute a pre-defined script that sets up the experiments. Using the previous example from the benchmarking study:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo docker run -ti -d --name mlaut-train -v <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">:/mlaut&quot;</span> mlaut:latest /bin/sh -c <span class="s1">&#39;python MLAUT_study.py&#39;</span>
+</pre></div>
+</div>
+<p>For further information about using Docker please refer to its <a class="reference external" href="https://www.docker.com/">documentation</a>.</p>
 </div>
 </div>
 

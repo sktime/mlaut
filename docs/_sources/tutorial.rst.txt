@@ -104,7 +104,7 @@ The `errors_per_estimator` result can be used as input to the following function
 Please refer to :ref:`analyze_results` for additional information about their use.
 
 MLAUT Large Scale ML Benchmarking Study
----------------------------------
+---------------------------------------
 
 We used ``mlaut`` to perform a large scale benchmarking study for a number of machine learning models. In doing so we recreated and expanded a previous paper (:cite:`fernandez-delgado_we_2014`).
 
@@ -112,3 +112,23 @@ The code for our study can be downloaded from the following link :download:`mlau
 
 
 .. bibliography:: references.bib
+
+
+Docker Implementation
+---------------------
+
+Because the experiments can take quite a long time to complete we recommend running them inside a Docker container. To this end we have provided a Dockerfile that you can find `here <../Docker/Dockerfile>`_.
+
+First you should build the image:
+
+.. code-block:: bash
+
+    $ sudo docker build -t mlaut-train .
+
+In order to run the experiments the user should mount a local directory to the `/mlaut` directory inside the container and execute a pre-defined script that sets up the experiments. Using the previous example from the benchmarking study:
+
+.. code-block:: bash
+
+    $ sudo docker run -ti -d --name mlaut-train -v "$(pwd):/mlaut" mlaut:latest /bin/sh -c 'python MLAUT_study.py'
+
+For further information about using Docker please refer to its `documentation <https://www.docker.com/>`_.
