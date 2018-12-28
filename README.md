@@ -1,5 +1,5 @@
 <p align="center">
-<img src="/docs/_images/logo.png" alt="mlaut" width="300px">
+  <img src="/docs/_images/logo.png" alt="mlaut" width="300px">
 </p>
 <p align="center">
   <a href="https://badge.fury.io/py/mlaut"><img src="https://badge.fury.io/py/mlaut.svg" alt="PyPI version" height="18"></a>
