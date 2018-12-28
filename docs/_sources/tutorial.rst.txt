@@ -117,7 +117,8 @@ The code for our study can be downloaded from the following link :download:`mlau
 Docker Implementation
 ---------------------
 
-Because the experiments can take quite a long time to complete we recommend running them inside a Docker container. To this end we have provided a Dockerfile that you can find `here <../Docker/Dockerfile>`_.
+Because the experiments can take quite a long time to complete we recommend running them inside a Docker container. For this purpose we have provided a Dockerfile that you can find here: :download:`Dockerfile <../Docker/Dockerfile>`.
+
 
 First you should build the image:
 
