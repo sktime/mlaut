@@ -64,6 +64,7 @@ properties for decorator to estimators
 """
 GENERALIZED_LINEAR_MODELS='Generalized_Linear_Models'
 ENSEMBLE_METHODS='Ensemble methods'
+DECISION_TREE_METHODS='Decision_Tree'
 NAIVE_BAYES='Naive_Bayes'
 NEURAL_NETWORKS='Neural_Networks'
 CLASSIFICATION='Classification'

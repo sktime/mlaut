@@ -18,6 +18,7 @@ from mlaut.estimators.svm_estimators import SVC_mlaut
 from mlaut.estimators.baseline_estimators import (Baseline_Regressor,
                                             Baseline_Classifier)
 from mlaut.estimators.cluster_estimators import K_Neighbours
+from mlaut.estimators.decision_trees import Decision_Tree_Classifier
 from mlaut.shared.static_variables import (GRIDSEARCH_NUM_CV_FOLDS, 
                                            GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                                            VERBOSE)
@@ -83,7 +84,8 @@ def instantiate_default_estimators(estimators,
         Passive_Aggressive_Classifier,
         Baseline_Classifier,
         Baseline_Regressor,
-        K_Neighbours
+        K_Neighbours,
+        Decision_Tree_Classifier
     ]
     estimators_array = []
 
