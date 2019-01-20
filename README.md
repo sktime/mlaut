@@ -21,6 +21,8 @@
 
 * Back-end agnostic, automated local file system management of datasets, fitted models, predictions, and results, with the ability to easily resume crashed benchmark experiments with long running times.
 
+List of [developers and contributors](AUTHORS.rst)
+
 ### Documentation
 
 [<<<<<< Documentation available on alan-turing-institute.github.io/mlaut >>>>>>](https://alan-turing-institute.github.io/mlaut)
@@ -36,5 +38,4 @@ Requires Python 3.6 or greater.
 ```
 pip install mlaut
 ```
-
 
