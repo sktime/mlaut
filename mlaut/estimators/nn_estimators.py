@@ -173,7 +173,7 @@ class Deep_NN_Classifier(MlautEstimator):
             `keras object`: Trained keras model.
         """
 
-        return self._trained_model.model
+        return self._trained_model
 
 
 

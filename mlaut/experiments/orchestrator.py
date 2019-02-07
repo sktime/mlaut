@@ -253,5 +253,5 @@ class Orchestrator:
                     self._output_io.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dts, 
                                                         strategy_name=name_estimator)
-                   
+
         
