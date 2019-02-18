@@ -22,7 +22,7 @@ class Generic_Estimator(MlautEstimator):
                 estimator,
                 properties):
 
-        self._properties = properties
+        self.properties = properties
         self._estimator = estimator
 
         #check whether all necessary properties were provided
