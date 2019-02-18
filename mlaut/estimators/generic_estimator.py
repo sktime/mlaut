@@ -19,19 +19,11 @@ class Generic_Estimator(MlautEstimator):
         estimator (scikit learn or other estimator): An instance of an estimator object. 
     """
     def __init__(self,
-                hyperparameters,
-                properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+                estimator,
+                properties):
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
+        self._properties = properties
+        self._estimator = estimator
 
         #check whether all necessary properties were provided
         if 'estimator_family' not in properties.keys():

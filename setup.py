@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name='mlaut',
-      version='0.1.9',
+      version='0.1.10',
       description='Automation of large-scale training, evaluation and benchmarking of machine learning algorithms.',
       url='https://alan-turing-institute.github.io/mlaut/',
       author='Viktor Kazakov',
