@@ -11,17 +11,17 @@ class Data(object):
     """
     Interface class expanding the functionality of :func:`~mleap.shared.files_io.FilesIO`
 
-   
-    :type split_datasets_group: string
-    :param split_datasets_group: location in HDF5 database were the test/train split will be saved.
-
-    :type train_idx: string
-    :param train_idx: name of group where the indexes of the samples used for training are saved
-
-    :type test_idx: string
-    :param test_idx: name of group where the indexes of the samples used for testing are saved
+    Args:
+        hdf5_datasets_group (string): HDF5 group of datasets in input HDF5 database file
+        dataset_names (array of strings): Names of datasets on which the experiments will be performed
+        experiments_predictions_group (string): localtion in HDF5 database where the predictions will be saved
+        split_datasets_group (string): location in HDF5 database were the test/train split will be saved.
+        train_idx (string): name of group where the indexes of the samples used for training are saved
+        test_idx (string): name of group where the indexes of the samples used for testing are saved
     """
     def __init__(self, 
+                hdf5_datasets_group=None,
+                dataset_names=None,
                 experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP,
                 split_datasets_group=SPLIT_DTS_GROUP,
                 train_idx=TRAIN_IDX,
@@ -30,9 +30,21 @@ class Data(object):
         self._split_datasets_group=split_datasets_group
         self._train_idx=train_idx
         self._test_idx=test_idx
+        self._hdf5_datasets_group = hdf5_datasets_group
+        self._dataset_names=dataset_names
 
+    def set_io(self, input_data, output_data, input_mode='a', output_mode='a'):
+        """
+        Setter function for a pointer to a HDF5 database. Wrapper for `self._open_hdf5()`
 
-
+        Args:
+            input_data (string): path to HDF5 file saved on disk.
+            input_mode (string): open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
+            output_data (string): path to HDF5 file saved on disk.
+            output_mode (string): open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
+        """
+        self._input_h5_file = self._open_hdf5(input_data, input_mode)
+        self._output_h5_file = self._open_hdf5(output_data, output_mode)
 
     def pandas_to_db(self, save_loc_hdf5, datasets, dts_metadata, input_io):
         """
@@ -75,56 +87,52 @@ class Data(object):
         dts_names_list_full_path = [hdf5_group  +'/'+ dts for dts in dts_names_list]
         return dts_names_list, dts_names_list_full_path
     
-    def open_hdf5(self, hdf5_path, mode='a'):
+    def _open_hdf5(self, hdf5_path, mode='a'):
         """
-        :type hdf5_path: string
-        :param hdf5_path: path to HDF5 file saved on disk.
+        Parameters
+        ----------
+            hdf5_path: string
+                path to HDF5 file saved on disk.
 
-        :type mode: string
-        :param mode: open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
+            mode: string
+                open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
         """
         return FilesIO(hdf5_path, mode)
 
     def split_datasets(self, 
-                       hdf5_in, 
-                       hdf5_out, 
-                       dataset_paths, 
                        test_size=0.33, 
                        random_state=1, 
                        verbose=True):
         """
         Splits datasets in test and train sets.
 
-        :type hdf5_in: :func:`~mleap.shared.files_io.FilesIO` object
-        :param hdf5_in: :func:`~mleap.shared.files_io.FilesIO` object where the original/input datasets are stored.
+        Parameters
+        ----------
+            test_size: float
+                percentage of samples to be put in the test set.
 
-        :type hdf5_out: :func:`~mleap.shared.files_io.FilesIO` object
-        :param hdf5_out: :func:`~mleap.shared.files_io.FilesIO` object where the split/output test/train indices are stored.
+            random_state: integer
+                random state for test/train split.
 
-        :type dataset_paths: array of strings
-        :param dataset_paths: full path to each dataset stored in the origial/input HDF5 database that will be split to test/train.
+            verbose: boolean
+                if True prints progress messages in terminal.
 
-        :type test_size: float
-        :param test_size: percentage of samples to be put in the test set.
-
-        :type random_state: integer
-        :param random_state: random state for test/train split.
-
-        :type verbose: boolean
-        :param verbose: if True prints progress messages in terminal.
-
-        :rtype: array of strings containing locations of split datasets.
+        Returns
+        -------
+            array of strings containing locations of split datasets.
         """
         split_dts_list = []
         
-        if not isinstance(dataset_paths, list):
-            raise ValueError('dataset_paths must be an array')
+        if self._hdf5_datasets_group is None:
+            raise ValueError('hdf5_datasets_group cannot be type None. Specify it in the constructor of the class.')
 
+
+        _, dataset_paths = self.list_datasets(hdf5_io=self._input_h5_file, hdf5_group=self._hdf5_datasets_group) 
         for dts_loc in dataset_paths:
             #check if split exists in h5
-            dts, metadata = hdf5_in.load_dataset_pd(dts_loc)
+            dts, metadata = self._input_h5_file.load_dataset_pd(dts_loc)
             dataset_name = metadata['dataset_name']
-            split_exists = hdf5_out.check_h5_path_exists(self._split_datasets_group + '/'+ dataset_name)
+            split_exists = self._output_h5_file.check_h5_path_exists(self._split_datasets_group + '/'+ dataset_name)
             if split_exists is True:
                 if verbose is True:
                     logging.warning(f'Skipping {dataset_name} as test/train split already exists in output h5 file.')
@@ -141,11 +149,13 @@ class Data(object):
 
                 if verbose is True:
                     logging.info(f'Saving split for: {dataset_name}')
-                hdf5_out.save_array_hdf5(datasets=[train_idx, test_idx],
+                self._output_h5_file.save_array_hdf5(datasets=[train_idx, test_idx],
                                     group=self._split_datasets_group + '/' + dataset_name,
                                     array_names=names,
                                     array_meta=meta)
             split_dts_list.append(self._split_datasets_group + '/' + dataset_name)
+
+            self._split_dts_list = split_dts_list
         
         return split_dts_list
     

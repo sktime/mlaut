@@ -25,10 +25,7 @@ class Orchestrator:
     Orchestrates the sequencing of running the machine learning experiments.
 
     Args:
-        hdf5_input_io (:func:`~mlaut.shared.files_io.FilesIO`): instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the input file.
-        hdf5_output_io (:func:`~mlaut.shared.files_io.FilesIO`): instance of :func:`~mlaut.shared.files_io.FilesIO` with reference to the output file.
-        dts_names (array of strings): array with the names of the datasets on which experiments will be run.
-        original_datasets_group_h5_path (sting): root path where the raw datasets are stored
+        data (mlaut.Data object): instance of mlaut.Data object
         experiments_predictions_group (string): path in HDF5 database where predictions will be saved.
         experiments_trained_models_dir (string): folder on disk where trained estimators will be saved.
         split_datasets_group (string): path in HDF5 database where the splits are saved.
@@ -36,29 +33,23 @@ class Orchestrator:
         test_idx (string): folder in HDF5 database which holds the test index splits.
     """
     def __init__(self, 
-                 hdf5_input_io, 
-                 hdf5_output_io,
-                 dts_names,
-                 original_datasets_group_h5_path, 
+                 data,
                  experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP,
                  experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR,
                  split_datasets_group=SPLIT_DTS_GROUP,
                  train_idx=TRAIN_IDX,
                  test_idx=TEST_IDX):
-        if not isinstance(dts_names, list):
+        if not isinstance(data._dataset_names, list):
             raise ValueError('dts_names must be an array')
-        self._experiments_predictions_group=experiments_predictions_group
+        self._experiments_predictions_group=data._experiments_predictions_group
         self._experiments_trained_models_dir=experiments_trained_models_dir
-        self._input_io = hdf5_input_io
-        self._output_io = hdf5_output_io
-        self._dts_names=dts_names
-        self._original_datasets_group_h5_path = original_datasets_group_h5_path
+        self._input_io = data._input_h5_file #TODO delete
+        self._output_io = data._output_h5_file #TODO delete
+        self._dts_names=data._dataset_names #TODO delete
+        self._original_datasets_group_h5_path = data._hdf5_datasets_group #TODO delete
         #self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
-        self._data = Data(experiments_predictions_group, 
-                          split_datasets_group,
-                          train_idx,
-                          test_idx) 
+        self._data = data
         set_logging_defaults()
 
     def run(self, 
