@@ -35,6 +35,8 @@ class Data(object):
         self._train_idx=train_idx
         self._test_idx=test_idx
         self._hdf5_datasets_group = hdf5_datasets_group
+        #contains the names of the datasets on which the experiments can be performed
+        self._datasets=None
 
     def set_io(self, input_data, output_data, input_mode='a', output_mode='a'):
         """
@@ -61,13 +63,14 @@ class Data(object):
         -------
             array of string
         """
-        return self.list_datasets(self._hdf5_datasets_group)
+        #return self.list_datasets(self._hdf5_datasets_group)
+        self._datasets=None
     def set_datasets(self, dts_names):
         """
         Provides functionality for overriding the the default list of datasets on which the experiments will be performed.
 
         """
-        pass
+        self._datasets=dts_names
     def pandas_to_db(self, datasets, dts_metadata):
         """
         Saves array of datasets in pandas DataFrame format in HDf5 Database.
