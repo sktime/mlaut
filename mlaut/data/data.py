@@ -11,17 +11,21 @@ class Data(object):
     """
     Interface class expanding the functionality of :func:`~mleap.shared.files_io.FilesIO`
 
-    Args:
-        hdf5_datasets_group (string): HDF5 group of datasets in input HDF5 database file
-        dataset_names (array of strings): Names of datasets on which the experiments will be performed
-        experiments_predictions_group (string): localtion in HDF5 database where the predictions will be saved
-        split_datasets_group (string): location in HDF5 database were the test/train split will be saved.
-        train_idx (string): name of group where the indexes of the samples used for training are saved
-        test_idx (string): name of group where the indexes of the samples used for testing are saved
+    Parameters
+    ----------
+        hdf5_datasets_group: string
+            HDF5 group of datasets in input HDF5 database file
+        experiments_predictions_group: string
+            localtion in HDF5 database where the predictions will be saved
+        split_datasets_group: string
+            location in HDF5 database were the test/train split will be saved.
+        train_idx: string
+            name of group where the indexes of the samples used for training are saved
+        test_idx: string
+            name of group where the indexes of the samples used for testing are saved
     """
     def __init__(self, 
-                hdf5_datasets_group=None,
-                dataset_names=None,
+                hdf5_datasets_group,
                 experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP,
                 split_datasets_group=SPLIT_DTS_GROUP,
                 train_idx=TRAIN_IDX,
@@ -31,59 +35,74 @@ class Data(object):
         self._train_idx=train_idx
         self._test_idx=test_idx
         self._hdf5_datasets_group = hdf5_datasets_group
-        self._dataset_names=dataset_names
 
     def set_io(self, input_data, output_data, input_mode='a', output_mode='a'):
         """
         Setter function for a pointer to a HDF5 database. Wrapper for `self._open_hdf5()`
 
-        Args:
-            input_data (string): path to HDF5 file saved on disk.
-            input_mode (string): open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
-            output_data (string): path to HDF5 file saved on disk.
-            output_mode (string): open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
+        Parameters
+        ----------
+            input_data: string
+                path to HDF5 file saved on disk.
+            input_mode: string
+                open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
+            output_data: string
+                path to HDF5 file saved on disk.
+            output_mode: string
+                open and create file modes as per the `h5py documentation <http://docs.h5py.org/en/latest/high/file.html>`_.
         """
         self._input_h5_file = self._open_hdf5(input_data, input_mode)
         self._output_h5_file = self._open_hdf5(output_data, output_mode)
+    def get_datasets(self):
+        """
+        Returns the list of datasets available in the database on which the experiments can be performed.
 
-    def pandas_to_db(self, save_loc_hdf5, datasets, dts_metadata, input_io):
+        Returns
+        -------
+            array of string
+        """
+        return self.list_datasets(self._hdf5_datasets_group)
+    def set_datasets(self, dts_names):
+        """
+        Provides functionality for overriding the the default list of datasets on which the experiments will be performed.
+
+        """
+        pass
+    def pandas_to_db(self, datasets, dts_metadata):
         """
         Saves array of datasets in pandas DataFrame format in HDf5 Database.
         This represents an interface method for :func:`~mleap.shared.files_io.FilesIO.save_datasets`
 
-        :type save_loc_hdf5: string
-        :param save_loc_hdf5: Root group in HDF5 database where the datasets will be saved.
+        Parameters
+        ----------
+            
+        datasets: array of pandas DataFrame
+            array of datasets formatted as pandas DataFrame.
 
-        :type datasets: array of pandas DataFrame
-        :param datasets: array of datasets formatted as pandas DataFrame.
-
-        :type dts_meta: array of dictionaries
-        :param dts_meta: Metadata for each dataset.
-
-        :type input_io: :func:`~mleap.shared.files_io.FilesIO`
-        :param input_io: Instance of :func:`~mleap.shared.files_io.FilesIO` class.
+        dts_meta: array of dictionaries
+            Metadata for each dataset.
         """
         save_paths = []
         for dts in dts_metadata:
-            save_paths.append(save_loc_hdf5 + dts['dataset_name'])
+            save_paths.append(self._hdf5_datasets_group + dts['dataset_name'])
         #files_io = FilesIO(save_loc_hdd)
-        input_io.save_datasets(datasets=datasets, 
+        self._input_h5_file.save_datasets(datasets=datasets, 
                                datasets_save_paths=save_paths, 
                                dts_metadata=dts_metadata)
     
-    def list_datasets(self, hdf5_group, hdf5_io):
+    def list_datasets(self, hdf5_group):
         """
         Returns sub group in parent HDF5 group.
 
-        :type hdf5_group: string
-        :param hdf5_group: Path to HDF5 parent group of which we are quering the subgroups.
-
-        :type hdf5_io: :func:`~mleap.shared.files_io.FilesIO`
-        :param hdf5_io: Instance of :func:`~mleap.shared.files_io.FilesIO`
-
-        :rtype: tuple with array with dataset names and array with full path to datasets.
+        Parameters
+        ----------
+            hdf5_group: string
+                Path to HDF5 parent group of which we are quering the subgroups.
+        Returns
+        -------
+            tuple with array with dataset names and array with full path to datasets.
         """
-        dts_names_list = hdf5_io.list_datasets(hdf5_group)
+        dts_names_list = self._input_h5_file.list_datasets(hdf5_group)
         dts_names_list_full_path = [hdf5_group  +'/'+ dts for dts in dts_names_list]
         return dts_names_list, dts_names_list_full_path
     
@@ -159,45 +178,40 @@ class Data(object):
         
         return split_dts_list
     
-    def load_train_test_split(self, hdf5_out, dataset_name):
+    def load_train_test_split(self, dataset_name):
         """
         Loads test train split form HDF5 database.
 
-        :type hdf5_out: :func:`~mleap.shared.files_io.FilesIO` object
-        :param hdf5_out: :func:`~mleap.shared.files_io.FilesIO` output object where the test/train index splits are stored.
+        Parameters
+        ----------
+            dataset_name: string
+                name of dataset for which the splits will be loaded.
 
-        :type dataset_name: string
-        :param dataset_name: name of dataset for which the splits will be loaded.
-
-        :rtype: tuple with train indices, test indices, train metadata and test metadata.
+        Returns
+        -------
+            tuple with train indices, test indices, train metadata and test metadata.
         """
         path_train = f'/{self._split_datasets_group}/{dataset_name}/{self._train_idx}'
-        train, train_meta = hdf5_out.load_dataset_h5(path_train)
+        train, train_meta = self._output_h5_file.load_dataset_h5(path_train)
         path_test = f'/{self._split_datasets_group}/{dataset_name}/{self._test_idx}'
-        test, test_meta = hdf5_out.load_dataset_h5(path_test)
+        test, test_meta = self._output_h5_file.load_dataset_h5(path_test)
         
         return train, test, train_meta, test_meta
 
-    def load_test_train_dts(self, hdf5_out, hdf5_in, dts_name, dts_grp_path):
+    def load_test_train_dts(self, dts_name):
         """
         Loads test/train data.
 
-        :type hdf5_out: :func:`~mleap.shared.files_io.FilesIO` object
-        :param hdf5_out: instance of :func:`~mleap.shared.files_io.FilesIO` object with output data.
-
-        :type hdf5_in: :func:`~mleap.shared.files_io.FilesIO` object
-        :param hdf5_in: instance of :func:`~mleap.shared.files_io.FilesIO` object with input data.
-
-        :type dts_name: string
-        :param dts_name: name of dataset for which the splits will be loaded.
-
-        :type dts_grp_path: string
-        :param dts_grp_path: path to root group where the original datasets are stored.
-
-        :rtype: tuple arrays in the form: X_train, X_test, y_train, y_test where X are the features and y are the lables.
+        Parameters
+        ----------
+            dts_name: string
+                name of dataset for which the splits will be loaded.
+        Returns
+        -------
+            tuple arrays in the form: X_train, X_test, y_train, y_test where X are the features and y are the lables.
         """
-        train, test, _, _ = self.load_train_test_split(hdf5_out,dts_name)
-        dts, meta = hdf5_in.load_dataset_pd(f'{dts_grp_path}/{dts_name}')
+        train, test, _, _ = self.load_train_test_split(self._output_h5_file, dts_name)
+        dts, meta = self._input_h5_file.load_dataset_pd(f'{self._hdf5_datasets_group}/{dts_name}')
         label_column = meta['class_name']
         
         y_train = dts.iloc[train][label_column]
@@ -216,25 +230,23 @@ class Data(object):
 
         return X_train, X_test, y_train, y_test
         
-    # def load_predictions(self, hdf5_out, dataset_name, 
-    #                      experiments_predictions_dir=EXPERIMENTS_PREDICTIONS_DIR):
-    #     pass
 
-    def load_true_labels(self, hdf5_in, dataset_loc, lables_idx):
+
+    def load_true_labels(self, dts_name):
         """
         Loads labels for dataset
 
-        :type hdf5_in: :func:`~mleap.shared.files_io.FilesIO` object
-        :param hdf5_in: instance of :func:`~mleap.shared.files_io.FilesIO` object containing the original datasets
-
-        :type lables_idx: string
-        :param lables_idx: path the dataset. 
-
-        :rtype: pandas DataFrame
+        Parameters
+        ----------
+            dts_name: string
+                Name of dataset
+        
+        Returns
+        -------
+            pandas DataFrame
         """
-        dataset, meta = hdf5_in.load_dataset_pd(dataset_loc)
-        labels_col_name = meta['class_name']
-        return dataset[labels_col_name].iloc[lables_idx]
+        X_train, X_test, y_train, y_test = self.load_test_train_dts(dts_name)
+        return y_test
         
 
 
