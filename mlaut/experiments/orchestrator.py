@@ -39,13 +39,13 @@ class Orchestrator:
                  split_datasets_group=SPLIT_DTS_GROUP,
                  train_idx=TRAIN_IDX,
                  test_idx=TEST_IDX):
-        if not isinstance(data._dataset_names, list):
+        if not isinstance(data._datasets, list):
             raise ValueError('dts_names must be an array')
         self._experiments_predictions_group=data._experiments_predictions_group
         self._experiments_trained_models_dir=experiments_trained_models_dir
         self._input_io = data._input_h5_file #TODO delete
         self._output_io = data._output_h5_file #TODO delete
-        self._dts_names=data._dataset_names #TODO delete
+        self._dts_names=data._datasets #TODO delete
         self._original_datasets_group_h5_path = data._hdf5_datasets_group #TODO delete
         #self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
@@ -90,10 +90,7 @@ class Orchestrator:
                 logging.log(1,f'Training estimators on {dts_name}')
 
                 dts_trained +=1
-                X_train, X_test, y_train, _ = self._data.load_test_train_dts(hdf5_out=self._output_io, 
-                                                                              hdf5_in=self._input_io, 
-                                                                              dts_name=dts_name, 
-                                                                              dts_grp_path=self._original_datasets_group_h5_path)
+                X_train, X_test, y_train, _ = self._data.load_test_train_dts(dts_name=dts_name)
 
                 timestamps_df = pd.DataFrame()
                 for modelling_strategy in modelling_strategies:
@@ -216,10 +213,7 @@ class Orchestrator:
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties['name'] for estimator in estimators]
         for dts in self._dts_names:
-            X_train, X_test, y_train, y_test = self._data.load_test_train_dts(hdf5_out=self._output_io, 
-                                                                              hdf5_in=self._input_io, 
-                                                                              dts_name=dts, 
-                                                                              dts_grp_path=self._original_datasets_group_h5_path)
+            X_train, X_test, y_train, y_test = self._data.load_test_train_dts(dts_name=dts)
             saved_estimators = os.listdir(f'{trained_models_dir}/{dts}')
             for saved_estimator in saved_estimators:
                 name_estimator = saved_estimator.split('.')[0]

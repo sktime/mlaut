@@ -87,7 +87,7 @@ class Data(object):
         """
         save_paths = []
         for dts in dts_metadata:
-            save_paths.append(self._hdf5_datasets_group + dts['dataset_name'])
+            save_paths.append(self._hdf5_datasets_group +'/'+ dts['dataset_name'])
         #files_io = FilesIO(save_loc_hdd)
         self._input_h5_file.save_datasets(datasets=datasets, 
                                datasets_save_paths=save_paths, 
@@ -149,12 +149,14 @@ class Data(object):
             raise ValueError('hdf5_datasets_group cannot be type None. Specify it in the constructor of the class.')
 
 
-        _, dataset_paths = self.list_datasets(hdf5_io=self._input_h5_file, hdf5_group=self._hdf5_datasets_group) 
+        _, dataset_paths = self.list_datasets(hdf5_group=self._hdf5_datasets_group)
+        self._datasets = dataset_paths 
         for dts_loc in dataset_paths:
             #check if split exists in h5
             dts, metadata = self._input_h5_file.load_dataset_pd(dts_loc)
             dataset_name = metadata['dataset_name']
-            split_exists = self._output_h5_file.check_h5_path_exists(self._split_datasets_group + '/'+ dataset_name)
+            path_to_save = f'{self._split_datasets_group}/{self._hdf5_datasets_group}/{dataset_name}'
+            split_exists = self._output_h5_file.check_h5_path_exists(path_to_save)
             if split_exists is True:
                 if verbose is True:
                     logging.warning(f'Skipping {dataset_name} as test/train split already exists in output h5 file.')
@@ -172,7 +174,7 @@ class Data(object):
                 if verbose is True:
                     logging.info(f'Saving split for: {dataset_name}')
                 self._output_h5_file.save_array_hdf5(datasets=[train_idx, test_idx],
-                                    group=self._split_datasets_group + '/' + dataset_name,
+                                    group=path_to_save,
                                     array_names=names,
                                     array_meta=meta)
             split_dts_list.append(self._split_datasets_group + '/' + dataset_name)
@@ -213,8 +215,8 @@ class Data(object):
         -------
             tuple arrays in the form: X_train, X_test, y_train, y_test where X are the features and y are the lables.
         """
-        train, test, _, _ = self.load_train_test_split(self._output_h5_file, dts_name)
-        dts, meta = self._input_h5_file.load_dataset_pd(f'{self._hdf5_datasets_group}/{dts_name}')
+        train, test, _, _ = self.load_train_test_split(dts_name)
+        dts, meta = self._input_h5_file.load_dataset_pd(f'{dts_name}')
         label_column = meta['class_name']
         
         y_train = dts.iloc[train][label_column]

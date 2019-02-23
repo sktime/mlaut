@@ -119,7 +119,7 @@ class FilesIO:
         :param path_to_check: path of group that will be checked.
         :rtype: `boolean`
         """
-        f = h5py.File(self._hdf5_filename, self._mode)
+        f = h5py.File(self._hdf5_filename, mode=self._mode)
         is_present = path_to_check in f
         f.close()
         return is_present 
