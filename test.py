@@ -2,9 +2,10 @@ from mlaut.data import Data
 import pydataset
 from mlaut.experiments import Orchestrator
 from mlaut.estimators.baseline_estimators import Baseline_Classifier
-from mlaut.estimators.ensemble_estimators import (Random_Forest_Classifier,
-                                                Bagging_Classifier)
+from mlaut.estimators.bayes_estimators import Gaussian_Naive_Bayes
+from mlaut.estimators.decision_trees import Decision_Tree_Classifier
 
+from sklearn import preprocessing
 acme = pydataset.data('acme')
 aids = pydataset.data('aids')
 iris = pydataset.data('iris')
@@ -26,6 +27,11 @@ iris_meta = {
     'source':'pydataset',
     'dataset_name':'iris'
 }
+#transform labels for iris
+le = preprocessing.LabelEncoder()
+le.fit(iris['Species'])
+iris['Species']=le.transform(iris['Species'])
+
 
 data = Data(hdf5_datasets_group='pydata')
 data.set_io(input_data='data/test_input.h5', output_data='data/test_output.h5')
@@ -36,4 +42,4 @@ data.pandas_to_db(datasets=datasets, dts_metadata=metadata)
 data.split_datasets()
 
 orcheststrator = Orchestrator(data)
-orcheststrator.run(modelling_strategies=[Baseline_Classifier(), Random_Forest_Classifier(), Bagging_Classifier()])
+orcheststrator.run(modelling_strategies=[Baseline_Classifier(), Decision_Tree_Classifier(), Gaussian_Naive_Bayes()])
