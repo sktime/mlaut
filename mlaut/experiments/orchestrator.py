@@ -24,13 +24,20 @@ class Orchestrator:
     """
     Orchestrates the sequencing of running the machine learning experiments.
 
-    Args:
-        data (mlaut.Data object): instance of mlaut.Data object
-        experiments_predictions_group (string): path in HDF5 database where predictions will be saved.
-        experiments_trained_models_dir (string): folder on disk where trained estimators will be saved.
-        split_datasets_group (string): path in HDF5 database where the splits are saved.
-        train_idx (string): folder in HDF5 database which holds the train index splits.
-        test_idx (string): folder in HDF5 database which holds the test index splits.
+    Parameters
+    ----------
+        data: mlaut.Data object 
+            instance of mlaut.Data object
+        experiments_predictions_group: string
+            path in HDF5 database where predictions will be saved.
+        experiments_trained_models_dir: string
+            folder on disk where trained estimators will be saved.
+        split_datasets_group: string
+            path in HDF5 database where the splits are saved.
+        train_idx: string
+            folder in HDF5 database which holds the train index splits.
+        test_idx: string
+            folder in HDF5 database which holds the test index splits.
     """
     def __init__(self, 
                  data,
@@ -43,10 +50,6 @@ class Orchestrator:
             raise ValueError('dts_names must be an array')
         self._experiments_predictions_group=data._experiments_predictions_group
         self._experiments_trained_models_dir=experiments_trained_models_dir
-        self._input_io = data._input_h5_file #TODO delete
-        self._output_io = data._output_h5_file #TODO delete
-        self._dts_names=data._datasets #TODO delete
-        self._original_datasets_group_h5_path = data._hdf5_datasets_group #TODO delete
         #self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
         self._data = data
@@ -84,9 +87,9 @@ class Orchestrator:
         try:
             #loop through all datasets
             dts_trained=0
-            dts_total = len(self._dts_names)
+            dts_total = len(self._data._datasets)
             self._prediction_accuracies = []
-            for dts_name in self._dts_names:
+            for dts_name in self._data._datasets:
                 logging.log(1,f'Training estimators on {dts_name}')
 
                 dts_trained +=1
@@ -122,7 +125,7 @@ class Orchestrator:
                             modelling_strategy.set_trained_model(trained_model)
                             modelling_strategy.save(dts_name)
                         
-                            self._output_io.save_ml_strategy_timestamps(timestamps_df, dts_name, overwrite_timestamp=overwrite_timestamp)
+                            self._data._output_h5_file.save_ml_strategy_timestamps(timestamps_df, dts_name, overwrite_timestamp=overwrite_timestamp)
                         
                             #make predictions
                             if predict_on_runtime is True:
@@ -179,7 +182,7 @@ class Orchestrator:
         name_estimator = modelling_strategy.properties['name']
         if overwrite is True:
             predictions = trained_estimator.predict(X_test)
-            self._output_io.save_prediction_to_db(predictions=predictions, 
+            self._data._output_h5_file.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dataset_name, 
                                                         strategy_name=name_estimator)
             logging.info(f'Predictions for {name_estimator} on {dataset_name} Saved in database.')
@@ -187,13 +190,13 @@ class Orchestrator:
         else:
             #check whether the prediction exists before proceeding
             path_h5_predictions = f'{self._experiments_predictions_group}/{dataset_name}/{name_estimator}'
-            predictions_exist = self._output_io.check_h5_path_exists(path_h5_predictions)
+            predictions_exist = self._data._output_h5_file.check_h5_path_exists(path_h5_predictions)
 
             if predictions_exist is True:
                 logging.info(f'Predictions for {name_estimator} on {dataset_name} already exist in the database. Set overwrite to True if you wish replace them.')
             else:
                 predictions = trained_estimator.predict(X_test)
-                self._output_io.save_prediction_to_db(predictions=predictions, 
+                self._data._output_h5_file.save_prediction_to_db(predictions=predictions, 
                                                       dataset_name=dataset_name, 
                                                       strategy_name=name_estimator)
                 logging.info(f'Predictions for {name_estimator} on {dataset_name} saved in database.')
@@ -212,7 +215,7 @@ class Orchestrator:
         """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties['name'] for estimator in estimators]
-        for dts in self._dts_names:
+        for dts in self._data._datasets:
             X_train, X_test, y_train, y_test = self._data.load_test_train_dts(dts_name=dts)
             saved_estimators = os.listdir(f'{trained_models_dir}/{dts}')
             for saved_estimator in saved_estimators:
@@ -222,7 +225,7 @@ class Orchestrator:
                     #check whether predictions exist in the database before continuing
                     if overwrite is False:
                         path_h5_predictions = f'{self._experiments_predictions_group}/{dts}/{name_estimator}'
-                        predictions_exist = self._output_io.check_h5_path_exists(path_h5_predictions)
+                        predictions_exist = self._data._output_h5_file.check_h5_path_exists(path_h5_predictions)
                         if predictions_exist is True:
                             if verbose is True:
                                 logging.info(f'Predictions for {name_estimator} on {dts} already exist in the database. Set overwrite to True if you wish replace them.')
@@ -235,7 +238,7 @@ class Orchestrator:
                     estimator.load(f'{trained_models_dir}/{dts}/{saved_estimator}')
                     trained_estimator = estimator.get_trained_model()
                     predictions = trained_estimator.predict(X_test)
-                    self._output_io.save_prediction_to_db(predictions=predictions, 
+                    self._data._output_h5_file.save_prediction_to_db(predictions=predictions, 
                                                         dataset_name=dts, 
                                                         strategy_name=name_estimator)
 
