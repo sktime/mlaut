@@ -26,8 +26,6 @@ class Orchestrator:
 
     Parameters
     ----------
-        data: mlaut.Data object 
-            instance of mlaut.Data object
         experiments_predictions_group: string
             path in HDF5 database where predictions will be saved.
         experiments_trained_models_dir: string
@@ -39,22 +37,45 @@ class Orchestrator:
         test_idx: string
             folder in HDF5 database which holds the test index splits.
     """
-    def __init__(self, 
-                 data,
+    def __init__(self,
                  experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP,
                  experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR,
                  split_datasets_group=SPLIT_DTS_GROUP,
                  train_idx=TRAIN_IDX,
                  test_idx=TEST_IDX):
-        if not isinstance(data._datasets, list):
-            raise ValueError('dts_names must be an array')
-        self._experiments_predictions_group=data._experiments_predictions_group
+        
         self._experiments_trained_models_dir=experiments_trained_models_dir
         #self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
-        self._data = data
         set_logging_defaults()
 
+    def set_data(self, data):
+        """
+        Parameters
+        ----------
+            data: mlaut.Data object 
+                instance of mlaut.Data object
+        """
+        if not isinstance(data._datasets, list):
+            raise ValueError('dts_names must be an array')
+        self._data = data
+
+    def set_strategies(self, strategies):
+        """
+        Parameters
+        ----------
+            strategies: array mlaut.estimator
+                array of mlaut estimator objects
+        """
+        self._strategies = strategies
+    
+    def set_resampling(self, resampling):
+        """
+        Parameters
+        ----------
+            resampling:
+        """
+        self._resampling = resampling
     def run(self, 
             modelling_strategies, 
             overwrite_saved_models=False, 
@@ -189,7 +210,7 @@ class Orchestrator:
         
         else:
             #check whether the prediction exists before proceeding
-            path_h5_predictions = f'{self._experiments_predictions_group}/{dataset_name}/{name_estimator}'
+            path_h5_predictions = f'{self._data._experiments_predictions_group}/{dataset_name}/{name_estimator}'
             predictions_exist = self._data._output_h5_file.check_h5_path_exists(path_h5_predictions)
 
             if predictions_exist is True:
@@ -224,7 +245,7 @@ class Orchestrator:
                 if name_estimator in names_all_estimators:
                     #check whether predictions exist in the database before continuing
                     if overwrite is False:
-                        path_h5_predictions = f'{self._experiments_predictions_group}/{dts}/{name_estimator}'
+                        path_h5_predictions = f'{self._data._experiments_predictions_group}/{dts}/{name_estimator}'
                         predictions_exist = self._data._output_h5_file.check_h5_path_exists(path_h5_predictions)
                         if predictions_exist is True:
                             if verbose is True:
