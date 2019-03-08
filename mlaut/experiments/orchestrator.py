@@ -73,7 +73,8 @@ class Orchestrator:
         """
         Parameters
         ----------
-            resampling:
+            resampling: mlaut.resampling object
+                resampling strategy for the data.
         """
         self._resampling = resampling
     def run(self, 
