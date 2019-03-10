@@ -17,8 +17,7 @@ class Decision_Tree_Classifier(MlautEstimator):
 
     hyperparameters = {"max_depth": [10,100, None],
                 "criterion": ['gini', 'entropy'],
-                "max_depth": ['None', 2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90,100, 150,200],
-                "max_features": ['None', 'sqrt','log2'],
+                "max_features": ['auto', 'sqrt','log2'],
                 "criterion": ["gini", "entropy"],
                 "min_samples_leaf":np.arange(1,11)}
 

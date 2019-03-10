@@ -1,5 +1,6 @@
 from mlaut.resampling.mlaut_resampling import MLaut_resampling
 from sklearn.model_selection import train_test_split
+import numpy as np
 
 class Single_Split(MLaut_resampling):
     """
@@ -39,73 +40,37 @@ class Single_Split(MLaut_resampling):
         List containing train-test split of inputs.
     
     """
-    def __init__(self,test_size=0.25, train_size=None, random_state=None, shuffle=True, stratify=None):
+    def __init__(self, test_size=0.25, train_size=None, random_state=None, shuffle=True, stratify=None):
         self._test_size=test_size
         self._train_size=train_size
         self._random_state=random_state
         self._shuffle=shuffle
         self._stratify=stratify
-    def resample(self, data):
-        pass
-
-    def split_datasets(self, 
-                       test_size=0.33, 
-                       random_state=1, 
-                       verbose=True):
+    
+    def resample(self, X,y):
         """
-        Splits datasets in test and train sets.
-
         Parameters
         ----------
-            test_size: float
-                percentage of samples to be put in the test set.
-
-            random_state: integer
-                random state for test/train split.
-
-            verbose: boolean
-                if True prints progress messages in terminal.
-
+        X : pandas DataFrame
+            DataFrame with features
+        y : pandas Dataframe
+            DataFrame with target variables
         Returns
         -------
-            array of strings containing locations of split datasets.
+            train_idx, test_idx: tuple numpy arrays
+                indexes of resampled dataset
         """
-        split_dts_list = []
-        
-        if self._hdf5_datasets_group is None:
-            raise ValueError('hdf5_datasets_group cannot be type None. Specify it in the constructor of the class.')
+        idx_dts_rows = X.shape[0]
+        idx_split = np.arange(idx_dts_rows)
+        train_idx, test_idx =  train_test_split(idx_split, 
+                                                test_size=self._test_size, 
+                                                train_size=self._train_size,
+                                                random_state=self._random_state,
+                                                shuffle=self._shuffle,
+                                                stratify=self._stratify)
+        train_idx = np.array(train_idx)
+        test_idx = np.array(test_idx)
 
+        return train_idx, test_idx
 
-        _, dataset_paths = self.list_datasets(hdf5_group=self._hdf5_datasets_group)
-        self._datasets = dataset_paths 
-        for dts_loc in dataset_paths:
-            #check if split exists in h5
-            dts, metadata = self._input_h5_file.load_dataset_pd(dts_loc)
-            dataset_name = metadata['dataset_name']
-            path_to_save = f'{self._split_datasets_group}/{self._hdf5_datasets_group}/{dataset_name}'
-            split_exists = self._output_h5_file.check_h5_path_exists(path_to_save)
-            if split_exists is True:
-                if verbose is True:
-                    logging.warning(f'Skipping {dataset_name} as test/train split already exists in output h5 file.')
-            else:  
-                #split
-                idx_dts_rows = dts.shape[0]
-                idx_split = np.arange(idx_dts_rows)
-                train_idx, test_idx =  train_test_split(idx_split, test_size=test_size, random_state=random_state)
-                train_idx = np.array(train_idx)
-                test_idx = np.array(test_idx)
-                #save
-                meta = [{u'dataset_name': dataset_name}]*2
-                names = [self._train_idx, self._test_idx]
-
-                if verbose is True:
-                    logging.info(f'Saving split for: {dataset_name}')
-                self._output_h5_file.save_array_hdf5(datasets=[train_idx, test_idx],
-                                    group=path_to_save,
-                                    array_names=names,
-                                    array_meta=meta)
-            split_dts_list.append(self._split_datasets_group + '/' + dataset_name)
-
-            self._split_dts_list = split_dts_list
-        
-        return split_dts_lis
+   

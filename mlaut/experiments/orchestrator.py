@@ -77,13 +77,18 @@ class Orchestrator:
                 resampling strategy for the data.
         """
         self._resampling = resampling
-    def run(self, 
-            modelling_strategies, 
+    
+    def _prepare_resampling(self):
+        """
+        Loops through all datasets and applies the resampling strategy
+        """
+    def run(self,  
             overwrite_saved_models=False, 
             verbose=True, 
             predict_on_runtime=True,
             overwrite_predictions=False,
-            overwrite_timestamp=False):
+            overwrite_timestamp=False,
+            save_resampling_splits=True):
         """ 
         Main module for training the estimators. 
         The inputs of the function are: 
@@ -98,12 +103,18 @@ class Orchestrator:
 
         The class uses helper methods in the experiments class to avoid too many nested loops.
 
-        Args:
-            odelling_strategies (array of :ref:`mlaut_estimator-label` objects): Array of estimators that will be used for training
-            overwrite_saved_models (Boolean): Flag whether the trained models should be overwritten if they already exist on the disk.
-            verbose (Boolean): If True prints info and warning messages.
-            predict_on_runtime(Boolean): Make predictions immediately after the estimators are trained.
-            overwrite_predictions(Boolean): Overwrite predictions in database if they exist already.
+        Parameters
+        ----------
+            overwrite_saved_models: Boolean
+                Flag whether the trained models should be overwritten if they already exist on the disk.
+            verbose: Boolean
+                If True prints info and warning messages.
+            predict_on_runtime: Boolean
+                Make predictions immediately after the estimators are trained.
+            overwrite_predictions: Boolean
+                Overwrite predictions in database if they exist already.
+            save_resampling_splits: Boolean
+                If `True` saves resampling splits in database
         """ 
 
         try:
@@ -111,14 +122,22 @@ class Orchestrator:
             dts_trained=0
             dts_total = len(self._data._datasets)
             self._prediction_accuracies = []
-            for dts_name in self._data._datasets:
-                logging.log(1,f'Training estimators on {dts_name}')
+            for dts_full_path in self._data._datasets:
+
+                logging.log(1,f'Training estimators on {dts_full_path}')
+                X, y, meta = self._data.load_non_resampled_dataset(dts_full_path)
+                train_idx, test_idx = self._resampling.resample(X,y)
+                dts_name = meta['dataset_name']
+                if save_resampling_splits is True:
+                    self._data.save_resampling_splits(train_idx=train_idx, test_idx=test_idx, meta=meta)
+
 
                 dts_trained +=1
-                X_train, X_test, y_train, _ = self._data.load_test_train_dts(dts_name=dts_name)
-
+                X_train = X.iloc[train_idx]
+                X_test = X.iloc[test_idx]
+                y_train = y.iloc[train_idx]
                 timestamps_df = pd.DataFrame()
-                for modelling_strategy in modelling_strategies:
+                for modelling_strategy in self._strategies:
                     ml_strategy_name = modelling_strategy.properties['name']
                     begin_timestamp = datetime.now()
 

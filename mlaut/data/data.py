@@ -23,20 +23,25 @@ class Data(object):
             name of group where the indexes of the samples used for training are saved
         test_idx: string
             name of group where the indexes of the samples used for testing are saved
+        verbose: boolean
+            Display messages
     """
     def __init__(self, 
                 hdf5_datasets_group,
                 experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP,
                 split_datasets_group=SPLIT_DTS_GROUP,
                 train_idx=TRAIN_IDX,
-                test_idx=TEST_IDX):
+                test_idx=TEST_IDX,
+                verbose=True):
         self._experiments_predictions_group = experiments_predictions_group
         self._split_datasets_group=split_datasets_group
-        self._train_idx=train_idx
-        self._test_idx=test_idx
+        self._train_idx_group=train_idx
+        self._test_idx_group=test_idx
         self._hdf5_datasets_group = hdf5_datasets_group
         #contains the names of the datasets on which the experiments can be performed
         self._datasets=None
+        self._verbose=verbose
+        self._overwrite_resampling_splits=False
 
     def set_io(self, input_data, output_data, input_mode='a', output_mode='a'):
         """
@@ -121,6 +126,35 @@ class Data(object):
         """
         return FilesIO(hdf5_path, mode)
 
+    def save_resampling_splits(self, train_idx, test_idx,meta):
+        """
+        Saves the resampling splits in the database
+        
+        train_idx: numpy array
+            numpy array with the indexes for the train data
+        test_idx: numpy array
+            numpy array with the indexes for the test data
+        meta: dictionary
+            dictionary with metadata for the dataset
+        """
+        dataset_name=meta['dataset_name']
+        path_to_save = f'{self._split_datasets_group}/{self._hdf5_datasets_group}/{dataset_name}'
+
+        if self._verbose is True:
+            logging.info(f'Saving split for: {dataset_name}')
+        
+        split_exists = self._output_h5_file.check_h5_path_exists(path_to_save)
+        if split_exists is True:
+            if self._verbose is True:
+                logging.warning(f'Skipping {dataset_name} as test/train split already exists in output h5 file.')
+        
+        if split_exists is not True or (split_exists and self._overwrite_resampling_splits): 
+            self._output_h5_file.save_array_hdf5(datasets=[train_idx, test_idx],
+                            group=path_to_save,
+                            array_names=[self._train_idx_group, self._test_idx_group],
+                            array_meta=[meta,meta])
+        
+    
     def split_datasets(self, 
                        test_size=0.33, 
                        random_state=1, 
@@ -169,7 +203,7 @@ class Data(object):
                 test_idx = np.array(test_idx)
                 #save
                 meta = [{u'dataset_name': dataset_name}]*2
-                names = [self._train_idx, self._test_idx]
+                names = [self._train_idx_group, self._test_idx_group]
 
                 if verbose is True:
                     logging.info(f'Saving split for: {dataset_name}')
@@ -196,12 +230,32 @@ class Data(object):
         -------
             tuple with train indices, test indices, train metadata and test metadata.
         """
-        path_train = f'/{self._split_datasets_group}/{dataset_name}/{self._train_idx}'
+        path_train = f'/{self._split_datasets_group}/{dataset_name}/{self._train_idx_group}'
         train, train_meta = self._output_h5_file.load_dataset_h5(path_train)
-        path_test = f'/{self._split_datasets_group}/{dataset_name}/{self._test_idx}'
+        path_test = f'/{self._split_datasets_group}/{dataset_name}/{self._test_idx_group}'
         test, test_meta = self._output_h5_file.load_dataset_h5(path_test)
         
         return train, test, train_meta, test_meta
+    def load_non_resampled_dataset(self,dts_name):
+        """
+        Loads a dataset from the database
+
+        Parameters
+        ----------
+        dts_name: string
+            full path to the dataset
+        
+        Returns
+        -------
+            tuple with X, y, meta features, targets and metadata
+        """
+
+        dts_df, meta = self._input_h5_file.load_dataset_pd(dts_name)
+        label_column = meta['class_name']
+        y = dts_df[label_column]
+        X = dts_df.drop(label_column, axis=1)
+
+        return X,y, meta
 
     def load_test_train_dts(self, dts_name):
         """
