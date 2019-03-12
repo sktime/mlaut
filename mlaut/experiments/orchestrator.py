@@ -56,7 +56,7 @@ class Orchestrator:
             data: mlaut.Data object 
                 instance of mlaut.Data object
         """
-        if not isinstance(data._datasets, list):
+        if not isinstance(data.get_datasets(), list):
             raise ValueError('dts_names must be an array')
         self._data = data
 
@@ -120,9 +120,9 @@ class Orchestrator:
         try:
             #loop through all datasets
             dts_trained=0
-            dts_total = len(self._data._datasets)
+            dts_total = len(self._data.get_datasets())
             self._prediction_accuracies = []
-            for dts_full_path in self._data._datasets:
+            for dts_full_path in self._data.get_datasets():
 
                 logging.log(1,f'Training estimators on {dts_full_path}')
                 X, y, meta = self._data.load_non_resampled_dataset(dts_full_path)
@@ -256,7 +256,7 @@ class Orchestrator:
         """
         datasets = os.listdir(trained_models_dir)
         names_all_estimators = [estimator.properties['name'] for estimator in estimators]
-        for dts in self._data._datasets:
+        for dts in self._data.get_datasets():
             X_train, X_test, y_train, y_test = self._data.load_test_train_dts(dts_name=dts)
             saved_estimators = os.listdir(f'{trained_models_dir}/{dts}')
             for saved_estimator in saved_estimators:

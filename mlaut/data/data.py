@@ -42,6 +42,15 @@ class Data(object):
         self._datasets=None
         self._verbose=verbose
         self._overwrite_resampling_splits=False
+        
+        #varibales for storing the data
+        #HDF5 variables
+        self._input_h5_file = None
+        self._output_h5_file = None
+        #in memory variables
+        self._input_data = None
+        self._metadata = None
+        self._output_data = None
 
     def set_io(self, input_data, output_data, input_mode='a', output_mode='a'):
         """
@@ -60,6 +69,24 @@ class Data(object):
         """
         self._input_h5_file = self._open_hdf5(input_data, input_mode)
         self._output_h5_file = self._open_hdf5(output_data, output_mode)
+    
+    def from_memory(self, input_data, metadata, output_data):
+        """
+        Provides functionality for running the experiments from memory
+
+        Parameters
+        ----------
+            input_data: array of pandas DataFrame
+                array of datasets
+            metadata: array of dictionaries
+                array of dictionaries with the metadata for each dataset
+            output_data: mlaut output object
+                instance of mlaut output object
+        """
+        self._input_data = input_data
+        self._metadata = metadata
+        self._output_data = output_data
+
     def get_datasets(self):
         """
         Returns the list of datasets available in the database on which the experiments can be performed.
@@ -69,7 +96,7 @@ class Data(object):
             array of string
         """
         #return self.list_datasets(self._hdf5_datasets_group)
-        self._datasets=None
+        return self._datasets
     def set_datasets(self, dts_names):
         """
         Provides functionality for overriding the the default list of datasets on which the experiments will be performed.
@@ -249,9 +276,13 @@ class Data(object):
         -------
             tuple with X, y, meta features, targets and metadata
         """
-
-        dts_df, meta = self._input_h5_file.load_dataset_pd(dts_name)
-        label_column = meta['class_name']
+        if self._input_h5_file is not None:
+            dts_df, meta = self._input_h5_file.load_dataset_pd(dts_name)
+            label_column = meta['class_name']
+        
+        if self._input_data is not None:
+            #TODO: algorithm for loading dataset from memory
+            pass
         y = dts_df[label_column]
         X = dts_df.drop(label_column, axis=1)
 
