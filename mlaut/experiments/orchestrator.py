@@ -23,9 +23,16 @@ from mlaut.shared.files_io import DiskOperations
 class Orchestrator:
     """
     Orchestrates the sequencing of running the machine learning experiments.
-
-    Parameters
-    ----------
+    """
+    def __init__(self,
+                 experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP,
+                 experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR,
+                 split_datasets_group=SPLIT_DTS_GROUP,
+                 train_idx=TRAIN_IDX,
+                 test_idx=TEST_IDX):
+        """
+        Parameters
+        ----------
         experiments_predictions_group: string
             path in HDF5 database where predictions will be saved.
         experiments_trained_models_dir: string
@@ -36,14 +43,7 @@ class Orchestrator:
             folder in HDF5 database which holds the train index splits.
         test_idx: string
             folder in HDF5 database which holds the test index splits.
-    """
-    def __init__(self,
-                 experiments_predictions_group=EXPERIMENTS_PREDICTIONS_GROUP,
-                 experiments_trained_models_dir=EXPERIMENTS_TRAINED_MODELS_DIR,
-                 split_datasets_group=SPLIT_DTS_GROUP,
-                 train_idx=TRAIN_IDX,
-                 test_idx=TEST_IDX):
-        
+        """
         self._experiments_trained_models_dir=experiments_trained_models_dir
         #self._experiments = Experiments(self._experiments_trained_models_dir)
         self._disk_op = DiskOperations()
@@ -53,8 +53,8 @@ class Orchestrator:
         """
         Parameters
         ----------
-            data: mlaut.Data object 
-                instance of mlaut.Data object
+        data: mlaut.Data object 
+            instance of mlaut.Data object
         """
         if not isinstance(data.get_datasets(), list):
             raise ValueError('dts_names must be an array')
@@ -64,8 +64,8 @@ class Orchestrator:
         """
         Parameters
         ----------
-            strategies: array mlaut.estimator
-                array of mlaut estimator objects
+        strategies: array mlaut.estimator
+            array of mlaut estimator objects
         """
         self._strategies = strategies
     
@@ -73,8 +73,8 @@ class Orchestrator:
         """
         Parameters
         ----------
-            resampling: mlaut.resampling object
-                resampling strategy for the data.
+        resampling: mlaut.resampling object
+            resampling strategy for the data.
         """
         self._resampling = resampling
     
@@ -90,7 +90,7 @@ class Orchestrator:
             overwrite_timestamp=False,
             save_resampling_splits=True):
         """ 
-        Main module for training the estimators. 
+        Main method for training the estimators. 
         The inputs of the function are: 
 
         1. The input and output databse files containing the datasets.
@@ -105,16 +105,16 @@ class Orchestrator:
 
         Parameters
         ----------
-            overwrite_saved_models: Boolean
-                Flag whether the trained models should be overwritten if they already exist on the disk.
-            verbose: Boolean
-                If True prints info and warning messages.
-            predict_on_runtime: Boolean
-                Make predictions immediately after the estimators are trained.
-            overwrite_predictions: Boolean
-                Overwrite predictions in database if they exist already.
-            save_resampling_splits: Boolean
-                If `True` saves resampling splits in database
+        overwrite_saved_models: Boolean
+            Flag whether the trained models should be overwritten if they already exist on the disk.
+        verbose: Boolean
+            If True prints info and warning messages.
+        predict_on_runtime: Boolean
+            Make predictions immediately after the estimators are trained.
+        overwrite_predictions: Boolean
+            Overwrite predictions in database if they exist already.
+        save_resampling_splits: Boolean
+            If `True` saves resampling splits in database
         """ 
 
         try:
