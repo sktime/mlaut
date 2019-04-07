@@ -4,8 +4,9 @@ from mlaut.estimators.glm_estimators import (Ridge_Regression,
                                        Lasso, 
                                        Lasso_Lars, 
                                        Logistic_Regression, 
-                                       Passive_Aggressive_Classifier)
-from mlaut.estimators.nn_estimators import  Deep_NN_Classifier
+                                       Passive_Aggressive_Classifier,
+                                       Bayesian_Ridge)
+from mlaut.estimators.nn_estimators import  Deep_NN_Classifier, Deep_NN_Regressor
 
 from mlaut.estimators.bayes_estimators import Gaussian_Naive_Bayes, Bernoulli_Naive_Bayes
 from mlaut.estimators.ensemble_estimators import (Random_Forest_Classifier,
@@ -14,11 +15,11 @@ from mlaut.estimators.ensemble_estimators import (Random_Forest_Classifier,
                                             Bagging_Regressor, 
                                             Gradient_Boosting_Classifier,
                                             Gradient_Boosting_Regressor)
-from mlaut.estimators.svm_estimators import SVC_mlaut
+from mlaut.estimators.svm_estimators import SVC_mlaut, SVR_mlaut
 from mlaut.estimators.baseline_estimators import (Baseline_Regressor,
                                             Baseline_Classifier)
 from mlaut.estimators.cluster_estimators import K_Neighbours
-from mlaut.estimators.decision_trees import Decision_Tree_Classifier
+from mlaut.estimators.decision_trees import (Decision_Tree_Classifier, Decision_Tree_Regressor)
 from mlaut.shared.static_variables import (GRIDSEARCH_NUM_CV_FOLDS, 
                                            GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                                            VERBOSE)
@@ -70,6 +71,7 @@ def instantiate_default_estimators(estimators,
         Ridge_Regression,
         Lasso,
         Lasso_Lars,
+        Bayesian_Ridge,
         Random_Forest_Classifier,
         Random_Forest_Regressor,
         Bagging_Classifier,
@@ -77,15 +79,17 @@ def instantiate_default_estimators(estimators,
         Gradient_Boosting_Classifier,
         Gradient_Boosting_Regressor,
         SVC_mlaut,
+        SVR_mlaut,
         Gaussian_Naive_Bayes,
         Bernoulli_Naive_Bayes,
         Deep_NN_Classifier,
-        # Deep_NN_Regressor,
+        Deep_NN_Regressor,
         Passive_Aggressive_Classifier,
         Baseline_Classifier,
         Baseline_Regressor,
         K_Neighbours,
-        Decision_Tree_Classifier
+        Decision_Tree_Classifier,
+        Decision_Tree_Regressor
     ]
     estimators_array = []
 
@@ -104,10 +108,7 @@ def instantiate_default_estimators(estimators,
             if input_estimator in mlaut_estimator_prop['estimator_family'] or \
                 input_estimator in mlaut_estimator_prop['tasks'] or \
                 input_estimator in mlaut_estimator_prop['name']:
-                estimators_array.append(mlaut_estimator(verbose=verbose, 
-                                                        n_jobs=n_jobs,
-                                                        num_cv_folds=num_cv_folds, 
-                                                        refit=refit))
+                estimators_array.append(mlaut_estimator())
     if len(estimators_array) > 0:             
         return estimators_array
     else:

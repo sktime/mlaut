@@ -10,8 +10,8 @@ from mlaut.shared.static_variables import(SVM,
                                       VERBOSE)
 
 from sklearn.svm import SVC
+from sklearn.svm import SVR
 import numpy as np
-from mlaut.estimators.generic_estimator import Generic_Estimator
 
 
 class SVC_mlaut(MlautEstimator):
@@ -37,6 +37,7 @@ class SVC_mlaut(MlautEstimator):
 
     C_range = np.logspace(-2, 10, 13)
     gamma_range = np.logspace(-9, 3, 13)
+    gamma_range = np.append(gamma_range,'scale')
     hyperparameters = [{'kernel': ['rbf'], 'gamma': gamma_range,
                      'C': C_range},
                     {'kernel': ['linear'], 'C': C_range}]
@@ -70,6 +71,60 @@ class SVC_mlaut(MlautEstimator):
         
         """
         estimator = GridSearchCV(SVC(), 
+                            self._hyperparameters, 
+                            verbose = self._verbose,
+                            n_jobs=self._n_jobs,
+                            refit=self._refit,
+                            cv=self._num_cv_folds)
+        return self._create_pipeline(estimator=estimator)
+
+
+
+class SVR_mlaut(MlautEstimator):
+    """
+    Wrapper for `sklearn SVC estimator <http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`_.
+    """
+    properties = {'estimator_family':[SVM], 
+            'tasks':[REGRESSION], 
+            'name':'SVR'}
+    
+
+    C_range = np.logspace(-2, 10, 13)
+    gamma_range = np.logspace(-9, 3, 13)
+    gamma_range = np.append(gamma_range,'scale')
+    hyperparameters = [{'kernel': ['rbf'], 'gamma': gamma_range,
+                     'C': C_range},
+                    {'kernel': ['linear'], 'C': C_range}]
+                    
+    def __init__(self,
+                hyperparameters=hyperparameters,
+                properties=properties, 
+                verbose=VERBOSE,
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
+                refit=True):
+
+        self.properties = properties
+        self._hyperparameters = hyperparameters
+        self._verbose = verbose
+        self._n_jobs = n_jobs
+        self._num_cv_folds = num_cv_folds
+        self._refit = refit
+
+
+    def build(self, **kwargs):
+        """
+        builds and returns estimator
+        
+        Args:
+            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
+            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
+        
+        """
+        estimator = GridSearchCV(SVR(), 
                             self._hyperparameters, 
                             verbose = self._verbose,
                             n_jobs=self._n_jobs,

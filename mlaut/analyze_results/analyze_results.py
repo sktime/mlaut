@@ -36,16 +36,6 @@ import matplotlib.pyplot as plt
 class AnalyseResults(object):
     """
     Analyze results of machine learning experiments.
-
-    Args:
-        hdf5_input_io(:func:`~mlaut.shared.files_io.FilesIO`): Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
-        hdf5_input_io(:func:`~mlaut.shared.files_io.FilesIO`): Instance of :func:`~mlaut.shared.files_io.FilesIO` class.
-        input_h5_original_datasets_group(string): location in HDF5 database where the original datasets are stored.
-        output_h5_predictions_group(string): location in HDF5 where the prediction of the estimators will be saved.
-        split_datasets_group(string): location in HDF5 database where the test/train splits are saved.
-        run_times_group(string): location where the run times are saved in the HDF5 database.
-        train_idx(string): name of group where the train split index will be stored.
-        test_idx(string): name of group where the test split index will be stored.
     """
 
     def __init__(self, 

@@ -201,6 +201,35 @@ class Logistic_Regression(MlautEstimator):
         return self._create_pipeline(estimator=estimator)
 
  
+class Bayesian_Ridge(MlautEstimator):
+    """
+    Wrapper for `sklearn Bayesian Ridge Regression <https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.BayesianRidge.html>`_.
+    """
+    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+            'tasks':[REGRESSION], 
+            'name':'BayesianRidge'}
+
+    def __init__(self,
+                properties=properties, 
+                verbose=VERBOSE):
+
+        self.properties = properties
+        self._verbose = verbose
+
+    def build(self, **kwargs):
+        """
+        builds and returns estimator
+
+        Args:
+            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
+            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+        
+        Returns:
+            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
+
+        """
+        estimator = linear_model.BayesianRidge()
+        return self._create_pipeline(estimator=estimator)
 
 
 class Passive_Aggressive_Classifier(MlautEstimator):
