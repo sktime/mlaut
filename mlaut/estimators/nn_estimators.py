@@ -190,7 +190,7 @@ class Deep_NN_Regressor(MlautEstimator):
     hyperparameters = {'epochs': 1, 
                         'batch_size': None}
                         
-    def keras_model(self, input_dim):
+    def keras_model(num_classes, input_dim):
         nn_deep_model = Sequential()
         nn_deep_model.add(Dense(288, input_dim=input_dim, activation='relu'))
         nn_deep_model.add(Dense(144, activation='relu'))
