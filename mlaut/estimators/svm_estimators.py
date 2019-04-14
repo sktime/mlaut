@@ -91,7 +91,6 @@ class SVR_mlaut(MlautEstimator):
 
     C_range = np.logspace(-2, 10, 13)
     gamma_range = np.logspace(-9, 3, 13)
-    gamma_range = np.append(gamma_range,'scale')
     hyperparameters = [{'kernel': ['rbf'], 'gamma': gamma_range,
                      'C': C_range},
                     {'kernel': ['linear'], 'C': C_range}]
