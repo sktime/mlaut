@@ -88,7 +88,8 @@ class Orchestrator:
             predict_on_runtime=True,
             overwrite_predictions=False,
             overwrite_timestamp=False,
-            save_resampling_splits=True):
+            save_resampling_splits=True,
+            target_to_float=False):
         """ 
         Main method for training the estimators. 
         The inputs of the function are: 
@@ -115,6 +116,8 @@ class Orchestrator:
             Overwrite predictions in database if they exist already.
         save_resampling_splits: Boolean
             If `True` saves resampling splits in database
+        target_to_float:Boolean
+            if True attempts to convert y to float
         """ 
 
         try:
@@ -126,6 +129,8 @@ class Orchestrator:
 
                 logging.log(1,f'Training estimators on {dts_full_path}')
                 X, y, meta = self._data.load_non_resampled_dataset(dts_full_path)
+                if target_to_float:
+                    y = y.astype(float)
                 train_idx, test_idx = self._resampling.resample(X,y)
                 dts_name = meta['dataset_name']
                 if save_resampling_splits is True:
