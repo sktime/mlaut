@@ -136,8 +136,10 @@ data.split_datasets(random_state=1)
 
 orcheststrator = Orchestrator()
 orcheststrator.set_data(data)
-est = instantiate_default_estimators(['Regression'])
+# est = instantiate_default_estimators(['Regression'])
 
+from mlaut.estimators.svm_estimators import SVR_mlaut
+est = [SVR_mlaut()]
 orcheststrator.set_strategies(est)
 orcheststrator.set_resampling(Single_Split())
 orcheststrator.run()
