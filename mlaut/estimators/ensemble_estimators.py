@@ -13,7 +13,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import BaggingRegressor
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from mlaut.estimators.generic_estimator import Generic_Estimator
 from sklearn.tree import DecisionTreeClassifier
@@ -239,7 +239,7 @@ class Bagging_Regressor(MlautEstimator):
             pipeline for transforming the features and training the estimator
         """
        
-        estimator = BaggingRegressor(base_estimator=DecisionTreeClassifier())
+        estimator = BaggingRegressor(base_estimator=DecisionTreeRegressor())
         estimator = GridSearchCV(estimator, 
                             self._hyperparameters, 
                             verbose = self._verbose,

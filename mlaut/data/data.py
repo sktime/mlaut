@@ -13,18 +13,18 @@ class Data(object):
 
     Parameters
     ----------
-        hdf5_datasets_group: string
-            HDF5 group of datasets in input HDF5 database file
-        experiments_predictions_group: string
-            localtion in HDF5 database where the predictions will be saved
-        split_datasets_group: string
-            location in HDF5 database were the test/train split will be saved.
-        train_idx: string
-            name of group where the indexes of the samples used for training are saved
-        test_idx: string
-            name of group where the indexes of the samples used for testing are saved
-        verbose: boolean
-            Display messages
+    hdf5_datasets_group: string
+        HDF5 group of datasets in input HDF5 database file
+    experiments_predictions_group: string
+        localtion in HDF5 database where the predictions will be saved
+    split_datasets_group: string
+        location in HDF5 database were the test/train split will be saved.
+    train_idx: string
+        name of group where the indexes of the samples used for training are saved
+    test_idx: string
+        name of group where the indexes of the samples used for testing are saved
+    verbose: boolean
+        Display messages
     """
     def __init__(self, 
                 hdf5_datasets_group,
@@ -69,19 +69,29 @@ class Data(object):
         """
         self._input_h5_file = self._open_hdf5(input_data, input_mode)
         self._output_h5_file = self._open_hdf5(output_data, output_mode)
-    
+    def get_io(self):
+        """
+        Returns the handles to the input and output files
+
+        Returns
+        -------
+        tuple:
+            returns the handles to the input_io and the output_io files
+        """
+
+        return self._input_h5_file, self._output_h5_file
     def from_memory(self, input_data, metadata, output_data):
         """
         Provides functionality for running the experiments from memory
 
         Parameters
         ----------
-            input_data: array of pandas DataFrame
-                array of datasets
-            metadata: array of dictionaries
-                array of dictionaries with the metadata for each dataset
-            output_data: mlaut output object
-                instance of mlaut output object
+        input_data: array of pandas DataFrame
+            array of datasets
+        metadata: array of dictionaries
+            array of dictionaries with the metadata for each dataset
+        output_data: mlaut output object
+            instance of mlaut output object
         """
         self._input_data = input_data
         self._metadata = metadata
@@ -100,7 +110,6 @@ class Data(object):
     def set_datasets(self, dts_names):
         """
         Provides functionality for overriding the the default list of datasets on which the experiments will be performed.
-
         """
         self._datasets=dts_names
     def pandas_to_db(self, datasets, dts_metadata):
@@ -131,11 +140,13 @@ class Data(object):
 
         Parameters
         ----------
-            hdf5_group: string
-                Path to HDF5 parent group of which we are quering the subgroups.
+        hdf5_group: string
+            Path to HDF5 parent group of which we are quering the subgroups.
+        
         Returns
         -------
-            tuple with array with dataset names and array with full path to datasets.
+        tuple: 
+            array with dataset names and array with full path to datasets.
         """
         dts_names_list = self._input_h5_file.list_datasets(hdf5_group)
         dts_names_list_full_path = [hdf5_group  +'/'+ dts for dts in dts_names_list]
@@ -153,6 +164,31 @@ class Data(object):
         """
         return FilesIO(hdf5_path, mode)
 
+    def load_predictions(self, dataset_name):
+        """ 
+        Loads the predictions for a particular dataset
+
+        Parameters
+        ----------
+        dataset_name: string
+            name of the dataset for which the predictions will be loaded
+
+        Retuns
+        -------
+        list:
+            Array in the form [[strategy name][predictions]]`.
+        
+        """
+
+        load_path = f'{self._experiments_predictions_group}/{self._hdf5_datasets_group}/{dataset_name}'
+        estimator_predictions = self._output_h5_file.list_datasets(load_path)
+        predictions = []
+        for estim in estimator_predictions:
+            prediction_path = f'{load_path}/{estim}'
+            prediction=self._output_h5_file.load_dataset_h5(prediction_path)
+            predictions.append([estim,prediction])
+        return predictions
+        
     def save_resampling_splits(self, train_idx, test_idx,meta):
         """
         Saves the resampling splits in the database
@@ -250,17 +286,18 @@ class Data(object):
 
         Parameters
         ----------
-            dataset_name: string
-                name of dataset for which the splits will be loaded.
+        dataset_name: string
+            name of dataset for which the splits will be loaded.
 
         Returns
         -------
             tuple with train indices, test indices, train metadata and test metadata.
         """
-        path_train = f'/{self._split_datasets_group}/{dataset_name}/{self._train_idx_group}'
-        train, train_meta = self._output_h5_file.load_dataset_h5(path_train)
-        path_test = f'/{self._split_datasets_group}/{dataset_name}/{self._test_idx_group}'
-        test, test_meta = self._output_h5_file.load_dataset_h5(path_test)
+        path_train = f'/{self._split_datasets_group}/{self._hdf5_datasets_group}/{dataset_name}/{self._train_idx_group}'
+
+        train, train_meta = self._output_h5_file.load_dataset_h5(path_train, return_meta=True)
+        path_test = f'/{self._split_datasets_group}/{self._hdf5_datasets_group}/{dataset_name}/{self._test_idx_group}'
+        test, test_meta = self._output_h5_file.load_dataset_h5(path_test, return_meta=True)
         
         return train, test, train_meta, test_meta
     def load_non_resampled_dataset(self,dts_name):
@@ -294,14 +331,14 @@ class Data(object):
 
         Parameters
         ----------
-            dts_name: string
-                name of dataset for which the splits will be loaded.
+        dts_name: string
+            name of dataset for which the splits will be loaded.
         Returns
         -------
             tuple arrays in the form: X_train, X_test, y_train, y_test where X are the features and y are the lables.
         """
         train, test, _, _ = self.load_train_test_split(dts_name)
-        dts, meta = self._input_h5_file.load_dataset_pd(f'{dts_name}')
+        dts, meta = self._input_h5_file.load_dataset_pd(f'{self._hdf5_datasets_group}/{dts_name}')
         label_column = meta['class_name']
         
         y_train = dts.iloc[train][label_column]
@@ -328,12 +365,12 @@ class Data(object):
 
         Parameters
         ----------
-            dts_name: string
-                Name of dataset
+        dts_name: string
+            Name of dataset
         
         Returns
         -------
-            pandas DataFrame
+        pandas DataFrame
         """
         X_train, X_test, y_train, y_test = self.load_test_train_dts(dts_name)
         return y_test

@@ -39,41 +39,60 @@ class AnalyseResults(object):
     """
 
     def __init__(self, 
-                 hdf5_output_io, 
-                 hdf5_input_io, 
+                 data,
                  input_h5_original_datasets_group, 
                  output_h5_predictions_group,
                  split_datasets_group=SPLIT_DTS_GROUP,
                  run_times_group=RUNTIMES_GROUP,
                  train_idx=TRAIN_IDX,
                  test_idx=TEST_IDX):
-
-        self._input_io = hdf5_input_io
-        self._output_io = hdf5_output_io
+        """
+        Parameters
+        ----------
+        data: mlaut.Data object 
+            instance of mlaut.Data object
+        input_h5_original_datasets_group: string
+            location where the datasets are saved
+        output_h5_predictions_group: string
+            location where predictions are saved
+        split_datasets_group: string
+            location where the splits are saved
+        run_times_group: string
+            location where the run times are saved
+        train_idx: string
+            train index group name
+        test_idx: string
+            test index group name
+        """
+        self._data = data
         self._input_h5_original_datasets_group = input_h5_original_datasets_group
         self._output_h5_predictions_group = output_h5_predictions_group
         self._split_datasets_group = split_datasets_group
         self._run_times_group=run_times_group
         self._train_idx = test_idx
         self._test_idx = test_idx
-        self._data = Data(experiments_predictions_group=self._output_h5_predictions_group,
-                          split_datasets_group=self._split_datasets_group,
-                          train_idx=self._train_idx,
-                          test_idx=self._test_idx)
+
     
     def prediction_errors(self, metric, estimators, exact_match=True):
         """
         Calculates the average prediction error per estimator as well as the prediction error achieved by each estimator on individual datasets.
 
-        Args:
-            metric(`mlaut.analyse_results.scores`): Error function. 
-            estimators(`mlaut_estimator` array): Estimator objects.
-            exact_match(Boolean): If `True` when predictions for all estimators in the estimators array is not available no evaluation is performed on the remaining estimators. 
-        Returns:
+        Parameters
+        ----------
+        metric: `mlaut.analyse_results.scores`
+            Error function
+        estimators: `mlaut_estimator` array
+            Estimator objects.
+        exact_match: Boolean
+            If `True` when predictions for all estimators in the estimators array is not available no evaluation is performed on the remaining estimators. 
+        
+        Returns
+        -------
             estimator_avg_error, estimator_avg_error_per_dataset (pickle of pandas DataFrame): ``estimator_avg_error`` represents the average error and standard deviation achieved by each estimator. ``estimator_avg_error_per_dataset`` represents the average error and standard deviation achieved by each estimator on each dataset.
         """
         #load all predictions
-        dts_predictions_list, dts_predictions_list_full_path = self._data.list_datasets(self._output_h5_predictions_group, self._output_io)
+        input_io, output_io = self._data.get_io()
+        dts_predictions_list = output_io.list_datasets(self._output_h5_predictions_group)
         losses = Losses(metric, estimators, exact_match)
         #code producess error if multiple predictions for the same dataset are stored in the databse. Therefore, we skip subsequent predictions. The files_io.save_prediction_to_db ovverrites predictions by default so this should not occur.
         dts_processed = []
@@ -81,11 +100,9 @@ class AnalyseResults(object):
             if dts in dts_processed:
                 continue
             dts_processed.append(dts)
-            predictions = self._output_io.load_predictions_for_dataset(dataset_name=dts)
-            _, _, _, y_test = self._data.load_test_train_dts(hdf5_out=self._output_io, 
-                                                                              hdf5_in=self._input_io, 
-                                                                              dts_name=dts, 
-                                                                              dts_grp_path=self._input_h5_original_datasets_group)
+            predictions = self._data.load_predictions(dts)
+        #     predictions = output_io.load_predictions_for_dataset(dataset_name=dts)
+            _, _, _, y_test = self._data.load_test_train_dts(dts_name=dts)
 
             losses.evaluate(predictions=predictions, 
                             true_labels=y_test,

@@ -48,7 +48,7 @@ class ScoreMSE(MLAUTScore):
     Calculates the mean squared error between the true and predicted lables.
     """
 
-    def calculate(y_true, y_pred):
+    def calculate(self, y_true, y_pred):
         """
         Main method for performing the calculations.
 

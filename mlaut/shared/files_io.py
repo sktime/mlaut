@@ -125,6 +125,7 @@ class FilesIO:
         return is_present 
 
     def load_predictions_for_dataset(self, dataset_name):
+        #TODO Delete
         """
         Loads predictions generated my trained estimator models.
 
@@ -135,6 +136,7 @@ class FilesIO:
         """
         f = h5py.File(self._hdf5_filename, self._mode)
         load_path = f'/{self._experiments_predictions_group}/{dataset_name}'
+        print(f'**********{load_path}')
         predictions = f[load_path]
         
         
@@ -294,24 +296,33 @@ class FilesIO:
         f.close()
         return datasets
 
-    def load_dataset_h5(self, dataset_path):
+    def load_dataset_h5(self, dataset_path, return_meta=False):
         """
         Loads dataset from HDF5 database. The dataset needs to have been saved as a numpy array originally
 
-        :type dataset_path: string
-        :param dataset_path: path to dataset.
+        Parameters
+        ----------
+        dataset_path: string
+            path to dataset.
+        return_meta: Boolean
+            if true returns the metadata
 
-        :rtype: `numpy array, metadata dictionary`
+        Returns
+        -------
+        `numpy array, metadata dictionary`
         """
         f = h5py.File(self._hdf5_filename, self._mode)
         idx = f[dataset_path][...]
         #load metadata
-        meta = f[dataset_path].attrs.items()
-        meta_dict = {}
-        for m in meta:
-            meta_dict[m[0]] = m[1]
-        f.close()
-        return idx, meta_dict
+        if return_meta:
+            meta = f[dataset_path].attrs.items()
+            meta_dict = {}
+            for m in meta:
+                meta_dict[m[0]] = m[1]
+            f.close()
+            return idx, meta_dict
+        else:
+            return idx
         
     def load_dataset_pd(self, dataset_path, return_metadata=True):
         """

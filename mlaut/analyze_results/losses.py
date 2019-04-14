@@ -55,6 +55,8 @@ class Losses(object):
 
                 if estimator_name in self._estimator_names:     
                     loss=0
+
+
                     loss = self._metric.calculate(true_labels, estimator_predictions)
 
                     

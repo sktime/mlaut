@@ -133,9 +133,9 @@ class Orchestrator:
 
 
                 dts_trained +=1
-                X_train = X.iloc[train_idx]
-                X_test = X.iloc[test_idx]
-                y_train = y.iloc[train_idx]
+                X_train = X.iloc[train_idx].values
+                X_test = X.iloc[test_idx].values
+                y_train = y.iloc[train_idx].values
                 timestamps_df = pd.DataFrame()
                 for modelling_strategy in self._strategies:
                     ml_strategy_name = modelling_strategy.properties['name']

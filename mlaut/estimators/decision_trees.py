@@ -65,12 +65,10 @@ class Decision_Tree_Classifier(MlautEstimator):
 
 
 class Decision_Tree_Regressor(MlautEstimator):
-    """
-    Wrapper for `sklearn Decision Tree Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html>`_.
-    """
+
     properties = {'estimator_family':[DECISION_TREE_METHODS], 
             'tasks':[REGRESSION], 
-            'name':'DecisionTreeClassifier'}
+            'name':'DecisionTreeRegressor'}
 
     hyperparameters = {"max_depth": [10,100, None],
                 "criterion": ['mse', 'friedman_mse', 'mae'],
