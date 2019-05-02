@@ -16,7 +16,6 @@ from sklearn.ensemble import BaggingRegressor
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from mlaut.estimators.generic_estimator import Generic_Estimator
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 import numpy as np

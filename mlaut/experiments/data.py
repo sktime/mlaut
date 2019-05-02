@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 import pandas as pd
 import h5py
 import numpy as np
@@ -55,11 +55,12 @@ class MLautResult(ABC):
         method for loading the results
         """
 
-class DatasetHDF5:
+class HDF5:
     """
-    Class for manipulating HDF5 data
+    For matipulating HDF5 files
     """
-    def __init__(self, hdf5_path, mode, dataset_path, dataset_name, train_test_exists=True):
+
+    def __init__(self, hdf5_path, mode):
         """
         Parameters
         ----------
@@ -67,10 +68,44 @@ class DatasetHDF5:
             path to the HDF5 file. 
         mode: string
             mode for manipulating HDF5 files. Accepable values: 'r', 'r+', 'w', 'w-', 'x', 'a'
+        """
+
+        self._hdf5_path = hdf5_path
+        self._mode = mode
+    
+    def save_dataset(self, dataset, save_path, dataset_name):
+        """
+        Saves dataset to HDF5 file
+
+        Paramters
+        ---------
+        dataset: pandas DataFrame
+            dataset in pandas DataFrame format
+        save_path: string
+            location in HDF5 database where the dataset will be saved
+        dataset_name: string
+            Name of the dataset
+        """
+        store = pd.HDFStore(self._hdf5_path, self._mode)
+        store[f'{save_path}/{dataset_name}'] = dataset
+        store.close()
+
+class DatasetHDF5:
+    """
+    Class for manipulating HDF5 data
+    """
+    def __init__(self, hdf5_path, dataset_path, dataset_name, mode='r', train_test_exists=True):
+        """
+        Parameters
+        ----------
+        hdf5_path: string
+            path to the HDF5 file. 
         dataset_path: string
             Location in HDF5 database where the dataset is saved
         dataset_name: string
             Name of the dataset
+        mode: string
+            mode for manipulating HDF5 files. Accepable values: 'r', 'r+', 'w', 'w-', 'x', 'a'
         train_test_exists: Boolean
             flag whether the test train split already exists
         """
@@ -115,8 +150,8 @@ class ResultHDF5(MLautResult):
 
     def __init__(self, 
                  hdf5_path, 
-                 mode, 
                  results_save_path, 
+                 mode='r', 
                  experiments_predictions_group='predictions',
                  y_pred_group='y_pred',
                  y_true_group='y_true', 
@@ -126,10 +161,10 @@ class ResultHDF5(MLautResult):
         ----------
         hdf5_path: string
             path to the HDF5 file. 
-        mode: string
-            mode for manipulating HDF5 files. Accepable values: 'r', 'r+', 'w', 'w-', 'x', 'a'
         results_save_path: string
             Path where the results are saved
+        mode: string
+            mode for manipulating HDF5 files. Accepable values: 'r', 'r+', 'w', 'w-', 'x', 'a'
         experiments_predictions_group: string
             Root directory where the predictions will be saved
         y_pred_group: string
@@ -168,7 +203,7 @@ class ResultHDF5(MLautResult):
 
         if save_path_exists and self._overwrite_predictions:
             logging.info(f'Overriding prediction for {strategy_name} on {dataset_name}.')
-            del f[save_path]
+            del f[save_path_y_pred]
         
         f[save_path_y_pred] = np.array(y_pred)
         f[save_path_y_true] = np.array(y_true)
@@ -184,18 +219,17 @@ class ResultHDF5(MLautResult):
         list
             List of results objects
         """
-        f = h5py.File(self._hdf5_filename, self._mode)
+        f = h5py.File(self._hdf5_path, self._mode)
 
-        #TODO iterate through all results saved in results_save_path and create reults objects
         results = []
-        for dataset_name in f[self._experiments_predictions_group].items():
-            for strategy_name in f[f'{self._experiments_predictions_group}/{dataset_name}' ].items():
-                for cv_fold in f[f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}/{self._y_pred_group}'].items():
+        for dataset_name in list(f[self._experiments_predictions_group].keys()):
+            for strategy_name in list(f[f'{self._experiments_predictions_group}/{dataset_name}'].keys()):
+                for cv_fold in list(f[f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}/{self._y_pred_group}'].keys()):
                     #TODO handle cv folds
-                    y_true = f[f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}/{self._y_true_group}']
-                    y_pred = f[f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}/{self._y_pred_group}/cv_fold{cv_fold}']
-                    result = Result(dataset_name=dataset,
-                                    strategy_name=strategy,
+                    y_true = f[f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}/{self._y_true_group}'][...]
+                    y_pred = f[f'{self._experiments_predictions_group}/{dataset_name}/{strategy_name}/{self._y_pred_group}/{cv_fold}'][...]
+                    result = Result(dataset_name=dataset_name,
+                                    strategy_name=strategy_name,
                                     y_true=y_true,
                                     y_pred=y_pred)
                     results.append(result)
