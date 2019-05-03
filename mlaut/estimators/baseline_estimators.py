@@ -14,44 +14,41 @@ class Baseline_Regressor(MlautEstimator):
     """
     Wrapper for sklearn dummy regressor
     """
-    properties = {'estimator_family':[BASELINE],
-            'tasks':[REGRESSION],
-            'name':'BaselineRegressor'}
-    hyperparameters = None
 
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
+                estimator=DummyRegressor(),
+                hyperparameters=None,
+                properties=None, 
                 verbose=VERBOSE,
                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
                 refit=True):
-
-        self.properties = properties
+        if properties is None:
+            self._properties = {'estimator_family':[BASELINE],
+                                'tasks':[REGRESSION],
+                                'name':estimator.__class__.__name__}
+        self._estimator = estimator
         self._hyperparameters = hyperparameters
         self._verbose = verbose
         self._n_jobs = n_jobs
         self._num_cv_folds = num_cv_folds
         self._refit = refit
 
-    def build(self, strategy='median', **kwargs):
-        """
-        Builds and returns estimator class.
+    @property
+    def properties(self):
+        return self._properties
 
-        Parameters
-        ----------
-        strategy : string
-            as per `scikit-learn dummy regressor documentation <http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html>`_.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
+    def fit(self, X, y):
+        """
+        Calls the estimator fit method
+
         Returns
         -------
-        `sklearn.dummy.DummyRegressor` 
-            Instantiated estimator object.
+        a
         """
-        return DummyRegressor(strategy=strategy)
-        return self._create_pipeline(estimator=DummyRegressor(strategy=strategy))
+        return self._estimator.fit(X,y)
+
+    
 
 
 

@@ -33,14 +33,21 @@ class MlautEstimator(ABC):
     #     num_cv_folds(int): number of cross validation folds used by GridsearchCV.
     #     refit(Boolean): Refit an estimator using the best found parameters on the whole dataset.
     # """
+
+
     @abstractmethod
-    def build(self):
+    def fit(self):
         """ 
         Abstract method that needs to be implemented by all estimators. 
         It should return an estimator object.
         """
-    
-    
+
+    def predict(self, X):
+        """
+        Predict
+        """
+        self._estimator.predict(X)
+
     def save(self, dataset_name):
         """
         Saves estimator on disk.
@@ -137,82 +144,4 @@ class MlautEstimator(ABC):
                 return pipe
         else:
             return estimator
-
-
-#decorator for adding properties to estimator classes
-
-# class properties(object):
-#     """
-#     Decorator class used for adding properties to mlaut estimator classes. The properties that all mlaut estimator objects must have are: estimator family, task (classification, regression), name of estimator. 
-
-#     The decorator attached a `properties()` method to the class which invokes it 
-#     """
-#     def __init__(self, 
-#         estimator_family, 
-#         tasks, 
-#         name, 
-#         data_preprocessing={'normalize_features': False,
-#                             'normalize_labels': False}):
-#         """
-#         Args:
-#             estimator_family (array of strings): family of machine learning algorithms that the estimator belongs to.
-            
-#             tasks (array of strings): array of tasks (classification and/or regression) that the estimator can be applied to.
-            
-#             name (str): name of estimator.
-            
-#             data_preprocessing (dictionary): dictionary with data preprocessing operations to be performed on datasets before they are used in training.
-#         """
-#         self._estimator_family = estimator_family
-#         self._tasks = tasks
-#         self._name = name
-#         self._data_preprocessing = data_preprocessing
-
-
-#     def _properties(self):
-#         """
-#         Method attached by the decorator to the mlaut estimator object.
-
-#         Returns:
-#             `dictionary`: Dictionary with the propoperties of the estimator.
-
-#         """            
-#         #check whether the inputs are right
-#         if not isinstance(self._estimator_family, list) or \
-#             not isinstance(self._tasks, list):
-#             raise ValueError('Arguments to property_decorator must be provided as an array')
-#         properties_dict = {
-#             'estimator_family': self._estimator_family,
-#             'tasks': self._tasks,
-#             'name': self._name,
-#             'data_preprocessing': self._data_preprocessing
-#         }
-#         return properties_dict
-
-#     def _set_properties(self,
-#                         estimator_family=None, 
-#                         tasks=None, 
-#                         name=None, 
-#                         data_preprocessing=None):
-#         """
-#         Alternative method for setting the properties of the estimator. Used when creating a generic estimator by inehriting from an already created class.
-
-#         """
-#         if estimator_family is not None:
-#             self._estimator_family = estimator_family
-#         if tasks is not None:
-#             self._tasks = tasks
-#         if name is not None:
-#             self._name = name
-#         if data_preprocessing is not None:
-#             self._data_preprocessing = data_preprocessing
-        
-#     @wrapt.decorator
-#     def __call__(self, wrapped, instance, args, kwargs):
-#         #add/attach properties to class
-#         wrapped.properties = self._properties
-#         # wrapped.set_properties = self._set_properties
-#         return wrapped(*args, **kwargs)
-        
-        
 

@@ -73,7 +73,7 @@ class HDF5:
         self._hdf5_path = hdf5_path
         self._mode = mode
     
-    def save_dataset(self, dataset, save_path, dataset_name):
+    def save_dataset(self, dataset, metadata, save_path, dataset_name):
         """
         Saves dataset to HDF5 file
 
@@ -81,6 +81,8 @@ class HDF5:
         ---------
         dataset: pandas DataFrame
             dataset in pandas DataFrame format
+        metadata: dictionary
+            metadata in the form of a dictionary
         save_path: string
             location in HDF5 database where the dataset will be saved
         dataset_name: string
@@ -88,6 +90,7 @@ class HDF5:
         """
         store = pd.HDFStore(self._hdf5_path, self._mode)
         store[f'{save_path}/{dataset_name}'] = dataset
+        store.get_storer(f'{save_path}/{dataset_name}').attrs.metadata = metadata
         store.close()
 
 class DatasetHDF5:
@@ -134,13 +137,14 @@ class DatasetHDF5:
 
         Returns
         -------
-            pandas DataFrame
+        (pandas DataFrame, dictionary):
+            tuple with the dataset and its metadata
         """
         store = pd.HDFStore(self._hdf5_path, self._mode)
         dataset = store[self._dataset_path + '/' + self._dataset_name]
-
+        metadata = store.get_storer(self._dataset_path + '/' + self._dataset_name).attrs.metadata
         store.close()
-        return dataset
+        return dataset, metadata
 
 class ResultHDF5(MLautResult):
 

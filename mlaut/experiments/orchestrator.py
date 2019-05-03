@@ -10,12 +10,10 @@ class Orchestrator:
     """
     Orchestrates the sequencing of running the machine learning experiments.
     """
-    def __init__(self, tasks, datasets, strategies, cv, result):
+    def __init__(self, datasets, strategies, cv, result):
         """
         Parameters
         ----------
-        tasks: sktime.highlevel.Task
-            task object
         datasets: pandas dataframe
             datasets in pandas skitme format
         strategies: list of sktime strategy
@@ -25,7 +23,6 @@ class Orchestrator:
         result: sktime result class
             Object for saving the results
         """
-        self._tasks = tasks
         self._datasets = datasets
         self._strategies = strategies
         self._cv = cv
@@ -44,16 +41,16 @@ class Orchestrator:
             If True saves the trained strategies on the disk
         """
         
-        for task, data in zip(self._tasks, self._datasets):
-            dts_loaded = data.load()
+        for data in self._datasets:
+            dts_loaded, metadata = data.load()
             for strategy in self._strategies:
                 for cv_fold, (train, test) in enumerate(self._cv.split(dts_loaded)):
                     
-                    strategy.fit(task, dts_loaded.iloc[train])
+                    strategy.fit(metadata, dts_loaded.iloc[train])
 
                     if predict_on_runtime:
                         y_pred = strategy.predict(dts_loaded.iloc[test])
-                        y_true = dts_loaded[task.target].iloc[test].values
+                        y_true = dts_loaded[metadata['target']].iloc[test].values
                         self._result.save(dataset_name=data.dataset_name, 
                                           strategy_name=strategy.name, 
                                           y_true=y_true.tolist(), 
