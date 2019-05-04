@@ -24,228 +24,135 @@ class Random_Forest_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Random Forest Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html>`_.
     """
-    properties = {'estimator_family':[ENSEMBLE_METHODS], 
-            'tasks':[CLASSIFICATION], 
-            'name':'RandomForestClassifier'}
-    # hyperparameters = {
-    #                 'n_estimators': [10, 50, 100],
-    #                 'max_features': ['auto', 'sqrt','log2', None],
-    #                 'max_depth': [5, 15, None]
-    #             }
-    
-    # source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html
-    hyperparameters = {"max_depth": [10,100, None],
-                "max_features": ['auto', 'sqrt','log2', None],
-                "min_samples_split": [2, 3, 10],
-                "bootstrap": [True, False],
-                "criterion": ["gini", "entropy"],
-                "n_estimators": [10, 100, 200, 500]}
+
 
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
-
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
-
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
+                estimator=None,
+                properties=None,
+                n_jobs=-1,
+                cv=5):
+        if estimator is None:
+            # hyperparameters = {
+            #                 'n_estimators': [10, 50, 100],
+            #                 'max_features': ['auto', 'sqrt','log2', None],
+            #                 'max_depth': [5, 15, None]
+            #             }
+            
+            # source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html
+            hyperparameters = {"max_depth": [10,100, None],
+                        "max_features": ['auto', 'sqrt','log2', None],
+                        "min_samples_split": [2, 3, 10],
+                        "bootstrap": [True, False],
+                        "criterion": ["gini", "entropy"],
+                        "n_estimators": [10, 100, 200, 500]}
+            self._estimator = GridSearchCV(RandomForestClassifier(), 
+                            hyperparameters, 
+                            n_jobs=n_jobs,
+                            cv=cv)
+        else:
+            self._estimator=estimator
         
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
-
-        """
-        estimator = GridSearchCV(RandomForestClassifier(), 
-                            self._hyperparameters, 
-                            verbose = self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit,
-                            cv=self._num_cv_folds)
-        return self._create_pipeline(estimator=estimator)  
-
-
+        if properties is None:
+            properties = {'estimator_family':[ENSEMBLE_METHODS], 
+                    'tasks':[CLASSIFICATION], 
+                    'name':'RandomForestClassifier'}
+        else:
+            self._properties = properties
+        
         
 
 class Random_Forest_Regressor(MlautEstimator):
     """
     Wrapper for `sklearn Random Forest Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html>`_.
     """
-    properties = {'estimator_family':[ENSEMBLE_METHODS], 
-            'tasks':[REGRESSION], 
-            'name':'RandomForestRegressor'}
-    hyperparameters = {
-                'n_estimators': [10, 50, 100],
-                'max_features': ['auto', 'sqrt','log2', None],
-                'max_depth': [5, 15, None]
-            }
+
  
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+                estimator=None,
+                properties=None,
+                n_jobs=-1,
+                cv=5):
+        if estimator is None:
+            hyperparameters = {
+            'n_estimators': [10, 50, 100],
+            'max_features': ['auto', 'sqrt','log2', None],
+            'max_depth': [5, 15, None]
+            }
+            self._estimator = GridSearchCV(estimator=RandomForestRegressor(), 
+                                           param_grid=hyperparameters,
+                                           n_jobs=n_jobs,
+                                           cv=cv)
+        else:
+           self._estimator = estimator
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
-
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
-
-        """   
-        estimator = GridSearchCV(RandomForestRegressor(), 
-                            self._hyperparameters, 
-                            verbose = self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit,
-                            cv=self._num_cv_folds)
-        return self._create_pipeline(estimator=estimator)        
+        if properties is None:
+            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
+                                'tasks':[REGRESSION], 
+                                'name':'RandomForestRegressor'}
+        else:
+            self._properties=properties
 
 
 class Bagging_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Bagging Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html>`_.
     """
-    properties = {'estimator_family':[ENSEMBLE_METHODS], 
-            'tasks':[CLASSIFICATION], 
-            'name':'BaggingClassifier'}
-    hyperparameters = {
-            'n_estimators': [10, 100, 200, 500],
-            'max_samples':[0.5, 1],
-            'max_features': [0.5,1]
-            # 'base_estimator': [DecisionTreeClassifier(), KNeighborsClassifier(), SVC()]
-        }
+
 
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+                estimator=None,
+                properties=None,
+                n_jobs=-1,
+                cv=5):
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
+        if estimator is None:
+            hyperparameters = {
+            'n_estimators': [10, 100, 200, 500],
+            'max_samples':[0.5, 1],
+            'max_features': [0.5,1]}
+            # 'base_estimator': [DecisionTreeClassifier(), KNeighborsClassifier(), SVC()]
+            self._estimator = GridSearchCV(estimator=DecisionTreeClassifier(), 
+                                            param_grid=hyperparameters,
+                                            n_jobs=n_jobs,
+                                            cv=cv)
+        else:
+            self._estimator = estimator
 
-
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
-        """
-        estimator = BaggingClassifier(base_estimator=DecisionTreeClassifier())
-        estimator = GridSearchCV(estimator, 
-                            self._hyperparameters, 
-                            verbose = self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit,
-                            cv=self._num_cv_folds)
-        return self._create_pipeline(estimator=estimator)        
-
-
+        if properties is None:
+            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
+                                'tasks':[CLASSIFICATION], 
+                                'name':'BaggingClassifier'}
+        else:
+            self._properties=properties
 
 class Bagging_Regressor(MlautEstimator):
     """
     Wrapper for `sklearn Bagging Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html>`_.
     """
-    properties = {'estimator_family':[ENSEMBLE_METHODS], 
-            'tasks':[REGRESSION], 
-            'name':'BaggingRegressor'}
-    hyperparameters = {
+   
+    def __init__(self,
+                estimator=None,
+                properties=None,
+                n_jobs=-1,
+                cv=5):
+        if estimator is None:
+            hyperparameters ={
                     'n_estimators': [10, 50, 100]
                 }
  
-    def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+            self._estimator = GridSearchCV(estimator=DecisionTreeRegressor(), 
+                                           param_grid=hyperparameters,
+                                           n_jobs=n_jobs,
+                                           cv=cv)
+        else:
+           self._estimator = estimator
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
-
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
-        """
-       
-        estimator = BaggingRegressor(base_estimator=DecisionTreeRegressor())
-        estimator = GridSearchCV(estimator, 
-                            self._hyperparameters, 
-                            verbose = self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit,
-                            cv=self._num_cv_folds)
-        return self._create_pipeline(estimator=estimator)        
+        if properties is None:
+            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
+                                'tasks':[REGRESSION], 
+                                'name':'BaggingRegressor'}
+        else:
+            self._properties=properties
 
 
 
@@ -255,56 +162,34 @@ class Gradient_Boosting_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Gradient Boosting Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html>`_.
     """
-    properties = {'estimator_family':[ENSEMBLE_METHODS], 
-            'tasks':[CLASSIFICATION], 
-            'name':'GradientBoostingClassifier'}
-    hyperparameters = {
+
+
+    def __init__(self,
+                estimator=None,
+                properties=None,
+                n_jobs=-1,
+                cv=5):
+        if estimator is None:
+            hyperparameters ={
                     'n_estimators': [100, 200, 500],
                     'max_depth': np.arange(1,11),
                     'learning_rate': [0.01, 0.1, 1, 10, 100]
                 }
+ 
+            self._estimator = GridSearchCV(estimator=GradientBoostingClassifier(), 
+                                           param_grid=hyperparameters,
+                                           n_jobs=n_jobs,
+                                           cv=cv)
+        else:
+           self._estimator = estimator
 
-    def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+        if properties is None:
+            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
+                                'tasks':[CLASSIFICATION], 
+                                'name':'GradientBoostingClassifier'}
+        else:
+            self._properties=properties
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
-
-
-
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
-
-        """
-        estimator = GridSearchCV(GradientBoostingClassifier(), 
-                            self._hyperparameters, 
-                            verbose = self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit,
-                            cv=self._num_cv_folds)
-        return self._create_pipeline(estimator=estimator)        
 
 
 
@@ -313,52 +198,29 @@ class Gradient_Boosting_Regressor(MlautEstimator):
     Wrapper for `sklearn Gradient Boosting Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html>`_.
     """
 
-    properties = {'estimator_family':[ENSEMBLE_METHODS], 
-            'tasks':[REGRESSION], 
-            'name':'GradientBoostingRegressor'}
-    hyperparameters = {
-                'n_estimators': [10, 50, 100],
-                'max_depth':[10,100, None]
-            }        
 
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+                estimator=None,
+                properties=None,
+                n_jobs=-1,
+                cv=5):
+        if estimator is None:
+            hyperparameters ={
+                            'n_estimators': [10, 50, 100],
+                            'max_depth':[10,100, None]
+                        }        
+ 
+            self._estimator = GridSearchCV(estimator=GradientBoostingRegressor(), 
+                                           param_grid=hyperparameters,
+                                           n_jobs=n_jobs,
+                                           cv=cv)
+        else:
+           self._estimator = estimator
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
+        if properties is None:
+            self._properties ={'estimator_family':[ENSEMBLE_METHODS], 
+                            'tasks':[REGRESSION], 
+                            'name':'GradientBoostingRegressor'}
+        else:
+            self._properties=properties
 
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Parameters
-        ----------
-        hyperparameters: dictionary
-            Dictionary of hyperparameters to be used for tuning the estimator.
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
-
-        """
-
-        estimator = GridSearchCV(GradientBoostingRegressor(), 
-                            self._hyperparameters, 
-                            verbose = self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit,
-                            cv=self._num_cv_folds)
-    
-        return self._create_pipeline(estimator=estimator)        

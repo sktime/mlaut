@@ -52,14 +52,14 @@ class Orchestrator:
                         y_pred = strategy.predict(dts_loaded.iloc[test])
                         y_true = dts_loaded[metadata['target']].iloc[test].values
                         self._result.save(dataset_name=data.dataset_name, 
-                                          strategy_name=strategy.name, 
+                                          strategy_name=strategy.properties['name'], 
                                           y_true=y_true.tolist(), 
                                           y_pred=y_pred.tolist(),
                                           cv_fold=cv_fold)
                     if save_strategies:
                         strategy.save(dataset_name=data.dataset_name, 
                                       cv_fold=cv_fold,
-                                      strategies_save_dir=self._result.strategies_save_dir)
+                                      strategy_save_dir=self._result.trained_strategies_save_path)
 
     def predict(self):
         """

@@ -24,39 +24,20 @@ class Gaussian_Naive_Bayes(MlautEstimator):
     properties = {'estimator_family':[NAIVE_BAYES], 
             'tasks':[CLASSIFICATION], 
             'name':'GaussianNaiveBayes'}
-    hyperparameters = None
 
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
-
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
-
-
-    def build(self, **kwargs):
-        """
-        Builds and returns estimator class.
+                estimator=GaussianNB(),
+                properties=None):
         
-        Parameters
-        ----------
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
-        """
-        return self._create_pipeline(estimator=GaussianNB())        
+        if properties is None:
+            self._properties = {'estimator_family':[NAIVE_BAYES], 
+                                'tasks':[CLASSIFICATION], 
+                                'name':estimator.__class__.__name__}
+        else:
+            self._properties = properties
+
+
+
 
          
 
@@ -65,40 +46,15 @@ class Bernoulli_Naive_Bayes(MlautEstimator):
     """
     Wrapper for `sklearn Bernoulli Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html>`_.
     """
-    properties = {'estimator_family':[NAIVE_BAYES], 
-            'tasks':[CLASSIFICATION], 
-            'name':'BernoulliNaiveBayes'}
-    hyperparameters = None        
-
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
-
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
+                estimator=BernoulliNB(),
+                properties=None):
+        
+        if properties is None:
+            self._properties = {'estimator_family':[NAIVE_BAYES], 
+                                'tasks':[CLASSIFICATION], 
+                                'name':estimator.__class__.__name__}
+        else:
+            self._properties = properties
 
         
-
-    def build(self, **kwargs):
-        """
-        Builds and returns estimator class.
-
-        Parameters
-        ----------
-        **kwargs : key-value arguments.
-            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns
-        -------
-        `sklearn pipeline` object
-            pipeline for transforming the features and training the estimator
-        """
-        return self._create_pipeline(estimator=BernoulliNB())

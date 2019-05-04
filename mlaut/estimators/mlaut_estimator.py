@@ -11,112 +11,86 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn import preprocessing
 import logging
-
+import os
 
 class MlautEstimator(ABC):
     """
     Abstact base class that all mlaut estimators should inherit from.
     """
-    # def __init__(self, 
-    #             verbose=VERBOSE, 
-    #             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-    #             num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-    #             refit=True):
-    #     self._num_cv_folds=num_cv_folds
-    #     self._verbose=verbose
-    #     self._n_jobs=n_jobs
-    #     self._refit=refit
-    # """
-    # Args:
-    #     verbose(int): Sets the amount of output in the terminal. Higher numbers mean more output.
-    #     n_jobs(number): number of CPU cores used for training the estimators. If set to -1 all available cores are used.
-    #     num_cv_folds(int): number of cross validation folds used by GridsearchCV.
-    #     refit(Boolean): Refit an estimator using the best found parameters on the whole dataset.
-    # """
 
+    @property
+    def properties(self):
+        return self._properties
 
-    @abstractmethod
-    def fit(self):
-        """ 
-        Abstract method that needs to be implemented by all estimators. 
-        It should return an estimator object.
+    def fit(self, metadata, data):
         """
+        Calls the estimator fit method
+
+        Parameters
+        ----------
+        metadata: dictionary
+            metadata including the target variable
+        data: pandas DataFrame
+            training data
+        
+        Returns
+        -------
+        sktime estimator:
+            fitted estimator
+        """
+        y = data[metadata['target']]
+        X = data.drop(metadata['target'], axis=1)
+        return self._estimator.fit(X,y)    
+
 
     def predict(self, X):
         """
-        Predict
+        Properties
+        ----------
+        X: dataframe or numpy array
+            features on which predictions will be made
         """
-        self._estimator.predict(X)
+        return self._estimator.predict(X)
 
-    def save(self, dataset_name):
+    def save(self, dataset_name, cv_fold, strategy_save_dir):
         """
-        Saves estimator on disk.
-
-        Args:
-            dataset_name(string): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
+        Saves the strategy on the hard drive
+        Parameters
+        ----------
+        dataset_name:string
+            Name of the dataset
+        cv_fold: int
+            Number of cross validation fold on which the strategy was trained
+        strategy_save_dir: string
+            Path were the strategies will be saved
         """
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_to_pickle(trained_model=trained_model,
-                             model_name=self.properties['name'],
-                             dataset_name=dataset_name)
-    
-    def get_params(self):
-        """
-        Gets the hyperparaments of the estimator.
-
-        Returns:
-            dictionary: Dictionary with the hyperparaments of the estimator
-        """
-        return self._hyperparameters
-    
-    def set_params(self, hyperparameters):
-        """
-        Set the hyper-parameters of the estimator.
-
-        Args:
-            hyperparameters(dictionary): Dictionary with the hyperarameters of each model.
-        """
-        self._hyperparameters = hyperparameters
-    
-    def load(self, path_to_model):
-        """
-        Loads trained estimator from disk.
-        The default implemented method loads a sklearn estimator from a pickle file. 
-        This method needs to be overwritten in the child estimator class if another 
-        framework/procedure for saving/loading is used. 
-
-        Args:
-            path_to_model (str): Location of the trained estimator.
-        """
-        #file name could be passed with .* as extention. 
-        # split_path = path_to_model.split('.')
-        # path_to_load = split_path[0] + PICKLE_EXTENTION 
-        model = pickle.load(open(path_to_model,'rb'))
-        self.set_trained_model(model)
-    
-    def set_trained_model(self, trained_model):
-        """
-        setter method for storing trained estimator in memory
+        if strategy_save_dir is None:
+            raise ValueError('Please provide a directory for saving the strategies')
         
-        Args:
-            trained_model (estimator object): Trained sklearn, keras, etc. estimator object.
+        #TODO implement check for overwriting already saved files
+        save_path = os.path.join(strategy_save_dir, dataset_name)
+        
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
+        #TODO pickling will not work for all strategies
+        pickle.dump(self, open(os.path.join(save_path, self._properties['name'] + '_cv_fold'+str(cv_fold)+ '.p'),"wb"))
+
+    def load(self, path):
         """
-        self._trained_model = trained_model
+        Load saved strategy
+        Parameters
+        ----------
+        path: String
+            location on disk where the strategy was saved
+        
+        Returns
+        -------
+        strategy:
+            sktime strategy
+        """
+        return pickle.load(open(path,'rb'))
     
-    def get_trained_model(self):
-        """
-        Getter method.
-
-        Returns:
-            `sklearn pipline object`: Trained sklearn model
-        """
-
-        return self._create_pipeline(self._trained_model)
-
-    # def properties(self):
-    #     return self._properties
 
     def _create_pipeline(self, estimator):
         """
