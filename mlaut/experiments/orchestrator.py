@@ -27,7 +27,7 @@ class Orchestrator:
         self._strategies = strategies
         self._cv = cv
         self._result = result
-
+        logging.basicConfig(level=logging.DEBUG)
 
     def run(self, predict_on_runtime=True, save_strategies=True):
         """

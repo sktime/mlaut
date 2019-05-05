@@ -26,7 +26,7 @@ class Ridge_Regression(MlautEstimator):
                 cv=5):
         if estimator is None:
             hyperparameters = {'alphas':[0.1, 1, 10.0]}
-            self._estimator = linear_model.RidgeCV(alphas=hyperparameters['alphas'], cv=cv)
+            estimator = linear_model.RidgeCV(alphas=hyperparameters['alphas'], cv=cv)
 
 
         if properties is None:
