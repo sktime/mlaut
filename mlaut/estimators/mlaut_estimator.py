@@ -18,9 +18,12 @@ class MlautEstimator(ABC):
     Abstact base class that all mlaut estimators should inherit from.
     """
 
+
     @property
     def properties(self):
         return self._properties
+
+
 
     def fit(self, metadata, data):
         """

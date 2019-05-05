@@ -48,7 +48,7 @@ of the trined models. The pipeline is the following:
     3. The Experiments class evokes get_trained_model and makes predictions 
     on the test set. 
 """
-def instantiate_default_estimators(estimators, 
+def default_estimators(estimators, 
                                    verbose=VERBOSE, 
                                    n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                                    num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 

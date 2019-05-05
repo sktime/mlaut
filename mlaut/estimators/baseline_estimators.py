@@ -19,18 +19,12 @@ class Baseline_Regressor(MlautEstimator):
                 estimator=DummyRegressor(),
                 properties=None):
         if properties is None:
-            self._properties = {'estimator_family':[BASELINE],
+            properties = {'estimator_family':[BASELINE],
                                 'tasks':[REGRESSION],
                                 'name':estimator.__class__.__name__}
-        else:
-            self._properties = properties
+        
         self._estimator = estimator
-
-
-
-
-    
-
+        self._properties = properties
 
 
 class Baseline_Classifier(MlautEstimator):
@@ -44,11 +38,10 @@ class Baseline_Classifier(MlautEstimator):
                 properties=None, 
                 verbose=VERBOSE):
         if properties is None:
-            self._properties = {'estimator_family':[BASELINE],
+            properties = {'estimator_family':[BASELINE],
                                 'tasks':[CLASSIFICATION],
                                 'name':estimator.__class__.__name__}
-        else:
-            self._properties = properties
+
+
         self._estimator = estimator
-
-
+        self._properties = properties

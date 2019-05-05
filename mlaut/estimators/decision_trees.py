@@ -26,21 +26,19 @@ class Decision_Tree_Classifier(MlautEstimator):
                             "criterion": ['gini', 'entropy'],
                             "max_features": ['auto', 'sqrt','log2'],
                             "min_samples_leaf":np.arange(1,11)}
-            self._estimator = GridSearchCV(DecisionTreeClassifier(), 
+            estimator = GridSearchCV(DecisionTreeClassifier(), 
                             hyperparameters, 
                             n_jobs=n_jobs,
                             cv=cv)
-        else:
-            self._estimator = estimator
+        
 
         if properties is None:
-            self._properties = {'estimator_family':[DECISION_TREE_METHODS], 
+            properties = {'estimator_family':[DECISION_TREE_METHODS], 
                                 'tasks':[CLASSIFICATION], 
                                 'name':'DecisionTreeClassifier'}
-        else:
-            self._properties=properties
 
-
+        self._estimator = estimator
+        self._properties = properties
 class Decision_Tree_Regressor(MlautEstimator):
 
 
@@ -66,6 +64,6 @@ class Decision_Tree_Regressor(MlautEstimator):
         if properties is None:
             self._properties = {'estimator_family':[DECISION_TREE_METHODS], 
                                 'tasks':[REGRESSION], 
-                                'name':'DecisionTreeClassifier'}
+                                'name':'DecisionTreeRegressor'}
         else:
             self._properties = properties

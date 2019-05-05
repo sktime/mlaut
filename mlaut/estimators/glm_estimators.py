@@ -22,10 +22,11 @@ class Ridge_Regression(MlautEstimator):
 
     def __init__(self,
                 estimator=None,
-                properties=None):
+                properties=None,
+                cv=5):
         if estimator is None:
             hyperparameters = {'alphas':[0.1, 1, 10.0]}
-            self._estimator = linear_model.RidgeCV(alphas=self._hyperparameters['alphas'], cv=5, n_jobs=-1)
+            self._estimator = linear_model.RidgeCV(alphas=hyperparameters['alphas'], cv=cv)
         else:
             self._estimator = estimator
 
@@ -46,10 +47,12 @@ class Lasso(MlautEstimator):
 
     def __init__(self,
                 estimator=None,
-                properties=None):
+                properties=None,
+                cv=5,
+                n_jobs=-1):
         if estimator is None:
             hyperparameters = {'alphas':[0.1, 1, 10.0]}
-            self._estimator = linear_model.LassoCV(alphas=self._hyperparameters['alphas'], cv=5, n_jobs=-1)
+            self._estimator = linear_model.LassoCV(alphas=hyperparameters['alphas'], cv=cv, n_jobs=n_jobs)
         else:
             self._estimator = estimator
 
@@ -70,9 +73,11 @@ class Lasso_Lars(MlautEstimator):
 
     def __init__(self,
                 estimator=None,
-                properties=None):
+                properties=None,
+                cv=5,
+                n_jobs=-1):
         if estimator is None:
-            self._estimator = linear_model.LassoLarsCV(max_n_alphas=1000, cv=5, n_jobs=-1)
+            self._estimator = linear_model.LassoLarsCV(max_n_alphas=1000, cv=cv, n_jobs=n_jobs)
         else:
             self._estimator = estimator
 
@@ -113,7 +118,7 @@ class Logistic_Regression(MlautEstimator):
 
         if properties is None:
             self._properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-                                'tasks':[REGRESSION], 
+                                'tasks':[CLASSIFICATION], 
                                 'name':'LogisticRegression'}
         else:
             self._properties=properties
@@ -157,11 +162,11 @@ class Passive_Aggressive_Classifier(MlautEstimator):
                 cv=5):
         if estimator is None:
             hyperparameters = {
-                'C': C_range,
+                'C': np.logspace(-2, 10, 13),
                 'max_iter':[1000]
             }
             self._estimator = GridSearchCV(linear_model.PassiveAggressiveClassifier(),
-                                          parm_grid=hyperparameters,
+                                          param_grid=hyperparameters,
                                           n_jobs=n_jobs,
                                           cv=cv)
         else:

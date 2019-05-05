@@ -49,7 +49,8 @@ class Orchestrator:
                     strategy.fit(metadata, dts_loaded.iloc[train])
 
                     if predict_on_runtime:
-                        y_pred = strategy.predict(dts_loaded.iloc[test])
+                        X_test = dts_loaded.iloc[test].drop(metadata['target'], axis=1)
+                        y_pred = strategy.predict(X_test)
                         y_true = dts_loaded[metadata['target']].iloc[test].values
                         self._result.save(dataset_name=data.dataset_name, 
                                           strategy_name=strategy.properties['name'], 

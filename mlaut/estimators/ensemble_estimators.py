@@ -49,16 +49,13 @@ class Random_Forest_Classifier(MlautEstimator):
                             hyperparameters, 
                             n_jobs=n_jobs,
                             cv=cv)
-        else:
-            self._estimator=estimator
+    
         
         if properties is None:
-            properties = {'estimator_family':[ENSEMBLE_METHODS], 
+            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
                     'tasks':[CLASSIFICATION], 
                     'name':'RandomForestClassifier'}
-        else:
-            self._properties = properties
-        
+       
         
 
 class Random_Forest_Regressor(MlautEstimator):

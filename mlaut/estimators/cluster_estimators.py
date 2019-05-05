@@ -23,7 +23,7 @@ class K_Neighbours(MlautEstimator):
 
 
     def __init__(self,
-                estimator=None
+                estimator=None,
                 properties=None,
                 n_jobs=-1,
                 cv=5):

@@ -60,7 +60,7 @@ class HDF5:
     For matipulating HDF5 files
     """
 
-    def __init__(self, hdf5_path, mode):
+    def __init__(self, hdf5_path, mode='a'):
         """
         Parameters
         ----------
@@ -91,7 +91,8 @@ class HDF5:
         
         if 'dataset_name' not in metadata.keys():
             raise ValueError('Provide the "dataset_name" as a key in the metadata dictionary.')
-        
+        if not isinstance(dataset, pd.DataFrame):
+            raise ValueError('dataset must be a pandas DataFrame')
         dataset_name = metadata['dataset_name']
         store = pd.HDFStore(self._hdf5_path, self._mode)
         store[f'{save_path}/{dataset_name}'] = dataset
