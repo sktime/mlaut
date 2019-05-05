@@ -4,7 +4,7 @@ import json
 import re
 import numpy as np
 import pandas as pd
-
+import logging
 
 class Orchestrator:
     """
@@ -45,7 +45,7 @@ class Orchestrator:
             dts_loaded, metadata = data.load()
             for strategy in self._strategies:
                 for cv_fold, (train, test) in enumerate(self._cv.split(dts_loaded)):
-                    
+                    logging.info(f'fitting: {strategy.properties} on dataset: {data.dataset_name}')
                     strategy.fit(metadata, dts_loaded.iloc[train])
 
                     if predict_on_runtime:

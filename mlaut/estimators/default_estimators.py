@@ -48,23 +48,30 @@ of the trined models. The pipeline is the following:
     3. The Experiments class evokes get_trained_model and makes predictions 
     on the test set. 
 """
-def default_estimators(estimators, 
-                                   verbose=VERBOSE, 
-                                   n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                                   num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                                   refit=True):
+def default_estimators(estimator_family=None,
+                       task=None,
+                       verbose=VERBOSE, 
+                       n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                       num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
+                       refit=True):
     """
-    instatiates default estimators.
-    Args:
-        estimators(array of strings): Estimator names, family class or type of task.
-        verbose(integer): The level of output displayed in the terminal. Default is 0 or no  output. Higher number means more messages will be printed.
-    
-    Returns:
-        `array of sklearn objects`: An array of instantiated estimators that are ready to be fitted on data.
+    Returns default estimators based on criteria
+
+    Parameters
+    ----------
+    estimator_family: string
+        Class of estimators
+    task: string
+        Accepted inputs are: Classification and Regression
+
+    Returns
+    -------
+    list:
+        list of mlaut estimator objects
     """
 
-    if not isinstance(estimators, list):
-        raise ValueError('Estimators parameter must be provided as an array')
+    if (estimator_family is None) and (task is None):
+        raise ValueError('Provide either an "estimator_familty" or "task"')
     
     all_estimators_array=[
         Logistic_Regression,
@@ -93,23 +100,12 @@ def default_estimators(estimators,
     ]
     estimators_array = []
 
-
-
-    if 'all' in estimators:
-        for est in all_estimators_array:
-            estimators_array.append(est())
-    else:
-        perms = itertools.product(estimators, all_estimators_array)
-        for p in perms:
-            input_estimator = p[0]
-            mlaut_estimator = p[1]
-            mlaut_estimator_prop = mlaut_estimator().properties
-
-            if input_estimator in mlaut_estimator_prop['estimator_family'] or \
-                input_estimator in mlaut_estimator_prop['tasks'] or \
-                input_estimator in mlaut_estimator_prop['name']:
-                estimators_array.append(mlaut_estimator())
-    if len(estimators_array) > 0:             
-        return estimators_array
-    else:
-        raise ValueError('Empty Estimator Array')
+    for est in all_estimators_array:
+        e = est()
+        if estimator_family in e.properties['estimator_family']:
+            estimators_array.append(est)
+            continue
+        
+        if task in e.properties['tasks']:
+            estimators_array.append(e) 
+    return estimators_array

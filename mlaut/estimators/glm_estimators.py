@@ -27,16 +27,15 @@ class Ridge_Regression(MlautEstimator):
         if estimator is None:
             hyperparameters = {'alphas':[0.1, 1, 10.0]}
             self._estimator = linear_model.RidgeCV(alphas=hyperparameters['alphas'], cv=cv)
-        else:
-            self._estimator = estimator
+
 
         if properties is None:
-            self._properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+            properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
                                 'tasks':[REGRESSION], 
                                 'name':'RidgeRegression'}
-        else:
-            self._properties=properties
 
+        self._estimator = estimator
+        self._properties = properties
 
 
 class Lasso(MlautEstimator):
@@ -95,9 +94,7 @@ class Logistic_Regression(MlautEstimator):
     """
     Wrapper for `sklearn Logistic Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`_.
     """
-    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-            'tasks':[REGRESSION], 
-            'name':'LogisticRegression'}
+
 
    
     def __init__(self,
