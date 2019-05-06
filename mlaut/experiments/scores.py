@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.metrics import accuracy_score, mean_squared_error, mean_absolute_error
 from sklearn.metrics import precision_score, recall_score
 import numpy as np
 class MLAUTScore(ABC):
@@ -43,6 +43,73 @@ class ScoreAccuracy(MLAUTScore):
         if self._round_predictions is True:
             y_pred = np.rint(y_pred)
         return accuracy_score(y_true, y_pred)
+    
+    def calculate_per_dataset(self, y_true, y_pred):
+        """
+        Calculates the loss per dataset
+        Parameters
+        ----------
+        y_true: array
+            True dataset labels.
+        y_pred: array: 
+            predicted labels.
+        
+        
+        Returns
+        -------
+        tuple
+            Tuple with average score and std error of the score
+        """
+        errors = (np.array(y_true) - np.array(y_pred)) ** 2
+        errors = np.where(errors > 0, 1, 0)
+        n = len(errors)
+        
+        std_score = np.std(errors)/np.sqrt(n) 
+        sum_score = np.sum(errors)
+        avg_score = sum_score/n
+
+        return avg_score, std_score
+class ScoreMAE(MLAUTScore):
+    def calculate(self, y_true, y_pred):
+        """
+        Main method for performing the calculations.
+
+        Args:
+            y_true(array): True dataset labels.
+            y_pred(array): predicted labels.
+
+        Returns:
+            float: The mean squared error of the prediction.
+        """
+        return mean_absolute_error(y_true, y_pred)
+    
+    def calculate_per_dataset(self, y_true, y_pred):
+        """
+        Calculates the loss per dataset
+        Parameters
+        ----------
+        y_true: list
+            True dataset labels.
+        y_pred: list: 
+            predicted labels.
+        
+        Returns
+        -------
+        float
+            Returns the result of the metric.
+        """
+        #TODO input checks
+        y_true = np.array(y_true)
+        y_pred = np.array(y_pred)
+        errors = np.abs(y_true - y_pred)
+        n = len(errors)
+        
+        std_score = np.std(errors)/np.sqrt(n) 
+        sum_score = np.sum(errors)
+        avg_score = sum_score/n
+
+        return avg_score, std_score
+        
 class ScoreMSE(MLAUTScore):
     """
     Calculates the mean squared error between the true and predicted lables.
@@ -60,6 +127,33 @@ class ScoreMSE(MLAUTScore):
             float: The mean squared error of the prediction.
         """
         return mean_squared_error(y_true, y_pred)
+    
+    def calculate_per_dataset(self, y_true, y_pred):
+        """
+        Calculates the loss per dataset
+        Parameters
+        ----------
+        y_true: list
+            True dataset labels.
+        y_pred: list: 
+            predicted labels.
+        
+        Returns
+        -------
+        float
+            Returns the result of the metric.
+        """
+        #TODO input checks
+        y_true = np.array(y_true)
+        y_pred = np.array(y_pred)
+        errors = (y_true - y_pred) ** 2
+        n = len(errors)
+        
+        std_score = np.std(errors)/np.sqrt(n) 
+        sum_score = np.sum(errors)
+        avg_score = sum_score/n
+
+        return avg_score, std_score
 class ScorePrecision(MLAUTScore):
     """
     Calculates precision score of classifier.
