@@ -12,15 +12,17 @@ class MLaut_resampling:
         """
 class Single_Split(MLaut_resampling):
 
-    def __init__(self, cv):
+    def __init__(self, cv, random_state=None):
         """
         Parameters
         ----------
         cv: sktime.model_selection object
             split object
-
+        random_state : int
+            state for random seed
         """
         self._cv = cv
+        self._random_state=random_state
     def split(self, X):
         """
         Parameters
@@ -35,6 +37,6 @@ class Single_Split(MLaut_resampling):
         num_examples = X.shape[0]
 
 
-        yield self._cv(np.arange(num_examples))
+        yield self._cv(np.arange(num_examples), random_state=self._random_state)
 
    

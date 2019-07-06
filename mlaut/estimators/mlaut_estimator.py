@@ -78,7 +78,31 @@ class MlautEstimator(ABC):
 
         #TODO pickling will not work for all strategies
         pickle.dump(self, open(os.path.join(save_path, self._properties['name'] + '_cv_fold'+str(cv_fold)+ '.p'),"wb"))
+    
+    def check_strategy_exists(self, 
+                              dataset_name, 
+                              cv_fold,
+                              strategy_save_dir):
+        """
+        Checks whether a strategy with the same name was already saved on the disk
 
+
+        Parameters
+        ----------
+        dataset_name : str
+            name of the dataset to check if trained
+        cv_fold : int
+            cv fold number
+        strategy_save_dir : str
+            location where the strategies are being saved
+        
+        Returns
+        -------
+        bool:
+            If true strategy exists
+        """
+        path_to_check = os.path.join(strategy_save_dir, dataset_name, self._properties['name'] + '_cv_fold'+str(cv_fold)+ '.p'
+        return os.path.exists(path_to_check)
     def load(self, path):
         """
         Load saved strategy

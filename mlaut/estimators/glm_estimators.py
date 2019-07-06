@@ -14,6 +14,26 @@ from sklearn.model_selection import GridSearchCV
 import numpy as np
 from mlaut.estimators.generic_estimator import Generic_Estimator
 
+class Linear_Regression(MlautEstimator):
+    """
+    Wrapper for `sklearn Linear Regression <https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html>`_.
+    """
+
+    def __init__(self,
+                estimator=None,
+                properties=None,
+                n_jobs=-1):
+        if estimator is None:
+            estimator = linear_model.LinearRegression(n_jobs=n_jobs)
+
+
+        if properties is None:
+            properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+                                'tasks':[REGRESSION], 
+                                'name':'LinearRegression'}
+
+        self._estimator = estimator
+        self._properties = properties
 
 class Ridge_Regression(MlautEstimator):
     """
