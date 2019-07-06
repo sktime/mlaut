@@ -52,8 +52,8 @@ class Orchestrator:
                     strategy_is_trained = strategy.check_strategy_exists(dataset_name=data.dataset_name, 
                                                                         cv_fold=cv_fold,
                                                                         strategy_save_dir=self._result.trained_strategies_save_path)
-                    if strategy_is_trained and overwrite_saved_strategies==False:
-                        logging.info(f'Strategy: {strategy.properties['name']} already trained on dataset: {data.dataset_name}. Set overwrite_saved_strategies=True if you want to replace it. Skipping.')
+                    if (strategy_is_trained) and (overwrite_saved_strategies==False):
+                        logging.info(f"Strategy: {strategy.properties['name']} already trained on dataset: {data.dataset_name}. Set overwrite_saved_strategies=True if you want to replace it. Skipping.")
                         continue
                     strategy.fit(metadata=metadata, data=dts_loaded.iloc[train])
 

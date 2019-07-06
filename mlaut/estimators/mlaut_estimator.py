@@ -101,7 +101,7 @@ class MlautEstimator(ABC):
         bool:
             If true strategy exists
         """
-        path_to_check = os.path.join(strategy_save_dir, dataset_name, self._properties['name'] + '_cv_fold'+str(cv_fold)+ '.p'
+        path_to_check = os.path.join(strategy_save_dir, dataset_name, self._properties['name'] + '_cv_fold'+str(cv_fold)+ '.p')
         return os.path.exists(path_to_check)
     def load(self, path):
         """
