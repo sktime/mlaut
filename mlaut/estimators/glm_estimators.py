@@ -14,270 +14,184 @@ from sklearn.model_selection import GridSearchCV
 import numpy as np
 from mlaut.estimators.generic_estimator import Generic_Estimator
 
+class Linear_Regression(MlautEstimator):
+    """
+    Wrapper for `sklearn Linear Regression <https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html>`_.
+    """
+
+    def __init__(self,
+                estimator=None,
+                properties=None,
+                n_jobs=-1):
+        if estimator is None:
+            estimator = linear_model.LinearRegression(n_jobs=n_jobs)
+
+
+        if properties is None:
+            properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+                                'tasks':[REGRESSION], 
+                                'name':'LinearRegression'}
+
+        self._estimator = estimator
+        self._properties = properties
 
 class Ridge_Regression(MlautEstimator):
     """
     Wrapper for `sklearn Ridge Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html>`_.
     """
-    properties= {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-            'tasks':[REGRESSION], 
-            'name':'RidgeRegression'}
-
-    hyperparameters = {'alphas':[0.1, 1, 10.0],
-            
-            } # this is the alpha hyperparam
 
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+                estimator=None,
+                properties=None,
+                cv=5):
+        if estimator is None:
+            hyperparameters = {'alphas':[0.1, 1, 10.0]}
+            estimator = linear_model.RidgeCV(alphas=hyperparameters['alphas'], cv=cv)
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
 
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
+        if properties is None:
+            properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+                                'tasks':[REGRESSION], 
+                                'name':'RidgeRegression'}
 
-        Args:
-            **kwargs(key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns:
-            (`sklearn pipeline` object): pipeline for transforming the features and training the estimator
-        """
-        
-        
-        estimator = linear_model.RidgeCV(alphas=self._hyperparameters['alphas'],
-                                cv=self._num_cv_folds)
-
-        return self._create_pipeline(estimator=estimator)
-        
+        self._estimator = estimator
+        self._properties = properties
 
 
 class Lasso(MlautEstimator):
     """
     Wrapper for `sklearn Lasso <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html>`_.
     """
-    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-            'tasks':[REGRESSION], 
-            'name':'Lasso'}
 
-    hyperparameters = {'alphas':[0.1, 1, 10.0]}
 
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+                estimator=None,
+                properties=None,
+                cv=5,
+                n_jobs=-1):
+        if estimator is None:
+            hyperparameters = {'alphas':[0.1, 1, 10.0]}
+            self._estimator = linear_model.LassoCV(alphas=hyperparameters['alphas'], cv=cv, n_jobs=n_jobs)
+        else:
+            self._estimator = estimator
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
-        
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Args:
-            hyperparameters(dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
-            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns:
-            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
-        """
-
-
-        estimator = linear_model.LassoCV(alphas=self._hyperparameters['alphas'],
-                                    cv=self._num_cv_folds,
-                                    n_jobs=self._n_jobs)
-
-        return self._create_pipeline(estimator=estimator)
-
+        if properties is None:
+            self._properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+                                'tasks':[REGRESSION], 
+                                'name':'Lasso'}
+        else:
+            self._properties=properties
+  
 
 class Lasso_Lars(MlautEstimator):
     """
     Wrapper for `sklearn Lasso Lars <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoLars.html>`_.
     """
 
-    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-                'tasks':[REGRESSION], 
-                'name':'LassoLars'}
-    
-    hyperparameters = {'max_n_alphas':1000}
+
 
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+                estimator=None,
+                properties=None,
+                cv=5,
+                n_jobs=-1):
+        if estimator is None:
+            self._estimator = linear_model.LassoLarsCV(max_n_alphas=1000, cv=cv, n_jobs=n_jobs)
+        else:
+            self._estimator = estimator
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
-
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Args:
-            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
-            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns:
-            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
-        """
+        if properties is None:
+            self._properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+                                'tasks':[REGRESSION], 
+                                'name':'LassoLars'}
+        else:
+            self._properties=properties
 
 
-
-        estimator = linear_model.LassoLarsCV(max_n_alphas=self._hyperparameters['max_n_alphas'],
-                                    cv=self._num_cv_folds,
-                                    n_jobs=self._n_jobs)
-
-        return self._create_pipeline(estimator=estimator)
    
 
 class Logistic_Regression(MlautEstimator):
     """
     Wrapper for `sklearn Logistic Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`_.
     """
-    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-            'tasks':[REGRESSION], 
-            'name':'LogisticRegression'}
 
-    hyperparameters = {
-                'C': np.linspace(2**(-5), 2**(15), 13)
 
-            }
+   
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+                estimator=None,
+                properties=None,
+                n_jobs=-1,
+                cv=5):
+        if estimator is None:
+            hyperparameters = {
+                            'C': np.linspace(2**(-5), 2**(15), 13)
+                        }
+            self._estimator = GridSearchCV(linear_model.LogisticRegression(), 
+                                            hyperparameters,
+                                            n_jobs=n_jobs,
+                                            cv=cv)
+        else:
+            self._estimator = estimator
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
-
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Args:
-            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
-            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns:
-            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
-
-        """
-        estimator = GridSearchCV(linear_model.LogisticRegression(), 
-                            self._hyperparameters, 
-                            verbose = self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit,
-                            cv=self._num_cv_folds)
-        return self._create_pipeline(estimator=estimator)
+        if properties is None:
+            self._properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+                                'tasks':[CLASSIFICATION], 
+                                'name':'LogisticRegression'}
+        else:
+            self._properties=properties
 
  
 class Bayesian_Ridge(MlautEstimator):
     """
     Wrapper for `sklearn Bayesian Ridge Regression <https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.BayesianRidge.html>`_.
     """
-    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-            'tasks':[REGRESSION], 
-            'name':'BayesianRidge'}
+
 
     def __init__(self,
-                properties=properties, 
-                verbose=VERBOSE):
+                estimator=None,
+                properties=None):
+        if estimator is None:
+           
+            self._estimator = linear_model.BayesianRidge()
+        else:
+            self._estimator = estimator
 
-        self.properties = properties
-        self._verbose = verbose
+        if properties is None:
+            self._properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+                                'tasks':[REGRESSION], 
+                                'name':'BayesianRidge'}
+        else:
+            self._properties=properties
 
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
 
-        Args:
-            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
-            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns:
-            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
-
-        """
-        estimator = linear_model.BayesianRidge()
-        return self._create_pipeline(estimator=estimator)
 
 
 class Passive_Aggressive_Classifier(MlautEstimator):
     """
     Wrapper for `sklearn Passive Aggressive Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.PassiveAggressiveClassifier.html>`_.
     """
-    properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS],
-            'tasks':[CLASSIFICATION],
-            'name':'PassiveAggressiveClassifier'}
-    
-    C_range = np.logspace(-2, 10, 13)
-    hyperparameters = {
-                'C': C_range,
-                'max_iter':[1000]
-            }
+
     
     def __init__(self,
-                hyperparameters=hyperparameters,
-                properties=properties, 
-                verbose=VERBOSE,
-                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, 
-                refit=True):
+                estimator=None,
+                properties=None,
+                n_jobs=-1,
+                cv=5):
+        if estimator is None:
+            hyperparameters = {
+                'C': np.logspace(-2, 10, 13),
+                'max_iter':[1000]
+            }
+            self._estimator = GridSearchCV(linear_model.PassiveAggressiveClassifier(),
+                                          param_grid=hyperparameters,
+                                          n_jobs=n_jobs,
+                                          cv=cv)
+        else:
+            self._estimator = estimator
 
-        self.properties = properties
-        self._hyperparameters = hyperparameters
-        self._verbose = verbose
-        self._n_jobs = n_jobs
-        self._num_cv_folds = num_cv_folds
-        self._refit = refit
-
-    def build(self, **kwargs):
-        """
-        builds and returns estimator
-
-        Args:
-            hyperparameters (dictionary): Dictionary of hyperparameters to be used for tuning the estimator.
-            **kwargs (key-value arguments): Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.
-        
-        Returns:
-            `sklearn pipeline` object: pipeline for transforming the features and training the estimator
-        """
-        estimator = GridSearchCV(linear_model.PassiveAggressiveClassifier(), 
-                            self._hyperparameters, 
-                            verbose=self._verbose,
-                            n_jobs=self._n_jobs,
-                            refit=self._refit,
-                            cv=self._num_cv_folds
-                            )
-        return self._create_pipeline(estimator=estimator)
-
+        if properties is None:
+            self._properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+                                'tasks':[CLASSIFICATION], 
+                                'name':'PassiveAggressiveClassifier'}
+        else:
+            self._properties=properties

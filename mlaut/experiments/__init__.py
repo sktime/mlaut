@@ -1,2 +1,2 @@
-from mlaut.experiments.orchestrator import Orchestrator
+from .orchestrator import Orchestrator
 

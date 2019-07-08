@@ -60,7 +60,7 @@ class HDF5:
     For matipulating HDF5 files
     """
 
-    def __init__(self, hdf5_path, mode):
+    def __init__(self, hdf5_path, mode='a'):
         """
         Parameters
         ----------
@@ -73,7 +73,7 @@ class HDF5:
         self._hdf5_path = hdf5_path
         self._mode = mode
     
-    def save_dataset(self, dataset, metadata, save_path, dataset_name):
+    def save_dataset(self, dataset, metadata, save_path):
         """
         Saves dataset to HDF5 file
 
@@ -85,9 +85,15 @@ class HDF5:
             metadata in the form of a dictionary
         save_path: string
             location in HDF5 database where the dataset will be saved
-        dataset_name: string
-            Name of the dataset
         """
+        if 'target' not in metadata.keys():
+            raise ValueError('Provide the "target" variable as a key in the metadata dictionary.')
+        
+        if 'dataset_name' not in metadata.keys():
+            raise ValueError('Provide the "dataset_name" as a key in the metadata dictionary.')
+        if not isinstance(dataset, pd.DataFrame):
+            raise ValueError('dataset must be a pandas DataFrame')
+        dataset_name = metadata['dataset_name']
         store = pd.HDFStore(self._hdf5_path, self._mode)
         store[f'{save_path}/{dataset_name}'] = dataset
         store.get_storer(f'{save_path}/{dataset_name}').attrs.metadata = metadata
@@ -97,7 +103,7 @@ class DatasetHDF5:
     """
     Class for manipulating HDF5 data
     """
-    def __init__(self, hdf5_path, dataset_path, dataset_name, mode='r', train_test_exists=True):
+    def __init__(self, hdf5_path, dataset_path, mode='r', train_test_exists=True):
         """
         Parameters
         ----------
@@ -105,8 +111,6 @@ class DatasetHDF5:
             path to the HDF5 file. 
         dataset_path: string
             Location in HDF5 database where the dataset is saved
-        dataset_name: string
-            Name of the dataset
         mode: string
             mode for manipulating HDF5 files. Accepable values: 'r', 'r+', 'w', 'w-', 'x', 'a'
         train_test_exists: Boolean
@@ -115,14 +119,13 @@ class DatasetHDF5:
         self._hdf5_path = hdf5_path
         self._mode = mode
         self._dataset_path = dataset_path
-        self._dataset_name = dataset_name
         self._train_test_exists = train_test_exists
 
-        #TODO input checks
+        self._dataset_name = self._dataset_path.split('/')[-1]
 
     @property
     def dataset_name(self):
-        return self._dataset_name
+        return self._dataset_path.split('/')[-1]
 
     def load(self):
         """
@@ -141,9 +144,12 @@ class DatasetHDF5:
             tuple with the dataset and its metadata
         """
         store = pd.HDFStore(self._hdf5_path, self._mode)
-        dataset = store[self._dataset_path + '/' + self._dataset_name]
-        metadata = store.get_storer(self._dataset_path + '/' + self._dataset_name).attrs.metadata
+        dataset = store[self._dataset_path]
+        metadata = store.get_storer(self._dataset_path).attrs.metadata
+
         store.close()
+
+        self._dataset_name = metadata['dataset_name']
         return dataset, metadata
 
 class ResultHDF5(MLautResult):
@@ -154,8 +160,9 @@ class ResultHDF5(MLautResult):
 
     def __init__(self, 
                  hdf5_path, 
-                 results_save_path, 
-                 mode='r', 
+                 predictions_save_path,
+                 trained_strategies_save_path,
+                 mode='a', 
                  experiments_predictions_group='predictions',
                  y_pred_group='y_pred',
                  y_true_group='y_true', 
@@ -165,8 +172,10 @@ class ResultHDF5(MLautResult):
         ----------
         hdf5_path: string
             path to the HDF5 file. 
-        results_save_path: string
+        predictions_save_path: string
             Path where the results are saved
+        trained_strategies_save_path: string
+            Path where the trained strategies will be saved
         mode: string
             mode for manipulating HDF5 files. Accepable values: 'r', 'r+', 'w', 'w-', 'x', 'a'
         experiments_predictions_group: string
@@ -180,12 +189,17 @@ class ResultHDF5(MLautResult):
         """
         self._hdf5_path = hdf5_path
         self._mode = mode
-        self._results_save_path = results_save_path
+        self._predictions_save_path = predictions_save_path
         self._experiments_predictions_group = experiments_predictions_group
         self._y_true_group = y_true_group
         self._y_pred_group = y_pred_group
         self._overwrite_predictions = overwrite_predictions
+        self._trained_strategies_save_path = trained_strategies_save_path
     
+    @property
+    def trained_strategies_save_path(self):
+        return self._trained_strategies_save_path
+        
     def save(self, dataset_name, strategy_name, y_true, y_pred, cv_fold):
         """
         Saves the prediction of a single trained estimator in HDF5 database.
