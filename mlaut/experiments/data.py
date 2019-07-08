@@ -208,8 +208,12 @@ class ResultHDF5(MLautResult):
         if save_path_exists and self._overwrite_predictions:
             logging.info(f'Overriding prediction for {strategy_name} on {dataset_name}.')
             del f[save_path_y_pred]
+            f[save_path_y_pred] = np.array(y_pred)
         
-        f[save_path_y_pred] = np.array(y_pred)
+        if not save_path_exists:
+            f[save_path_y_pred] = np.array(y_pred)
+        
+        #TODO need to decide how to handle labels 
         f[save_path_y_true] = np.array(y_true)
         f.close()
         
