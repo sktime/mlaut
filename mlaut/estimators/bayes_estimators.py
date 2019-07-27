@@ -29,12 +29,15 @@ class Gaussian_Naive_Bayes(MlautEstimator):
                 estimator=GaussianNB(),
                 properties=None):
         
+
         if properties is None:
             self._properties = {'estimator_family':[NAIVE_BAYES], 
                                 'tasks':[CLASSIFICATION], 
                                 'name':estimator.__class__.__name__}
         else:
             self._properties = properties
+        
+        self._estimator = estimator
 
 
 
@@ -49,7 +52,8 @@ class Bernoulli_Naive_Bayes(MlautEstimator):
     def __init__(self,
                 estimator=BernoulliNB(),
                 properties=None):
-        
+        self._estimator = estimator
+
         if properties is None:
             self._properties = {'estimator_family':[NAIVE_BAYES], 
                                 'tasks':[CLASSIFICATION], 
