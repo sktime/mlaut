@@ -25,7 +25,7 @@ class Baseline_Regressor(MlautEstimator):
         
         self._estimator = estimator
         self._properties = properties
-
+    
 
 class Baseline_Classifier(MlautEstimator):
     """
