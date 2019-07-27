@@ -223,14 +223,13 @@ class ResultHDF5(MLautResult):
             logging.info(f'Overriding prediction for {strategy_name} on {dataset_name}.')
             del f[save_path_y_pred]
             f[save_path_y_pred] = np.array(y_pred)
-            f[save_path_y_true] = np.array(y_true)
-            f.close()
-        elif save_path_exists:
-            logging.info(f'Overriding prediction for {strategy_name} on {dataset_name} already exist. Skipping')
-        else:
+        
+        if not save_path_exists:
             f[save_path_y_pred] = np.array(y_pred)
-            f[save_path_y_true] = np.array(y_true)
-            f.close()
+        
+        #TODO need to decide how to handle labels 
+        f[save_path_y_true] = np.array(y_true)
+        f.close()
         
     
     def load(self):
