@@ -16,13 +16,8 @@ Overview
 
 * :ref:`estimators`. This module encompasses all machine learning models that come with MLAUT as well as methods for instantiating them based on criteria provided by the user. 
 
-* :ref:`data`. The Data module contains the high level methods for manipulating the raw datasets. It provides a second layer of interface to the lower level classes for accessing, storing and extracting data from HDF5 databases. This module uses heavily the functionality developed in the Shared module but provides a higher level of abstraction for the user.
+* :ref:`Experiments`. This module contains the logic for orchestration of the machine learning experiments. It also includes the logic for performing the statistical tests for comparing the performance of the trained algorithms. The predictions of the trained estimators on the test sets for each dataset serve as input for the statistical tests.
 
-* :ref:`experiments`. This module contains the logic for orchestration of the machine learning experiments. The main parameters in this module are the  datasets and the estimator models that will be trained on the data.
-
-* :ref:`analyze_results`. This module includes the logic for performing the statistical tests for comparing the performance of the trained algorithms. The predictions of the trained estimators on the test sets for each dataset serve as input for the statistical tests.
-
-* :ref:`shared`. This module includes classes and methods that are shared by the other modules in the package.
 
 Applications and use
 ---------------------
@@ -49,6 +44,6 @@ The graph below shows on a high level the workflow that ``mlaut`` facilitates.
    :scale: 50 %
    :alt: interaction between classes
 
-The user should begin by saving the preprocessed datasets on its hard drive. The ``Data`` module is then evoked for saving the datasets in a HDF5 database. The second step of the process is to instantiate the machine learning estimator objects. The user has the choice of either using the pre-defined estimators in the ``Estimators`` module or defining its own by making use of the :ref:`mlaut_estimator-label`. Once this step is completed the user can proceed to running the experiments by making use of the ``Orchestrator`` module. Once all estimators are trained on all datasets the user can carry out the final step of analyzing the results by evoking the ``Analyze results`` module. 
+The user should begin by saving the preprocessed datasets on its hard drive. The ``Data`` module is then evoked for saving the datasets in a HDF5 database. The second step of the process is to instantiate the machine learning estimator objects. The user has the choice of either using the pre-defined estimators in the ``Estimators`` module or defining its own by making use of the :ref:`mlaut_estimator-label`. Once this step is completed the user can proceed to running the experiments by making use of the ``Orchestrator`` module. Once all estimators are trained on all datasets the user can carry out the final step of analyzing the results by evoking the ``Experiments`` module. 
 
 

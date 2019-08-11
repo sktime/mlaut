@@ -3,7 +3,6 @@ from sklearn import neighbors
 from sklearn.model_selection import GridSearchCV
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 
-from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import (CLUSTER, 
                                            CLASSIFICATION,
                                            PICKLE_EXTENTION, 

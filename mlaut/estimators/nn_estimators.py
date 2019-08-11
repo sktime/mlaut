@@ -1,6 +1,5 @@
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 
-from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       ENSEMBLE_METHODS, 
                                       SVM,
@@ -21,6 +20,8 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import GridSearchCV
 import numpy as np
 import wrapt
+import os
+
 
 import tensorflow as tf
 
@@ -59,7 +60,7 @@ class Deep_NN_Classifier(MlautEstimator):
         
         self._hyperparameters = hyperparameters
         self._keras_model = keras_model
-        self.properties = properties
+        self._properties = properties
         self._verbose = verbose
         self._n_jobs = n_jobs
         self._num_cv_folds = num_cv_folds
@@ -132,22 +133,29 @@ class Deep_NN_Classifier(MlautEstimator):
         return self._create_pipeline(estimator=estimator)
 
     
-
+    def save(self, dataset_name, cv_fold, strategy_save_dir):
+        """
+        Saves the strategy on the hard drive
+        Parameters
+        ----------
+        dataset_name:string
+            Name of the dataset
+        cv_fold: int
+            Number of cross validation fold on which the strategy was trained
+        strategy_save_dir: string
+            Path were the strategies will be saved
+        """
+        if strategy_save_dir is None:
+            raise ValueError('Please provide a directory for saving the strategies')
         
-    def save(self, dataset_name):
-        """
-        Saves estimator on disk.
+        #TODO implement check for overwriting already saved files
+        save_path = os.path.join(strategy_save_dir, dataset_name)
+        
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        
+        self._trained_model.model.save(os.path.join(save_path, self._properties['name'] + '_cv_fold'+str(cv_fold)+ '.h5'))
 
-        Args:
-            dataset_name (str): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/<dataset name>/<model name>`
-        """
-        #set trained model method is implemented in the base class
-        trained_model = self._trained_model
-        disk_op = DiskOperations()
-        disk_op.save_keras_model(trained_model=trained_model,
-                                 model_name=self.properties['name'],
-                                 dataset_name=dataset_name)
-    
     #overloading method from parent class
     def load(self, path_to_model):
         """

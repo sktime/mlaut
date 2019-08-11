@@ -1,6 +1,5 @@
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 
-from mlaut.shared.files_io import DiskOperations
 from sklearn.model_selection import GridSearchCV
 from mlaut.shared.static_variables import(SVM,
                                       REGRESSION, 

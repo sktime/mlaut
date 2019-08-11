@@ -98,7 +98,31 @@ class HDF5:
         store[f'{save_path}/{dataset_name}'] = dataset
         store.get_storer(f'{save_path}/{dataset_name}').attrs.metadata = metadata
         store.close()
+    
+    def pandas_to_db(self, datasets, dts_metadata):
+        """
+        Saves array of datasets in pandas DataFrame format in HDf5 Database.
+        This represents an interface method for :func:`~mleap.shared.files_io.FilesIO.save_datasets`
+        Parameters
+        ----------
+            
+        datasets: list of pandas DataFrame
+            list of datasets formatted as pandas DataFrame.
+        dts_meta: list of dictionaries
+            Metadata for each dataset.
+        file_name : str
+            full path to the HDF5 file that will be created
+        mode : str
+            mode for manipulating HDF5 file
+        """
 
+        store = pd.HDFStore(self._hdf5_path, self._mode)
+        for dts, dts_meta in zip(datasets,dts_metadata):
+            save_path = f'{dts_meta["source"]}/{dts_meta["dataset_name"]}'
+            store[save_path] = dts
+            store.get_storer(save_path).attrs.metadata = dts_meta
+        
+        store.close()
 class DatasetHDF5:
     """
     Class for manipulating HDF5 data

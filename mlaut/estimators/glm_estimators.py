@@ -1,6 +1,5 @@
 from mlaut.estimators.mlaut_estimator import MlautEstimator
 
-from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(GENERALIZED_LINEAR_MODELS,
                                       REGRESSION, 
                                       CLASSIFICATION,

@@ -1,5 +1,4 @@
 from mlaut.estimators.mlaut_estimator import MlautEstimator
-from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(BASELINE,
                                       REGRESSION, 
                                       CLASSIFICATION,

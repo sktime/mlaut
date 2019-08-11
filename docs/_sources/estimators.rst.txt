@@ -5,13 +5,6 @@ Estimators
 
 This module contains the default estimators that come with mlaut.
 
-estimators
--------------------------------------
-.. automodule:: mlaut.estimators.estimators
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 baseline_estimators
 ---------------------------------
 

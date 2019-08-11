@@ -150,7 +150,6 @@
   <h1>Source code for mlaut.estimators.nn_estimators</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">mlaut.estimators.mlaut_estimator</span> <span class="k">import</span> <span class="n">MlautEstimator</span>
 
-<span class="kn">from</span> <span class="nn">mlaut.shared.files_io</span> <span class="k">import</span> <span class="n">DiskOperations</span>
 <span class="kn">from</span> <span class="nn">mlaut.shared.static_variables</span> <span class="k">import</span><span class="p">(</span><span class="n">GENERALIZED_LINEAR_MODELS</span><span class="p">,</span>
                                       <span class="n">ENSEMBLE_METHODS</span><span class="p">,</span> 
                                       <span class="n">SVM</span><span class="p">,</span>
@@ -171,6 +170,8 @@
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">GridSearchCV</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">wrapt</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
 
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
@@ -209,7 +210,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">_hyperparameters</span> <span class="o">=</span> <span class="n">hyperparameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_keras_model</span> <span class="o">=</span> <span class="n">keras_model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="n">properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_cv_folds</span> <span class="o">=</span> <span class="n">num_cv_folds</span>
@@ -282,22 +283,29 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_pipeline</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">)</span></div>
 
     
-
-        
-<div class="viewcode-block" id="Deep_NN_Classifier.save"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.Deep_NN_Classifier.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">):</span>
+<div class="viewcode-block" id="Deep_NN_Classifier.save"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.Deep_NN_Classifier.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">cv_fold</span><span class="p">,</span> <span class="n">strategy_save_dir</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Saves estimator on disk.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            dataset_name (str): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/&lt;dataset name&gt;/&lt;model name&gt;`</span>
+<span class="sd">        Saves the strategy on the hard drive</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset_name:string</span>
+<span class="sd">            Name of the dataset</span>
+<span class="sd">        cv_fold: int</span>
+<span class="sd">            Number of cross validation fold on which the strategy was trained</span>
+<span class="sd">        strategy_save_dir: string</span>
+<span class="sd">            Path were the strategies will be saved</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#set trained model method is implemented in the base class</span>
-        <span class="n">trained_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trained_model</span>
-        <span class="n">disk_op</span> <span class="o">=</span> <span class="n">DiskOperations</span><span class="p">()</span>
-        <span class="n">disk_op</span><span class="o">.</span><span class="n">save_keras_model</span><span class="p">(</span><span class="n">trained_model</span><span class="o">=</span><span class="n">trained_model</span><span class="p">,</span>
-                                 <span class="n">model_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
-                                 <span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset_name</span><span class="p">)</span></div>
-    
+        <span class="k">if</span> <span class="n">strategy_save_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please provide a directory for saving the strategies&#39;</span><span class="p">)</span>
+        
+        <span class="c1">#TODO implement check for overwriting already saved files</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">strategy_save_dir</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">save_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trained_model</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_cv_fold&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">cv_fold</span><span class="p">)</span><span class="o">+</span> <span class="s1">&#39;.h5&#39;</span><span class="p">))</span></div>
+
     <span class="c1">#overloading method from parent class</span>
 <div class="viewcode-block" id="Deep_NN_Classifier.load"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.Deep_NN_Classifier.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_model</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -323,13 +331,13 @@
 <span class="sd">            `keras object`: Trained keras model.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trained_model</span><span class="o">.</span><span class="n">model</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trained_model</span></div></div>
 
 
 
 
 
-<div class="viewcode-block" id="Deep_NN_Regressor"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.Deep_NN_Regressor">[docs]</a><span class="k">class</span> <span class="nc">Deep_NN_Regressor</span><span class="p">(</span><span class="n">Deep_NN_Classifier</span><span class="p">):</span>
+<div class="viewcode-block" id="Deep_NN_Regressor"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.Deep_NN_Regressor">[docs]</a><span class="k">class</span> <span class="nc">Deep_NN_Regressor</span><span class="p">(</span><span class="n">MlautEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for a `keras sequential model &lt;https://keras.io/getting-started/sequential-model-guide/&gt;`_. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -337,7 +345,10 @@
                 <span class="s1">&#39;tasks&#39;</span><span class="p">:[</span><span class="n">REGRESSION</span><span class="p">],</span> 
                 <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;NeuralNetworkDeepRegressor&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">nn_deep_classifier_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">):</span>
+    <span class="n">hyperparameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;epochs&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+                        <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+                        
+    <span class="k">def</span> <span class="nf">keras_model</span><span class="p">(</span><span class="n">input_dim</span><span class="p">):</span>
         <span class="n">nn_deep_model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
         <span class="n">nn_deep_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">288</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
         <span class="n">nn_deep_model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">144</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
@@ -347,10 +358,36 @@
         
 
         <span class="n">model_optimizer</span>  <span class="o">=</span> <span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_hyperparameters</span><span class="p">[</span><span class="s1">&#39;learning_rate&#39;</span><span class="p">])</span>
-        <span class="n">nn_deep_model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mean_squared_error&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">model_optimizer</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+        <span class="n">nn_deep_model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mean_squared_error&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">model_optimizer</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;adam&#39;</span><span class="p">])</span>
 
 
         <span class="k">return</span> <span class="n">nn_deep_model</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">properties</span><span class="o">=</span><span class="n">properties</span><span class="p">,</span>
+                    <span class="n">hyperparameters</span><span class="o">=</span><span class="n">hyperparameters</span><span class="p">,</span> 
+                    <span class="n">keras_model</span><span class="o">=</span><span class="n">keras_model</span><span class="p">,</span> 
+                    <span class="n">verbose</span><span class="o">=</span><span class="n">VERBOSE</span><span class="p">,</span> 
+                    <span class="n">n_jobs</span><span class="o">=</span><span class="n">GRIDSEARCH_CV_NUM_PARALLEL_JOBS</span><span class="p">,</span>
+                    <span class="n">num_cv_folds</span><span class="o">=</span><span class="n">GRIDSEARCH_NUM_CV_FOLDS</span><span class="p">,</span> 
+                    <span class="n">refit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyperparameters</span> <span class="o">=</span> <span class="n">hyperparameters</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_keras_model</span> <span class="o">=</span> <span class="n">keras_model</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_num_cv_folds</span> <span class="o">=</span> <span class="n">num_cv_folds</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_refit</span> <span class="o">=</span> <span class="n">refit</span>
+
+            <span class="k">if</span> <span class="s1">&#39;epochs&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyperparameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to specify number of epochs as hyperparameter to keras models&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;batch_size&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyperparameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to specify batch_size as hyperparameter to keras models&#39;</span><span class="p">)</span>
+        
+
+
 
 <div class="viewcode-block" id="Deep_NN_Regressor.build"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.Deep_NN_Regressor.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -379,106 +416,58 @@
         <span class="c1">#the arguments of ``build_fn`` are not passed directly. Instead they should be passed as arguments to ``KerasClassifier``.</span>
         <span class="n">estimator</span> <span class="o">=</span> <span class="n">KerasRegressor</span><span class="p">(</span><span class="n">build_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_keras_model</span><span class="p">,</span> 
                                 <span class="n">input_dim</span><span class="o">=</span><span class="n">input_dim</span><span class="p">)</span>
-        <span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> 
-                            <span class="n">param_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_hyperparameters</span><span class="p">,</span> 
-                            <span class="n">cv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_cv_folds</span><span class="p">,</span> 
-                            <span class="n">refit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_refit</span><span class="p">,</span>
-                            <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_pipeline</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">)</span></div></div>
         
-
-
-<span class="c1">#     def __init__(self, verbose=VERBOSE, </span>
-<span class="c1">#                 n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,</span>
-<span class="c1">#                 num_cv_folds=GRIDSEARCH_NUM_CV_FOLDS, </span>
-<span class="c1">#                 refit=True):</span>
-<span class="c1">#         super().__init__(verbose=verbose, </span>
-<span class="c1">#                          n_jobs=n_jobs, </span>
-<span class="c1">#                         num_cv_folds=num_cv_folds, </span>
-<span class="c1">#                         refit=refit)</span>
-<span class="c1">#         self._hyperparameters = {&#39;loss&#39;:&#39;mean_squared_error&#39;, </span>
-<span class="c1">#                                  &#39;learning_rate&#39;:0.001,</span>
-<span class="c1">#                                  &#39;optimizer&#39;: &#39;Adam&#39;,</span>
-<span class="c1">#                                  &#39;metrics&#39;: [&#39;accuracy&#39;],</span>
-<span class="c1">#                                  &#39;epochs&#39;: [50,100], </span>
-<span class="c1">#                                  &#39;batch_size&#39;: 0 }</span>
-
-<span class="c1">#     def _nn_deep_classifier_model(self, input_dim):</span>
-<span class="c1">#         nn_deep_model = Sequential()</span>
-<span class="c1">#         nn_deep_model.add(Dense(288, input_dim=input_dim, activation=&#39;relu&#39;))</span>
-<span class="c1">#         nn_deep_model.add(Dense(144, activation=&#39;relu&#39;))</span>
-<span class="c1">#         nn_deep_model.add(Dropout(0.5))</span>
-<span class="c1">#         nn_deep_model.add(Dense(12, activation=&#39;relu&#39;))</span>
-<span class="c1">#         nn_deep_model.add(Dense(1, activation=&#39;sigmoid&#39;))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_pipeline</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">)</span></div>
         
-<span class="c1">#         optimizer = self._hyperparameters[&#39;optimizer&#39;]</span>
-<span class="c1">#         if optimizer is &#39;Adam&#39;:</span>
-<span class="c1">#             model_optimizer  = optimizers.Adam(lr=self._hyperparameters[&#39;learning_rate&#39;])</span>
+<div class="viewcode-block" id="Deep_NN_Regressor.set_properties"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.Deep_NN_Regressor.set_properties">[docs]</a>    <span class="k">def</span> <span class="nf">set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                        <span class="n">estimator_family</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                        <span class="n">tasks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                        <span class="n">data_preprocessing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alternative method for setting the properties of the estimator. Used when creating a generic estimator by inehriting from an already created class.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">estimator_family</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_estimator_family</span> <span class="o">=</span> <span class="n">estimator_family</span>
+        <span class="k">if</span> <span class="n">tasks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tasks</span> <span class="o">=</span> <span class="n">tasks</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">data_preprocessing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data_preprocessing</span> <span class="o">=</span> <span class="n">data_preprocessing</span></div>
         
-<span class="c1">#         nn_deep_model.compile(loss=self._hyperparameters[&#39;loss&#39;], </span>
-<span class="c1">#                               optimizer=model_optimizer, </span>
-<span class="c1">#                               metrics=self._hyperparameters[&#39;metrics&#39;])</span>
-<span class="c1">#         return nn_deep_model</span>
-    
-<span class="c1">#     def build(self, **kwargs):</span>
-<span class="c1">#         &quot;&quot;&quot;</span>
-<span class="c1">#         Builds and returns estimator.</span>
-        
-<span class="c1">#         Args:</span>
-<span class="c1">#             kwargs (key-value(int)): The user must specify ``input_dim`` and ``num_samples``.</span>
+    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
 
-<span class="c1">#         Returns:</span>
-<span class="c1">#             `sklearn pipeline` object: pipeline for transforming the features and training the estimator</span>
-<span class="c1">#         &quot;&quot;&quot;</span>
-<span class="c1">#         if &#39;input_dim&#39; not in kwargs:</span>
-<span class="c1">#             raise ValueError(&#39;You need to specify input dimentions when building the model&#39;)</span>
-<span class="c1">#         if &#39;num_samples&#39; not in kwargs:</span>
-<span class="c1">#             raise ValueError(&#39;You need to specify num_samples when building the keras model.&#39;)</span>
-<span class="c1">#         input_dim=kwargs[&#39;input_dim&#39;]</span>
-<span class="c1">#         num_samples = kwargs[&#39;num_samples&#39;]</span>
-        
-<span class="c1">#         estimator = KerasRegressor(build_fn=self._nn_deep_classifier_model, </span>
-<span class="c1">#                                 input_dim=input_dim,</span>
-<span class="c1">#                                 verbose=self._verbose)</span>
+    <span class="c1">#overloading method from parent class</span>
+<div class="viewcode-block" id="Deep_NN_Regressor.load"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.Deep_NN_Regressor.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads saved keras model from disk.</span>
 
-        
-<span class="c1">#         return self._create_pipeline(estimator=estimator)</span>
-<span class="c1">#         # return GridSearchCV(model, </span>
-<span class="c1">#         #                     hyperparameters, </span>
-<span class="c1">#         #                     verbose = self._verbose,</span>
-<span class="c1">#         #                     n_jobs=self._n_jobs,</span>
-<span class="c1">#         #                     refit=self._refit)</span>
+<span class="sd">        Args:</span>
+<span class="sd">            path_to_model (str): path on disk where the object is saved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#file name could be passed with .* as extention. </span>
+        <span class="c1">#split_path = path_to_model.split(&#39;.&#39;)</span>
+        <span class="c1">#path_to_load = split_path[0] + HDF5_EXTENTION </span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="n">path_to_model</span><span class="p">,</span>
+                           <span class="n">custom_objects</span><span class="o">=</span><span class="p">{</span>
+                               <span class="s1">&#39;OverwrittenSequentialClassifier&#39;</span><span class="p">:</span><span class="n">OverwrittenSequentialClassifier</span>
+                               <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_trained_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Deep_NN_Regressor.get_trained_model"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.Deep_NN_Regressor.get_trained_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_trained_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Getter method.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `keras object`: Trained keras model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trained_model</span></div></div>
 
 
-<span class="c1">#     def save(self, dataset_name):</span>
-<span class="c1">#         &quot;&quot;&quot;</span>
-<span class="c1">#         Saves estimator on disk.</span>
-
-<span class="c1">#         Args:</span>
-<span class="c1">#             dataset_name (str): name of the dataset. Estimator will be saved under default folder structure `/data/trained_models/&lt;dataset name&gt;/&lt;model name&gt;`</span>
-<span class="c1">#         &quot;&quot;&quot;</span>
-<span class="c1">#         #set trained model method is implemented in the base class</span>
-<span class="c1">#         trained_model = self._trained_model</span>
-<span class="c1">#         disk_op = DiskOperations()</span>
-<span class="c1">#         disk_op.save_keras_model(trained_model=trained_model,</span>
-<span class="c1">#                                  model_name=self.properties[&#39;name&#39;],</span>
-<span class="c1">#                                  dataset_name=dataset_name)</span>
-    
-<span class="c1">#     #overloading method from parent class</span>
-<span class="c1">#     def load(self, path_to_model):</span>
-<span class="c1">#         &quot;&quot;&quot;</span>
-<span class="c1">#         Loads saved keras model from disk.</span>
-
-<span class="c1">#         Args:</span>
-<span class="c1">#             path_to_model (string): path on disk where the object is saved.</span>
-<span class="c1">#         &quot;&quot;&quot;</span>
-<span class="c1">#         #file name could be passed with .* as extention. </span>
-<span class="c1">#         model = load_model(path_to_model,</span>
-<span class="c1">#                            custom_objects={</span>
-<span class="c1">#                                &#39;OverwrittenSequentialClassifier&#39;:OverwrittenSequentialClassifier</span>
-<span class="c1">#                                })</span>
-<span class="c1">#         self.set_trained_model(model)</span>
-        
 
 <div class="viewcode-block" id="OverwrittenSequentialClassifier"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.nn_estimators.OverwrittenSequentialClassifier">[docs]</a><span class="k">class</span> <span class="nc">OverwrittenSequentialClassifier</span><span class="p">(</span><span class="n">Sequential</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -539,7 +528,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Viktor Kazakov
+        &copy; Copyright 2019, Viktor Kazakov
 
     </p>
   </div>

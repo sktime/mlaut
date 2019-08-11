@@ -150,7 +150,6 @@
   <h1>Source code for mlaut.estimators.bayes_estimators</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">mlaut.estimators.mlaut_estimator</span> <span class="k">import</span> <span class="n">MlautEstimator</span>
 
-<span class="kn">from</span> <span class="nn">mlaut.shared.files_io</span> <span class="k">import</span> <span class="n">DiskOperations</span>
 <span class="kn">from</span> <span class="nn">mlaut.shared.static_variables</span> <span class="k">import</span><span class="p">(</span><span class="n">GENERALIZED_LINEAR_MODELS</span><span class="p">,</span>
                                       <span class="n">ENSEMBLE_METHODS</span><span class="p">,</span> 
                                       <span class="n">SVM</span><span class="p">,</span>
@@ -174,39 +173,23 @@
     <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;estimator_family&#39;</span><span class="p">:[</span><span class="n">NAIVE_BAYES</span><span class="p">],</span> 
             <span class="s1">&#39;tasks&#39;</span><span class="p">:[</span><span class="n">CLASSIFICATION</span><span class="p">],</span> 
             <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;GaussianNaiveBayes&#39;</span><span class="p">}</span>
-    <span class="n">hyperparameters</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">hyperparameters</span><span class="o">=</span><span class="n">hyperparameters</span><span class="p">,</span>
-                <span class="n">properties</span><span class="o">=</span><span class="n">properties</span><span class="p">,</span> 
-                <span class="n">verbose</span><span class="o">=</span><span class="n">VERBOSE</span><span class="p">,</span>
-                <span class="n">n_jobs</span><span class="o">=</span><span class="n">GRIDSEARCH_CV_NUM_PARALLEL_JOBS</span><span class="p">,</span>
-                <span class="n">num_cv_folds</span><span class="o">=</span><span class="n">GRIDSEARCH_NUM_CV_FOLDS</span><span class="p">,</span> 
-                <span class="n">refit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">estimator</span><span class="o">=</span><span class="n">GaussianNB</span><span class="p">(),</span>
+                <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hyperparameters</span> <span class="o">=</span> <span class="n">hyperparameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_cv_folds</span> <span class="o">=</span> <span class="n">num_cv_folds</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_refit</span> <span class="o">=</span> <span class="n">refit</span>
+        <span class="k">if</span> <span class="n">properties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;estimator_family&#39;</span><span class="p">:[</span><span class="n">NAIVE_BAYES</span><span class="p">],</span> 
+                                <span class="s1">&#39;tasks&#39;</span><span class="p">:[</span><span class="n">CLASSIFICATION</span><span class="p">],</span> 
+                                <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">estimator</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="n">properties</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_estimator</span> <span class="o">=</span> <span class="n">estimator</span></div>
 
 
-<div class="viewcode-block" id="Gaussian_Naive_Bayes.build"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.bayes_estimators.Gaussian_Naive_Bayes.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Builds and returns estimator class.</span>
-<span class="sd">        </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        **kwargs : key-value arguments.</span>
-<span class="sd">            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `sklearn pipeline` object</span>
-<span class="sd">            pipeline for transforming the features and training the estimator</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_pipeline</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">GaussianNB</span><span class="p">())</span>        </div></div>
+
 
          
 
@@ -215,43 +198,19 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for `sklearn Bernoulli Naive Bayes estimator &lt;http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html&gt;`_.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;estimator_family&#39;</span><span class="p">:[</span><span class="n">NAIVE_BAYES</span><span class="p">],</span> 
-            <span class="s1">&#39;tasks&#39;</span><span class="p">:[</span><span class="n">CLASSIFICATION</span><span class="p">],</span> 
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;BernoulliNaiveBayes&#39;</span><span class="p">}</span>
-    <span class="n">hyperparameters</span> <span class="o">=</span> <span class="kc">None</span>        
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">hyperparameters</span><span class="o">=</span><span class="n">hyperparameters</span><span class="p">,</span>
-                <span class="n">properties</span><span class="o">=</span><span class="n">properties</span><span class="p">,</span> 
-                <span class="n">verbose</span><span class="o">=</span><span class="n">VERBOSE</span><span class="p">,</span>
-                <span class="n">n_jobs</span><span class="o">=</span><span class="n">GRIDSEARCH_CV_NUM_PARALLEL_JOBS</span><span class="p">,</span>
-                <span class="n">num_cv_folds</span><span class="o">=</span><span class="n">GRIDSEARCH_NUM_CV_FOLDS</span><span class="p">,</span> 
-                <span class="n">refit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">estimator</span><span class="o">=</span><span class="n">BernoulliNB</span><span class="p">(),</span>
+                <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_estimator</span> <span class="o">=</span> <span class="n">estimator</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hyperparameters</span> <span class="o">=</span> <span class="n">hyperparameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_cv_folds</span> <span class="o">=</span> <span class="n">num_cv_folds</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_refit</span> <span class="o">=</span> <span class="n">refit</span>
+        <span class="k">if</span> <span class="n">properties</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;estimator_family&#39;</span><span class="p">:[</span><span class="n">NAIVE_BAYES</span><span class="p">],</span> 
+                                <span class="s1">&#39;tasks&#39;</span><span class="p">:[</span><span class="n">CLASSIFICATION</span><span class="p">],</span> 
+                                <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">estimator</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="n">properties</span></div>
 
         
-
-<div class="viewcode-block" id="Bernoulli_Naive_Bayes.build"><a class="viewcode-back" href="../../../estimators.html#mlaut.estimators.bayes_estimators.Bernoulli_Naive_Bayes.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Builds and returns estimator class.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        **kwargs : key-value arguments.</span>
-<span class="sd">            Ignored in this implementation. Added for compatibility with :func:`mlaut.estimators.nn_estimators.Deep_NN_Classifier`.</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `sklearn pipeline` object</span>
-<span class="sd">            pipeline for transforming the features and training the estimator</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_pipeline</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">BernoulliNB</span><span class="p">())</span></div></div>
 </pre></div>
 
            </div>
@@ -264,7 +223,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Viktor Kazakov
+        &copy; Copyright 2019, Viktor Kazakov
 
     </p>
   </div>

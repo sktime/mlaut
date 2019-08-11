@@ -169,10 +169,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">mlaut</span></code> is comprised of the following main modules.</p>
 <ul class="simple">
 <li><a class="reference internal" href="estimators.html#estimators"><span class="std std-ref">Estimators</span></a>. This module encompasses all machine learning models that come with MLAUT as well as methods for instantiating them based on criteria provided by the user.</li>
-<li><a class="reference internal" href="data.html#data"><span class="std std-ref">Data</span></a>. The Data module contains the high level methods for manipulating the raw datasets. It provides a second layer of interface to the lower level classes for accessing, storing and extracting data from HDF5 databases. This module uses heavily the functionality developed in the Shared module but provides a higher level of abstraction for the user.</li>
-<li><a class="reference internal" href="experiments.html#experiments"><span class="std std-ref">Experiments</span></a>. This module contains the logic for orchestration of the machine learning experiments. The main parameters in this module are the  datasets and the estimator models that will be trained on the data.</li>
-<li><a class="reference internal" href="analyze_results.html#analyze-results"><span class="std std-ref">Analyze Results</span></a>. This module includes the logic for performing the statistical tests for comparing the performance of the trained algorithms. The predictions of the trained estimators on the test sets for each dataset serve as input for the statistical tests.</li>
-<li><a class="reference internal" href="shared.html#shared"><span class="std std-ref">Shared</span></a>. This module includes classes and methods that are shared by the other modules in the package.</li>
+<li><a class="reference internal" href="experiments.html#experiments"><span class="std std-ref">Experiments</span></a>. This module contains the logic for orchestration of the machine learning experiments. It also includes the logic for performing the statistical tests for comparing the performance of the trained algorithms. The predictions of the trained estimators on the test sets for each dataset serve as input for the statistical tests.</li>
 </ul>
 </div>
 <div class="section" id="applications-and-use">
@@ -192,7 +189,7 @@
 <div class="figure">
 <a class="reference internal image-reference" href="_images/workflow.png"><img alt="interaction between classes" src="_images/workflow.png" style="width: 704.0px; height: 285.5px;" /></a>
 </div>
-<p>The user should begin by saving the preprocessed datasets on its hard drive. The <code class="docutils literal notranslate"><span class="pre">Data</span></code> module is then evoked for saving the datasets in a HDF5 database. The second step of the process is to instantiate the machine learning estimator objects. The user has the choice of either using the pre-defined estimators in the <code class="docutils literal notranslate"><span class="pre">Estimators</span></code> module or defining its own by making use of the <a class="reference internal" href="estimators.html#mlaut-estimator-label"><span class="std std-ref">mlaut_estimator</span></a>. Once this step is completed the user can proceed to running the experiments by making use of the <code class="docutils literal notranslate"><span class="pre">Orchestrator</span></code> module. Once all estimators are trained on all datasets the user can carry out the final step of analyzing the results by evoking the <code class="docutils literal notranslate"><span class="pre">Analyze</span> <span class="pre">results</span></code> module.</p>
+<p>The user should begin by saving the preprocessed datasets on its hard drive. The <code class="docutils literal notranslate"><span class="pre">Data</span></code> module is then evoked for saving the datasets in a HDF5 database. The second step of the process is to instantiate the machine learning estimator objects. The user has the choice of either using the pre-defined estimators in the <code class="docutils literal notranslate"><span class="pre">Estimators</span></code> module or defining its own by making use of the <a class="reference internal" href="estimators.html#mlaut-estimator-label"><span class="std std-ref">mlaut_estimator</span></a>. Once this step is completed the user can proceed to running the experiments by making use of the <code class="docutils literal notranslate"><span class="pre">Orchestrator</span></code> module. Once all estimators are trained on all datasets the user can carry out the final step of analyzing the results by evoking the <code class="docutils literal notranslate"><span class="pre">Experiments</span></code> module.</p>
 </div>
 </div>
 
@@ -216,7 +213,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Viktor Kazakov
+        &copy; Copyright 2019, Viktor Kazakov
 
     </p>
   </div>

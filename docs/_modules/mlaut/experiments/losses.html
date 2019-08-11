@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>mlaut.analyze_results.losses &mdash; mlaut 0.0.1 documentation</title>
+  <title>mlaut.experiments.losses &mdash; mlaut 0.0.1 documentation</title>
   
 
   
@@ -132,7 +132,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>mlaut.analyze_results.losses</li>
+      <li>mlaut.experiments.losses</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -147,7 +147,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for mlaut.analyze_results.losses</h1><div class="highlight"><pre>
+  <h1>Source code for mlaut.experiments.losses</h1><div class="highlight"><pre>
 <span></span>
 
 <span class="kn">import</span> <span class="nn">collections</span>
@@ -155,7 +155,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<div class="viewcode-block" id="Losses"><a class="viewcode-back" href="../../../analyze_results.html#mlaut.analyze_results.losses.Losses">[docs]</a><span class="k">class</span> <span class="nc">Losses</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Losses"><a class="viewcode-back" href="../../../experiments.html#mlaut.experiments.losses.Losses">[docs]</a><span class="k">class</span> <span class="nc">Losses</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates prediction losses on test datasets achieved by the trained estimators. When the class is instantiated it creates a dictionary that stores the losses.</span>
 
@@ -165,87 +165,43 @@
 <span class="sd">        exact_match(Boolean): If `True` when predictions for all estimators in the estimators array is not available no evaluation is performed on the remaining estimators. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">estimators</span><span class="p">,</span> <span class="n">exact_match</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_losses</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span> <span class="o">=</span> <span class="n">metric</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_errors_per_estimator</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_errors_per_dataset_per_estimator</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_estimators</span> <span class="o">=</span> <span class="n">estimators</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_estimator_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">estimator</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">estimator</span> <span class="ow">in</span> <span class="n">estimators</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_exact_match</span><span class="o">=</span><span class="n">exact_match</span>
-
-
-<div class="viewcode-block" id="Losses.evaluate"><a class="viewcode-back" href="../../../analyze_results.html#mlaut.analyze_results.losses.Losses.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">true_labels</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_losses_per_estimator</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_losses_per_dataset_per_estimator</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<div class="viewcode-block" id="Losses.evaluate"><a class="viewcode-back" href="../../../experiments.html#mlaut.experiments.losses.Losses.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">true_labels</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">strategy_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the loss metrics on the test sets.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            predictions(2d numpy array): Predictions of trained estimators in the form [estimator_name, [predictions]]</span>
-<span class="sd">            true_labels(numpy array): true labels of test dataset.</span>
-<span class="sd">            dataset_name(string): Name of the dataset.</span>
-<span class="sd">            </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        predictions: numpy array</span>
+<span class="sd">            Predictions of trained estimators in the form </span>
+<span class="sd">        true_labels: numpy array</span>
+<span class="sd">            true labels of test dataset.</span>
+<span class="sd">        dataset_name: string</span>
+<span class="sd">            Name of the dataset</span>
+<span class="sd">        dataset_name: string</span>
+<span class="sd">            Name of the strategy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#check exact match</span>
-        <span class="n">exact_match_errors</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exact_match</span><span class="p">:</span>
-            <span class="n">estimators_predeictions_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimators</span><span class="p">:</span>
-                <span class="n">estimator_name</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-                
-                <span class="k">if</span> <span class="n">estimator_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">estimators_predeictions_names</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Predictions for estimator </span><span class="si">{estimator_name}</span><span class="s1"> unavailable for dataset: </span><span class="si">{dataset_name}</span><span class="s1">. Analyse Results will skip </span><span class="si">{dataset_name}</span><span class="s1">.&#39;</span><span class="p">)</span>
-                    <span class="n">exact_match_errors</span> <span class="o">+=</span><span class="mi">1</span>
 
-        <span class="k">if</span> <span class="n">exact_match_errors</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">prediction</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">:</span>
-                <span class="c1">#evaluates error per estimator</span>
-                <span class="n">estimator_name</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">estimator_predictions</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1">#evaluates error per estimator</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">strategy_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_losses_per_estimator</span><span class="p">:</span>     
+            <span class="bp">self</span><span class="o">.</span><span class="n">_losses_per_estimator</span><span class="p">[</span><span class="n">strategy_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_losses_per_estimator</span><span class="p">[</span><span class="n">strategy_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">loss</span><span class="p">]</span>
 
-                <span class="k">if</span> <span class="n">estimator_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimator_names</span><span class="p">:</span>     
-                    <span class="n">loss</span><span class="o">=</span><span class="mi">0</span>
-                    <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">true_labels</span><span class="p">,</span> <span class="n">estimator_predictions</span><span class="p">)</span>
+        <span class="c1">#evaluate per dataset</span>
+        <span class="n">avg_score</span><span class="p">,</span> <span class="n">std_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span><span class="o">.</span><span class="n">calculate_per_dataset</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">true_labels</span><span class="p">,</span> 
+                                                                  <span class="n">y_pred</span><span class="o">=</span><span class="n">predictions</span><span class="p">)</span>
 
-                    
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_errors_per_estimator</span><span class="p">[</span><span class="n">estimator_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
-
-                    <span class="c1">#evaluate errors per dataset per estimator</span>
-                    <span class="n">errors</span> <span class="o">=</span> <span class="p">(</span><span class="n">estimator_predictions</span> <span class="o">-</span> <span class="n">true_labels</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-                    <span class="n">errors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">errors</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
-
-                    <span class="n">std_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> 
-                    <span class="n">sum_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
-                    <span class="n">avg_score</span> <span class="o">=</span> <span class="n">sum_score</span><span class="o">/</span><span class="n">n</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_errors_per_dataset_per_estimator</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">estimator_name</span><span class="p">,</span> <span class="n">avg_score</span><span class="p">,</span> <span class="n">std_score</span><span class="p">])</span></div>
         
-    <span class="c1">#TODO Check if this is being used somewhere.</span>
-    <span class="c1"># def evaluate_per_dataset(self, </span>
-    <span class="c1">#                         predictions, </span>
-    <span class="c1">#                         true_labels, </span>
-    <span class="c1">#                         dataset_name):</span>
-
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     Calculates the error of an estimator per dataset.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_losses_per_dataset_per_estimator</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">strategy_name</span><span class="p">,</span> <span class="n">avg_score</span><span class="p">,</span> <span class="n">std_score</span><span class="p">])</span></div>
         
-    <span class="c1">#     Parameters</span>
-    <span class="c1">#     ----------</span>
-    <span class="c1">#     predictions (array): 2d array-like in the form [estimator name, [estimator_predictions]].</span>
-    <span class="c1">#     true_labels (array): 1d array-like</span>
-        
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     estimator_name = predictions[0]</span>
-    <span class="c1">#     estimator_predictions = np.array(predictions[1])</span>
-    <span class="c1">#     errors = (estimator_predictions - true_labels)**2</span>
-    <span class="c1">#     n = len(errors)</span>
-
-    <span class="c1">#     std_score = np.std(errors)/np.sqrt(n) </span>
-    <span class="c1">#     sum_score = np.sum(errors)</span>
-    <span class="c1">#     avg_score = sum_score/n</span>
-    <span class="c1">#     self._losses[dataset_name].append([estimator_name, avg_score, std_score])</span>
-
-<div class="viewcode-block" id="Losses.get_losses"><a class="viewcode-back" href="../../../analyze_results.html#mlaut.analyze_results.losses.Losses.get_losses">[docs]</a>    <span class="k">def</span> <span class="nf">get_losses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Losses.get_losses"><a class="viewcode-back" href="../../../experiments.html#mlaut.experiments.losses.Losses.get_losses">[docs]</a>    <span class="k">def</span> <span class="nf">get_losses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        When the Losses class is instantiated a dictionary that holds all losses is created and appended every time the evaluate() method is run. This method returns this dictionary with the losses.</span>
 
@@ -253,9 +209,7 @@
 <span class="sd">        -------</span>
 <span class="sd">            errors_per_estimator (dictionary), errors_per_dataset_per_estimator (dictionary), errors_per_dataset_per_estimator_df (pandas DataFrame): Returns dictionaries with the errors achieved by each estimator and errors achieved by each estimator on each of the datasets.  ``errors_per_dataset_per_estimator`` and ``errors_per_dataset_per_estimator_df`` return the same results but the first object is a dictionary and the second one a pandas DataFrame. ``errors_per_dataset_per_estimator`` and ``errors_per_dataset_per_estimator_df`` contain both the mean error and deviation.</span>
 <span class="sd">        &quot;&quot;&quot;</span> 
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors_per_estimator</span><span class="p">,</span> 
-                <span class="bp">self</span><span class="o">.</span><span class="n">_errors_per_dataset_per_estimator</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_losses_to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors_per_dataset_per_estimator</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_losses_per_estimator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_losses_to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_losses_per_dataset_per_estimator</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_losses_to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">losses</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -285,7 +239,7 @@
         
         <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">([</span><span class="n">dts</span><span class="p">,</span> <span class="n">estimators_list</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">df</span></div>
 </pre></div>
 
            </div>
@@ -298,7 +252,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Viktor Kazakov
+        &copy; Copyright 2019, Viktor Kazakov
 
     </p>
   </div>

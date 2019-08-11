@@ -5,7 +5,6 @@ from mlaut.shared.static_variables import (GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
 import pickle
 from mlaut.shared.static_variables import PICKLE_EXTENTION
 import wrapt
-from mlaut.shared.files_io import DiskOperations
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
