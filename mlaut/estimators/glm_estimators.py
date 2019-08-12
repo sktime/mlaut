@@ -33,6 +33,26 @@ class Linear_Regression(MlautEstimator):
 
         self._estimator = estimator
         self._properties = properties
+    
+    def coefficients(self, fitted_estimator, coefficinet_names):
+        """
+        Parameters
+        ----------
+        fited_estimator : object
+            fitted estimator object
+        coefficinet_names : list
+            list of strings with the names of each coefficient
+        Returns
+        -------
+        dictionary:
+            dictionary where the keys are the names of the coefficients
+        """
+        coeff_dict = {}
+        coeff_dict['intercept'] = fitted_estimator.intercept_
+        for name, coef in zip(coefficinet_names, fitted_estimator.coef_):
+            coeff_dict[name] = coef
+        
+        return coeff_dict
 
 class Ridge_Regression(MlautEstimator):
     """

@@ -44,7 +44,20 @@ class MlautEstimator(ABC):
         X = data.drop(metadata['target'], axis=1)
         return self._estimator.fit(X,y)    
 
-
+    def coefficients(self, fitted_estimator):
+        """
+        Parameters
+        ----------
+        fited_estimator : object
+            fitted estimator object
+        
+        Returns
+        -------
+        dictionary:
+            dictionary where the keys are the names of the coefficients
+        """
+        raise NotImplementedError('This feature needs to be implemented on the estimator level')
+    
     def predict(self, X):
         """
         Properties
