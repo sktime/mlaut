@@ -15,10 +15,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 
-from sktime.utils.validation.forecasting import validate_fh
-from sktime.classifiers.base import BaseClassifier
-from sktime.forecasters.base import BaseForecaster
-from sktime.regressors.base import BaseRegressor
+from mlaut.estimators.base import BaseClassifier
+from mlaut.estimators.base import BaseForecaster
+from mlaut.estimators.base import BaseRegressor
 
 
 __all__ = ["TSCStrategy", "TSRStrategy", "ForecastingStrategy", "Forecasting2TSRReductionStrategy"]
