@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from joblib import load
 
-from sktime.benchmarking.base import BaseResults, HDDBaseResults, _PredictionsWrapper
+from mlaut.benchmarking.base import BaseResults, HDDBaseResults, _PredictionsWrapper
 
 
 class RAMResults(BaseResults):

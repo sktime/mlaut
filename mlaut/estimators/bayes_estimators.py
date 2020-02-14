@@ -15,9 +15,10 @@ from mlaut.shared.static_variables import PICKLE_EXTENTION, HDF5_EXTENTION
 from mlaut.estimators.generic_estimator import Generic_Estimator
 from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import BernoulliNB
+from sklearn.base import BaseEstimator
 
 
-class Gaussian_Naive_Bayes(MlautEstimator):
+class Gaussian_Naive_Bayes(BaseEstimator):
     """
     Wrapper for `sklearn Naive Bayes estimator <http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html>`_.
     """

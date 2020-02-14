@@ -8,6 +8,7 @@ from mlaut.shared.static_variables import(BASELINE,
                                       VERBOSE)
 
 from sklearn.dummy import DummyClassifier, DummyRegressor
+from sklearn.base import BaseEstimator
 
 
 class Baseline_Regressor(MlautEstimator):
@@ -27,7 +28,7 @@ class Baseline_Regressor(MlautEstimator):
         self._properties = properties
     
 
-class Baseline_Classifier(MlautEstimator):
+class Baseline_Classifier(BaseEstimator):
     """
     Wrapper for sklearn dummy regressor
     """
