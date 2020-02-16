@@ -12,7 +12,7 @@ class MLaut_resampling:
         """
 class Single_Split(MLaut_resampling):
 
-    def __init__(self, cv, random_state=None):
+    def __init__(self, **kwargs):
         """
         Parameters
         ----------

@@ -70,7 +70,7 @@ class Orchestrator:
                         strategy.save(dataset_name=data.dataset_name, 
                                       cv_fold=cv_fold,
                                       strategy_save_dir=self._result.trained_strategies_save_path)
-
+        return self._result
     def predict(self):
         """
         TODO load saved strategies and make predictions
