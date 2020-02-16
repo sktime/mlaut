@@ -9,7 +9,6 @@ import numpy as np
 from mlaut.benchmarking.results import HDDResults
 from mlaut.highlevel.strategies import CSCStrategy
 from mlaut.estimators.baseline_estimators import Baseline_Classifier
-from mlaut.estimators.bayes_estimators import Gaussian_Naive_Bayes
 from mlaut.model_selection import SingleSplit
 
 iris = datasets.load_iris()
@@ -29,8 +28,7 @@ tasks = [TSCTask(target="target") for _ in range(len(datasets))]
 results = HDDResults(path='results')
 
 strategies = [
-    CSCStrategy(Baseline_Classifier, name="baseline"),
-    CSCStrategy(Gaussian_Naive_Bayes(n_estimators=20), name="NaiveBayes")
+    CSCStrategy(Baseline_Classifier, name="baseline")
 ]
 
 # results = HDDResults(path='results')

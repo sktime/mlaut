@@ -1,4 +1,4 @@
-from mlaut.estimators.mlaut_estimator import MlautEstimator
+from mlaut.estimators.base import MlautClassifier
 from mlaut.shared.files_io import DiskOperations
 from mlaut.shared.static_variables import(BASELINE,
                                       REGRESSION, 
@@ -8,10 +8,10 @@ from mlaut.shared.static_variables import(BASELINE,
                                       VERBOSE)
 
 from sklearn.dummy import DummyClassifier, DummyRegressor
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseClassifer
 
 
-class Baseline_Regressor(MlautEstimator):
+class Baseline_Regressor(BaseClassifer):
     """
     Wrapper for sklearn dummy regressor
     """
@@ -28,7 +28,7 @@ class Baseline_Regressor(MlautEstimator):
         self._properties = properties
     
 
-class Baseline_Classifier(BaseEstimator):
+class Baseline_Classifier(BaseClassifer):
     """
     Wrapper for sklearn dummy regressor
     """

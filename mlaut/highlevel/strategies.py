@@ -16,7 +16,6 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 
 from mlaut.estimators.base import BaseClassifier
-from mlaut.estimators.base import BaseForecaster
 from mlaut.estimators.base import BaseRegressor
 
 
@@ -27,8 +26,7 @@ __author__ = ['Markus Löning', 'Sajay Ganesh']
 # TODO implement task-strategy-estimator compatibility lookup registry using strategy traits
 REGRESSOR_TYPES = (BaseRegressor, RegressorMixin)
 CLASSIFIER_TYPES = (BaseClassifier, ClassifierMixin)
-FORECASTER_TYPES = (BaseForecaster, )
-ESTIMATOR_TYPES = REGRESSOR_TYPES + CLASSIFIER_TYPES + FORECASTER_TYPES
+ESTIMATOR_TYPES = REGRESSOR_TYPES + CLASSIFIER_TYPES
 
 CASES = ("TSR", "TSC", "Forecasting")
 
