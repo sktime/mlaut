@@ -8,10 +8,20 @@ from mlaut.shared.static_variables import(BASELINE,
                                       VERBOSE)
 
 from sklearn.dummy import DummyClassifier, DummyRegressor
-from sklearn.base import BaseClassifer
+from sktime.classifiers.base import BaseClassifier
 
+class BaselineTest(BaseClassifier):
+    def __init__(self):
+        self.fitted_classifier = None
+    def fit(self, X, y):
+        self.fitted_classifier = DummyClassifier().fit(X,y)
+        self.is_fitted = True
+        return self
+    
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
 
-class Baseline_Regressor(BaseClassifer):
+class Baseline_Regressor(BaseClassifier):
     """
     Wrapper for sklearn dummy regressor
     """
@@ -28,7 +38,7 @@ class Baseline_Regressor(BaseClassifer):
         self._properties = properties
     
 
-class Baseline_Classifier(BaseClassifer):
+class Baseline_Classifier(BaseClassifier):
     """
     Wrapper for sklearn dummy regressor
     """
@@ -46,3 +56,4 @@ class Baseline_Classifier(BaseClassifer):
 
         self._estimator = estimator
         self._properties = properties
+

@@ -4,6 +4,7 @@ __author__ = ["Viktor Kazakov", "Markus Löning"]
 from sklearn.base import clone
 
 from sktime.highlevel.tasks import TSCTask, TSRTask
+from mlaut.highlevel.tasks import CSCTask
 
 
 class Orchestrator:
@@ -224,9 +225,9 @@ class Orchestrator:
                              "there must be one task for each dataset")
 
         # check if task is either time series regression or classification, other tasks not supported yet
-        if not all(isinstance(task, (TSCTask, TSRTask)) for task in tasks):
-            raise NotImplementedError("Currently, only time series classification and time series "
-                                      "regression tasks are supported")
+        if not all(isinstance(task, (TSCTask, TSRTask, CSCTask)) for task in tasks):
+            raise NotImplementedError("Currently, only time series classification, time series "
+                                      "regression tasks and cross section classification tasks are supported")
 
         # check if all tasks are of the same type
         if not all(isinstance(task, type(tasks[0])) for task in tasks):
