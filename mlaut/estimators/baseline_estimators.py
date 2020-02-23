@@ -1,16 +1,8 @@
-from mlaut.estimators.base import MlautClassifier
-from mlaut.shared.files_io import DiskOperations
-from mlaut.shared.static_variables import(BASELINE,
-                                      REGRESSION, 
-                                      CLASSIFICATION,
-                                      GRIDSEARCH_NUM_CV_FOLDS,
-                                      GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                                      VERBOSE)
-
 from sklearn.dummy import DummyClassifier, DummyRegressor
 from sktime.classifiers.base import BaseClassifier
+from sktime.regressors.base import BaseRegressor
 
-class BaselineTest(BaseClassifier):
+class Baseline_Classifier(BaseClassifier):
     def __init__(self):
         self.fitted_classifier = None
     def fit(self, X, y):
@@ -21,39 +13,21 @@ class BaselineTest(BaseClassifier):
     def predict(self, X):
         return self.fitted_classifier.predict(X)
 
-class Baseline_Regressor(BaseClassifier):
+
+class Baseline_Regressor(BaseRegressor):
     """
     Wrapper for sklearn dummy regressor
     """
 
-    def __init__(self,
-                estimator=DummyRegressor(),
-                properties=None):
-        if properties is None:
-            properties = {'estimator_family':[BASELINE],
-                                'tasks':[REGRESSION],
-                                'name':estimator.__class__.__name__}
-        
-        self._estimator = estimator
-        self._properties = properties
+    def __init__(self):
+        self.fitted_classifier = None
+    def fit(self, X, y):
+        self.fitted_classifier = DummyRegressor().fit(X,y)
+        self.is_fitted = True
+        return self
     
-
-class Baseline_Classifier(BaseClassifier):
-    """
-    Wrapper for sklearn dummy regressor
-    """
-
-    def __init__(self,
-                estimator=DummyClassifier(),
-                hyperparameters=None,
-                properties=None, 
-                verbose=VERBOSE):
-        if properties is None:
-            properties = {'estimator_family':[BASELINE],
-                                'tasks':[CLASSIFICATION],
-                                'name':estimator.__class__.__name__}
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
 
 
-        self._estimator = estimator
-        self._properties = properties
 

@@ -1,6 +1,6 @@
 from sktime.highlevel.strategies import BaseSupervisedLearningStrategy
-from sktime.highlevel.strategies import CLASSIFIER_TYPES
-
+from sktime.highlevel.strategies import CLASSIFIER_TYPES, REGRESSOR_TYPES
+from joblib import dump, load
 
 
 class CSCStrategy(BaseSupervisedLearningStrategy):
@@ -19,5 +19,10 @@ class CSCStrategy(BaseSupervisedLearningStrategy):
     """
     def __init__(self, estimator, name=None, check_input=True):
         self._case = "CSC"
-        self._traits = {"required_estimator_type": CLASSIFIER_TYPES}
+        self._traits = {"required_estimator_type": CLASSIFIER_TYPES + REGRESSOR_TYPES}
         super(CSCStrategy, self).__init__(estimator, name=name, check_input=check_input)
+
+    def save(self, path):
+        # TODO this method is implemented in sktime.highlevel.strategies.BaseStrategy
+        # however saving fails if we don't reimplement it here
+        dump(self,path)

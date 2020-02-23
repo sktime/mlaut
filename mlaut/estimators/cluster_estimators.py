@@ -1,48 +1,38 @@
 
+import numpy as np
 from sklearn import neighbors
 from sklearn.model_selection import GridSearchCV
-from mlaut.estimators.mlaut_estimator import MlautEstimator
+from mlaut.shared.static_variables import GRIDSEARCH_CV_NUM_PARALLEL_JOBS, GRIDSEARCH_NUM_CV_FOLDS
+from sktime.classifiers.base import BaseClassifier
 
-from mlaut.shared.files_io import DiskOperations
-from mlaut.shared.static_variables import (CLUSTER, 
-                                           CLASSIFICATION,
-                                           PICKLE_EXTENTION, 
-                                           HDF5_EXTENTION,
-                                           GRIDSEARCH_NUM_CV_FOLDS,
-                                           GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                                           VERBOSE)
-import numpy as np
-
-from mlaut.estimators.generic_estimator import Generic_Estimator
-
-
-class K_Neighbours(MlautEstimator):
+class K_Neighbours(BaseClassifier):
     """
     Wrapper for `sklearn KNeighbours classifier <http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html#sklearn.neighbors.KNeighborsClassifier>`_.
     """
-
-
-    def __init__(self,
-                estimator=None,
-                properties=None,
-                n_jobs=-1,
-                cv=5):
-        if estimator is None:
-            hyperparameters = {
+    def __init__(self, hyperparameters=None, 
+                       n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
+                       cv=GRIDSEARCH_NUM_CV_FOLDS):
+        self.fitted_classifier = None
+        self.n_jobs = n_jobs
+        self.cv = cv
+        if hyperparameters is None:
+            self.hyperparameters = {
                     'n_neighbors': np.arange(1,31),
                     'p': [1, 2]
                     }
-            self._estimator = GridSearchCV(neighbors.KNeighborsClassifier(), 
-                                            param_grid=hyperparameters, 
-                                            n_jobs=n_jobs, 
-                                            cv=cv)
         else:
-            self._estimator = estimator
-        
-        if properties is None:
-            self._properties = {'estimator_family':[CLUSTER], 
-                                'tasks':[CLASSIFICATION], 
-                                'name':'K_Neighbours'}
-        else:
-            self._properties=properties
+            self.hyperparameters=hyperparameters
+
+    def fit(self, X, y):
+        classifier = GridSearchCV(neighbors.KNeighborsClassifier(), 
+                                            param_grid=self.hyperparameters, 
+                                            n_jobs=self.n_jobs, 
+                                            cv=self.cv)
+        self.fitted_classifier = classifier.fit(X,y)
+        self.is_fitted = True
+        return self
+    
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
+
  

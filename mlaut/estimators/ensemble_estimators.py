@@ -1,223 +1,207 @@
-from mlaut.estimators.mlaut_estimator import MlautEstimator
-
-from mlaut.shared.files_io import DiskOperations
 
 from sklearn.model_selection import GridSearchCV
-from mlaut.shared.static_variables import(ENSEMBLE_METHODS, 
-                                      REGRESSION, 
-                                      CLASSIFICATION,
-                                      GRIDSEARCH_NUM_CV_FOLDS,
-                                      GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
-                                      VERBOSE)
+from mlaut.shared.static_variables import(GRIDSEARCH_NUM_CV_FOLDS,
+                                      GRIDSEARCH_CV_NUM_PARALLEL_JOBS)
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import BaggingRegressor
+
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
-from mlaut.estimators.generic_estimator import Generic_Estimator
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
 import numpy as np
+from sktime.classifiers.base import BaseClassifier
+from sktime.regressors.base import BaseRegressor
 
-class Random_Forest_Classifier(MlautEstimator):
+
+class Random_Forest_Classifier(BaseClassifier):
     """
     Wrapper for `sklearn Random Forest Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html>`_.
     """
-
-
-    def __init__(self,
-                estimator=None,
-                properties=None,
-                n_jobs=-1,
-                cv=5):
-        if estimator is None:
-            # hyperparameters = {
-            #                 'n_estimators': [10, 50, 100],
-            #                 'max_features': ['auto', 'sqrt','log2', None],
-            #                 'max_depth': [5, 15, None]
-            #             }
-            
-            # source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html
-            hyperparameters = {"max_depth": [10,100, None],
+    def __init__(self, hyperparameters=None, 
+                       n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
+                       cv=GRIDSEARCH_NUM_CV_FOLDS):
+        self.fitted_classifier = None
+        self.n_jobs = n_jobs
+        self.cv = cv
+        if hyperparameters is None:
+            self.hyperparameters = hyperparameters = {"max_depth": [10,100, None],
                         "max_features": ['auto', 'sqrt','log2', None],
                         "min_samples_split": [2, 3, 10],
                         "bootstrap": [True, False],
                         "criterion": ["gini", "entropy"],
                         "n_estimators": [10, 100, 200, 500]}
-            self._estimator = GridSearchCV(RandomForestClassifier(), 
-                            hyperparameters, 
-                            n_jobs=n_jobs,
-                            cv=cv)
-    
-        
-        if properties is None:
-            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
-                    'tasks':[CLASSIFICATION], 
-                    'name':'RandomForestClassifier'}
-       
-        
+        else:
+            self.hyperparameters=hyperparameters
 
-class Random_Forest_Regressor(MlautEstimator):
+    def fit(self, X, y):
+        classifier = GridSearchCV(RandomForestClassifier(), 
+                            param_grid=self.hyperparameters, 
+                            n_jobs=self.n_jobs,
+                            cv=self.cv)
+        self.fitted_classifier = classifier.fit(X,y)
+        self.is_fitted = True
+        return self
+    
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
+
+class Random_Forest_Regressor(BaseRegressor):
     """
     Wrapper for `sklearn Random Forest Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html>`_.
     """
-
- 
-    def __init__(self,
-                estimator=None,
-                properties=None,
-                n_jobs=-1,
-                cv=5):
-        if estimator is None:
-            hyperparameters = {
+    def __init__(self, hyperparameters=None, 
+                       n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
+                       cv=GRIDSEARCH_NUM_CV_FOLDS):
+        self.fitted_classifier = None
+        self.n_jobs = n_jobs
+        self.cv = cv
+        if hyperparameters is None:
+            self.hyperparameters = {
             'n_estimators': [10, 50, 100],
             'max_features': ['auto', 'sqrt','log2', None],
             'max_depth': [5, 15, None]
             }
-            self._estimator = GridSearchCV(estimator=RandomForestRegressor(), 
-                                           param_grid=hyperparameters,
-                                           n_jobs=n_jobs,
-                                           cv=cv)
         else:
-           self._estimator = estimator
+            self.hyperparameters=hyperparameters
 
-        if properties is None:
-            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
-                                'tasks':[REGRESSION], 
-                                'name':'RandomForestRegressor'}
-        else:
-            self._properties=properties
+    def fit(self, X, y):
+        classifier = GridSearchCV(RandomForestRegressor(), 
+                                            param_grid=self.hyperparameters, 
+                                            n_jobs=self.n_jobs, 
+                                            cv=self.cv)
+        self.fitted_classifier = classifier.fit(X,y)
+        self.is_fitted = True
+        return self
+    
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
 
-
-class Bagging_Classifier(MlautEstimator):
+class Bagging_Classifier(BaseClassifier):
     """
     Wrapper for `sklearn Bagging Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html>`_.
     """
 
-
-    def __init__(self,
-                estimator=None,
-                properties=None,
-                n_jobs=-1,
-                cv=5):
-
-        if estimator is None:
-            hyperparameters = {
+    def __init__(self, hyperparameters=None, 
+                       n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
+                       cv=GRIDSEARCH_NUM_CV_FOLDS):
+        self.fitted_classifier = None
+        self.n_jobs = n_jobs
+        self.cv = cv
+        if hyperparameters is None:
+            self.hyperparameters = {
             'n_estimators': [10, 100, 200, 500],
             'max_samples':[0.5, 1],
-            'max_features': [0.5,1]}
-            # 'base_estimator': [DecisionTreeClassifier(), KNeighborsClassifier(), SVC()]
-            self._estimator = GridSearchCV(estimator=DecisionTreeClassifier(), 
-                                            param_grid=hyperparameters,
-                                            n_jobs=n_jobs,
-                                            cv=cv)
+            'max_features': [0.5,1],
+            'base_estimator': DecisionTreeClassifier()}
         else:
-            self._estimator = estimator
+            self.hyperparameters=hyperparameters
 
-        if properties is None:
-            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
-                                'tasks':[CLASSIFICATION], 
-                                'name':'BaggingClassifier'}
-        else:
-            self._properties=properties
+    def fit(self, X, y):
+        classifier = GridSearchCV(BaggingClassifier(), 
+                                            param_grid=self.hyperparameters, 
+                                            n_jobs=self.n_jobs, 
+                                            cv=self.cv)
+        self.fitted_classifier = classifier.fit(X,y)
+        self.is_fitted = True
+        return self
+    
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
 
-class Bagging_Regressor(MlautEstimator):
+class Bagging_Regressor(BaseRegressor):
     """
     Wrapper for `sklearn Bagging Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html>`_.
     """
-   
-    def __init__(self,
-                estimator=None,
-                properties=None,
-                n_jobs=-1,
-                cv=5):
-        if estimator is None:
-            hyperparameters ={
-                    'n_estimators': [10, 50, 100]
-                }
- 
-            self._estimator = GridSearchCV(estimator=DecisionTreeRegressor(), 
-                                           param_grid=hyperparameters,
-                                           n_jobs=n_jobs,
-                                           cv=cv)
+
+    def __init__(self, hyperparameters=None, 
+                       n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
+                       cv=GRIDSEARCH_NUM_CV_FOLDS):
+        self.fitted_classifier = None
+        self.n_jobs = n_jobs
+        self.cv = cv
+        if hyperparameters is None:
+            self.hyperparameters = {
+            'n_estimators': [10, 100, 200, 500],
+            'max_samples':[0.5, 1],
+            'max_features': [0.5,1],
+            'base_estimator': DecisionTreeRegressor()}
         else:
-           self._estimator = estimator
+            self.hyperparameters=hyperparameters
 
-        if properties is None:
-            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
-                                'tasks':[REGRESSION], 
-                                'name':'BaggingRegressor'}
-        else:
-            self._properties=properties
+    def fit(self, X, y):
+        classifier = GridSearchCV(BaggingRegressor(), 
+                                            param_grid=self.hyperparameters, 
+                                            n_jobs=self.n_jobs, 
+                                            cv=self.cv)
+        self.fitted_classifier = classifier.fit(X,y)
+        self.is_fitted = True
+        return self
+    
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
 
-
-
-
-
-class Gradient_Boosting_Classifier(MlautEstimator):
+class Gradient_Boosting_Classifier(BaseClassifier):
     """
     Wrapper for `sklearn Gradient Boosting Classifier <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html>`_.
     """
 
 
-    def __init__(self,
-                estimator=None,
-                properties=None,
-                n_jobs=-1,
-                cv=5):
-        if estimator is None:
-            hyperparameters ={
-                    'n_estimators': [100, 200, 500],
+    def __init__(self, hyperparameters=None, 
+                       n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
+                       cv=GRIDSEARCH_NUM_CV_FOLDS):
+        self.fitted_classifier = None
+        self.n_jobs = n_jobs
+        self.cv = cv
+        if hyperparameters is None:
+            self.hyperparameters = {
+            'n_estimators': [100, 200, 500],
                     'max_depth': np.arange(1,11),
-                    'learning_rate': [0.01, 0.1, 1, 10, 100]
-                }
- 
-            self._estimator = GridSearchCV(estimator=GradientBoostingClassifier(), 
-                                           param_grid=hyperparameters,
-                                           n_jobs=n_jobs,
-                                           cv=cv)
+                    'learning_rate': [0.01, 0.1, 1, 10, 100]}
         else:
-           self._estimator = estimator
+            self.hyperparameters=hyperparameters
 
-        if properties is None:
-            self._properties = {'estimator_family':[ENSEMBLE_METHODS], 
-                                'tasks':[CLASSIFICATION], 
-                                'name':'GradientBoostingClassifier'}
-        else:
-            self._properties=properties
+    def fit(self, X, y):
+        classifier = GridSearchCV(estimator=GradientBoostingClassifier(), 
+                                           param_grid=self.hyperparameters,
+                                           n_jobs=self.n_jobs,
+                                           cv=self.cv)
 
+        self.fitted_classifier = classifier.fit(X,y)
+        self.is_fitted = True
+        return self
+    
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
 
-
-
-class Gradient_Boosting_Regressor(MlautEstimator):
+class Gradient_Boosting_Regressor(BaseRegressor):
     """
     Wrapper for `sklearn Gradient Boosting Regressor <http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html>`_.
     """
 
-
-    def __init__(self,
-                estimator=None,
-                properties=None,
-                n_jobs=-1,
-                cv=5):
-        if estimator is None:
-            hyperparameters ={
-                            'n_estimators': [10, 50, 100],
-                            'max_depth':[10,100, None]
-                        }        
- 
-            self._estimator = GridSearchCV(estimator=GradientBoostingRegressor(), 
-                                           param_grid=hyperparameters,
-                                           n_jobs=n_jobs,
-                                           cv=cv)
+    def __init__(self, hyperparameters=None, 
+                       n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
+                       cv=GRIDSEARCH_NUM_CV_FOLDS):
+        self.fitted_classifier = None
+        self.n_jobs = n_jobs
+        self.cv = cv
+        if hyperparameters is None:
+            self.hyperparameters = {
+           'n_estimators': [10, 50, 100],
+                            'max_depth':[10,100, None]}
         else:
-           self._estimator = estimator
+            self.hyperparameters=hyperparameters
 
-        if properties is None:
-            self._properties ={'estimator_family':[ENSEMBLE_METHODS], 
-                            'tasks':[REGRESSION], 
-                            'name':'GradientBoostingRegressor'}
-        else:
-            self._properties=properties
+    def fit(self, X, y):
+        classifier = GridSearchCV(estimator=GradientBoostingRegressor(), 
+                                           param_grid=self.hyperparameters,
+                                           n_jobs=self.n_jobs,
+                                           cv=self.cv)
+
+        self.fitted_classifier = classifier.fit(X,y)
+        self.is_fitted = True
+        return self
+    
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
 
