@@ -58,6 +58,51 @@ class BaseClassifier(BaseEstimator):
     #     acc = accuracy_score(y, predictions, normalize=True)
     #     return acc
 
+class MLautRegressor(BaseRegressor):
+    """ Base class for constructing MLaut regressors
+
+    Parameters
+    ----------
+    base_regressor : object
+        Estimator object. Must have fit() and predict() methods. Must be passed as a reference, not as an instance.
+    **kwargs : dictionary
+        Parameters for `base_regressor`
+    """
+    def __init__(self, base_regressor, **kwargs):
+        self.fitted_regressor = None
+        self.base_regressor = base_regressor
+        self.kwargs = kwargs
+    
+    def fit(self, X, y):
+        regressor = self.base_regressor(self.kwargs)
+        self.fitted_regressor = regressor.fit(X,y)
+        return self
+    
+    def predict(self, X):
+        return self.fitted_regressor.predict(X)
+
+class MLautClassifier(BaseClassifier):
+    """ Base class for constructing MLaut regressors
+
+    Parameters
+    ----------
+    base_regressor : object
+        Estimator object. Must have fit() and predict() methods. Must be passed as a reference, not as an instance.
+    **kwargs : dictionary
+        Parameters for `base_regressor`
+    """
+    def __init__(self, base_classifier, **kwargs):
+        self.fitted_classifier = None
+        self.base_classifier = base_classifier
+        self.kwargs = kwargs
+    
+    def fit(self, X, y):
+        classifier = self.base_classifier(self.kwargs)
+        self.fitted_classifier = classifier.fit(X,y)
+        return self
+    
+    def predict(self, X):
+        return self.fitted_classifier.predict(X)
 # class MlautClassifier(BaseClassifier):
 #     """
 #     Abstact base class that all mlaut estimators should inherit from.

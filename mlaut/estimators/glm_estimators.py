@@ -12,75 +12,80 @@ from mlaut.shared.static_variables import PICKLE_EXTENTION
 from sklearn import linear_model
 from sklearn.model_selection import GridSearchCV
 import numpy as np
-from mlaut.estimators.generic_estimator import Generic_Estimator
 
-class Linear_Regression(MlautEstimator):
+from sktime.classifiers.base import BaseClassifier
+from sktime.regressors.base import BaseRegressor
+
+from sktime.classifiers.base import BaseClassifier
+from sktime.regressors.base import BaseRegressor
+
+from mlaut.estimators.base import MLautRegressor, MLautClassifier
+
+class Linear_Regression(BaseRegressor):
     """
     Wrapper for `sklearn Linear Regression <https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html>`_.
     """
 
     def __init__(self,
-                estimator=None,
-                properties=None,
-                n_jobs=-1):
-        if estimator is None:
-            estimator = linear_model.LinearRegression(n_jobs=n_jobs)
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS):
+        self.fitted_regressor = None
+        self.n_jobs = n_jobs
+    def fit(self, X,y):
+        regressor = linear_model.LinearRegression(n_jobs=self.n_jobs)
+        self.fitted_regressor = regressor.fit(X,y)
+        self.is_fitted = True
+        return self
+    def predict(self, X):
+        return self.fitted_regressor.predict(X)
 
-
-        if properties is None:
-            properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-                                'tasks':[REGRESSION], 
-                                'name':'LinearRegression'}
-
-        self._estimator = estimator
-        self._properties = properties
-
-class Ridge_Regression(MlautEstimator):
+class Ridge_Regression(BaseRegressor):
     """
     Wrapper for `sklearn Ridge Regression <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html>`_.
     """
-
     def __init__(self,
-                estimator=None,
-                properties=None,
-                cv=5):
-        if estimator is None:
-            hyperparameters = {'alphas':[0.1, 1, 10.0]}
-            estimator = linear_model.RidgeCV(alphas=hyperparameters['alphas'], cv=cv)
-
-
-        if properties is None:
-            properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-                                'tasks':[REGRESSION], 
-                                'name':'RidgeRegression'}
-
-        self._estimator = estimator
-        self._properties = properties
-
-
-class Lasso(MlautEstimator):
-    """
-    Wrapper for `sklearn Lasso <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html>`_.
-    """
-
-
-    def __init__(self,
-                estimator=None,
-                properties=None,
-                cv=5,
-                n_jobs=-1):
-        if estimator is None:
-            hyperparameters = {'alphas':[0.1, 1, 10.0]}
-            self._estimator = linear_model.LassoCV(alphas=hyperparameters['alphas'], cv=cv, n_jobs=n_jobs)
+                hyperparameters=None,
+                n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
+                cv=GRIDSEARCH_NUM_CV_FOLDS):
+        self.fitted_regressor = None
+        self.n_jobs = n_jobs
+        self.cv = cv
+        if hyperparameters is None:
+            self.hyperparameters = {'alphas':[0.1, 1, 10.0]}
         else:
-            self._estimator = estimator
+            self.hyperparameters = hyperparameters
 
-        if properties is None:
-            self._properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
-                                'tasks':[REGRESSION], 
-                                'name':'Lasso'}
-        else:
-            self._properties=properties
+    def fit(self, X,y):
+        regressor = linear_model.RidgeCV(alphas=self.hyperparameters['alphas'], cv=self.cv)
+        self.fitted_regressor = regressor.fit(X,y)
+        self.is_fitted = True
+        return self
+    def predict(self, X):
+        return self.fitted_regressor.predict(X)
+
+Lasso = MLautRegressor(base_regressor=linear_model.LassoCV, alphas=[0.1, 1, 10.0], cv=5, n_jobs=-1)
+# class Lasso(MLautRegressor):
+#     """
+#     Wrapper for `sklearn Lasso <http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html>`_.
+#     """
+
+
+#     def __init__(self,
+#                 estimator=None,
+#                 properties=None,
+#                 cv=5,
+#                 n_jobs=-1):
+#         if estimator is None:
+#             hyperparameters = {'alphas':[0.1, 1, 10.0]}
+#             self._estimator = linear_model.LassoCV(alphas=hyperparameters['alphas'], cv=cv, n_jobs=n_jobs)
+#         else:
+#             self._estimator = estimator
+
+#         if properties is None:
+#             self._properties = {'estimator_family':[GENERALIZED_LINEAR_MODELS], 
+#                                 'tasks':[REGRESSION], 
+#                                 'name':'Lasso'}
+#         else:
+#             self._properties=properties
   
 
 class Lasso_Lars(MlautEstimator):
