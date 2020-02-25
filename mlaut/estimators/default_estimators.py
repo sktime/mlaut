@@ -1,7 +1,7 @@
 import itertools
 
 from mlaut.estimators.glm_estimators import (Ridge_Regression, 
-                                       Lasso, 
+                                    #    Lasso, 
                                        Lasso_Lars, 
                                        Logistic_Regression, 
                                        Passive_Aggressive_Classifier,
@@ -76,7 +76,7 @@ def default_estimators(estimator_family=None,
     all_estimators_array=[
         Logistic_Regression,
         Ridge_Regression,
-        Lasso,
+        # Lasso,
         Lasso_Lars,
         Bayesian_Ridge,
         Random_Forest_Classifier,

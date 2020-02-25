@@ -9,19 +9,18 @@ class K_Neighbours(BaseClassifier):
     """
     Wrapper for `sklearn KNeighbours classifier <http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html#sklearn.neighbors.KNeighborsClassifier>`_.
     """
-    def __init__(self, hyperparameters=None, 
-                       n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
-                       cv=GRIDSEARCH_NUM_CV_FOLDS):
+    def __init__(self, 
+                 hyperparameters={
+                    'n_neighbors': np.arange(1,31),
+                    'p': [1, 2]
+                    }, 
+                    n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
+                    cv=GRIDSEARCH_NUM_CV_FOLDS):
         self.fitted_classifier = None
         self.n_jobs = n_jobs
         self.cv = cv
-        if hyperparameters is None:
-            self.hyperparameters = {
-                    'n_neighbors': np.arange(1,31),
-                    'p': [1, 2]
-                    }
-        else:
-            self.hyperparameters=hyperparameters
+        
+        self.hyperparameters=hyperparameters
 
     def fit(self, X, y):
         classifier = GridSearchCV(neighbors.KNeighborsClassifier(), 

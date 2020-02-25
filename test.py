@@ -21,7 +21,9 @@ from mlaut.benchmarking.results import HDDResults
 from mlaut.highlevel.strategies import CSCStrategy
 from mlaut.model_selection import SingleSplit
 from mlaut.benchmarking.orchestration import Orchestrator
-from mlaut.estimators.glm_estimators import Lasso
+from mlaut.estimators.glm_estimators import Lasso, Passive_Aggressive_Classifier
+
+from sklearn import linear_model
 
 iris = datasets.load_iris()
 wine = datasets.load_wine()
@@ -39,6 +41,7 @@ tasks = [CSCTask(target="target") for _ in range(len(datasets))]
 
 results = HDDResults(path='results')
 
+
 strategies = [
     # CSCStrategy(Baseline_Classifier(), name="Baseline_Classifier"),
     # CSCStrategy(Baseline_Regressor(), name="Baseline_Regressor"),
@@ -53,7 +56,8 @@ strategies = [
     # CSCStrategy(Bagging_Regressor(), name="Bagging_Regressor"),
     # CSCStrategy(Gradient_Boosting_Classifier(), name="Gradient_Boosting_Classifier"),
     # CSCStrategy(Gradient_Boosting_Regressor(), name="Gradient_Boosting_Regressor"),
-    CSCStrategy(Lasso, name="Lasso"),
+    # CSCStrategy(Lasso(), name="Lasso"),
+    CSCStrategy(Passive_Aggressive_Classifier(), name="Passive_Aggressive_Classifier"),
 ]
 
 results = HDDResults(path='results')
