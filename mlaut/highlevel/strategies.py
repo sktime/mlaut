@@ -207,7 +207,20 @@ class BaseSupervisedLearningStrategy(BaseStrategy):
 
         # predict
         return self.estimator.predict(X)
-
+    
+    @property
+    def param_grid(self):
+        try:
+            return self._estimator.param_grid
+        except:
+            raise Exception(f'{self._name} estimator has no param_grid property.')
+    
+    @param_grid.setter
+    def param_grid(self, param_grid):
+        try:
+            self._estimator.param_grid = param_grid
+        except:
+            raise Exception(f'{self._name} estimator has no param_grid property.')
 
 class CSCStrategy(BaseSupervisedLearningStrategy):
     """
@@ -233,6 +246,8 @@ class CSCStrategy(BaseSupervisedLearningStrategy):
         # TODO this method is implemented in sktime.highlevel.strategies.BaseStrategy
         # however saving fails if we don't reimplement it here
         dump(self, path)
+    
+    
 
 class CSRStrategy(BaseSupervisedLearningStrategy):
     """

@@ -25,7 +25,9 @@ from mlaut.estimators.glm_estimators import Lasso, Passive_Aggressive_Classifier
 
 from sklearn import linear_model
 
-from mlaut.strategies.baseline import BaselineClassifier, BaselineRegressor
+from mlaut.strategies.baseline import BaselineClassifierStrategy, BaselineRegressorStrategy
+from mlaut.strategies.bayes import GaussianNaiveBayesStrategy, BernoulliNaiveBayesStrategy
+from mlaut.strategies.cluster import KNeighboursStrategy
 
 iris = datasets.load_iris()
 wine = datasets.load_wine()
@@ -45,9 +47,11 @@ results = HDDResults(path='results')
 
 
 strategies = [
-    BaselineClassifier, 
-    BaselineRegressor
-
+    BaselineClassifierStrategy, 
+    BaselineRegressorStrategy,
+    GaussianNaiveBayesStrategy, 
+    BernoulliNaiveBayesStrategy,
+    KNeighboursStrategy
 ]
 
 results = HDDResults(path='results')

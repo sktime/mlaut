@@ -3,5 +3,5 @@ from sklearn.naive_bayes import BernoulliNB
 
 from mlaut.highlevel.strategies import CSCStrategy, CSRStrategy
 
-GaussianNaiveBayes = CSCStrategy(GaussianNB(), name="GaussianNaiveBayes")
-BernoulliNaiveBayes = CSRStrategy(BernoulliNB(), name="BernoulliNB")
+GaussianNaiveBayesStrategy = CSCStrategy(GaussianNB(), name="GaussianNaiveBayes")
+BernoulliNaiveBayesStrategy = CSRStrategy(BernoulliNB(), name="BernoulliNB")

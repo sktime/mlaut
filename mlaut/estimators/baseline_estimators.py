@@ -1,6 +1,8 @@
 from sklearn.dummy import DummyClassifier, DummyRegressor
 from mlaut.estimators.base import BaseClassifier
 from mlaut.estimators.base import BaseRegressor
+from mlaut.highlevel.strategies import CSCStrategy
+
 
 class Baseline_Classifier(BaseClassifier):
     """Wrapper for sklearn dummy classifier"""
