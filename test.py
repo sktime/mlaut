@@ -25,6 +25,8 @@ from mlaut.estimators.glm_estimators import Lasso, Passive_Aggressive_Classifier
 
 from sklearn import linear_model
 
+from mlaut.strategies.baseline import BaselineClassifier, BaselineRegressor
+
 iris = datasets.load_iris()
 wine = datasets.load_wine()
 
@@ -43,21 +45,9 @@ results = HDDResults(path='results')
 
 
 strategies = [
-    # CSCStrategy(Baseline_Classifier(), name="Baseline_Classifier"),
-    # CSCStrategy(Baseline_Regressor(), name="Baseline_Regressor"),
-    # CSCStrategy(Gaussian_Naive_Bayes(), name="Gaussian_Naive_Bayes"),
-    # CSCStrategy(Bernoulli_Naive_Bayes(), name="Bernoulli_Naive_Bayes"),
-    # CSCStrategy(K_Neighbours(), name="K_Neighbours"),
-    # CSCStrategy(Decision_Tree_Classifier(), name="Decision_Tree_Classifier"),
-    # CSCStrategy(Decision_Tree_Regressor(), name="Decision_Tree_Regressor"),
-    # CSCStrategy(Random_Forest_Classifier(), name="Random_Forest_Classifier"),
-    # CSCStrategy(Random_Forest_Regressor(), name="Random_Forest_Regressor"),
-    # CSCStrategy(Bagging_Classifier(), name="Bagging_Classifier"),
-    # CSCStrategy(Bagging_Regressor(), name="Bagging_Regressor"),
-    # CSCStrategy(Gradient_Boosting_Classifier(), name="Gradient_Boosting_Classifier"),
-    # CSCStrategy(Gradient_Boosting_Regressor(), name="Gradient_Boosting_Regressor"),
-    # CSCStrategy(Lasso(), name="Lasso"),
-    CSCStrategy(Passive_Aggressive_Classifier(), name="Passive_Aggressive_Classifier"),
+    BaselineClassifier, 
+    BaselineRegressor
+
 ]
 
 results = HDDResults(path='results')
