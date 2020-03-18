@@ -102,23 +102,7 @@ class BaseStrategy(BaseEstimator):
         
         # TODO perform checks for passed estimator to ensure that it is compatible with the Orchestrator
 
-        # # Check estimator compatibility with required type
-        # if not isinstance(estimator, BaseEstimator):
-        #     raise ValueError(f"Estimator must inherit from BaseEstimator")
-
-
-        # If tuning meta-estimator, check compatibility of inner estimator
-        # if isinstance(estimator, (GridSearchCV, RandomizedSearchCV)):
-        #     estimator = estimator.estimator
-        #     if not isinstance(estimator, required):
-        #         raise ValueError(f"Inner estimator of passed meta-estimator must be of type: {required}, "
-        #                          f"but found: {type(estimator)}")
-
-        # # Otherwise check estimator directly
-        # else:
-        #     if not isinstance(estimator, required):
-                # raise ValueError(f"Passed estimator has to be of type: {required}, but found: {type(estimator)}")
-
+        
     @staticmethod
     def _validate_data(data):
         """
@@ -128,10 +112,6 @@ class BaseStrategy(BaseEstimator):
             raise ValueError(f"Data must be pandas DataFrame, but found: {type(data)}")
 
         # TODO add input checks for contents, ie all cells be pandas Series, numpy arrays or primitives,
-        #  ultimately move checks to data container
-        # s = y.iloc[0]
-        # if not isinstance(s, (np.ndarray, pd.Series)):
-        #     raise ValueError(f'``y`` must contain a pandas Series or numpy array, but found: {type(s)}.')
 
     def save(self, path):
         dump(self, path)
@@ -221,6 +201,44 @@ class BaseSupervisedLearningStrategy(BaseStrategy):
             self._estimator.param_grid = param_grid
         except:
             raise Exception(f'{self._name} estimator has no param_grid property.')
+
+class CSCKerasStrategy(BaseSupervisedLearningStrategy):
+    """
+    Cross Section Classification strategy for kears classifiers.
+
+    Parameters
+    ----------
+    estimator : keras estimator
+        Low-level estimator used in strategy.
+    model : keras model
+        keras model 
+    param_grid : dict
+        dictionary with the hyper parameters
+    name : str, optional (default=None)
+        Name of strategy. If None, class name of estimator is used.
+    check_input : bool, optional (default=True)
+        - If True, input are checked.
+        - If False, input are not checked and assumed correct. Use with caution.
+    """
+    def __init__(self, estimator, param_grid, model, name=None, check_input=True):
+        self._case = "CSC"
+        self.model = model
+        self.param_grid = param_grid
+        self._traits = {"required_estimator_type": CLASSIFIER_TYPES }
+        self._name = name
+        super(CSCKerasStrategy, self).__init__(estimator, name=name, check_input=check_input)
+    
+    def _fit(self,data):
+        X = data[self._task.features]
+        y = data[self._task.target]
+        input_dim = X.size
+        num_classes = len(y.unique())
+        keras_classifier = self.estimator(build_fn=self.model, 
+                                num_classes=num_classes, 
+                                input_dim=input_dim,
+                                batch_size=self.param_grid['batch_size'], 
+                                epochs=self.param_grid['epochs'])
+        return keras_classifier.fit(X,y)
 
 class CSCStrategy(BaseSupervisedLearningStrategy):
     """

@@ -28,7 +28,21 @@ from sklearn import linear_model
 from mlaut.strategies.baseline import BaselineClassifierStrategy, BaselineRegressorStrategy
 from mlaut.strategies.bayes import GaussianNaiveBayesStrategy, BernoulliNaiveBayesStrategy
 from mlaut.strategies.cluster import KNeighboursStrategy
-
+from mlaut.strategies.decision_trees import DecisionTreeClassifierStrategy, DecisionTreeRegressorStrategy
+from mlaut.strategies.ensemble import (RandomForestClassifierStrategy,
+                                       RandomForestRegressorStrategy,
+                                       GradientBoostingClassifierStrategy,
+                                       GradientBoostingRegressorStrategy, 
+                                       BaggingClassifierStrategy, 
+                                       BaggingRegressorStrategy)
+from mlaut.strategies.glm import (LinearRegressonStrategy, 
+                                  RidgeRegressionStrategy, 
+                                  LassoStrategy, 
+                                  LassoLarsStrategy, 
+                                  LogisticRegressionStrategy, 
+                                  BayesianRidgeStrategy, 
+                                  PassiveAggressiveClassifierStrategy)
+from mlaut.strategies.svm import SVMStrategy, SVRStrategy
 iris = datasets.load_iris()
 wine = datasets.load_wine()
 
@@ -47,11 +61,28 @@ results = HDDResults(path='results')
 
 
 strategies = [
-    BaselineClassifierStrategy, 
-    BaselineRegressorStrategy,
-    GaussianNaiveBayesStrategy, 
-    BernoulliNaiveBayesStrategy,
-    KNeighboursStrategy
+    # BaselineClassifierStrategy, 
+    # BaselineRegressorStrategy,
+    # GaussianNaiveBayesStrategy, 
+    # BernoulliNaiveBayesStrategy,
+    # KNeighboursStrategy,
+    # DecisionTreeClassifierStrategy, 
+    # DecisionTreeRegressorStrategy,
+    # RandomForestClassifierStrategy, 
+    # RandomForestRegressorStrategy, 
+    # GradientBoostingClassifierStrategy, 
+    # GradientBoostingRegressorStrategy, 
+    # BaggingClassifierStrategy, 
+    # BaggingRegressorStrategy,
+    LinearRegressonStrategy, 
+    RidgeRegressionStrategy, 
+    LassoStrategy, 
+    LassoLarsStrategy, 
+    LogisticRegressionStrategy, 
+    BayesianRidgeStrategy, 
+    PassiveAggressiveClassifierStrategy,
+    SVMStrategy, 
+    SVRStrategy
 ]
 
 results = HDDResults(path='results')

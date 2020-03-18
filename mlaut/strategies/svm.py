@@ -6,8 +6,8 @@ from sklearn.model_selection import GridSearchCV
 
 c_range = np.logspace(-2, 10, 13)
 gamma_range = np.append(np.logspace(-9, 3, 13),'scale')
-kernel_rbf='rbf'
-kernel_linear='linear'
+kernel_rbf=['rbf']
+kernel_linear=['linear']
 
 svm_estimator = GridSearchCV(estimator=SVC(),
                         param_grid=[

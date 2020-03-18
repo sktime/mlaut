@@ -22,8 +22,8 @@ bootstrap = [True, False]
 criterion = ["gini", "entropy"]
 n_estimators = [10, 100, 200, 500]
 base_estimator = {
-    'classifier': DecisionTreeClassifier(),
-    'regressor': DecisionTreeRegressor()
+    'classifier': [DecisionTreeClassifier()],
+    'regressor': [DecisionTreeRegressor()]
 }
 max_samples = [0.5, 1]
 learning_rate= [0.01, 0.1, 1, 10, 100]
@@ -31,12 +31,12 @@ learning_rate= [0.01, 0.1, 1, 10, 100]
 
 rf_classifier = GridSearchCV(RandomForestClassifier(), 
                             param_grid={
-                                'max_depth':max_depth['RandomForest'],
+                                'max_depth': max_depth['RandomForest'],
                                 'max_features': max_features['RandomForest'],
                                 'min_samples_split':min_samples_split,
-                                'bootstrap':bootstrap,
-                                'criterion':criterion,
-                                'n_estimators':n_estimators
+                                'bootstrap': bootstrap,
+                                'criterion': criterion,
+                                'n_estimators': n_estimators
                             }, 
                             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                             cv=GRIDSEARCH_NUM_CV_FOLDS)
@@ -58,7 +58,7 @@ RandomForestRegressorStrategy = CSRStrategy(estimator=rf_regressor, name='Random
 bagging_classifier = GridSearchCV(BaggingClassifier(), 
                             param_grid={
                                 'max_features': max_features['Bagging'],
-                                'n_estimators':n_estimators,
+                                'n_estimators': n_estimators,
                                 'max_samples': max_samples,
                                 'base_estimator': base_estimator['classifier']
                             }, 
@@ -88,7 +88,7 @@ gradient_boosting_classifier = GridSearchCV(GradientBoostingClassifier(),
                             }, 
                             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                             cv=GRIDSEARCH_NUM_CV_FOLDS)
-GradientBoostingStrategy = CSCStrategy(estimator=gradient_boosting_classifier, name='GradientBoosting')
+GradientBoostingClassifierStrategy = CSCStrategy(estimator=gradient_boosting_classifier, name='GradientBoostingClassifier')
 
 gradient_boosting_regressor =  GridSearchCV(GradientBoostingRegressor(), 
                             param_grid={
@@ -98,3 +98,4 @@ gradient_boosting_regressor =  GridSearchCV(GradientBoostingRegressor(),
                             }, 
                             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                             cv=GRIDSEARCH_NUM_CV_FOLDS)
+GradientBoostingRegressorStrategy = CSCStrategy(estimator=gradient_boosting_regressor, name='GradientBoostingRegressor')

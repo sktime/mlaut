@@ -15,9 +15,7 @@ n_iter =[100, 200, 300, 400, 500]
 
 ridge = linear_model.RidgeCV(
     alphas=alphas,
-    cv=GRIDSEARCH_NUM_CV_FOLDS,
-    n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS
-)
+    cv=GRIDSEARCH_NUM_CV_FOLDS)
 
 RidgeRegressionStrategy = CSRStrategy(estimator=ridge, name='RidgeRegression')
 
@@ -29,8 +27,8 @@ lasso = linear_model.LassoCV(
 
 LassoStrategy = CSRStrategy(estimator=lasso, name='Lasso')
 
-lasso_lars = linear_model.Lars(
-    alphas=alphas,
+lasso_lars = linear_model.LarsCV(
+    max_n_alphas=max_n_alphas,
     cv=GRIDSEARCH_NUM_CV_FOLDS,
     n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 )

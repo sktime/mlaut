@@ -120,6 +120,7 @@ class Orchestrator:
 
             # fit strategy
             self._print_progress(dataset.name, strategy.name, cv_fold, "train", "fit", verbose)
+            print(f'******Fitting {strategy.name}')
             strategy.fit(task, train)
 
             # save fitted strategy if save fitted strategies is set to True and overwrite is set to True or the
