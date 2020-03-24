@@ -222,11 +222,11 @@ class CSCStrategy(BaseSupervisedLearningStrategy):
         - If True, input are checked.
         - If False, input are not checked and assumed correct. Use with caution.
     """
-    def __init__(self, name=None, **kwargs):
+    def __init__(self, estimator, name=None, check_input=True):
         self._case = "CSC"
         self._traits = {"required_estimator_type": CLASSIFIER_TYPES }
         self._name = name
-        super(CSCStrategy, self).__init__(**kwargs)
+        super().__init__(estimator=estimator, check_input=check_input)
 
     def save(self, path):
         # TODO this method is implemented in sktime.highlevel.strategies.BaseStrategy
@@ -249,12 +249,11 @@ class CSRStrategy(BaseSupervisedLearningStrategy):
         - If True, input are checked.
         - If False, input are not checked and assumed correct. Use with caution.
     """
-    def __init__(self, name=None, **kwargs):
-        print(f'****init CSR {name}')
-        self._case = "CSC"
+    def __init__(self, estimator, name=None, check_input=True):
+        self._case = "CSR"
         self._traits = {"required_estimator_type": REGRESSOR_TYPES }
         self._name = name
-        super(CSRStrategy, self).__init__(**kwargs)
+        super().__init__(estimator=estimator, check_input=check_input)
 
     def save(self, path):
         # TODO this method is implemented in sktime.highlevel.strategies.BaseStrategy
