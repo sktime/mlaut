@@ -4,10 +4,17 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.base import BaseEstimator
 import pandas as pd
 from mlaut.estimators.base import BaseClassifier, BaseRegressor
+import inspect
+from mlaut.shared.static_variables import HDF5_EXTENTION
+from tensorflow.python.keras.models import load_model
+from sklearn.preprocessing import OneHotEncoder
+import numpy as np
+import warnings
 
 REGRESSOR_TYPES = BaseRegressor
 CLASSIFIER_TYPES = BaseClassifier
 ESTIMATOR_TYPES = [REGRESSOR_TYPES, CLASSIFIER_TYPES]
+
 
 class BaseStrategy(BaseEstimator):
     """
@@ -18,13 +25,12 @@ class BaseStrategy(BaseEstimator):
     data and task.
     """
 
-    def __init__(self, estimator, name=None, check_input=True):
-        self._check_estimator_compatibility(estimator)
-
+    def __init__(self, estimator, check_input):
         self._estimator = estimator
-        self._name = estimator.__class__.__name__ if name is None else name
         self.check_input = check_input
         self._task = None
+        self._check_estimator_compatibility(estimator)
+
 
     @property
     def name(self):
@@ -139,7 +145,7 @@ class BaseStrategy(BaseEstimator):
 
 
 class BaseSupervisedLearningStrategy(BaseStrategy):
-    """Abstract strategy class for time series supervised learning that accepts a low-level estimator to
+    """Abstract strategy class for cross section supervised learning that accepts a low-level estimator to
     perform a given task.
 
     Implements predict and internal fit methods for time series regression and classification.
@@ -202,44 +208,6 @@ class BaseSupervisedLearningStrategy(BaseStrategy):
         except:
             raise Exception(f'{self._name} estimator has no param_grid property.')
 
-class CSCKerasStrategy(BaseSupervisedLearningStrategy):
-    """
-    Cross Section Classification strategy for kears classifiers.
-
-    Parameters
-    ----------
-    estimator : keras estimator
-        Low-level estimator used in strategy.
-    model : keras model
-        keras model 
-    param_grid : dict
-        dictionary with the hyper parameters
-    name : str, optional (default=None)
-        Name of strategy. If None, class name of estimator is used.
-    check_input : bool, optional (default=True)
-        - If True, input are checked.
-        - If False, input are not checked and assumed correct. Use with caution.
-    """
-    def __init__(self, estimator, param_grid, model, name=None, check_input=True):
-        self._case = "CSC"
-        self.model = model
-        self.param_grid = param_grid
-        self._traits = {"required_estimator_type": CLASSIFIER_TYPES }
-        self._name = name
-        super(CSCKerasStrategy, self).__init__(estimator, name=name, check_input=check_input)
-    
-    def _fit(self,data):
-        X = data[self._task.features]
-        y = data[self._task.target]
-        input_dim = X.size
-        num_classes = len(y.unique())
-        keras_classifier = self.estimator(build_fn=self.model, 
-                                num_classes=num_classes, 
-                                input_dim=input_dim,
-                                batch_size=self.param_grid['batch_size'], 
-                                epochs=self.param_grid['epochs'])
-        return keras_classifier.fit(X,y)
-
 class CSCStrategy(BaseSupervisedLearningStrategy):
     """
     Cross Section Classification strategy.
@@ -254,11 +222,11 @@ class CSCStrategy(BaseSupervisedLearningStrategy):
         - If True, input are checked.
         - If False, input are not checked and assumed correct. Use with caution.
     """
-    def __init__(self, estimator, name=None, check_input=True):
+    def __init__(self, name=None, **kwargs):
         self._case = "CSC"
         self._traits = {"required_estimator_type": CLASSIFIER_TYPES }
         self._name = name
-        super(CSCStrategy, self).__init__(estimator, name=name, check_input=check_input)
+        super(CSCStrategy, self).__init__(**kwargs)
 
     def save(self, path):
         # TODO this method is implemented in sktime.highlevel.strategies.BaseStrategy
@@ -281,13 +249,133 @@ class CSRStrategy(BaseSupervisedLearningStrategy):
         - If True, input are checked.
         - If False, input are not checked and assumed correct. Use with caution.
     """
-    def __init__(self, estimator, name=None, check_input=True):
+    def __init__(self, name=None, **kwargs):
+        print(f'****init CSR {name}')
         self._case = "CSC"
         self._traits = {"required_estimator_type": REGRESSOR_TYPES }
         self._name = name
-        super(CSRStrategy, self).__init__(estimator, name=name, check_input=check_input)
+        super(CSRStrategy, self).__init__(**kwargs)
 
     def save(self, path):
         # TODO this method is implemented in sktime.highlevel.strategies.BaseStrategy
         # however saving fails if we don't reimplement it here
         dump(self, path)
+
+
+    
+class CSCKerasStrategy(BaseStrategy):
+    """
+    Cross Section Classification strategy for kears classifiers.
+
+    Parameters
+    ----------
+    build_fn : keras model
+        keras model 
+    param_grid : dict
+        dictionary with the hyper parameters
+    name : str, optional (default=None)
+        Name of strategy. If None, class name of estimator is used.
+    check_input : bool, optional (default=True)
+        - If True, input are checked.
+        - If False, input are not checked and assumed correct. Use with caution.
+    """
+    _case = "CSC"
+    _traits = {"required_estimator_type": CLASSIFIER_TYPES }
+    
+
+
+    def __init__(self, estimator, build_fn, param_grid, name, check_input):
+
+        self._build_fn = build_fn
+        self._param_grid = param_grid
+        self._name = name
+        super().__init__(estimator=estimator, check_input=check_input)
+    
+    @classmethod
+    def _get_param_names(cls):
+        """ Overwriting BaseEstimator_get_param_names()
+        Needed in order to perform clone of the strategy in the orchestrator
+        TODO figure out a way to either call the BaseEstimator method here or automate the inpsection of the signature of __init__ in this class.
+        """
+        
+        return ['build_fn', 'check_input', 'estimator', 'name', 'param_grid']
+    
+    def get_params(self, deep=True):
+        """Overwriting BaseEstimator.get_params()
+        Needed in order to perform clone of the strategy in the orchestrator
+        TODO figure out a way to either call the BaseEstimator method here or automate the return of the dictinary based on the output of self._get_param_names()
+        """
+        
+        params = {
+            'build_fn': self._build_fn,
+            'check_input': self.check_input,
+            'estimator': self._estimator,
+            'name': self._name,
+            'param_grid': self._param_grid
+        }
+
+        return params
+        
+    def set_params(self, **params):
+        """Overwriting BsaeEstimator.set_params()
+        Needed in order to perform clone of the strategy in the orchestrator
+        
+        """
+        self._build_fn = params['build_fn']
+        self.check_input = params['check_input']
+        self._estimator = params['estimator']
+        self._name = params['name']
+        self._param_grid = params['param_grid']
+
+        return self
+    
+    def _fit(self,data):
+        X = data[self._task.features]
+        y = data[self._task.target]
+        onehot_encoder = OneHotEncoder(sparse=False)
+        reshaped_y = np.array(y).reshape(len(y), 1)
+        y_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
+        input_dim = X.shape[1]
+        num_classes = len(y.unique())
+        keras_classifier = self.estimator(build_fn=self._build_fn, 
+                                num_classes=num_classes, 
+                                input_dim=input_dim,
+                                batch_size=self._param_grid['batch_size'], 
+                                epochs=self._param_grid['epochs'])
+        self._keras_classifier = keras_classifier
+        self._fitted_keras_classifier =  keras_classifier.fit(X,y_onehot_encoded)
+        return self._fitted_keras_classifier
+
+    def predict(self, data):
+        """
+        Predict using the given test data.
+
+        Parameters
+        ----------
+        data : a pandas.DataFrame
+            Dataframe with feature and target variables as specified in task passed to ``fit``.
+
+
+        Returns
+        -------
+        y_pred : pandas.Series
+            Returns the series of predicted values.
+        """
+
+        # select features
+        X = data[self._task.features]
+
+        # predict
+        return self._keras_classifier.predict(X)
+
+    def save(self, path):
+        split_path = path.split('.')
+        path_to_save = split_path[0] + HDF5_EXTENTION 
+        self._fitted_keras_classifier.model.save(path_to_save)
+
+    def load(self, path):
+        split_path = path.split('.')
+        path_to_load = split_path[0] + HDF5_EXTENTION
+        loaded_keras_estimator = load_model(path_to_load)
+        self._fitted_keras_classifier = loaded_keras_estimator
+
