@@ -263,26 +263,7 @@ class CSRStrategy(BaseSupervisedLearningStrategy):
 
 
     
-class CSCKerasStrategy(BaseStrategy):
-    """
-    Cross Section Classification strategy for kears classifiers.
-
-    Parameters
-    ----------
-    build_fn : keras model
-        keras model 
-    param_grid : dict
-        dictionary with the hyper parameters
-    name : str, optional (default=None)
-        Name of strategy. If None, class name of estimator is used.
-    check_input : bool, optional (default=True)
-        - If True, input are checked.
-        - If False, input are not checked and assumed correct. Use with caution.
-    """
-    _case = "CSC"
-    _traits = {"required_estimator_type": CLASSIFIER_TYPES }
-    
-
+class BaseKerasStrategy(BaseStrategy):
 
     def __init__(self, estimator, build_fn, param_grid, name, check_input):
 
@@ -329,23 +310,6 @@ class CSCKerasStrategy(BaseStrategy):
 
         return self
     
-    def _fit(self,data):
-        X = data[self._task.features]
-        y = data[self._task.target]
-        onehot_encoder = OneHotEncoder(sparse=False)
-        reshaped_y = np.array(y).reshape(len(y), 1)
-        y_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
-        input_dim = X.shape[1]
-        num_classes = len(y.unique())
-        keras_classifier = self.estimator(build_fn=self._build_fn, 
-                                num_classes=num_classes, 
-                                input_dim=input_dim,
-                                batch_size=self._param_grid['batch_size'], 
-                                epochs=self._param_grid['epochs'])
-        self._keras_classifier = keras_classifier
-        self._fitted_keras_classifier =  keras_classifier.fit(X,y_onehot_encoded)
-        return self._fitted_keras_classifier
-
     def predict(self, data):
         """
         Predict using the given test data.
@@ -366,16 +330,102 @@ class CSCKerasStrategy(BaseStrategy):
         X = data[self._task.features]
 
         # predict
-        return self._keras_classifier.predict(X)
+        return self._keras_estimator.predict(X)
 
     def save(self, path):
         split_path = path.split('.')
         path_to_save = split_path[0] + HDF5_EXTENTION 
-        self._fitted_keras_classifier.model.save(path_to_save)
+        self._fitted_keras_estimator.model.save(path_to_save)
 
     def load(self, path):
         split_path = path.split('.')
         path_to_load = split_path[0] + HDF5_EXTENTION
         loaded_keras_estimator = load_model(path_to_load)
-        self._fitted_keras_classifier = loaded_keras_estimator
+        self._fitted_keras_estimator = loaded_keras_estimator
 
+class CSCKerasStrategy(BaseKerasStrategy):
+    """
+    Cross Section Classification strategy for kears.
+
+    Parameters
+    ----------
+    estimator: keras estimator
+        keras estimato object compatible with sktime
+    build_fn : keras model
+        keras model 
+    param_grid : dict
+        dictionary with the hyper parameters
+    name : str, optional (default=None)
+        Name of strategy. If None, class name of estimator is used.
+    check_input : bool, optional (default=True)
+        - If True, input are checked.
+        - If False, input are not checked and assumed correct. Use with caution.
+    """
+    _case = "CSC"
+    _traits = {"required_estimator_type": CLASSIFIER_TYPES }
+
+    def __init__(self, estimator, build_fn, param_grid, name, check_input):
+        super().__init__(estimator=estimator, 
+                         build_fn=build_fn, 
+                         param_grid=param_grid, 
+                         name=name, 
+                         check_input=check_input)
+    def _fit(self,data):
+        """Internal fit. Compiles keras estimator and fits the data
+        """
+        X = data[self._task.features]
+        y = data[self._task.target]
+        onehot_encoder = OneHotEncoder(sparse=False)
+        reshaped_y = np.array(y).reshape(len(y), 1)
+        y_onehot_encoded = onehot_encoder.fit_transform(reshaped_y)
+        input_dim = X.shape[1]
+        num_classes = len(y.unique())
+        keras_estimator = self.estimator(build_fn=self._build_fn, 
+                                num_classes=num_classes, 
+                                input_dim=input_dim,
+                                batch_size=self._param_grid['batch_size'], 
+                                epochs=self._param_grid['epochs'])
+        self._keras_estimator = keras_estimator
+        self._fitted_keras_estimator =  keras_estimator.fit(X,y_onehot_encoded)
+        return self._fitted_keras_estimator
+
+class CSRKerasStrategy(BaseKerasStrategy):
+    """Cross Section Regression strategy for keras.
+    
+    Parameters
+    ----------
+    estimator: keras estimator
+        keras estimato object compatible with sktime
+    build_fn : keras model
+        keras model 
+    param_grid : dict
+        dictionary with the hyper parameters
+    name : str, optional (default=None)
+        Name of strategy. If None, class name of estimator is used.
+    check_input : bool, optional (default=True)
+        - If True, input are checked.
+        - If False, input are not checked and assumed correct. Use with caution.
+    """
+    _case = "CSR"
+    _traits = {"required_estimator_type": REGRESSOR_TYPES }
+
+    def __init__(self, estimator, build_fn, param_grid, name, check_input):
+        super().__init__(estimator=estimator, 
+                         build_fn=build_fn, 
+                         param_grid=param_grid, 
+                         name=name, 
+                         check_input=check_input)
+    
+    def _fit(self, data):
+        """Internal fit. Compiles keras estimator and fits the data
+        """
+        X = data[self._task.features]
+        y = data[self._task.target]
+        input_dim = X.shape[1]
+        keras_estimator = self.estimator(build_fn=self._build_fn, 
+                                input_dim=input_dim,
+                                batch_size=self._param_grid['batch_size'], 
+                                epochs=self._param_grid['epochs'])
+        self._keras_estimator = keras_estimator
+        self._fitted_keras_estimator =  keras_estimator.fit(X,y)
+        return self._fitted_keras_estimator

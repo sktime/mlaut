@@ -3,8 +3,7 @@ __author__ = ["Viktor Kazakov", "Markus Löning"]
 
 from sklearn.base import clone
 
-from sktime.highlevel.tasks import TSCTask, TSRTask
-from mlaut.highlevel.tasks import CSCTask
+from mlaut.highlevel.tasks import CSCTask, CSRTask
 
 
 class Orchestrator:
@@ -168,7 +167,7 @@ class Orchestrator:
 
         # if the task is classification and the strategies supports probabilistic predictions,
         # get probabilistic predictions
-        if isinstance(task, TSCTask) and hasattr(strategy, "predict_proba"):
+        if isinstance(task, CSCTask) and hasattr(strategy, "predict_proba"):
             return strategy.predict_proba(data)
 
             # otherwise, return deterministic predictions in expected format
@@ -226,9 +225,9 @@ class Orchestrator:
                              "there must be one task for each dataset")
 
         # check if task is either time series regression or classification, other tasks not supported yet
-        if not all(isinstance(task, (TSCTask, TSRTask, CSCTask)) for task in tasks):
-            raise NotImplementedError("Currently, only time series classification, time series "
-                                      "regression tasks and cross section classification tasks are supported")
+        if not all(isinstance(task, (CSCTask, CSRTask)) for task in tasks):
+            raise NotImplementedError("Currently, only cross section classification and "
+                                      "cross section regression tasks are supported")
 
         # check if all tasks are of the same type
         if not all(isinstance(task, type(tasks[0])) for task in tasks):

@@ -16,7 +16,7 @@ from mlaut.estimators.base import BaseClassifier, BaseRegressor
 REGRESSOR_TYPES = BaseRegressor
 CLASSIFIER_TYPES = BaseClassifier
 ESTIMATOR_TYPES = [REGRESSOR_TYPES, CLASSIFIER_TYPES]
-from mlaut.highlevel.strategies import CSCKerasStrategy, BaseStrategy
+from mlaut.highlevel.strategies import CSCKerasStrategy, CSRKerasStrategy
 
 
 # class OverwrittenSequentialClassifier(Sequential):
@@ -107,16 +107,15 @@ def keras_model_classification(num_classes, input_dim):
     nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['accuracy'])
 
     return nn_deep_model
-param_grid_classification={'epochs': 1, 
+param_grid={'epochs': 1, 
                            'batch_size': None}
 
 KerasClassificationStrategy = CSCKerasStrategy(estimator=KerasClassifier, 
                                               build_fn=keras_model_classification,
-                                              param_grid=param_grid_classification,
+                                              param_grid=param_grid,
                                               name='KerasClassifier4Layers',
                                               check_input=False)
-hyperparameters = {'epochs': 1, 
-                        'batch_size': None}
+
                         
 def keras_model_regression(input_dim):
     nn_deep_model = Sequential()
@@ -127,11 +126,15 @@ def keras_model_regression(input_dim):
     nn_deep_model.add(Dense(1, activation='sigmoid'))
     
 
-    model_optimizer  = optimizers.Adam(lr=self._hyperparameters['learning_rate'])
-    nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['adam'])
+    model_optimizer  = optimizers.Adam(lr=0.001)
+    nn_deep_model.compile(loss='mean_squared_error', optimizer=model_optimizer, metrics=['mae'])
 
 
     return nn_deep_model
         
-    
+KerasRegressionStrategy = CSRKerasStrategy(estimator=KerasRegressor,
+                                               build_fn=keras_model_regression,
+                                               param_grid=param_grid,
+                                               name='KerasRegressor4Layers',
+                                               check_input=False)
 
