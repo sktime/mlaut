@@ -1,3 +1,8 @@
+#gridsearch parameters
+GRIDSEARCH_CV_NUM_PARALLEL_JOBS = -1 #use -1 for maximum
+GRIDSEARCH_NUM_CV_FOLDS = 5
+
+
 import os
 import logging
 ORIGINAL_DATASETS_DIR = 'original_datasets/'
@@ -47,9 +52,7 @@ TEST_TRAIN_SPLIT = 1/4
 FLAG_PREDICTIONS = 'ml_predictions'
 FLAG_ACCURACY = 'accuracy'
 
-#gridsearch parameters
-GRIDSEARCH_CV_NUM_PARALLEL_JOBS = -1 #use -1 for maximum
-GRIDSEARCH_NUM_CV_FOLDS = 5
+
 
 #training parameters
 VERBOSE = 0
