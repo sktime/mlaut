@@ -4,14 +4,14 @@ __author__ = ["Viktor Kazakov", "Markus Löning"]
 from sklearn.base import clone
 
 from mlaut.highlevel.tasks import CSCTask, CSRTask
-
+import logging
 
 class Orchestrator:
     """
     Fit and predict one or more estimators on one or more datasets
     """
 
-    def __init__(self, tasks, datasets, strategies, cv, results):
+    def __init__(self, tasks, datasets, strategies, cv, results, log_file_path='mlaut.log'):
         # validate datasets and tasks
         self._validate_tasks_and_datasets(tasks, datasets)
         self.tasks = tasks
@@ -32,6 +32,8 @@ class Orchestrator:
         self.n_datasets = len(datasets)
         self._strategy_counter = 0
         self._dataset_counter = 0
+        if (log_file_path is not None) or (log_file_path != ""):
+            logging.basicConfig(filename=log_file_path, level=logging.DEBUG)
 
     def _iter(self):
         """Iterator for orchestration"""
@@ -65,7 +67,7 @@ class Orchestrator:
             # skip strategy, if overwrite is set to False and fitted strategy already exists
             if not overwrite_fitted_strategies and self.results.check_fitted_strategy_exists(
                     strategy, data.dataset_name):
-                print(f"Skipping strategy: {strategy.name} on CV-fold: {cv_fold} of dataset: {dataset.name}")
+                logging.info(f"Skipping strategy: {strategy.name} on CV-fold: {cv_fold} of dataset: {dataset.name}")
                 continue
 
             # else fit and save fitted strategy
@@ -110,7 +112,7 @@ class Orchestrator:
             # skip if overwrite is set to False for both predictions and strategies and all results exist
             if not overwrite_predictions and test_pred_exist and (train_pred_exist or not predict_on_train) and \
                     not overwrite_fitted_strategies and (fitted_stategy_exists or not save_fitted_strategies):
-                print(f"Skipping strategy: {strategy.name} on CV-fold: {cv_fold} of dataset: {dataset.name}")
+                logging.info(f"Skipping strategy: {strategy.name} on CV-fold: {cv_fold} of dataset: {dataset.name}")
                 continue
 
             # split data into training and test sets
@@ -119,7 +121,7 @@ class Orchestrator:
 
             # fit strategy
             self._print_progress(dataset.name, strategy.name, cv_fold, "train", "fit", verbose)
-            print(f'******Fitting {strategy.name}')
+            logging.info(f'********* Fitting {strategy.name}')
             strategy.fit(task, train)
 
             # save fitted strategy if save fitted strategies is set to True and overwrite is set to True or the

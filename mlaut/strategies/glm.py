@@ -1,4 +1,3 @@
-
 from mlaut.shared.static_variables import GRIDSEARCH_NUM_CV_FOLDS, GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 from mlaut.highlevel.strategies import CSCStrategy, CSRStrategy
 from sklearn import linear_model
@@ -58,7 +57,7 @@ bayesian_ridge = GridSearchCV(
 BayesianRidgeStrategy = CSRStrategy(estimator=logistic_regression, name='BayesianRidge')
 
 passive_aggressive =  GridSearchCV(
-    estimator=linear_model.PassiveAggressiveClassifier(),
+    estimator = linear_model.PassiveAggressiveClassifier(),
     param_grid={
         'C': c_param,
         'max_iter': n_iter

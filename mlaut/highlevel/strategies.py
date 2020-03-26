@@ -3,7 +3,6 @@ from joblib import dump, load
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.base import BaseEstimator
 import pandas as pd
-from mlaut.estimators.base import BaseClassifier, BaseRegressor
 import inspect
 from mlaut.shared.static_variables import HDF5_EXTENTION
 from tensorflow.python.keras.models import load_model
@@ -11,9 +10,9 @@ from sklearn.preprocessing import OneHotEncoder
 import numpy as np
 import warnings
 
-REGRESSOR_TYPES = BaseRegressor
-CLASSIFIER_TYPES = BaseClassifier
-ESTIMATOR_TYPES = [REGRESSOR_TYPES, CLASSIFIER_TYPES]
+# REGRESSOR_TYPES = BaseRegressor
+# CLASSIFIER_TYPES = BaseClassifier
+# ESTIMATOR_TYPES = [REGRESSOR_TYPES, CLASSIFIER_TYPES]
 
 
 class BaseStrategy(BaseEstimator):
@@ -44,13 +43,13 @@ class BaseStrategy(BaseEstimator):
         """
         return self._estimator
 
-    def __getitem__(self, key):
-        """
-        Provide read only access via keys to the private traits
-        """
-        if key not in self._traits.keys():
-            raise KeyError
-        return self._traits[key]
+    # def __getitem__(self, key):
+    #     """
+    #     Provide read only access via keys to the private traits
+    #     """
+    #     if key not in self._traits.keys():
+    #         raise KeyError
+    #     return self._traits[key]
 
     def fit(self, task, data):
         """
@@ -96,18 +95,8 @@ class BaseStrategy(BaseEstimator):
         """
         Check compatibility of estimator with strategy
         """
-
-        # Determine required estimator type from strategy case
-        # TODO replace with strategy - estimator type registry lookup
-        if hasattr(self, '_traits'):
-            required = self._traits["required_estimator_type"]
-            if required not in ESTIMATOR_TYPES:
-                raise AttributeError(f"Required estimator type unknown")
-        else:
-            raise AttributeError(f"Required estimator type not found")
-        
         # TODO perform checks for passed estimator to ensure that it is compatible with the Orchestrator
-
+        pass
         
     @staticmethod
     def _validate_data(data):
@@ -224,7 +213,7 @@ class CSCStrategy(BaseSupervisedLearningStrategy):
     """
     def __init__(self, estimator, name=None, check_input=True):
         self._case = "CSC"
-        self._traits = {"required_estimator_type": CLASSIFIER_TYPES }
+        # self._traits = {"required_estimator_type": CLASSIFIER_TYPES }
         self._name = name
         super().__init__(estimator=estimator, check_input=check_input)
 
@@ -251,7 +240,7 @@ class CSRStrategy(BaseSupervisedLearningStrategy):
     """
     def __init__(self, estimator, name=None, check_input=True):
         self._case = "CSR"
-        self._traits = {"required_estimator_type": REGRESSOR_TYPES }
+        # self._traits = {"required_estimator_type": REGRESSOR_TYPES }
         self._name = name
         super().__init__(estimator=estimator, check_input=check_input)
 
@@ -361,7 +350,7 @@ class CSCKerasStrategy(BaseKerasStrategy):
         - If False, input are not checked and assumed correct. Use with caution.
     """
     _case = "CSC"
-    _traits = {"required_estimator_type": CLASSIFIER_TYPES }
+    # _traits = {"required_estimator_type": CLASSIFIER_TYPES }
 
     def __init__(self, estimator, build_fn, param_grid, name, check_input):
         super().__init__(estimator=estimator, 
@@ -406,7 +395,7 @@ class CSRKerasStrategy(BaseKerasStrategy):
         - If False, input are not checked and assumed correct. Use with caution.
     """
     _case = "CSR"
-    _traits = {"required_estimator_type": REGRESSOR_TYPES }
+    # _traits = {"required_estimator_type": REGRESSOR_TYPES }
 
     def __init__(self, estimator, build_fn, param_grid, name, check_input):
         super().__init__(estimator=estimator, 

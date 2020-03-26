@@ -12,10 +12,6 @@ import wrapt
 
 import tensorflow as tf
 
-from mlaut.estimators.base import BaseClassifier, BaseRegressor
-REGRESSOR_TYPES = BaseRegressor
-CLASSIFIER_TYPES = BaseClassifier
-ESTIMATOR_TYPES = [REGRESSOR_TYPES, CLASSIFIER_TYPES]
 from mlaut.highlevel.strategies import CSCKerasStrategy, CSRKerasStrategy
 
 
