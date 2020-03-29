@@ -1,4 +1,3 @@
-from sktime.highlevel.strategies import CLASSIFIER_TYPES, REGRESSOR_TYPES
 from joblib import dump, load
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.base import BaseEstimator
