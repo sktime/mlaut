@@ -31,11 +31,16 @@ from mlaut.strategies.glm import (LinearRegressonStrategy,
                                   LogisticRegressionStrategy, 
                                   BayesianRidgeStrategy, 
                                   PassiveAggressiveClassifierStrategy)
+
 from mlaut.strategies.svm import SVMStrategy, SVRStrategy
 from mlaut.strategies.neural_networks import KerasClassificationStrategy, KerasRegressionStrategy
+
+from mlaut.benchmarking.evaluation import Evaluator
+from mlaut.benchmarking.metrics import PairwiseMetric
+from sklearn.metrics import accuracy_score
+
 iris = datasets.load_iris()
 wine = datasets.load_wine()
-
 def test_orchestrator():
     iris_pd = pd.DataFrame(iris.data, columns=iris.feature_names)
     iris_pd['target'] = iris.target
@@ -68,3 +73,11 @@ def test_orchestrator():
                                 log_file_path=None)
 
     orchestrator.fit_predict(save_fitted_strategies=True, overwrite_predictions=True)
+
+    evaluator = Evaluator(results)
+
+    metric = PairwiseMetric(func=accuracy_score, name='accuracy')
+    metrics_by_strategy = evaluator.evaluate(metric=metric)
+
+
+
