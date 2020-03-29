@@ -59,8 +59,8 @@ def test_orchestrator():
         BaselineClassifierStrategy, 
         GaussianNaiveBayesStrategy, 
         KNeighboursStrategy,
-        DecisionTreeClassifierStrategy, 
-        KerasClassificationStrategy
+        DecisionTreeClassifierStrategy
+        # KerasClassificationStrategy
     ]
 
     results = HDDResults(path='results')
