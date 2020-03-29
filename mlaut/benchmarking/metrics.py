@@ -3,7 +3,7 @@ __author__ = ["Viktor Kazakov", "Markus Löning"]
 
 import numpy as np
 
-from sktime.benchmarking.base import BaseMetric
+from mlaut.benchmarking.base import BaseMetric
 
 
 class PairwiseMetric(BaseMetric):
