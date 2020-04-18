@@ -108,7 +108,7 @@ class BaseTask:
             if not np.all(self.features.isin(metadata.columns)):
                 raise ValueError(f"Features: {list(self.features)} not found in metadata")
 
-        if isinstance(self, (CSCTask, CSRTask)):
+        if isinstance(self, (TabClassifTask, TabRegrTask)):
             if self.features is None:
                 if len(metadata.columns.drop(self.target)) == 0:
                     raise ValueError(f"For task of type: {type(self)}, at least one feature must be given, "
@@ -154,9 +154,9 @@ class BaseTask:
 
 
 
-class CSCTask(BaseTask):
+class TabClassifTask(BaseTask):
     """
-    Cross section classification task.
+    Tabular classification task.
     A task encapsulates metadata information such as the feature and target variable
     to which to fit the data to and any additional necessary instructions on how
     to fit and predict.
@@ -172,9 +172,9 @@ class CSCTask(BaseTask):
 
     def __init__(self, target, features=None, metadata=None):
         self._case = 'CSC'
-        super(CSCTask, self).__init__(target, features=features, metadata=metadata)
+        super(TabClassifTask, self).__init__(target, features=features, metadata=metadata)
 
-class CSRTask(BaseTask):
+class TabRegrTask(BaseTask):
     """
     Cross section regression task.
     A task encapsulates metadata information such as the feature and target variable
@@ -192,4 +192,4 @@ class CSRTask(BaseTask):
 
     def __init__(self, target, features=None, metadata=None):
         self._case = 'CSR'
-        super(CSRTask, self).__init__(target, features=features, metadata=metadata)
+        super(TabRegrTask, self).__init__(target, features=features, metadata=metadata)

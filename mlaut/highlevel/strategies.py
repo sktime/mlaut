@@ -27,7 +27,7 @@ class BaseStrategy(BaseEstimator):
         self._estimator = estimator
         self.check_input = check_input
         self._task = None
-        self._check_estimator_compatibility(estimator)
+        # self._check_estimator_compatibility(estimator)
 
 
     @property
@@ -90,12 +90,12 @@ class BaseStrategy(BaseEstimator):
         else:
             raise AttributeError("The passed case of the task is unknown")
 
-    def _check_estimator_compatibility(self, estimator):
-        """
-        Check compatibility of estimator with strategy
-        """
-        # TODO perform checks for passed estimator to ensure that it is compatible with the Orchestrator
-        pass
+    # def _check_estimator_compatibility(self, estimator):
+    #     """
+    #     Check compatibility of estimator with strategy
+    #     """
+    #     # TODO perform checks for passed estimator to ensure that it is compatible with the Orchestrator
+    #     pass
         
     @staticmethod
     def _validate_data(data):
@@ -196,9 +196,9 @@ class BaseSupervisedLearningStrategy(BaseStrategy):
         except:
             raise Exception(f'{self._name} estimator has no param_grid property.')
 
-class CSCStrategy(BaseSupervisedLearningStrategy):
+class TabClassifStrategy(BaseSupervisedLearningStrategy):
     """
-    Cross Section Classification strategy.
+    Tabular classification strategy.
 
     Parameters
     ----------
@@ -223,9 +223,9 @@ class CSCStrategy(BaseSupervisedLearningStrategy):
     
     
 
-class CSRStrategy(BaseSupervisedLearningStrategy):
+class TabRegrStrategy(BaseSupervisedLearningStrategy):
     """
-    Cross Section Regression Strategy.
+    Tabular Regression Strategy.
 
     Parameters
     ----------
@@ -330,7 +330,7 @@ class BaseKerasStrategy(BaseStrategy):
         loaded_keras_estimator = load_model(path_to_load)
         self._fitted_keras_estimator = loaded_keras_estimator
 
-class CSCKerasStrategy(BaseKerasStrategy):
+class TabClassifKerasStrategy(BaseKerasStrategy):
     """
     Cross Section Classification strategy for kears.
 
@@ -376,7 +376,7 @@ class CSCKerasStrategy(BaseKerasStrategy):
         self._fitted_keras_estimator =  keras_estimator.fit(X,y_onehot_encoded)
         return self._fitted_keras_estimator
 
-class CSRKerasStrategy(BaseKerasStrategy):
+class TabRegrKerasStrategy(BaseKerasStrategy):
     """Cross Section Regression strategy for keras.
     
     Parameters

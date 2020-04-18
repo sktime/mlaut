@@ -1,4 +1,4 @@
-from mlaut.highlevel.strategies import CSCStrategy, CSRStrategy
+from mlaut.highlevel.strategies import TabClassifStrategy, TabRegrStrategy
 from sklearn.model_selection import GridSearchCV
 from mlaut.shared.static_variables import(GRIDSEARCH_NUM_CV_FOLDS,
                                       GRIDSEARCH_CV_NUM_PARALLEL_JOBS)
@@ -41,7 +41,7 @@ rf_classifier = GridSearchCV(RandomForestClassifier(),
                             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                             cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-RandomForestClassifierStrategy = CSCStrategy(estimator=rf_classifier, name='RandomForestClassifier')
+RandomForestClassifierStrategy = TabClassifStrategy(estimator=rf_classifier, name='RandomForestClassifier')
 
 rf_regressor = GridSearchCV(RandomForestRegressor(), 
                             param_grid={
@@ -52,7 +52,7 @@ rf_regressor = GridSearchCV(RandomForestRegressor(),
                             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                             cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-RandomForestRegressorStrategy = CSRStrategy(estimator=rf_regressor, name='RandomForestRegressor')
+RandomForestRegressorStrategy = TabRegrStrategy(estimator=rf_regressor, name='RandomForestRegressor')
 
 
 bagging_classifier = GridSearchCV(BaggingClassifier(), 
@@ -65,7 +65,7 @@ bagging_classifier = GridSearchCV(BaggingClassifier(),
                             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                             cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-BaggingClassifierStrategy = CSCStrategy(estimator=bagging_classifier, name='BaggingClassifier')
+BaggingClassifierStrategy = TabClassifStrategy(estimator=bagging_classifier, name='BaggingClassifier')
 
 bagging_regressor = GridSearchCV(BaggingRegressor(), 
                             param_grid={
@@ -77,7 +77,7 @@ bagging_regressor = GridSearchCV(BaggingRegressor(),
                             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                             cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-BaggingRegressorStrategy = CSRStrategy(estimator=bagging_regressor, name='BaggingRegressor')
+BaggingRegressorStrategy = TabRegrStrategy(estimator=bagging_regressor, name='BaggingRegressor')
 
 
 gradient_boosting_classifier = GridSearchCV(GradientBoostingClassifier(), 
@@ -88,7 +88,7 @@ gradient_boosting_classifier = GridSearchCV(GradientBoostingClassifier(),
                             }, 
                             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                             cv=GRIDSEARCH_NUM_CV_FOLDS)
-GradientBoostingClassifierStrategy = CSCStrategy(estimator=gradient_boosting_classifier, name='GradientBoostingClassifier')
+GradientBoostingClassifierStrategy = TabClassifStrategy(estimator=gradient_boosting_classifier, name='GradientBoostingClassifier')
 
 gradient_boosting_regressor =  GridSearchCV(GradientBoostingRegressor(), 
                             param_grid={
@@ -98,4 +98,4 @@ gradient_boosting_regressor =  GridSearchCV(GradientBoostingRegressor(),
                             }, 
                             n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
                             cv=GRIDSEARCH_NUM_CV_FOLDS)
-GradientBoostingRegressorStrategy = CSCStrategy(estimator=gradient_boosting_regressor, name='GradientBoostingRegressor')
+GradientBoostingRegressorStrategy = TabClassifStrategy(estimator=gradient_boosting_regressor, name='GradientBoostingRegressor')

@@ -1,10 +1,10 @@
 from mlaut.shared.static_variables import GRIDSEARCH_NUM_CV_FOLDS, GRIDSEARCH_CV_NUM_PARALLEL_JOBS
-from mlaut.highlevel.strategies import CSCStrategy, CSRStrategy
+from mlaut.highlevel.strategies import TabClassifStrategy, TabRegrStrategy
 from sklearn import linear_model
 from sklearn.model_selection import GridSearchCV
 import numpy as np
 
-LinearRegressonStrategy = CSRStrategy(estimator=linear_model.LinearRegression(), name='LinearRegression')
+LinearRegressonStrategy = TabRegrStrategy(estimator=linear_model.LinearRegression(), name='LinearRegression')
 
 alphas = [0.1, 1, 10.0]
 max_n_alphas=1000
@@ -16,7 +16,7 @@ ridge = linear_model.RidgeCV(
     alphas=alphas,
     cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-RidgeRegressionStrategy = CSRStrategy(estimator=ridge, name='RidgeRegression')
+RidgeRegressionStrategy = TabRegrStrategy(estimator=ridge, name='RidgeRegression')
 
 lasso = linear_model.LassoCV(
     alphas=alphas,
@@ -24,7 +24,7 @@ lasso = linear_model.LassoCV(
     n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 )
 
-LassoStrategy = CSRStrategy(estimator=lasso, name='Lasso')
+LassoStrategy = TabRegrStrategy(estimator=lasso, name='Lasso')
 
 lasso_lars = linear_model.LarsCV(
     max_n_alphas=max_n_alphas,
@@ -32,7 +32,7 @@ lasso_lars = linear_model.LarsCV(
     n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS
 )
 
-LassoLarsStrategy = CSRStrategy(estimator=lasso_lars, name='LassoLars')
+LassoLarsStrategy = TabRegrStrategy(estimator=lasso_lars, name='LassoLars')
 
 logistic_regression = GridSearchCV(
     estimator=linear_model.LogisticRegression(),
@@ -44,7 +44,7 @@ logistic_regression = GridSearchCV(
     cv=GRIDSEARCH_NUM_CV_FOLDS
 )
 
-LogisticRegressionStrategy = CSRStrategy(estimator=logistic_regression, name='LogisticRegression')
+LogisticRegressionStrategy = TabRegrStrategy(estimator=logistic_regression, name='LogisticRegression')
 
 bayesian_ridge = GridSearchCV(
     estimator=linear_model.BayesianRidge(),
@@ -54,7 +54,7 @@ bayesian_ridge = GridSearchCV(
     n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
     cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-BayesianRidgeStrategy = CSRStrategy(estimator=logistic_regression, name='BayesianRidge')
+BayesianRidgeStrategy = TabRegrStrategy(estimator=logistic_regression, name='BayesianRidge')
 
 passive_aggressive =  GridSearchCV(
     estimator = linear_model.PassiveAggressiveClassifier(),
@@ -65,4 +65,4 @@ passive_aggressive =  GridSearchCV(
     n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS,
     cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-PassiveAggressiveClassifierStrategy=CSCStrategy(estimator=passive_aggressive, name='PassiveAggressiveClassifier')
+PassiveAggressiveClassifierStrategy=TabClassifStrategy(estimator=passive_aggressive, name='PassiveAggressiveClassifier')

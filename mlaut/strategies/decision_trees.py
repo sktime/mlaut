@@ -1,4 +1,4 @@
-from mlaut.highlevel.strategies import CSCStrategy, CSRStrategy
+from mlaut.highlevel.strategies import TabClassifStrategy, TabRegrStrategy
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import DecisionTreeRegressor
@@ -24,7 +24,7 @@ classifier = GridSearchCV(DecisionTreeClassifier(),
                         n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
                         cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-DecisionTreeClassifierStrategy = CSCStrategy(estimator=classifier, name="DecisionTreeClassifier")
+DecisionTreeClassifierStrategy = TabClassifStrategy(estimator=classifier, name="DecisionTreeClassifier")
 
 regressor = GridSearchCV(DecisionTreeRegressor(), 
                         param_grid={
@@ -37,5 +37,5 @@ regressor = GridSearchCV(DecisionTreeRegressor(),
                         cv=GRIDSEARCH_NUM_CV_FOLDS)
 
 
-DecisionTreeRegressorStrategy = CSRStrategy(estimator=regressor, name="DecisionTreeRegressor")
+DecisionTreeRegressorStrategy = TabRegrStrategy(estimator=regressor, name="DecisionTreeRegressor")
 

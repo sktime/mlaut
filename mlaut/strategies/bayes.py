@@ -1,7 +1,7 @@
 from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import BernoulliNB
 
-from mlaut.highlevel.strategies import CSCStrategy, CSRStrategy
+from mlaut.highlevel.strategies import TabClassifStrategy, TabRegrStrategy
 
-GaussianNaiveBayesStrategy = CSCStrategy(GaussianNB(), name="GaussianNaiveBayes")
-BernoulliNaiveBayesStrategy = CSRStrategy(BernoulliNB(), name="BernoulliNB")
+GaussianNaiveBayesStrategy = TabClassifStrategy(GaussianNB(), name="GaussianNaiveBayes")
+BernoulliNaiveBayesStrategy = TabRegrStrategy(BernoulliNB(), name="BernoulliNB")

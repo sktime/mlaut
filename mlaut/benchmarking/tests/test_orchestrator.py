@@ -4,10 +4,10 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 from mlaut.benchmarking.data import RAMDataset
 from sklearn import datasets
-from mlaut.highlevel.tasks import CSCTask, CSRTask
+from mlaut.highlevel.tasks import TabClassifTask, TabRegrTask
 
 from mlaut.benchmarking.results import HDDResults, RAMResults
-from mlaut.highlevel.strategies import CSCStrategy
+from mlaut.highlevel.strategies import TabClassifStrategy
 from mlaut.model_selection import SingleSplit
 from mlaut.benchmarking.orchestration import Orchestrator
 
@@ -51,7 +51,7 @@ def test_orchestrator():
     datasets = ([RAMDataset(iris_pd, name='iris'),
                 RAMDataset(wine_pd, name='wine')])
 
-    tasks = [CSCTask(target="target") for _ in range(len(datasets))]
+    tasks = [TabClassifTask(target="target") for _ in range(len(datasets))]
     results = RAMResults()
 
 

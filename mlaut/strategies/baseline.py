@@ -1,5 +1,5 @@
-from mlaut.highlevel.strategies import CSCStrategy, CSRStrategy
+from mlaut.highlevel.strategies import TabClassifStrategy, TabRegrStrategy
 from sklearn.dummy import DummyClassifier, DummyRegressor
 
-BaselineClassifierStrategy = CSCStrategy(estimator=DummyClassifier(), name='BaselineClassifier')
-BaselineRegressorStrategy = CSRStrategy(estimator=DummyRegressor(), name='BaselineRegressor')
+BaselineClassifierStrategy = TabClassifStrategy(estimator=DummyClassifier(), name='BaselineClassifier')
+BaselineRegressorStrategy = TabRegrStrategy(estimator=DummyRegressor(), name='BaselineRegressor')

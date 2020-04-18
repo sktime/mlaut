@@ -1,5 +1,5 @@
 from mlaut.shared.static_variables import GRIDSEARCH_NUM_CV_FOLDS, GRIDSEARCH_CV_NUM_PARALLEL_JOBS
-from mlaut.highlevel.strategies import CSCStrategy, CSRStrategy
+from mlaut.highlevel.strategies import TabClassifStrategy, TabRegrStrategy
 import numpy as np
 from sklearn.svm import SVC, SVR
 from sklearn.model_selection import GridSearchCV
@@ -24,7 +24,7 @@ svm_estimator = GridSearchCV(estimator=SVC(),
                         n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
                         cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-SVMStrategy = CSCStrategy(estimator=svm_estimator, name='SVM')
+SVMStrategy = TabClassifStrategy(estimator=svm_estimator, name='SVM')
 
 svr_estimator = GridSearchCV(estimator=SVR(),
                         param_grid=[
@@ -41,5 +41,5 @@ svr_estimator = GridSearchCV(estimator=SVR(),
                         n_jobs=GRIDSEARCH_CV_NUM_PARALLEL_JOBS, 
                         cv=GRIDSEARCH_NUM_CV_FOLDS)
 
-SVRStrategy = CSRStrategy(estimator=svr_estimator, name='SVR')
+SVRStrategy = TabRegrStrategy(estimator=svr_estimator, name='SVR')
 

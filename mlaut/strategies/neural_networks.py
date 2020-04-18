@@ -12,7 +12,7 @@ import wrapt
 
 import tensorflow as tf
 
-from mlaut.highlevel.strategies import CSCKerasStrategy, CSRKerasStrategy
+from mlaut.highlevel.strategies import TabClassifKerasStrategy, TabRegrKerasStrategy
 
 
 # class OverwrittenSequentialClassifier(Sequential):
@@ -106,7 +106,7 @@ def keras_model_classification(num_classes, input_dim):
 param_grid={'epochs': 1, 
                            'batch_size': None}
 
-KerasClassificationStrategy = CSCKerasStrategy(estimator=KerasClassifier, 
+KerasClassificationStrategy = TabClassifKerasStrategy(estimator=KerasClassifier, 
                                               build_fn=keras_model_classification,
                                               param_grid=param_grid,
                                               name='KerasClassifier4Layers',
@@ -128,7 +128,7 @@ def keras_model_regression(input_dim):
 
     return nn_deep_model
         
-KerasRegressionStrategy = CSRKerasStrategy(estimator=KerasRegressor,
+KerasRegressionStrategy = TabRegrKerasStrategy(estimator=KerasRegressor,
                                                build_fn=keras_model_regression,
                                                param_grid=param_grid,
                                                name='KerasRegressor4Layers',
