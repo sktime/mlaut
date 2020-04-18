@@ -21,7 +21,7 @@ class BaseDataset:
         return f"{class_name}(name={self.name})"
 
     def load(self):
-        raise NotImplementedError()
+        raise NotImplementedError("abstract method")
 
     @property
     def name(self):
