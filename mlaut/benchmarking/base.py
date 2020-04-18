@@ -60,7 +60,7 @@ class BaseResults:
 
     def load_predictions(self, cv_fold, train_or_test):
         """Loads predictions for all datasets and strategies iteratively"""
-        raise NotImplementedError()
+        raise NotImplementedError("abstract method")
 
     def check_predictions_exist(self, strategy, dataset_name, cv_fold, train_or_test):
         raise NotImplementedError()
