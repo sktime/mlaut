@@ -25,11 +25,9 @@ List of [developers and contributors](AUTHORS.rst)
 
 ### Documentation
 
-<!-- [<<<<<< Documentation available on alan-turing-institute.github.io/mlaut >>>>>>](https://alan-turing-institute.github.io/mlaut) -->
+[<<<<<< Documentation available on alan-turing-institute.github.io/mlaut >>>>>>](https://alan-turing-institute.github.io/mlaut)
 
 An example with the basic usage of ``mlaut`` can be found in the following [Jupyter Notebook](https://github.com/alan-turing-institute/mlaut/blob/master/examples/Benchmarking.ipynb)
-
-Please check the [examples directory](https://github.com/alan-turing-institute/mlaut/tree/master/examples) for more advanced use cases.
 
 ### Installing
 

@@ -110,9 +110,10 @@ data/**
 data-original/**
 Delgado_data/**
 tests/data/**
-documentation/_build/**
-documentation/_static/**
-documentation/_templates/**
+# documentation/_build/**
+# documentation/_static/**
+# documentation/_templates/**
+docs/**
 
 
 
