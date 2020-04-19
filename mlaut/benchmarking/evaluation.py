@@ -11,7 +11,7 @@ from scipy import stats
 from scipy.stats import ranksums
 from scipy.stats import ttest_ind
 
-from mlaut.benchmarking.base import BaseResults
+from mlaut.benchmarking.results import BaseResults
 from mlaut.shared.exceptions import NotEvaluatedError
 
 plt.style.use("seaborn-ticks")
