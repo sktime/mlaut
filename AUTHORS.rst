@@ -8,3 +8,4 @@ Developers
 
 * Franz Kiraly `fkiraly <https://github.com/fkiraly>`_: project manager and designated point of contact.
 * Viktor Kazakov `viktorkaz <https://github.com/viktorkaz>`_: principal developer.
+* Markus Löning `mloning <https://github.com/mloning>`_: contributor.

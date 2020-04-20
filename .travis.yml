@@ -1,0 +1,15 @@
+branches:
+  only:
+    - master
+    - dev
+language: python
+
+python:
+  - "3.6"
+
+install:
+  - pip install -r requirements.txt
+  - pip install .
+  - documentation/build_documentation.sh
+
+script: pytest
