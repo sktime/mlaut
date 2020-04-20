@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Benchmarking &mdash; mlaut 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Highlevel" href="highlevel.html" />
+    <link rel="prev" title="Modules" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> mlaut
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="project.html">Description of the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Benchmarking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.benchmarking.orchestration">orchestrator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.benchmarking.evaluation">evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.benchmarking.metrics">metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data">data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#results">results</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="highlevel.html">Highlevel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resampling.html">Resampling</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mlaut</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+        
+      <li>Benchmarking</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/benchmarking.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="benchmarking">
+<span id="id1"></span><h1>Benchmarking<a class="headerlink" href="#benchmarking" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-mlaut.benchmarking.orchestration">
+<span id="orchestrator"></span><h2>orchestrator<a class="headerlink" href="#module-mlaut.benchmarking.orchestration" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="mlaut.benchmarking.orchestration.Orchestrator">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.benchmarking.orchestration.</code><code class="sig-name descname">Orchestrator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tasks</span></em>, <em class="sig-param"><span class="n">datasets</span></em>, <em class="sig-param"><span class="n">strategies</span></em>, <em class="sig-param"><span class="n">cv</span></em>, <em class="sig-param"><span class="n">results</span></em>, <em class="sig-param"><span class="n">log_file_path</span><span class="o">=</span><span class="default_value">'mlaut.log'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/orchestration.html#Orchestrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.orchestration.Orchestrator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Fit and predict one or more estimators on one or more datasets</p>
+<dl class="py method">
+<dt id="mlaut.benchmarking.orchestration.Orchestrator.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">overwrite_fitted_strategies</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/orchestration.html#Orchestrator.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.orchestration.Orchestrator.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit strategies on datasets</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.orchestration.Orchestrator.fit_predict">
+<code class="sig-name descname">fit_predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">overwrite_predictions</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">predict_on_train</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">save_fitted_strategies</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">overwrite_fitted_strategies</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/orchestration.html#Orchestrator.fit_predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.orchestration.Orchestrator.fit_predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit and predict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.orchestration.Orchestrator.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">overwrite_predictions</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">predict_on_train</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/orchestration.html#Orchestrator.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.orchestration.Orchestrator.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict from saved fitted strategies</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.benchmarking.evaluation">
+<span id="evaluation"></span><h2>evaluation<a class="headerlink" href="#module-mlaut.benchmarking.evaluation" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="mlaut.benchmarking.evaluation.Evaluator">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.benchmarking.evaluation.</code><code class="sig-name descname">Evaluator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Analyze results of machine learning experiments.</p>
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric</span></em>, <em class="sig-param"><span class="n">train_or_test</span><span class="o">=</span><span class="default_value">'test'</span></em>, <em class="sig-param"><span class="n">cv_fold</span><span class="o">=</span><span class="default_value">'all'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the average prediction error per estimator as well as the prediction error achieved by each
+estimator on individual datasets.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.friedman_test">
+<code class="sig-name descname">friedman_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.friedman_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.friedman_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Friedman test is a non-parametric statistical test used to detect differences
+in treatments across multiple test attempts. The procedure involves ranking each row (or block) together,
+then considering the values of ranks by columns.
+Implementation used:
+<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.stats.friedmanchisquare.html">scipy.stats</a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.metric_names">
+<em class="property">property </em><code class="sig-name descname">metric_names</code><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.metric_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.metrics">
+<em class="property">property </em><code class="sig-name descname">metrics</code><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.metrics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.metrics_by_strategy">
+<em class="property">property </em><code class="sig-name descname">metrics_by_strategy</code><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.metrics_by_strategy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.metrics_by_strategy_dataset">
+<em class="property">property </em><code class="sig-name descname">metrics_by_strategy_dataset</code><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.metrics_by_strategy_dataset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.nemenyi">
+<code class="sig-name descname">nemenyi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.nemenyi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.nemenyi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post-hoc test run if the <cite>friedman_test</cite> reveals statistical significance.
+For more information see <a class="reference external" href="https://en.wikipedia.org/wiki/Nemenyi_test">Nemenyi test</a>.
+Implementation used <a class="reference external" href="https://github.com/maximtrp/scikit-posthocs">scikit-posthocs</a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.plot_boxplots">
+<code class="sig-name descname">plot_boxplots</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.plot_boxplots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.plot_boxplots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Box plot of metric</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.plot_critical_difference_diagram">
+<code class="sig-name descname">plot_critical_difference_diagram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.plot_critical_difference_diagram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.plot_critical_difference_diagram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot critical difference diagrams</p>
+<p>original implementation by Aaron Bostrom, modified by Markus Löning</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.rank">
+<code class="sig-name descname">rank</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ascending</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.rank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the average ranks based on the performance of each estimator on each dataset</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.ranksum_test">
+<code class="sig-name descname">ranksum_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.ranksum_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.ranksum_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Non-parametric test for testing consistent differences between pairs of obeservations.
+The test counts the number of observations that are greater, smaller and equal to the mean
+<a class="reference external" href="http://en.wikipedia.org/wiki/Wilcoxon_rank-sum_test">http://en.wikipedia.org/wiki/Wilcoxon_rank-sum_test</a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.sign_test">
+<code class="sig-name descname">sign_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.sign_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.sign_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Non-parametric test for test for consistent differences between pairs of observations.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Sign_test">https://en.wikipedia.org/wiki/Sign_test</a> for details about the test and
+<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.binom_test.html">https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.binom_test.html</a>
+for details about the scipy implementation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.t_test">
+<code class="sig-name descname">t_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.t_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.t_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs t-test on all possible combinations between the estimators.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.t_test_with_bonferroni_correction">
+<code class="sig-name descname">t_test_with_bonferroni_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.t_test_with_bonferroni_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.t_test_with_bonferroni_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>correction used to counteract multiple comparissons
+<a class="reference external" href="https://en.wikipedia.org/wiki/Bonferroni_correction">https://en.wikipedia.org/wiki/Bonferroni_correction</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.evaluation.Evaluator.wilcoxon_test">
+<code class="sig-name descname">wilcoxon_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/evaluation.html#Evaluator.wilcoxon_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.evaluation.Evaluator.wilcoxon_test" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">http://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test</a>
+<a class="reference external" href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon signed-rank test</a>.
+Tests whether two  related paired samples come from the same distribution.
+In particular, it tests whether the distribution of the differences x-y is symmetric about zero</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.benchmarking.metrics">
+<span id="metrics"></span><h2>metrics<a class="headerlink" href="#module-mlaut.benchmarking.metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="mlaut.benchmarking.metrics.PairwiseMetric">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.benchmarking.metrics.</code><code class="sig-name descname">PairwiseMetric</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/metrics.html#PairwiseMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.metrics.PairwiseMetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.benchmarking.base.BaseMetric</span></code></p>
+<dl class="py method">
+<dt id="mlaut.benchmarking.metrics.PairwiseMetric.compute">
+<code class="sig-name descname">compute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/metrics.html#PairwiseMetric.compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.metrics.PairwiseMetric.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute mean and standard error of metric</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.benchmarking.metrics.AggregateMetric">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.benchmarking.metrics.</code><code class="sig-name descname">AggregateMetric</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'jackknife'</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/metrics.html#AggregateMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.metrics.AggregateMetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.benchmarking.base.BaseMetric</span></code></p>
+<dl class="py method">
+<dt id="mlaut.benchmarking.metrics.AggregateMetric.compute">
+<code class="sig-name descname">compute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/metrics.html#AggregateMetric.compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.metrics.AggregateMetric.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute metric and standard error</p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets">1</span></dt>
+<dd><p>Efron and Stein, (1981), “The jackknife estimate of variance.”</p>
+</dd>
+<dt class="label" id="id3"><span class="brackets">2</span></dt>
+<dd><p>McIntosh, Avery. “The Jackknife Estimation Method”.
+&lt;<a class="reference external" href="http://people.bu.edu/aimcinto/jackknife.pdf">http://people.bu.edu/aimcinto/jackknife.pdf</a>&gt;</p>
+</dd>
+<dt class="label" id="id4"><span class="brackets">3</span></dt>
+<dd><p>Efron, Bradley. “The Jackknife, the Bootstrap, and other
+Resampling Plans”. Technical Report No. 63, Division of Biostatistics,
+Stanford University, December, 1980.</p>
+</dd>
+<dt class="label" id="id5"><span class="brackets">4</span></dt>
+<dd><p>Jackknife resampling &lt;<a class="reference external" href="https://en.wikipedia.org/wiki/Jackknife_resampling">https://en.wikipedia.org/wiki/Jackknife_resampling</a>&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="data">
+<h2>data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="mlaut.benchmarking.data.RAMDataset">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.benchmarking.data.</code><code class="sig-name descname">RAMDataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/data/_ram.html#RAMDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.data.RAMDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.benchmarking.data._base.BaseDataset</span></code></p>
+<dl class="py method">
+<dt id="mlaut.benchmarking.data.RAMDataset.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/data/_ram.html#RAMDataset.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.data.RAMDataset.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.benchmarking.data.HDDBaseDataset">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.benchmarking.data.</code><code class="sig-name descname">HDDBaseDataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/data/_hdd.html#HDDBaseDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.data.HDDBaseDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.benchmarking.data._base.BaseDataset</span></code></p>
+<dl class="py method">
+<dt id="mlaut.benchmarking.data.HDDBaseDataset.path">
+<em class="property">property </em><code class="sig-name descname">path</code><a class="headerlink" href="#mlaut.benchmarking.data.HDDBaseDataset.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="results">
+<h2>results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="mlaut.benchmarking.results.HDDResults">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.benchmarking.results.</code><code class="sig-name descname">HDDResults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_hdd.html#HDDResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.HDDResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.benchmarking.results._base.HDDBaseResults</span></code></p>
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.HDDResults.check_fitted_strategy_exists">
+<code class="sig-name descname">check_fitted_strategy_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy_name</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_hdd.html#HDDResults.check_fitted_strategy_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.HDDResults.check_fitted_strategy_exists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.HDDResults.check_predictions_exist">
+<code class="sig-name descname">check_predictions_exist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy_name</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em>, <em class="sig-param"><span class="n">train_or_test</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_hdd.html#HDDResults.check_predictions_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.HDDResults.check_predictions_exist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.HDDResults.load_fitted_strategy">
+<code class="sig-name descname">load_fitted_strategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy_name</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_hdd.html#HDDResults.load_fitted_strategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.HDDResults.load_fitted_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load saved (fitted) strategy</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.HDDResults.load_predictions">
+<code class="sig-name descname">load_predictions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cv_fold</span></em>, <em class="sig-param"><span class="n">train_or_test</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_hdd.html#HDDResults.load_predictions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.HDDResults.load_predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load saved predictions</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.HDDResults.save_fitted_strategy">
+<code class="sig-name descname">save_fitted_strategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_hdd.html#HDDResults.save_fitted_strategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.HDDResults.save_fitted_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save fitted strategy</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.HDDResults.save_predictions">
+<code class="sig-name descname">save_predictions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy_name</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em>, <em class="sig-param"><span class="n">y_proba</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em>, <em class="sig-param"><span class="n">train_or_test</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_hdd.html#HDDResults.save_predictions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.HDDResults.save_predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save predictions</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.benchmarking.results.RAMResults">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.benchmarking.results.</code><code class="sig-name descname">RAMResults</code><a class="reference internal" href="_modules/mlaut/benchmarking/results/_ram.html#RAMResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.RAMResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.benchmarking.results._base.BaseResults</span></code></p>
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.RAMResults.check_fitted_strategy_exists">
+<code class="sig-name descname">check_fitted_strategy_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_ram.html#RAMResults.check_fitted_strategy_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.RAMResults.check_fitted_strategy_exists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.RAMResults.check_predictions_exist">
+<code class="sig-name descname">check_predictions_exist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em>, <em class="sig-param"><span class="n">train_or_test</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_ram.html#RAMResults.check_predictions_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.RAMResults.check_predictions_exist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.RAMResults.load_fitted_strategy">
+<code class="sig-name descname">load_fitted_strategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy_name</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_ram.html#RAMResults.load_fitted_strategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.RAMResults.load_fitted_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load fitted strategies for all datasets and strategies iteratively</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.RAMResults.load_predictions">
+<code class="sig-name descname">load_predictions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cv_fold</span></em>, <em class="sig-param"><span class="n">train_or_test</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_ram.html#RAMResults.load_predictions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.RAMResults.load_predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads predictions for all datasets and strategies iteratively</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.RAMResults.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_ram.html#RAMResults.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.RAMResults.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save results object as master file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.RAMResults.save_fitted_strategy">
+<code class="sig-name descname">save_fitted_strategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_ram.html#RAMResults.save_fitted_strategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.RAMResults.save_fitted_strategy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.benchmarking.results.RAMResults.save_predictions">
+<code class="sig-name descname">save_predictions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strategy_name</span></em>, <em class="sig-param"><span class="n">dataset_name</span></em>, <em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em>, <em class="sig-param"><span class="n">y_proba</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">cv_fold</span></em>, <em class="sig-param"><span class="n">train_or_test</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/benchmarking/results/_ram.html#RAMResults.save_predictions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.benchmarking.results.RAMResults.save_predictions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="highlevel.html" class="btn btn-neutral float-right" title="Highlevel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral float-left" title="Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Viktor Kazakov
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

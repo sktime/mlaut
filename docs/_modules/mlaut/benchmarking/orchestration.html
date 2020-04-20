@@ -1,0 +1,445 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mlaut.benchmarking.orchestration &mdash; mlaut 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> mlaut
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../project.html">Description of the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">mlaut</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mlaut.benchmarking.orchestration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mlaut.benchmarking.orchestration</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Orchestrator&quot;</span><span class="p">]</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Viktor Kazakov&quot;</span><span class="p">,</span> <span class="s2">&quot;Markus Löning&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">clone</span>
+
+<span class="kn">from</span> <span class="nn">mlaut.highlevel.tasks</span> <span class="kn">import</span> <span class="n">TabClassifTask</span><span class="p">,</span> <span class="n">TabRegrTask</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<div class="viewcode-block" id="Orchestrator"><a class="viewcode-back" href="../../../benchmarking.html#mlaut.benchmarking.orchestration.Orchestrator">[docs]</a><span class="k">class</span> <span class="nc">Orchestrator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fit and predict one or more estimators on one or more datasets</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">strategies</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">log_file_path</span><span class="o">=</span><span class="s1">&#39;mlaut.log&#39;</span><span class="p">):</span>
+        <span class="c1"># validate datasets and tasks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_tasks_and_datasets</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">datasets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="n">tasks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span> <span class="o">=</span> <span class="n">datasets</span>
+
+        <span class="c1"># validate strategies</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_strategy_names</span><span class="p">(</span><span class="n">strategies</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategies</span> <span class="o">=</span> <span class="n">strategies</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">results</span>
+
+        <span class="c1"># attach cv iterator to results object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
+
+        <span class="c1"># progress trackers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_strategies</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">strategies</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_datasets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_strategy_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">log_file_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">log_file_path</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">log_file_path</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iterator for orchestration&quot;&quot;&quot;</span>
+        <span class="c1"># TODO: check if datasets are skipped entirely because predictions already exists before loading data,</span>
+        <span class="c1">#  maybe do a dry-run first to find out which datasets to skip?</span>
+        <span class="k">for</span> <span class="n">task</span><span class="p">,</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">):</span>
+            <span class="c1"># update counters</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_strategy_counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># load data into memory from dataset hook</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+            <span class="c1"># get target in case stratified cross-validation is used</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategies</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_strategy_counter</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># update counter</span>
+
+                <span class="k">for</span> <span class="n">cv_fold</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="p">)):</span>
+                    <span class="c1"># for each fold, clone strategy to avoid updating already fitted strategies</span>
+                    <span class="n">strategy</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">strategy</span><span class="p">)</span>
+
+                    <span class="k">yield</span> <span class="n">task</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">cv_fold</span><span class="p">,</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span>
+
+<div class="viewcode-block" id="Orchestrator.fit"><a class="viewcode-back" href="../../../benchmarking.html#mlaut.benchmarking.orchestration.Orchestrator.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite_fitted_strategies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit strategies on datasets&quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">task</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">cv_fold</span><span class="p">,</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span><span class="p">():</span>
+
+            <span class="c1"># skip strategy, if overwrite is set to False and fitted strategy already exists</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite_fitted_strategies</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">check_fitted_strategy_exists</span><span class="p">(</span>
+                    <span class="n">strategy</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping strategy: </span><span class="si">{strategy.name}</span><span class="s2"> on CV-fold: </span><span class="si">{cv_fold}</span><span class="s2"> of dataset: </span><span class="si">{dataset.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># else fit and save fitted strategy</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">train</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_print_progress</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cv_fold</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+                <span class="n">strategy</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">train</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">save_fitted_strategy</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span><span class="p">,</span>
+                                                  <span class="n">dataset_name</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">,</span>
+                                                  <span class="n">cv_fold</span><span class="o">=</span><span class="n">cv_fold</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Orchestrator.predict"><a class="viewcode-back" href="../../../benchmarking.html#mlaut.benchmarking.orchestration.Orchestrator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite_predictions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">predict_on_train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Predict from saved fitted strategies&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Predicting from saved fitted strategies is not implemented yet&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Orchestrator.fit_predict"><a class="viewcode-back" href="../../../benchmarking.html#mlaut.benchmarking.orchestration.Orchestrator.fit_predict">[docs]</a>    <span class="k">def</span> <span class="nf">fit_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">overwrite_predictions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">predict_on_train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">save_fitted_strategies</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">overwrite_fitted_strategies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit and predict&quot;&quot;&quot;</span>
+
+        <span class="c1"># check that for fitted strategies overwrite option is only set when save option is set</span>
+        <span class="k">if</span> <span class="n">overwrite_fitted_strategies</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">save_fitted_strategies</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can only overwrite fitted strategies &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;if fitted strategies are saved, but found: &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;overwrite_fitted_strategies=</span><span class="si">{overwrite_fitted_strategies}</span><span class="s2"> and &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;save_fitted_strategies=</span><span class="si">{save_fitted_strategies}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># fitting and prediction</span>
+        <span class="k">for</span> <span class="n">task</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">cv_fold</span><span class="p">,</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span><span class="p">():</span>
+
+            <span class="c1"># check which results already exist</span>
+            <span class="n">train_pred_exist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">check_predictions_exist</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                                    <span class="n">cv_fold</span><span class="p">,</span> <span class="n">train_or_test</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">)</span>
+            <span class="n">test_pred_exist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">check_predictions_exist</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                                   <span class="n">cv_fold</span><span class="p">,</span> <span class="n">train_or_test</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+            <span class="n">fitted_stategy_exists</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">check_fitted_strategy_exists</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                                              <span class="n">cv_fold</span><span class="p">)</span>
+
+            <span class="c1"># skip if overwrite is set to False for both predictions and strategies and all results exist</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite_predictions</span> <span class="ow">and</span> <span class="n">test_pred_exist</span> <span class="ow">and</span> <span class="p">(</span><span class="n">train_pred_exist</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">predict_on_train</span><span class="p">)</span> <span class="ow">and</span> \
+                    <span class="ow">not</span> <span class="n">overwrite_fitted_strategies</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fitted_stategy_exists</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">save_fitted_strategies</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping strategy: </span><span class="si">{strategy.name}</span><span class="s2"> on CV-fold: </span><span class="si">{cv_fold}</span><span class="s2"> of dataset: </span><span class="si">{dataset.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># split data into training and test sets</span>
+            <span class="n">train</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span>
+
+            <span class="c1"># fit strategy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_progress</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cv_fold</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;********* Fitting </span><span class="si">{strategy.name}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">strategy</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">train</span><span class="p">)</span>
+
+            <span class="c1"># save fitted strategy if save fitted strategies is set to True and overwrite is set to True or the</span>
+            <span class="c1"># fitted strategy does not already exist</span>
+            <span class="k">if</span> <span class="n">save_fitted_strategies</span> <span class="ow">and</span> <span class="p">(</span><span class="n">overwrite_fitted_strategies</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">fitted_stategy_exists</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">save_fitted_strategy</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cv_fold</span><span class="o">=</span><span class="n">cv_fold</span><span class="p">)</span>
+
+            <span class="c1"># optionally, predict on training set if predict on train is set to True and and overwrite is set to True</span>
+            <span class="c1"># or the predicted values do not already exist</span>
+            <span class="k">if</span> <span class="n">predict_on_train</span> <span class="ow">and</span> <span class="p">(</span><span class="n">overwrite_predictions</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">train_pred_exist</span><span class="p">):</span>
+                <span class="n">y_true</span> <span class="o">=</span> <span class="n">train</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">task</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+                <span class="n">y_pred</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+                <span class="n">y_proba</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_proba_one</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">save_predictions</span><span class="p">(</span><span class="n">strategy_name</span><span class="o">=</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                              <span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                              <span class="n">index</span><span class="o">=</span><span class="n">train_idx</span><span class="p">,</span>
+                                              <span class="n">y_true</span><span class="o">=</span><span class="n">y_true</span><span class="p">,</span>
+                                              <span class="n">y_pred</span><span class="o">=</span><span class="n">y_pred</span><span class="p">,</span>
+                                              <span class="n">y_proba</span><span class="o">=</span><span class="n">y_proba</span><span class="p">,</span>
+                                              <span class="n">cv_fold</span><span class="o">=</span><span class="n">cv_fold</span><span class="p">,</span>
+                                              <span class="n">train_or_test</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">)</span>
+
+            <span class="c1"># predict on test set if overwrite predictions is set to True or predictions do not already exist</span>
+            <span class="k">if</span> <span class="n">overwrite_predictions</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">test_pred_exist</span><span class="p">:</span>
+                <span class="n">y_true</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">task</span><span class="o">.</span><span class="n">target</span><span class="p">]</span>
+                <span class="n">y_pred</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+                <span class="n">y_proba</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_proba_one</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">save_predictions</span><span class="p">(</span><span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                              <span class="n">strategy_name</span><span class="o">=</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                              <span class="n">index</span><span class="o">=</span><span class="n">test_idx</span><span class="p">,</span>
+                                              <span class="n">y_true</span><span class="o">=</span><span class="n">y_true</span><span class="p">,</span>
+                                              <span class="n">y_pred</span><span class="o">=</span><span class="n">y_pred</span><span class="p">,</span>
+                                              <span class="n">y_proba</span><span class="o">=</span><span class="n">y_proba</span><span class="p">,</span>
+                                              <span class="n">cv_fold</span><span class="o">=</span><span class="n">cv_fold</span><span class="p">,</span>
+                                              <span class="n">train_or_test</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+
+        <span class="c1"># save results as master file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_predict_proba_one</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Predict strategy on one dataset&quot;&quot;&quot;</span>
+        <span class="c1"># TODO always try to get probabilistic predictions first, compute deterministic predictions using</span>
+        <span class="c1">#  argmax to avoid rerunning predictions, only if no predict_proba is available, run predict</span>
+
+        <span class="c1"># if the task is classification and the strategies supports probabilistic predictions,</span>
+        <span class="c1"># get probabilistic predictions</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">TabClassifTask</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">strategy</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="c1"># otherwise, return deterministic predictions in expected format</span>
+            <span class="c1"># else:</span>
+            <span class="c1">#     n_class_true = len(np.unique(y_true))</span>
+            <span class="c1">#     n_class_pred = len(np.unique(y_pred))</span>
+            <span class="c1">#     n_classes = np.maximum(n_class_pred, n_class_true)</span>
+            <span class="c1">#     n_predictions = len(y_pred)</span>
+            <span class="c1">#     y_proba = (n_predictions, n_classes)</span>
+            <span class="c1">#     y_proba = np.zeros(y_proba)</span>
+            <span class="c1">#     y_proba[:, np.array(y_pred, dtype=np.int)] = 1</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_validate_strategy_names</span><span class="p">(</span><span class="n">strategies</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate strategy names&quot;&quot;&quot;</span>
+
+        <span class="c1"># Check uniqueness of strategy names</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">strategy</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="n">strategies</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Names of provided strategies are not unique: &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{names}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check for conflicts with estimator kwargs</span>
+        <span class="n">all_params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="n">strategies</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">all_params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="n">invalid_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">all_params</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">invalid_names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Strategy names conflict with constructor &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;arguments: {sorted(invalid_names)}&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check for conflicts with double-underscore convention</span>
+        <span class="n">invalid_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">if</span> <span class="s2">&quot;__&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">invalid_names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Estimator names must not contain __: got &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{invalid_names}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_validate_tasks_and_datasets</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">datasets</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate tasks&quot;&quot;&quot;</span>
+        <span class="c1"># check input types</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;datasets must be a list, but found: {type(datasets)}&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tasks must be a list, but found: {type(tasks)}&quot;</span><span class="p">)</span>
+
+        <span class="c1"># check if there is one task for each dataset</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Inconsistent number of datasets and tasks, &quot;</span>
+                             <span class="s2">&quot;there must be one task for each dataset&quot;</span><span class="p">)</span>
+
+        <span class="c1"># check if task is either time series regression or classification, other tasks not supported yet</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="p">(</span><span class="n">TabClassifTask</span><span class="p">,</span> <span class="n">TabRegrTask</span><span class="p">))</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Currently, only cross section classification and &quot;</span>
+                                      <span class="s2">&quot;cross section regression tasks are supported&quot;</span><span class="p">)</span>
+
+        <span class="c1"># check if all tasks are of the same type</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not all tasks are of the same type&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_print_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">strategy_name</span><span class="p">,</span> <span class="n">cv_fold</span><span class="p">,</span> <span class="n">train_or_test</span><span class="p">,</span> <span class="n">fit_or_predict</span><span class="p">,</span> <span class="n">verbose</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper function to print progress&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">fit_or_predict</span> <span class="o">=</span> <span class="n">fit_or_predict</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+            <span class="n">on_train</span> <span class="o">=</span> <span class="s2">&quot; (training set)&quot;</span> <span class="k">if</span> <span class="n">train_or_test</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span> <span class="ow">and</span> <span class="n">fit_or_predict</span> <span class="o">==</span> <span class="s2">&quot;predict&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+            <span class="n">n_splits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># zero indexing</span>
+
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;strategy: </span><span class="si">{self._strategy_counter}</span><span class="s2">/</span><span class="si">{self.n_strategies}</span><span class="s2"> - </span><span class="si">{strategy_name}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;on CV-fold: </span><span class="si">{cv_fold}</span><span class="s2">/</span><span class="si">{n_splits}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;of dataset: </span><span class="si">{self._dataset_counter}</span><span class="s2">/</span><span class="si">{self.n_datasets}</span><span class="s2"> - </span><span class="si">{dataset_name}{on_train}</span><span class="s2">&quot;</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Viktor Kazakov
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

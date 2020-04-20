@@ -1,0 +1,568 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Highlevel &mdash; mlaut 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Resampling" href="resampling.html" />
+    <link rel="prev" title="Benchmarking" href="benchmarking.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> mlaut
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="project.html">Description of the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="benchmarking.html">Benchmarking</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Highlevel</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.highlevel.strategies">strategies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mlaut.highlevel.tasks">tasks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="resampling.html">Resampling</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mlaut</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+        
+      <li>Highlevel</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/highlevel.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="highlevel">
+<span id="id1"></span><h1>Highlevel<a class="headerlink" href="#highlevel" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-mlaut.highlevel.strategies">
+<span id="strategies"></span><h2>strategies<a class="headerlink" href="#module-mlaut.highlevel.strategies" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="mlaut.highlevel.strategies.BaseKerasStrategy">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.strategies.</code><code class="sig-name descname">BaseKerasStrategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">estimator</span></em>, <em class="sig-param"><span class="n">build_fn</span></em>, <em class="sig-param"><span class="n">param_grid</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">check_input</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseKerasStrategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseKerasStrategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.highlevel.strategies.BaseStrategy" title="mlaut.highlevel.strategies.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.highlevel.strategies.BaseStrategy</span></code></a></p>
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseKerasStrategy.get_params">
+<code class="sig-name descname">get_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">deep</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseKerasStrategy.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseKerasStrategy.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwriting BaseEstimator.get_params()
+Needed in order to perform clone of the strategy in the orchestrator
+TODO figure out a way to either call the BaseEstimator method here or automate the return of the dictinary based on the output of self._get_param_names()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseKerasStrategy.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseKerasStrategy.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseKerasStrategy.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load saved strategy
+:param path: location on disk where the strategy was saved
+:type path: String</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sktime strategy</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>strategy</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseKerasStrategy.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseKerasStrategy.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseKerasStrategy.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict using the given test data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>a pandas.DataFrame</em>) – Dataframe with feature and target variables as specified in task passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>y_pred</strong> – Returns the series of predicted values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseKerasStrategy.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseKerasStrategy.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseKerasStrategy.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseKerasStrategy.set_params">
+<code class="sig-name descname">set_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">params</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseKerasStrategy.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseKerasStrategy.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwriting BsaeEstimator.set_params()
+Needed in order to perform clone of the strategy in the orchestrator</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.highlevel.strategies.BaseStrategy">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.strategies.</code><code class="sig-name descname">BaseStrategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">estimator</span></em>, <em class="sig-param"><span class="n">check_input</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseStrategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseStrategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
+<p>Abstract base strategy class.</p>
+<p>Implements attributes and operations shared by all strategies,
+including input and compatibility checks between passed estimator,
+data and task.</p>
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseStrategy.estimator">
+<em class="property">property </em><code class="sig-name descname">estimator</code><a class="headerlink" href="#mlaut.highlevel.strategies.BaseStrategy.estimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes attribute accessible, but read-only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseStrategy.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseStrategy.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseStrategy.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the strategy to the given task and data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<em>Task</em>) – Task encapsualting metadata information on feature and target variables to which to fit the data to.</p></li>
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Dataframe with feature and target variables as specified in task.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>an instance of the self</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseStrategy.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseStrategy.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseStrategy.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load saved strategy
+:param path: location on disk where the strategy was saved
+:type path: String</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sktime strategy</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>strategy</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseStrategy.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#mlaut.highlevel.strategies.BaseStrategy.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes attribute accessible, but read-only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseStrategy.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseStrategy.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseStrategy.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.highlevel.strategies.BaseSupervisedLearningStrategy">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.strategies.</code><code class="sig-name descname">BaseSupervisedLearningStrategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">estimator</span></em>, <em class="sig-param"><span class="n">check_input</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseSupervisedLearningStrategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseSupervisedLearningStrategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.highlevel.strategies.BaseStrategy" title="mlaut.highlevel.strategies.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.highlevel.strategies.BaseStrategy</span></code></a></p>
+<p>Abstract strategy class for cross section supervised learning that accepts a low-level estimator to
+perform a given task.</p>
+<p>Implements predict and internal fit methods for time series regression and classification.</p>
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseSupervisedLearningStrategy.param_grid">
+<em class="property">property </em><code class="sig-name descname">param_grid</code><a class="headerlink" href="#mlaut.highlevel.strategies.BaseSupervisedLearningStrategy.param_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.BaseSupervisedLearningStrategy.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#BaseSupervisedLearningStrategy.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.BaseSupervisedLearningStrategy.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict using the given test data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>a pandas.DataFrame</em>) – Dataframe with feature and target variables as specified in task passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>y_pred</strong> – Returns the series of predicted values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.highlevel.strategies.TabClassifKerasStrategy">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.strategies.</code><code class="sig-name descname">TabClassifKerasStrategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">estimator</span></em>, <em class="sig-param"><span class="n">build_fn</span></em>, <em class="sig-param"><span class="n">param_grid</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">check_input</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#TabClassifKerasStrategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.TabClassifKerasStrategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.highlevel.strategies.BaseKerasStrategy" title="mlaut.highlevel.strategies.BaseKerasStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.highlevel.strategies.BaseKerasStrategy</span></code></a></p>
+<p>Cross Section Classification strategy for kears.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator</strong> (<em>keras estimator</em>) – keras estimato object compatible with sktime</p></li>
+<li><p><strong>build_fn</strong> (<em>keras model</em>) – keras model</p></li>
+<li><p><strong>param_grid</strong> (<em>dict</em>) – dictionary with the hyper parameters</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Name of strategy. If None, class name of estimator is used.</p></li>
+<li><p><strong>check_input</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – <ul>
+<li><p>If True, input are checked.</p></li>
+<li><p>If False, input are not checked and assumed correct. Use with caution.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.highlevel.strategies.TabClassifStrategy">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.strategies.</code><code class="sig-name descname">TabClassifStrategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">estimator</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">check_input</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#TabClassifStrategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.TabClassifStrategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.highlevel.strategies.BaseSupervisedLearningStrategy" title="mlaut.highlevel.strategies.BaseSupervisedLearningStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.highlevel.strategies.BaseSupervisedLearningStrategy</span></code></a></p>
+<p>Tabular classification strategy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator</strong> (<em>an estimator</em>) – Low-level estimator used in strategy.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Name of strategy. If None, class name of estimator is used.</p></li>
+<li><p><strong>check_input</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – <ul>
+<li><p>If True, input are checked.</p></li>
+<li><p>If False, input are not checked and assumed correct. Use with caution.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.TabClassifStrategy.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#TabClassifStrategy.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.TabClassifStrategy.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.highlevel.strategies.TabRegrKerasStrategy">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.strategies.</code><code class="sig-name descname">TabRegrKerasStrategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">estimator</span></em>, <em class="sig-param"><span class="n">build_fn</span></em>, <em class="sig-param"><span class="n">param_grid</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">check_input</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#TabRegrKerasStrategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.TabRegrKerasStrategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.highlevel.strategies.BaseKerasStrategy" title="mlaut.highlevel.strategies.BaseKerasStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.highlevel.strategies.BaseKerasStrategy</span></code></a></p>
+<p>Cross Section Regression strategy for keras.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator</strong> (<em>keras estimator</em>) – keras estimato object compatible with sktime</p></li>
+<li><p><strong>build_fn</strong> (<em>keras model</em>) – keras model</p></li>
+<li><p><strong>param_grid</strong> (<em>dict</em>) – dictionary with the hyper parameters</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Name of strategy. If None, class name of estimator is used.</p></li>
+<li><p><strong>check_input</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – <ul>
+<li><p>If True, input are checked.</p></li>
+<li><p>If False, input are not checked and assumed correct. Use with caution.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.highlevel.strategies.TabRegrStrategy">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.strategies.</code><code class="sig-name descname">TabRegrStrategy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">estimator</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">check_input</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#TabRegrStrategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.TabRegrStrategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.highlevel.strategies.BaseSupervisedLearningStrategy" title="mlaut.highlevel.strategies.BaseSupervisedLearningStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.highlevel.strategies.BaseSupervisedLearningStrategy</span></code></a></p>
+<p>Tabular Regression Strategy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator</strong> (<em>an estimator</em>) – Low-level estimator used in strategy.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Name of strategy. If None, class name of estimator is used.</p></li>
+<li><p><strong>check_input</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – <ul>
+<li><p>If True, input are checked.</p></li>
+<li><p>If False, input are not checked and assumed correct. Use with caution.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="mlaut.highlevel.strategies.TabRegrStrategy.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/strategies.html#TabRegrStrategy.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.strategies.TabRegrStrategy.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mlaut.highlevel.tasks">
+<span id="tasks"></span><h2>tasks<a class="headerlink" href="#module-mlaut.highlevel.tasks" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="mlaut.highlevel.tasks.BaseTask">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.tasks.</code><code class="sig-name descname">BaseTask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">features</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">metadata</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/tasks.html#BaseTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.tasks.BaseTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract base task class.
+A task encapsulates metadata information such as the feature and
+target variable which to fit the data to and additional necessary
+instructions on how to fit and predict.
+Implements attributes and operations shared by all tasks,
+including compatibility checks between the concrete task type and
+passed metadata.
+:param target: The column name for the target variable to be predicted.
+:type target: str
+:param features: The column name(s) for the feature variable. If None, every column apart from target will be used as a feature.
+:type features: list of str, optinal, (default=None)
+:param metadata: Contains the metadata that the task is expected to work with.
+:type metadata: pandas.DataFrame</p>
+<dl class="py method">
+<dt id="mlaut.highlevel.tasks.BaseTask.check_data_compatibility">
+<code class="sig-name descname">check_data_compatibility</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metadata</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/tasks.html#BaseTask.check_data_compatibility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.tasks.BaseTask.check_data_compatibility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check compatibility of task with passed metadata.
+:param metadata: Metadata container
+:type metadata: pandas.DataFrame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.tasks.BaseTask.features">
+<em class="property">property </em><code class="sig-name descname">features</code><a class="headerlink" href="#mlaut.highlevel.tasks.BaseTask.features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make attributes read-only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.tasks.BaseTask.metadata">
+<em class="property">property </em><code class="sig-name descname">metadata</code><a class="headerlink" href="#mlaut.highlevel.tasks.BaseTask.metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make attributes read-only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.tasks.BaseTask.set_metadata">
+<code class="sig-name descname">set_metadata</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metadata</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/tasks.html#BaseTask.set_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.tasks.BaseTask.set_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide missing metadata information to task if not already set.
+This method is especially useful in orchestration where metadata may not be
+available when specifying the task.
+:param metadata: Metadata container
+:type metadata: pandas.DataFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>self</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>an instance of self</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="mlaut.highlevel.tasks.BaseTask.target">
+<em class="property">property </em><code class="sig-name descname">target</code><a class="headerlink" href="#mlaut.highlevel.tasks.BaseTask.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make attributes read-only.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.highlevel.tasks.TabClassifTask">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.tasks.</code><code class="sig-name descname">TabClassifTask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">features</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">metadata</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/tasks.html#TabClassifTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.tasks.TabClassifTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.highlevel.tasks.BaseTask" title="mlaut.highlevel.tasks.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.highlevel.tasks.BaseTask</span></code></a></p>
+<p>Tabular classification task.
+A task encapsulates metadata information such as the feature and target variable
+to which to fit the data to and any additional necessary instructions on how
+to fit and predict.
+:param target: The column name for the target variable to be predicted.
+:type target: str
+:param features: The column name(s) for the feature variable. If None, every column apart from target will be used as a feature.
+:type features: list of str, optinal (default=None)
+:param metadata: Contains the metadata that the task is expected to work with.
+:type metadata: pandas.DataFrame, optional (default=None)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="mlaut.highlevel.tasks.TabRegrTask">
+<em class="property">class </em><code class="sig-prename descclassname">mlaut.highlevel.tasks.</code><code class="sig-name descname">TabRegrTask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">features</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">metadata</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mlaut/highlevel/tasks.html#TabRegrTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlaut.highlevel.tasks.TabRegrTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlaut.highlevel.tasks.BaseTask" title="mlaut.highlevel.tasks.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">mlaut.highlevel.tasks.BaseTask</span></code></a></p>
+<p>Cross section regression task.
+A task encapsulates metadata information such as the feature and target variable
+to which to fit the data to and any additional necessary instructions on how
+to fit and predict.
+:param target: The column name for the target variable to be predicted.
+:type target: str
+:param features: The column name(s) for the feature variable. If None, every column apart from target will be used as a feature.
+:type features: list of str, optinal (default=None)
+:param metadata: Contains the metadata that the task is expected to work with.
+:type metadata: pandas.DataFrame, optional (default=None)</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="resampling.html" class="btn btn-neutral float-right" title="Resampling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="benchmarking.html" class="btn btn-neutral float-left" title="Benchmarking" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Viktor Kazakov
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
